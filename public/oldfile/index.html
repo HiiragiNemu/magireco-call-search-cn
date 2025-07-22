@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="google-site-verification" content="NFrymbiFWf7jHn8cZMRYvbuZr8ukWg9ICex6t4oQn1Y" />
+  <meta name="description" content="本工具用于从游戏《魔法纪录》的登场角色中搜索相关故事。">
+  <base target="_top">
+  <link rel="icon" type="image/x-icon" href="./img/webp/ファビコン.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/webp/apple_fabicon.webp">
+  <title>魔法纪录角色故事搜索</title>
+
+  <!-- 角色追加指南 ====================================================
+    ・在girlbox中搜索，追加魔法少女。
+    ・在GAS中用★搜索，追加不同版本的魔法少女。
+    ・在myfile内追加charaAt.js的数据。
+    ・在myfile内追加charaBox.css的数据。
+  ==========================================================================-->
+
+  <!-- javascript全部移到末尾 -->
+  <!-- 读取css -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="./myfile/mycss.css">
+  <link rel="stylesheet" href="./myfile/charaBox_webp.css">
+
+  <!-- 设置向上、向下按钮 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+</head>
+<!-- 页头结束============================================================================================= -->
+
+<body>
+    <div id="wrapper">
+        <!-- 收到的页头横幅放在这里↓ -->
+        <div id="headerBanner"></div>
+        <p><span class="headerExpl2">(点击跳转到相关页面)</span></p>
+
+        <p><a href="./index_png.html" target="_blank">图片无法显示时请点击此处</a></p>
+
+        <p>
+            <span class="returnlink"><a href="./gachasim.html">扭蛋模拟器</a></span>
+            <span class="returnlink"><a href="./call.html">魔法纪录角色称呼搜索</a></span>
+            <span class="returnlink"><a href="./cnt.html">同席角色排名</a></span>
+            <span class="returnlink">
+                <a href="https://app.the-timeline.jp/2PACX-1vTYF8Mj66tnTEhK2jPwzJzwKWJgtC0Y2-PQGIUwVbkO9csvt1IofUzv0LO0X_bjVpVgKCDyel4_jEry?start=20190302202436&end=20220821151125">
+                    魔法纪录运营年表
+                </a>
+            </span>
+            <BR><span class="returnlink"><a href="./mdkOCR/index.html">魔女文字解读</a></span>
+        </p>
+
+        <p>
+            <span class="returnlink">
+                数据公开：
+                <a href="./json_open.html" target="_blank">JSON</a>
+                <a href="https://docs.google.com/spreadsheets/d/1isucgeJQxlF6EkkzTq9bVJ4xc2WTKDG_K85JGNk6Ihw/edit?usp=sharing" target="_blank">表格数据</a>
+            </span>
+        </p>
+
+        <p>
+            <span class="returnlink"><a href="https://github.com/chiki3839/magireco_character_story_search/">源文件(GitHub)</a></span>
+
+            <span class="returnlink"><a href="https://twitter.com/chiki3839">Made by Chiki</a></span>
+        </p>
+
+        <!-- 首页图募集对话框设置开始 ========================================================================= -->
+        <div class="topdialoglink" id="topdialogopen">
+            <i class="fa fa-pencil-square-o fa-2x"></i><span>首页图募集</span>
+        </div>
+
+        <!--首页图募集对话框内容-->
+        <div id="topdialogdata">
+            <p>本网站正在募集首页图。收到的插画将装饰在本网站的首页。</p>
+            <ul>
+                <li>图片尺寸请设为宽750px，高100～500px左右。</li>
+                <li>
+                    希望能在图片上加上“魔法纪录角色故事搜索”的字样，但如果觉得碍事不加也可以。
+                </li>
+                <li>请告知作者的姓名(笔名)。</li>
+                <li>
+                    请一并告知点击时的链接地址，如pixiv或booth等URL。
+                </li>
+                <li>首页图将随机显示，敬请谅解。</li>
+                <li>
+                    投稿请通过<a href="https://twitter.com/messages/compose?recipient_id=2923254810&ref_src=twsrc%5Etfw">Chiki的推特私信</a>或
+                    <a href="https://twitter.com/chiki3839">直接发推@chiki3839</a>。
+                </li>
+            </ul>
+        </div>
+        <!-- 首页图对话框内容结束-->
+
+        <script>
+            $("#topdialogdata").dialog({
+                dialogClass: "topTitleClass",
+                autoOpen: false,
+                title: "正在募集首页图",
+                width: "auto",
+                height: "auto",
+                closeOnEscape: false,
+                modal: true,
+                buttons: [{
+                    text: "OK",
+                    click: function () {
+                        $(this).dialog("close");
+                    },
+                },],
+            });
+        </script>
+        <script>
+            $("#topdialogopen").click(function () {
+                $("#topdialogdata").dialog("open");
+            });
+        </script>
+        <!--  首页图募集对话框设置结束===================================================================== -->
+        <!--使用方法对话框设置开始========================================================================== -->
+        <div class="dialoglink" id="dialogopen">
+            <i class="fa fa-window-maximize fa-2x"></i><span>使用方法</span>
+        </div>
+
+        <!--使用方法对话框内容-->
+        <div id="dialogdata">
+            <h3 style="margin: 0; color: deeppink">搜索选项</h3>
+            <span style="font-weight: bold">・对象故事</span><br>
+            指定要搜索的故事。<br>
+            <span style="font-weight: bold; ">・显示剧透</span><br>
+            勾选后将显示各话概要。<br>
+            <span style="font-weight: bold">・多选选项</span><br>
+            <table style="border-collapse: collapse">
+                <tr style="line-height: 1">
+                    <td style="text-align: right">AND：</td>
+                    <td>显示所选角色全部登场的故事。</td>
+                </tr>
+                <tr style="line-height: 1">
+                    <td style="text-align: right">OR：</td>
+                    <td>显示所选角色中任意一位登场的故事。</td>
+                </tr>
+                <tr style="line-height: 1">
+                    <td style="text-align: right">EXCLUSIVE：</td>
+                    <td>显示所选角色分别单独登场的故事。</td>
+                </tr>
+                <tr style="line-height: 1">
+                    <td style="text-align: right">ONLY：</td>
+                    <td>显示仅有所选角色登场的故事。</td>
+                </tr>
+            </table>
+            <span style="font-weight: bold">・选择带★标记的魔法少女时…</span><br>
+            选择带★标记的魔法少女时，不同版本的角色(如泳装ver、Magia Report角色等)也将包含在搜索范围内。<BR>
+            <span style="font-weight: bold">・剧透关键词搜索</span><br>
+            用任意单词搜索剧透。用半角/全角空格隔开可进行AND搜索。<BR>
+            不选择魔法少女也可以。如果选择了，将与所选角色进行AND搜索。<BR>
+            如果不需要，请不要输入任何内容。此时将自动显示剧透。<BR>
+
+            <span style="font-weight: bold">・筛选</span><br>
+            输入部分魔法少女名(汉字、平假名、片假名)进行筛选。<BR>
+            删除输入内容或按下“筛选重置”即可解除。
+
+            <h3 style="margin: 10px 0px 0px 0px; color: deeppink">搜索方法</h3>
+            选择1名以上魔法少女，设置好各种选项后<br>
+            按下“搜索”按钮，结果将显示在画面下方。<br>
+            (页面会自动跳转)
+
+            <h3 style="margin: 10px 0px 0px 0px; color: deeppink">右下角的图标</h3>
+            <i class="fa fa-arrow-circle-o-up fa-2x" style="color: #ff8ec6; vertical-align: middle"></i>
+            移动到页面顶部。<br>
+            <i class="fa fa-address-book-o fa-2x" style="color: #ff8ec6; vertical-align: middle"></i>
+            移动到魔法少女列表的顶部。<br>
+            <i class="fa fa-search fa-2x" style="color: #ff8ec6; vertical-align: middle"></i>
+            使用指定的设置执行搜索。<br>
+
+            <i class="fa fa-address-book fa-2x" style="color: #ff8ec6; vertical-align: middle"></i>
+            移动到魔法少女列表的末尾。<br>
+            <i class="fa fa-table fa-2x" style="color: #ff8ec6; vertical-align: middle"></i>
+            移动到搜索结果。<br>
+            <i class="fa fa-arrow-circle-o-down fa-2x" style="color: #ff8ec6; vertical-align: middle"></i>
+            移动到页面的最底部。
+        </div>
+        <!-- 使用方法对话框内容结束-->
+
+        <script>
+            $("#dialogdata").dialog({
+                dialogClass: "useTitleClass",
+                autoOpen: false,
+                title: "角色故事搜索使用方法",
+                width: "auto",
+                height: "auto",
+                closeOnEscape: false,
+                modal: true,
+                buttons: [{
+                    text: "OK",
+                    click: function () {
+                        $(this).dialog("close");
+                    },
+                },],
+            });
+        </script>
+        <script>
+            $("#dialogopen").click(function () {
+                $("#dialogdata").dialog("open");
+                $("html, body").animate({
+                    scrollTop: 0
+                }, "slow");
+            });
+        </script>
+        <!-- 使用方法对话框设置结束 ============================================================================ -->
+
+        <span id="index">请点击(轻触)选择魔法少女。<br>(可多选)</span><br>
+        <form id="myForm" name="myForm" accept-charset="utf-8">
+            <fieldset>
+                <legend>搜索选项</legend>
+                <dl class="searchOption">
+                    <dt>对象故事</dt>
+                    <dd>
+                        <label><input type="checkbox" id="strycheckall">全部(勾选/取消)</label><BR>
+                        <div class="storychkbox">
+                            <label><input type="checkbox" class="story" name="story" id="主线【第1部】" value="主线【第1部】">主线【第1部】</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="主线【第2部】" value="主线【第2部】">主线【第2部】</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="Another【第1部】" value="Another【第1部】">Another【第1部】</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="Another【第2部】" value="Another【第2部】">Another【第2部】</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="魔法少女" value="魔法少女">魔法少女</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="衣装" value="衣装">衣装</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="Mirrors" value="Mirrors">Mirrors</label><BR>
+                        </div>
+                        <div class="storychkbox">
+                            <label><input type="checkbox" class="story" name="story" id="活动" value="活动">活动</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="战斗博物馆" value="战斗博物馆">战斗博物馆</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="特别" value="特别">特别</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="ED影片" value="ED影片">ED影片</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="动画【1st】" value="动画【1st】">动画【1st】</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="动画【2nd】" value="动画【2nd】">动画【2nd】</label><BR>
+                            <label><input type="checkbox" class="story" name="story" id="动画【Final】" value="动画【Final】">动画【Final】</label><BR>
+                        </div>
+                    </dd>
+
+                    <dt>
+                        <label><input type="checkbox" class="netabare" name="netabare" id="netabare" value="on">显示剧透</label>
+                    </dt>
+
+                    <dt>多选选项</dt>
+                    <dd class="selectBoxSet">
+                        <div class="selectBoxSet">
+                            <label class="selectBox">
+                                <input type="radio" class="and_or" name="and_or" value="AND" checked="checked" required>AND<br>
+                                <img class="selectBoxImg" src="./img/webp/AND.webp" alt="AND">
+                            </label>
+                            <label class="selectBox">
+                                <input type="radio" class="and_or" name="and_or" value="OR">OR<br>
+                                <img class="selectBoxImg" src="./img/webp/OR.webp" alt="OR">
+                            </label>
+                            <label class="selectBox">
+                                <input type="radio" class="and_or" name="and_or" value="EXCLUSIVE">EXCLUSIVE<br>
+                                <img class="selectBoxImg" src="./img/webp/EXCLUSIVE.webp" alt="EXCLUSIVE">
+                            </label>
+                            <label class="selectBox">
+                                <input type="radio" class="and_or" name="and_or" value="ONLY">ONLY<br>
+                                <img class="selectBoxImg" src="./img/webp/ONLY.webp" alt="ONLY">
+                            </label>
+                        </div>
+                    </dd>
+
+                    <dt><label><input type="checkbox" class="star" name="star" id="star" value="on">选择带★标记的魔法少女时也包含不同版本的角色</label></dt>
+
+                    <dt>剧透关键词搜索</dt>
+                    <dd>
+                        <div style="font-size: smaller;">(用半角/全角空格隔开进行AND搜索。不选择角色也可以)<BR>(如果不需要请留空)</div>
+                        <input type="text" spellcheck="false" id="keyword" name="keyword" class="forminput" style="background-color:#ffebef; width: 90%; display:block;" placeholder="剧透搜索。空格表示AND。不需要则删除">
+                        <input type="button" value="重置搜索词" id="keyreset" onClick="document.getElementById('keyword').value='';">
+                    </dd>
+                </dl>
+            </fieldset>
+
+            <p>
+                <input type="button" name="search" class="mgr-10 searchbtn" value="搜索" onClick="isCheck()">
+                <input type="reset" value="全部重置" class="resetbtn" onClick="ndownReset();girlResetBtnInable()">
+            </p>
+
+            <!-- 魔法少女筛选文本输入实现 -->
+            <input type="text" spellcheck="false" class="ndownword" name="ndownword" placeholder="用假名/汉字名筛选。空格表示OR。删除则返回" id="ndownword1" oninput="mgirlNarrow('index', 'ndownword1')">
+            <input type="button" value="重置筛选" class="ndownReset" onClick="ndownReset()">
+            <input type="button" name="mgreset" class="mgreset" value="取消选择魔法少女" id="mgreset" onClick="girlReset()">
+
+            <BR>
+
+            <!-- 魔法少女的box实现 ================================================================================================== -->
+            <div class="magicalgirl" id="girltop">
+                <label class="girlbox umeColor" data-kana="たまき いろは"><input type="checkbox" class="MagicalChk" name="chara" id="环彩羽" value="环彩羽"><br>环彩羽★</label>
+                <label class="girlbox umeColor" data-kana="ななみ やちよ"><input type="checkbox" class="MagicalChk" name="chara" id="七海八千代" value="七海八千代"><br>七海八千代★</label>
+                <label class="girlbox umeColor" data-kana="ゆい つるの"><input type="checkbox" class="MagicalChk" name="chara" id="由比鹤乃" value="由比鹤乃"><br>由比鹤乃★</label>
+                <label class="girlbox umeColor" data-kana="ふたば さな"><input type="checkbox" class="MagicalChk" name="chara" id="二叶莎奈" value="二叶莎奈"><br>二叶莎奈★</label>
+                <label class="girlbox umeColor" id="feri" data-kana="みつき ふぇりしあ"><input type="checkbox" class="MagicalChk" name="chara" id="深月菲莉希亚" value="深月菲莉希亚"><br>深月<br>菲莉希亚★</label>
+                <label class="girlbox umeColor" data-kana="あずさ みふゆ"><input type="checkbox" class="MagicalChk" name="chara" id="梓美冬" value="梓美冬"><br>梓美冬★</label>
+                <label class="girlbox umeColor" data-kana="さとみ とうか"><input type="checkbox" class="MagicalChk" name="chara" id="里见灯花" value="里见灯花"><br>里见灯花★</label>
+                <label class="girlbox umeColor" data-kana="ありな ぐれい"><input type="checkbox" class="MagicalChk" name="chara" id="阿莉娜·格雷" value="阿莉娜·格雷"><br>阿莉娜・<br>格雷★</label>
+                <label class="girlbox umeColor" data-kana="みなみ れな"><input type="checkbox" class="MagicalChk" name="chara" id="水波玲奈" value="水波玲奈"><br>水波玲奈★</label>
+                <label class="girlbox umeColor" data-kana="とがめ ももこ"><input type="checkbox" class="MagicalChk" name="chara" id="十咎桃子" value="十咎桃子"><br>十咎桃子★</label>
+                <label class="girlbox umeColor" data-kana="あきの かえで"><input type="checkbox" class="MagicalChk" name="chara" id="秋野枫" value="秋野枫"><br>秋野枫★</label>
+                <label class="girlbox umeColor" data-kana="みその かりん"><input type="checkbox" class="MagicalChk" name="chara" id="御园花凛" value="御园花凛"><br>御园花凛★</label>
+                <label class="girlbox umeColor" data-kana="たつき あすか"><input type="checkbox" class="MagicalChk" name="chara" id="龙城明日香" value="龙城明日香"><br>龙城明日香</label>
+                <label class="girlbox umeColor" data-kana="ひいらぎ ねむ"><input type="checkbox" class="MagicalChk" name="chara" id="柊音梦" value="柊音梦"><br>柊音梦★</label>
+                <label class="girlbox umeColor" data-kana="たまき うい"><input type="checkbox" class="MagicalChk" name="chara" id="环忧" value="环忧"><br>环忧★</label>
+                <label class="girlbox umeColor" data-kana="いずみ かなぎ"><input type="checkbox" class="MagicalChk" name="chara" id="和泉十七夜" value="和泉十七夜"><br>和泉十七夜★</label>
+                <label class="girlbox umeColor" data-kana="やくも みたま"><input type="checkbox" class="MagicalChk" name="chara" id="八云御魂" value="八云御魂"><br>八云<br>御魂★</label>
+                <label class="girlbox umeColor" data-kana="あまね つくよ"><input type="checkbox" class="MagicalChk" name="chara" id="天音月夜" value="天音月夜"><br>天音月夜★</label>
+                <label class="girlbox umeColor" data-kana="あまね つかさ"><input type="checkbox" class="MagicalChk" name="chara" id="天音月咲" value="天音月咲"><br>天音月咲★</label>
+                <label class="girlbox umeColor" data-kana="くれは ゆな"><input type="checkbox" class="MagicalChk" name="chara" id="红晴结菜" value="红晴结菜"><br>红晴结菜</label>
+                <label class="girlbox umeColor" data-kana="きらり ひかる"><input type="checkbox" class="MagicalChk" name="chara" id="煌里光" value="煌里光"><br>煌里光</label>
+                <label class="girlbox umeColor" data-kana="かさね あお"><input type="checkbox" class="MagicalChk" name="chara" id="笠音青" value="笠音青"><br>笠音青</label>
+                <label class="girlbox umeColor" data-kana="おおば じゅり"><input type="checkbox" class="MagicalChk" name="chara" id="大庭树里" value="大庭树里"><br>大庭树里</label>
+                <label class="girlbox umeColor" data-kana="ときめ しずか"><input type="checkbox" class="MagicalChk" name="chara" id="时女静香" value="时女静香"><br>时女静香★</label>
+                <label class="girlbox umeColor" data-kana="ひろえ ちはる"><input type="checkbox" class="MagicalChk" name="chara" id="广江千春" value="广江千春"><br>广江千春</label>
+                <label class="girlbox umeColor" data-kana="とき すなお"><input type="checkbox" class="MagicalChk" name="chara" id="土岐沙绪" value="土岐沙绪"><br>土岐沙绪</label>
+                <label class="girlbox umeColor" data-kana="みやび しぐれ"><input type="checkbox" class="MagicalChk" name="chara" id="宫尾时雨" value="宫尾时雨"><br>宫尾时雨</label>
+                <label class="girlbox umeColor" data-kana="あずみ はぐむ"><input type="checkbox" class="MagicalChk" name="chara" id="安积育梦" value="安积育梦"><br>安积育梦</label>
+                <label class="girlbox umeColor" data-kana="かぐら さん"><input type="checkbox" class="MagicalChk" name="chara" id="神乐灿" value="神乐灿"><br>神乐灿</label>
+                <label class="girlbox umeColor" data-kana="ゆかり みゆり"><input type="checkbox" class="MagicalChk" name="chara" id="游狩美由利" value="游狩美由利"><br>游狩美由利</label>
+                <label class="girlbox umeColor" data-kana="みうら あさひ"><input type="checkbox" class="MagicalChk" name="chara" id="三浦旭" value="三浦旭"><br>三浦旭</label>
+                <label class="girlbox umeColor" data-kana="くるす あれくさんどら"><input type="checkbox" class="MagicalChk" name="chara" id="栗栖亚历山德拉" value="栗栖亚历山德拉"><br>栗栖亚历山德拉</label>
+                <label class="girlbox umeColor" data-kana="さとみ なゆた"><input type="checkbox" class="MagicalChk" name="chara" id="里见那由他" value="里见那由他"><br>里见那由他★</label>
+                <label class="girlbox umeColor" data-kana="やくも みかげ"><input type="checkbox" class="MagicalChk" name="chara" id="八云御影" value="八云御影"><br>八云御影★</label>
+                <label class="girlbox umeColor" data-kana="さわ すだち"><input type="checkbox" class="MagicalChk" name="chara" id="佐和月出里" value="佐和月出里"><br>佐和月出里</label>
+                <label class="girlbox umeColor" data-kana="ささめ よづる"><input type="checkbox" class="MagicalChk" name="chara" id="篠目夜鹤" value="篠目夜鹤"><br>篠目夜鹤</label>
+                <label class="girlbox umeColor" data-kana="りゔぃあ めでぃろす"><input type="checkbox" class="MagicalChk" name="chara" id="莉薇娅·梅黛洛斯" value="莉薇娅·梅黛洛斯"><br>莉薇娅·梅黛洛斯</label>
+                <label class="girlbox umeColor" data-kana="ちいさなきゅぅべえ"><input type="checkbox" class="MagicalChk" name="chara" id="小丘比" value="小丘比"><br>小丘比</label>
+                <label class="girlbox umeColor" data-kana="くろえ"><input type="checkbox" class="MagicalChk" name="chara" id="黑江" value="黑江"><br>黑江</label>
+
+                <label class="girlbox umeOtherColor leftm" data-kana="たまき いろは みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="环彩羽 (泳装ver)" value="环彩羽 (泳装ver)"><br>环彩羽<br>(泳装ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="やちよ みふゆ はじまり"><input type="checkbox" class="MagicalChk" name="chara" id="八千代·美冬 (起始ver)" value="八千代·美冬 (起始ver)"><br>八千代·美冬<br>(起始ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="うわさのつるの"><input type="checkbox" class="MagicalChk" name="chara" id="谣鹤乃" value="谣鹤乃"><br>谣<br>鹤乃</label>
+                <label class="girlbox umeOtherColor" data-kana="うわさのさな"><input type="checkbox" class="MagicalChk" name="chara" id="谣莎奈" value="谣莎奈"><br>谣<br>莎奈</label>
+                <label class="girlbox umeOtherColor" data-kana="ふぇりしあちゃん"><input type="checkbox" class="MagicalChk" name="chara" id="小菲莉希亚" value="小菲莉希亚"><br>菲莉希亚<br>酱</label>
+                <label class="girlbox umeOtherColor" data-kana="とうか ねむ せいや"><input type="checkbox" class="MagicalChk" name="chara" id="灯花·音梦 (圣夜ver)" value="灯花·音梦 (圣夜ver)"><br>灯花·音梦<br>(圣夜ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="ほーりーありな"><input type="checkbox" class="MagicalChk" name="chara" id="圣阿莉娜" value="圣阿莉娜"><br>圣<br>阿莉娜</label>
+                <label class="girlbox umeOtherColor" data-kana="れなちゃん あいどる"><input type="checkbox" class="MagicalChk" name="chara" id="小玲奈 (偶像ver)" value="小玲奈 (偶像ver)"><br>小玲奈<br>(偶像ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="とがめ ももこ しすたー"><input type="checkbox" class="MagicalChk" name="chara" id="十咎桃子 (修女ver)" value="十咎桃子 (修女ver)"><br>十咎桃子<br>(修女ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="かりん ありな はろうぃん"><input type="checkbox" class="MagicalChk" name="chara" id="花凛·阿莉娜 (万圣ver)" value="花凛·阿莉娜 (万圣ver)"><br>花凛·阿莉娜<BR>(万圣ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="いずみ かなぎ ゔぁんぱいあ"><input type="checkbox" class="MagicalChk" name="chara" id="和泉十七夜 (吸血鬼ver)" value="和泉十七夜 (吸血鬼ver)"><br>和泉十七夜<br>(吸血鬼ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="やくも みたま はれぎ"><input type="checkbox" class="MagicalChk" name="chara" id="八云御魂 (晴着ver)" value="八云御魂 (晴着ver)"><br>八云御魂<br>(晴着ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="あまねしまい みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="天音姐妹 (泳装ver)" value="天音姐妹 (泳装ver)"><br>天音姐妹<br>(泳装ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="ときめ しずか はつひので"><input type="checkbox" class="MagicalChk" name="chara" id="时女静香 (元旦日出ver)" value="时女静香 (元旦日出ver)"><br>时女静香<br>(元旦日出ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="なゆた みかげ くりすます"><input type="checkbox" class="MagicalChk" name="chara" id="那由他·御影 (圣诞ver)" value="那由他·御影 (圣诞ver)"><br>那由他·御影<br>(圣诞ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="いろはちゃん"><input type="checkbox" class="MagicalChk" name="chara" id="小彩羽" value="小彩羽"><br>彩羽<br>酱</label>
+                <label class="girlbox umeOtherColor" data-kana="ななみ やちよ 七夕"><input type="checkbox" class="MagicalChk" name="chara" id="七海八千代 (七夕ver)" value="七海八千代 (七夕ver)"><br>七海八千代<br>(七夕ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="つるの ふぇりしあ たくはい"><input type="checkbox" class="MagicalChk" name="chara" id="鹤乃·菲莉希亚 (快递ver)" value="鹤乃·菲莉希亚 (快递ver)"><br>鹤乃·菲莉希亚<br>(快递ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="れな かえで みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="玲奈·枫 (泳装ver)" value="玲奈·枫 (泳装ver)"><br>玲奈·枫<br>(泳装ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="ももこ みたま にんぎょ"><input type="checkbox" class="MagicalChk" name="chara" id="桃子·御魂 (人鱼ver)" value="桃子·御魂 (人鱼ver)"><br>桃子·御魂<br>(人鱼ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="いろは やちよ けっせん"><input type="checkbox" class="MagicalChk" name="chara" id="彩羽·八千代 (决战ver)" value="彩羽·八千代 (决战ver)"><br>彩羽·八千代<br>(决战ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="ななみ やちよ あにめ"><input type="checkbox" class="MagicalChk" name="chara" id="七海八千代 (动画ver)" value="七海八千代 (动画ver)"><br>七海八千代<BR>(动画ver)</label>
+                <label class="girlbox umeOtherColor" data-kana="いろは うい みこ"><input type="checkbox" class="MagicalChk" name="chara" id="彩羽·忧 (巫女ver)" value="彩羽·忧 (巫女ver)"><br>彩羽·忧<br>(巫女ver)</label>
+
+                <label class="girlbox PMHQColor leftm" data-kana="かなめ まどか"><input type="checkbox" class="MagicalChk" name="chara" id="鹿目圆" value="鹿目圆"><br>鹿目圆★</label>
+                <label class="girlbox PMHQColor" data-kana="あけみ ほむら"><input type="checkbox" class="MagicalChk" name="chara" id="晓美焰" value="晓美焰"><br>晓美焰★</label>
+                <label class="girlbox PMHQColor" data-kana="あけみ ほむら めがね"><input type="checkbox" class="MagicalChk" name="chara" id="晓美焰 (眼镜ver)" value="晓美焰 (眼镜ver)"><br>晓美焰<br>(眼镜ver)</label>
+                <label class="girlbox PMHQColor" data-kana="みき さやか"><input type="checkbox" class="MagicalChk" name="chara" id="美树沙耶香" value="美树沙耶香"><br>美树沙耶香★</label>
+                <label class="girlbox PMHQColor" data-kana="ともえ まみ"><input type="checkbox" class="MagicalChk" name="chara" id="巴麻美" value="巴麻美"><br>巴麻美★</label>
+                <label class="girlbox PMHQColor" data-kana="さくら きょうこ"><input type="checkbox" class="MagicalChk" name="chara" id="佐仓杏子" value="佐仓杏子"><br>佐仓杏子★</label>
+                <label class="girlbox PMHQColor" data-kana="ももえ なぎさ"><input type="checkbox" class="MagicalChk" name="chara" id="百江渚" value="百江渚"><br>百江渚★</label>
+
+                <label class="girlbox PMHQotherColor leftm" data-kana="かなめ まどか はれぎ"><input type="checkbox" class="MagicalChk" name="chara" id="鹿目圆 (晴着ver)" value="鹿目圆 (晴着ver)"><br>鹿目圆<br>(晴着ver)</label>
+                <label class="girlbox PMHQotherColor" id="arumado" data-kana="あるてぃめっとまどか"><input type="checkbox" class="MagicalChk" name="chara" id="圆神" value="圆神"><br>圆神</label>
+                <label class="girlbox PMHQotherColor" data-kana="まどかせんぱい"><input type="checkbox" class="MagicalChk" name="chara" id="小圆前辈" value="小圆前辈"><br>小圆前辈</label>
+                <label class="girlbox PMHQotherColor" data-kana="きゅうきょくまどかせんぱい"><input type="checkbox" class="MagicalChk" name="chara" id="究极小圆前辈" value="究极小圆前辈"><br>究极小圆前辈</label>
+                <label class="girlbox PMHQotherColor" data-kana="まどか いろは"><input type="checkbox" class="MagicalChk" name="chara" id="圆·彩羽" value="圆·彩羽"><br>圆·彩羽</label>
+                <label class="girlbox PMHQotherColor" data-kana="あけみ ほむら みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="晓美焰 (泳装ver)" value="晓美焰 (泳装ver)"><br>晓美焰<br>(泳装ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="みき さやか はれぎ"><input type="checkbox" class="MagicalChk" name="chara" id="美树沙耶香 (晴着ver)" value="美树沙耶香 (晴着ver)"><br>美树沙耶香<br>(晴着ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="みき さやか なみのり"><input type="checkbox" class="MagicalChk" name="chara" id="美树沙耶香 (冲浪ver)" value="美树沙耶香 (冲浪ver)"><br>美树沙耶香<br>(冲浪ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="ほーりーまみ"><input type="checkbox" class="MagicalChk" name="chara" id="圣麻美" value="圣麻美"><br>圣<br>麻美</label>
+                <label class="girlbox PMHQotherColor" data-kana="ともえ まみ みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="巴麻美 (泳装ver)" value="巴麻美 (泳装ver)"><br>巴麻美<br>(泳装ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="ほーりーまみ あにめ"><input type="checkbox" class="MagicalChk" name="chara" id="圣麻美 (动画ver)" value="圣麻美 (动画ver)"><br>圣麻美<br>(动画ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="さくら きょうこ みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="佐仓杏子 (泳装ver)" value="佐仓杏子 (泳装ver)"><br>佐仓杏子<br>(泳装ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="さくら きょうこ どっぺる"><input type="checkbox" class="MagicalChk" name="chara" id="佐仓杏子 (魔女化身ver)" value="佐仓杏子 (魔女化身ver)"><br>佐仓杏子<br>(魔女化身ver)</label>
+                <label class="girlbox PMHQotherColor" data-kana="ももえ なぎさ ばれんたいん"><input type="checkbox" class="MagicalChk" name="chara" id="百江渚 (情人节ver)" value="百江渚 (情人节ver)"><br>百江渚<br>(情人节ver)</label>
+
+                <label class="girlbox otherColor leftm" data-kana="やよい かのこ"><input type="checkbox" class="MagicalChk" name="chara" id="矢宵鹿乃子" value="矢宵鹿乃子"><br>矢宵鹿乃子</label>
+                <label class="girlbox otherColor" data-kana="うつほ なつき"><input type="checkbox" class="MagicalChk" name="chara" id="空穗夏希" value="空穗夏希"><br>空穗夏希</label>
+                <label class="girlbox otherColor" data-kana="みやこ ひなの"><input type="checkbox" class="MagicalChk" name="chara" id="都雏乃" value="都雏乃"><br>都雏乃</label>
+                <label class="girlbox otherColor" data-kana="みなぎ ささら"><input type="checkbox" class="MagicalChk" name="chara" id="美凪纱纱罗" value="美凪纱纱罗"><br>美凪纱纱罗</label>
+                <label class="girlbox otherColor" data-kana="ときわ ななか"><input type="checkbox" class="MagicalChk" name="chara" id="常盘七香" value="常盘七香"><br>常盘七香</label>
+                <label class="girlbox otherColor" data-kana="きさき えみり"><input type="checkbox" class="MagicalChk" name="chara" id="木崎衣美里" value="木崎衣美里"><br>木崎衣美里</label>
+                <label class="girlbox otherColor" data-kana="ほずみ しずく"><input type="checkbox" class="MagicalChk" name="chara" id="保澄雫" value="保澄雫"><br>保澄雫</label>
+                <label class="girlbox otherColor" data-kana="しのぶ あきら"><input type="checkbox" class="MagicalChk" name="chara" id="志伸晶" value="志伸晶"><br>志伸晶</label>
+                <label class="girlbox otherColor" data-kana="くるみ まなか"><input type="checkbox" class="MagicalChk" name="chara" id="胡桃爱香" value="胡桃爱香"><br>胡桃爱香</label>
+                <label class="girlbox otherColor" data-kana="あみ りあ"><input type="checkbox" class="MagicalChk" name="chara" id="阿见莉爱" value="阿见莉爱"><br>阿见莉爱</label>
+                <label class="girlbox otherColor" data-kana="なつめ かこ"><input type="checkbox" class="MagicalChk" name="chara" id="夏目佳子" value="夏目佳子"><br>夏目佳子</label>
+                <label class="girlbox otherColor" data-kana="ちゅん めいゆい"><input type="checkbox" class="MagicalChk" name="chara" id="纯美雨" value="纯美雨"><br>纯美雨</label>
+                <label class="girlbox otherColor" data-kana="いぶき れいら"><input type="checkbox" class="MagicalChk" name="chara" id="伊吹丽良" value="伊吹丽良"><br>伊吹丽良</label>
+                <label class="girlbox otherColor" data-kana="くみ せいか"><input type="checkbox" class="MagicalChk" name="chara" id="桑水清佳" value="桑水清佳"><br>桑水清佳</label>
+                <label class="girlbox otherColor" data-kana="あいの みと"><input type="checkbox" class="MagicalChk" name="chara" id="相野未都" value="相野未都"><br>相野未都</label>
+                <label class="girlbox otherColor" data-kana="あわね こころ"><input type="checkbox" class="MagicalChk" name="chara" id="粟根心" value="粟根心"><br>粟根心</label>
+                <label class="girlbox otherColor" data-kana="ななせ ゆきか"><input type="checkbox" class="MagicalChk" name="chara" id="七濑幸佳" value="七濑幸佳"><br>七濑幸佳</label>
+                <label class="girlbox otherColor" data-kana="さらさ はんな"><input type="checkbox" class="MagicalChk" name="chara" id="更纱帆奈" value="更纱帆奈"><br>更纱帆奈</label>
+                <label class="girlbox otherColor" data-kana="まりこ あやか"><input type="checkbox" class="MagicalChk" name="chara" id="毬子亚弥华" value="毬子亚弥华"><br>毬子亚弥华</label>
+                <label class="girlbox otherColor" data-kana="まお ひみか"><input type="checkbox" class="MagicalChk" name="chara" id="真尾日美香" value="真尾日美香"><br>真尾日美香</label>
+                <label class="girlbox otherColor" data-kana="すずか さくや"><input type="checkbox" class="MagicalChk" name="chara" id="铃鹿朔夜" value="铃鹿朔夜"><br>铃鹿朔夜</label>
+                <label class="girlbox otherColor" data-kana="えり あいみ"><input type="checkbox" class="MagicalChk" name="chara" id="江利爱实" value="江利爱实"><br>江利爱实</label>
+                <label class="girlbox otherColor" data-kana="わかな つむぎ"><input type="checkbox" class="MagicalChk" name="chara" id="若菜纺" value="若菜纺"><br>若菜纺</label>
+                <label class="girlbox otherColor" data-kana="いすず れん"><input type="checkbox" class="MagicalChk" name="chara" id="五十铃怜" value="五十铃怜"><br>五十铃怜★</label>
+                <label class="girlbox otherColor" data-kana="しずみ このは"><input type="checkbox" class="MagicalChk" name="chara" id="静海木叶" value="静海木叶"><br>静海木叶★</label>
+                <label class="girlbox otherColor" data-kana="ゆさ はづき"><input type="checkbox" class="MagicalChk" name="chara" id="游佐叶月" value="游佐叶月"><br>游佐叶月★</label>
+                <label class="girlbox otherColor" data-kana="みくり あやめ"><input type="checkbox" class="MagicalChk" name="chara" id="三栗菖蒲" value="三栗菖蒲"><br>三栗菖蒲</label>
+                <label class="girlbox otherColor" id="masara" data-kana="かがみ まさら"><input type="checkbox" class="MagicalChk" name="chara" id="加贺见真良" value="加贺见真良"><br>加贺见真良</label>
+                <label class="girlbox otherColor" data-kana="はるな このみ"><input type="checkbox" class="MagicalChk" name="chara" id="春名木乃美" value="春名木乃美"><br>春名木乃美</label>
+                <label class="girlbox otherColor" data-kana="あやの りか"><input type="checkbox" class="MagicalChk" name="chara" id="绫野梨花" value="绫野梨花"><br>绫野梨花★</label>
+
+                <label class="girlbox otherColor2 leftm" data-kana="こづえ まゆ"><input type="checkbox" class="MagicalChk" name="chara" id="梢麻友" value="梢麻友"><br>梢麻友</label>
+                <label class="girlbox otherColor2" data-kana="ふみの さゆき"><input type="checkbox" class="MagicalChk" name="chara" id="史乃沙优希" value="史乃沙优希"><br>史乃沙优希</label>
+                <label class="girlbox otherColor2" data-kana="めぐみ もか"><input type="checkbox" class="MagicalChk" name="chara" id="惠萌花" value="惠萌花"><br>惠萌花</label>
+                <label class="girlbox otherColor2" data-kana="ちあき りこ"><input type="checkbox" class="MagicalChk" name="chara" id="千秋理子" value="千秋理子"><br>千秋理子</label>
+                <label class="girlbox otherColor2" data-kana="ゆき まりあ"><input type="checkbox" class="MagicalChk" name="chara" id="由贵真里爱" value="由贵真里爱"><br>由贵真里爱</label>
+                <label class="girlbox otherColor2" data-kana="あんな める"><input type="checkbox" class="MagicalChk" name="chara" id="安名梅露" value="安名梅露"><br>安名梅露</label>
+                <label class="girlbox otherColor2" data-kana="こまち みくら"><input type="checkbox" class="MagicalChk" name="chara" id="古町美仓" value="古町美仓"><br>古町美仓</label>
+                <label class="girlbox otherColor2" data-kana="みほの せいら"><input type="checkbox" class="MagicalChk" name="chara" id="三穗野星罗" value="三穗野星罗"><br>三穗野星罗</label>
+                <label class="girlbox otherColor2" data-kana="きら てまり"><input type="checkbox" class="MagicalChk" name="chara" id="吉良手鞠" value="吉良手鞠"><br>吉良手鞠</label>
+                <label class="girlbox otherColor2" data-kana="ゆずき ほとり"><input type="checkbox" class="MagicalChk" name="chara" id="柚希步鸟" value="柚希步鸟"><br>柚希步鸟</label>
+                <label class="girlbox otherColor2" data-kana="ひびき めぐる"><input type="checkbox" class="MagicalChk" name="chara" id="枇枇木巡" value="枇枇木巡"><br>枇枇木巡</label>
+                <label class="girlbox otherColor2" data-kana="まんねんざくらのうわさ"><input type="checkbox" class="MagicalChk" name="chara" id="万年樱之谣" value="万年樱之谣"><br>万年樱之<br>谣★</label>
+                <label class="girlbox otherColor2" data-kana="ちず らんか"><input type="checkbox" class="MagicalChk" name="chara" id="智珠兰华" value="智珠兰华"><br>智珠兰华</label>
+                <label class="girlbox otherColor2" data-kana="ゆずき りおん"><input type="checkbox" class="MagicalChk" name="chara" id="柚希理音" value="柚希理音"><br>柚希理音</label>
+                <label class="girlbox otherColor2" data-kana="みどり りょう"><input type="checkbox" class="MagicalChk" name="chara" id="观鸟令" value="观鸟令"><br>观鸟令</label>
+                <label class="girlbox otherColor2" data-kana="あおば ちか"><input type="checkbox" class="MagicalChk" name="chara" id="青叶知花" value="青叶知花"><br>青叶知花</label>
+                <label class="girlbox otherColor2" data-kana="ゆら ほたる"><input type="checkbox" class="MagicalChk" name="chara" id="由良萤" value="由良萤"><br>由良萤</label>
+                <label class="girlbox otherColor2" data-kana="ゆきの かなえ"><input type="checkbox" class="MagicalChk" name="chara" id="雪野加奈惠" value="雪野加奈惠"><br>雪野加奈惠</label>
+                <label class="girlbox otherColor2" data-kana="かはる ゆうな"><input type="checkbox" class="MagicalChk" name="chara" id="香春优奈" value="香春优奈"><br>香春优奈</label>
+                <label class="girlbox otherColor2" data-kana="かざり じゅん"><input type="checkbox" class="MagicalChk" name="chara" id="饰利润" value="饰利润"><br>饰利润</label>
+                <label class="girlbox otherColor2" id="ash" data-kana="あしゅりー ていらー"><input type="checkbox" class="MagicalChk" name="chara" id="阿什莉·泰勒" value="阿什莉·泰勒"><br>阿什莉·泰勒</label>
+                <label class="girlbox otherColor2" data-kana="まきの いくみ"><input type="checkbox" class="MagicalChk" name="chara" id="牧野郁美" value="牧野郁美"><br>牧野郁美</label>
+                <label class="girlbox otherColor2" data-kana="みわ みつね"><input type="checkbox" class="MagicalChk" name="chara" id="三轮光音" value="三轮光音"><br>三轮光音</label>
+                <label class="girlbox otherColor2" data-kana="きりの さえ"><input type="checkbox" class="MagicalChk" name="chara" id="桐野纱枝" value="桐野纱枝"><br>桐野纱枝</label>
+                <label class="girlbox otherColor2" data-kana="みずき るい"><input type="checkbox" class="MagicalChk" name="chara" id="水树垒" value="水树垒"><br>水树垒</label>
+                <label class="girlbox otherColor2" data-kana="なつ りょうこ"><input type="checkbox" class="MagicalChk" name="chara" id="南津凉子" value="南津凉子"><br>南津凉子</label>
+                <label class="girlbox otherColor2" data-kana="いりな くしゅ"><input type="checkbox" class="MagicalChk" name="chara" id="入名库什" value="入名库什"><br>入名库什</label>
+
+                <label class="girlbox otherotherColor leftm" data-kana="りか れん くりすます"><input type="checkbox" class="MagicalChk" name="chara" id="梨花·怜 (圣诞ver)" value="梨花·怜 (圣诞ver)"><br>梨花·怜<br>(圣诞ver)</label>
+                <label class="girlbox otherotherColor" data-kana="まんねんざくらのうわさ みずぎ"><input type="checkbox" class="MagicalChk" name="chara" id="万年樱之谣 (泳装ver)" value="万年樱之谣 (泳装ver)"><br>万年樱之谣<br>(泳装ver)</label>
+                <label class="girlbox otherotherColor" data-kana="このは はづき"><input type="checkbox" class="MagicalChk" name="chara" id="木叶·叶月" value="木叶·叶月"><br>木叶·叶月</label>
+                <label class="girlbox otherotherColor" data-kana="くろ"><input type="checkbox" class="MagicalChk" name="chara" id="黑" value="黑"><br>黑</label>
+
+                <!-- 从这里开始是外传角色 -->
+                <label class="girlbox gaidenColor leftm" data-kana="みくに おりこ"><input type="checkbox" class="MagicalChk" name="chara" id="美国织莉子" value="美国织莉子"><br>美国织莉子</label>
+                <label class="girlbox gaidenColor" data-kana="くれ きりか"><input type="checkbox" class="MagicalChk" name="chara" id="吴纪里香" value="吴纪里香"><br>吴纪里香</label>
+                <label class="girlbox gaidenColor" data-kana="ちとせ ゆま"><input type="checkbox" class="MagicalChk" name="chara" id="千岁由麻" value="千岁由麻"><br>千岁由麻</label>
+                <label class="girlbox gaidenColor" data-kana="かずみ"><input type="checkbox" class="MagicalChk" name="chara" id="和美" value="和美"><br>和美★</label>
+                <label class="girlbox gaidenColor" data-kana="みさき うみか"><input type="checkbox" class="MagicalChk" name="chara" id="御崎海香" value="御崎海香"><br>御崎海香</label>
+                <label class="girlbox gaidenColor" data-kana="まき かおる"><input type="checkbox" class="MagicalChk" name="chara" id="牧薰" value="牧薰"><br>牧薰</label>
+                <label class="girlbox gaidenColor" data-kana="すばる かずみ"><input type="checkbox" class="MagicalChk" name="chara" id="昴和美" value="昴和美"><br>昴和美</label>
+                <label class="girlbox gaidenColor" data-kana="たると"><input type="checkbox" class="MagicalChk" name="chara" id="塔鲁特" value="塔鲁特"><br>塔鲁特★</label>
+                <label class="girlbox gaidenColor" data-kana="りず"><input type="checkbox" class="MagicalChk" name="chara" id="莉兹" value="莉兹"><br>莉兹</label>
+                <label class="girlbox gaidenColor" data-kana="めりっさ"><input type="checkbox" class="MagicalChk" name="chara" id="梅丽莎" value="梅丽莎"><br>梅丽莎</label>
+                <label class="girlbox gaidenColor" data-kana="みぬぅ"><input type="checkbox" class="MagicalChk" name="chara" id="米诺" value="米诺"><br>米诺</label>
+                <label class="girlbox gaidenColor" data-kana="こるぼー"><input type="checkbox" class="MagicalChk" name="chara" id="可鲁波" value="可鲁波"><br>可鲁波</label>
+                <label class="girlbox gaidenColor" data-kana="えりざ"><input type="checkbox" class="MagicalChk" name="chara" id="爱丽莎" value="爱丽莎"><br>爱丽莎</label>
+                <label class="girlbox gaidenColor" data-kana="らぴぬ"><input type="checkbox" class="MagicalChk" name="chara" id="拉皮努" value="拉皮努"><br>拉皮努</label>
+                <label class="girlbox gaidenColor" data-kana="たると ふぁいなる"><input type="checkbox" class="MagicalChk" name="chara" id="塔鲁特 (ver.Final)" value="塔鲁特 (ver.Final)"><br>塔鲁特(ver.Final)</label>
+                <label class="girlbox gaidenColor" data-kana="ぺれねる"><input type="checkbox" class="MagicalChk" name="chara" id="佩尔内勒" value="佩尔内勒"><br>佩尔内勒</label>
+                <label class="girlbox gaidenColor" data-kana="あまの すずね"><input type="checkbox" class="MagicalChk" name="chara" id="天乃铃音" value="天乃铃音"><br>天乃铃音</label>
+                <label class="girlbox gaidenColor" data-kana="ひなた まつり"><input type="checkbox" class="MagicalChk" name="chara" id="日向茉莉" value="日向茉莉"><br>日向茉莉</label>
+                <label class="girlbox gaidenColor" data-kana="なるみ ありさ"><input type="checkbox" class="MagicalChk" name="chara" id="成见亚里纱" value="成见亚里纱"><br>成见亚里纱</label>
+                <label class="girlbox gaidenColor" data-kana="しおん ちさと"><input type="checkbox" class="MagicalChk" name="chara" id="诗音千里" value="诗音千里"><br>诗音千里</label>
+                <label class="girlbox gaidenColor" data-kana="かなで はるか"><input type="checkbox" class="MagicalChk" name="chara" id="奏遥香" value="奏遥香"><br>奏遥香</label>
+                <label class="girlbox gaidenColor" data-kana="みこと つばき"><input type="checkbox" class="MagicalChk" name="chara" id="美琴椿" value="美琴椿"><br>美琴椿</label>
+                <label class="girlbox gaidenColor" data-kana="ひなた かがり"><input type="checkbox" class="MagicalChk" name="chara" id="日向华华莉" value="日向华华莉"><br>日向华华莉</label>
+
+                <label class="girlbox collaboColor leftm" id="hitagi" data-kana="せんじょうがはら ひたぎ"><input type="checkbox" class="MagicalChk" name="chara" id="战场原黑仪" value="战场原黑仪"><br>战场原黑仪</label>
+                <label class="girlbox collaboColor" data-kana="はちくじ まよい"><input type="checkbox" class="MagicalChk" name="chara" id="八九寺真宵" value="八九寺真宵"><br>八九寺真宵</label>
+                <label class="girlbox collaboColor" data-kana="かんばる するが"><input type="checkbox" class="MagicalChk" name="chara" id="神原骏河" value="神原骏河"><br>神原骏河</label>
+                <label class="girlbox collaboColor" data-kana="せんごく なでこ"><input type="checkbox" class="MagicalChk" name="chara" id="千石抚子" value="千石抚子"><br>千石抚子</label>
+                <label class="girlbox collaboColor" data-kana="はねかわつばさ"><input type="checkbox" class="MagicalChk" name="chara" id="羽川翼" value="羽川翼"><br>羽川翼</label>
+                <label class="girlbox collaboColor" data-kana="おしの しのぶ"><input type="checkbox" class="MagicalChk" name="chara" id="忍野忍" value="忍野忍"><br>忍野忍</label>
+                <label class="girlbox collaboColor" data-kana="たかまち なのは"><input type="checkbox" class="MagicalChk" name="chara" id="高町奈叶" value="高町奈叶"><br>高町奈叶</label>
+                <label class="girlbox collaboColor" id="fate_t" data-kana="ふぇいと てぃー はらおうん"><input type="checkbox" class="MagicalChk" name="chara" id="菲特·T·哈拉温" value="菲特·T·哈拉温"><br>菲特·T<br>·哈拉温</label>
+                <label class="girlbox collaboColor" data-kana="やがみ はやて"><input type="checkbox" class="MagicalChk" name="chara" id="八神疾风" value="八神疾风"><br>八神疾风</label>
+                <label class="girlbox collaboColor" data-kana="いざぼー まじょ"><input type="checkbox" class="MagicalChk" name="chara" id="伊莎贝拉 (魔女ver)" value="伊莎贝拉 (魔女ver)"><br>伊莎贝拉<BR>(魔女ver)</label>
+                <label class="girlbox collaboColor" data-kana="いざぼー"><input type="checkbox" class="MagicalChk" name="chara" id="伊莎贝拉" value="伊莎贝拉"><br>伊莎贝拉★</label>
+
+                <!-- 从这里开始是非魔法少女角色 -->
+                <label class="girlbox mobColor leftm" data-kana="きゅぅべえ"><input type="checkbox" class="MagicalChk" name="chara" id="丘比" value="丘比"><br>丘比★</label>
+                <label class="girlbox mobColor" data-kana="ぴんくのきゅぅべえ"><input type="checkbox" class="MagicalChk" name="chara" id="粉色丘比" value="粉色丘比"><br>粉色丘比</label>
+                <label class="girlbox mobColor" data-kana="じゅぅべぇ"><input type="checkbox" class="MagicalChk" name="chara" id="丘比卫" value="丘比卫"><br>丘比卫</label>
+                <label class="girlbox mobColor" data-kana="うわささん"><input type="checkbox" class="MagicalChk" name="chara" id="谣言小姐" value="谣言小姐"><br>谣言小姐</label>
+                <label class="girlbox mobColor" data-kana="なつきのあに"><input type="checkbox" class="MagicalChk" name="chara" id="夏希的哥哥" value="夏希的哥哥"><br>夏希的哥哥</label>
+                <label class="girlbox mobColor" data-kana="たけさん"><input type="checkbox" class="MagicalChk" name="chara" id="武先生" value="武先生"><br>武先生</label>
+                <label class="girlbox mobColor" data-kana="おねぇさま"><input type="checkbox" class="MagicalChk" name="chara" id="姐姐大人" value="姐姐大人"><br>姐姐大人</label>
+                <label class="girlbox mobColor" data-kana="さとみ たすけ"><input type="checkbox" class="MagicalChk" name="chara" id="里见太助" value="里见太助"><br>里见太助</label>
+                <label class="girlbox mobColor" data-kana="とうかのちち"><input type="checkbox" class="MagicalChk" name="chara" id="灯花之父" value="灯花之父"><br>灯花之父</label>
+                <label class="girlbox mobColor" data-kana="いつみ いぬい"><input type="checkbox" class="MagicalChk" name="chara" id="伊津见尹缝" value="伊津见尹缝"><br>伊津见尹缝</label>
+                <label class="girlbox mobColor" data-kana="ゆぅ"><input type="checkbox" class="MagicalChk" name="chara" id="优" value="优"><br>优</label>
+                <label class="girlbox mobColor" data-kana="あい"><input type="checkbox" class="MagicalChk" name="chara" id="爱" value="爱"><br>爱</label>
+                <label class="girlbox mobColor" data-kana="ちはるのはは"><input type="checkbox" class="MagicalChk" name="chara" id="千春的母亲" value="千春的母亲"><br>千春的母亲</label>
+                <label class="girlbox mobColor" data-kana="しずかのはは"><input type="checkbox" class="MagicalChk" name="chara" id="静香的母亲" value="静香的母亲"><br>静香的母亲</label>
+                <label class="girlbox mobColor" data-kana="とるて"><input type="checkbox" class="MagicalChk" name="chara" id="托尔特" value="托尔特"><br>托尔特</label>
+                <label class="girlbox mobColor" data-kana="にこら"><input type="checkbox" class="MagicalChk" name="chara" id="尼可拉" value="尼可拉"><br>尼可拉</label>
+
+                <label class="girlbox unimpColor leftm" data-kana="ゆめ うらら"><input type="checkbox" class="MagicalChk" name="chara" id="有爱丽" value="有爱丽"><br>有爱丽</label>
+                <label class="girlbox unimpColor" data-kana="さとり かごめ"><input type="checkbox" class="MagicalChk" name="chara" id="佐鸟笼目" value="佐鸟笼目"><br>佐鸟笼目</label>
+                <label class="girlbox unimpColor" data-kana="あいか ひめな"><input type="checkbox" class="MagicalChk" name="chara" id="蓝家姬奈" value="蓝家姬奈"><br>蓝家姬奈</label>
+                <label class="girlbox unimpColor" data-kana="ひむろ らび"><input type="checkbox" class="MagicalChk" name="chara" id="冰室拉比" value="冰室拉比"><br>冰室拉比</label>
+                <label class="girlbox unimpColor" data-kana="まい あかり"><input type="checkbox" class="MagicalChk" name="chara" id="真井灯" value="真井灯"><br>真井灯</label>
+                <label class="girlbox unimpColor" data-kana="せな みこと"><input type="checkbox" class="MagicalChk" name="chara" id="濑奈命" value="濑奈命"><br>濑奈命</label>
+
+                <label class="girlbox unimpColor" data-kana="みずなのせんぱい"><input type="checkbox" class="MagicalChk" name="chara" id="水名前辈" value="水名前辈"><br>水名前辈</label>
+                <label class="girlbox unimpColor" data-kana="あき まばゆ"><input type="checkbox" class="MagicalChk" name="chara" id="爱生眩" value="爱生眩"><br>爱生眩</label>
+                <label class="girlbox unimpColor" data-kana="かずさ みちる"><input type="checkbox" class="MagicalChk" name="chara" id="和纱美千瑠" value="和纱美千瑠"><br>和纱美千瑠</label>
+                <label class="girlbox unimpColor" data-kana="あさみ さき"><input type="checkbox" class="MagicalChk" name="chara" id="浅海早纪" value="浅海早纪"><br>浅海早纪</label>
+                <label class="girlbox unimpColor" data-kana="かんな にこ"><input type="checkbox" class="MagicalChk" name="chara" id="神那妮可" value="神那妮可"><br>神那妮可</label>
+            </div>
+            <div id="girlend"></div>
+            <!-- 魔法少女的box实现结束 ================================================================================================== -->
+            <!-- 魔法少女筛选文本输入实现 -->
+            <input type="button" value="重置筛选" class="ndownReset" onClick="ndownReset()">
+            <input type="button" name="mgreset" class="mgreset" id="mgreset2" value="取消选择魔法少女" onClick="girlReset()"><BR>
+            <input type="text" spellcheck="false" class="ndownword" name="ndownword" placeholder="用假名/汉字名筛选。空格表示OR。删除则返回" id="ndownword2" oninput="mgirlNarrow('index', 'ndownword2')">
+
+            <!-- 故事搜索按钮和重置按钮 -->
+            <p>
+                <input type="button" name="search" class="mgr-10 searchbtn" value="搜索" onClick="isCheck()">
+                <input type="reset" value="全部重置" class="resetbtn" onClick="ndownReset();girlResetBtnInable()">
+            </p>
+        </form>
+
+        <fieldset>
+            <legend>按属性选择魔法少女</legend>
+            <form id="at_form">
+                <label class="at"><input type="radio" class="at_and_or" name="at_and_or" value="AND" checked="checked" onchange="magicalGirlAttributeSearch()" required>AND</label>
+                <label class="at"><input type="radio" class="at_and_or" name="at_and_or" value="OR" onchange="magicalGirlAttributeSearch()">OR</label>
+                <input type="button" id="at_reset" value="重置属性" onClick="mgirlShReset();"><br>
+
+                <!--魔法少女属性列表 -->
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="泳装">有泳装</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="和服">有和服</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="私服">有私服(含冬服)</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="冬服">有冬服</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="圣诞">有圣诞衣装</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="万圣">有万圣节衣装</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="女仆装">有女仆装</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="睡衣">有睡衣</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="其他衣装">有其他衣装</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="组合">组合</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="动画">动画ver</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="神滨市立大学附属学校">神滨市立大学附属学校</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="水名女子学园">水名女子学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="参京院教育学园">参京院教育学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="中央学园">中央学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="荣综合学园">荣综合学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="南凪自由学园">南凪自由学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="工匠学舍">工匠学舍</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="大东学园">大东学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="圣莉莉安娜学园">圣莉莉安娜学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="神滨未来学院">神滨未来学院</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="虎屋町学园">虎屋町学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="龙崎学院">龙崎学院</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="蛇之宫中学・高等学校">蛇之宫中学・高等学校</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="松宫市立第一中学">松宫市立第一中学</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="雾峰村立雾峰中学">雾峰村立雾峰中学</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="汤之花国际中学・高等学校">汤之花国际中学・高等学校</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="汤国市立汤国学园">汤国市立汤国学园</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="宝崎顺心学园">宝崎顺心学园</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="宝崎市立光冢中等教育学校">宝崎市立光冢中等教育学校</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="见泷原中学">见泷原中学</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="白羽女学院">白羽女学院</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="翌桧市立南部中学">翌桧市立南部中学</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="茜咲中学">茜咲中学</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="圣乙女学园">圣乙女学园</label>
+
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="神滨魔法联盟">神滨魔法联盟</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="时女一族">时女一族</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="PROMISED BLOOD">PROMISED BLOOD</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Neo-Magius">Neo-Magius</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Folklore of 0">Folklore of 0</label>
+                <label class="at"><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Puella Care">Puella Care</label>
+
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="活动赠送">活动赠送</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="常驻">常驻</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="限定">限定</label>
+
+
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="☆45">☆4→☆5</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="☆35">☆3→☆5</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="☆25">☆1,2→☆5</label>
+
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="☆34">☆3→☆4</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="☆24">☆2→☆4</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="☆1">☆1</label>
+
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="火">火</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="水">水</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="木">木</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="光">光</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="暗">暗</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="无">无</label>
+
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="攻击">攻击</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="防御">防御</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Magia">Magia</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="治愈">治愈</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="支援">支援</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="平衡">平衡</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Ultimate">Ultimate</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Exceed">Exceed</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="Ultimate">Ultimate</label>
+
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="AAABC">AAABC</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="AABBC">AABBC</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="AABCC">AABCC</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="ABBBC">ABBBC</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="ABBBB">ABBBB</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="ABBCC">ABBCC</label>
+                <label><input type="checkbox" class="at_attribute" name="at_attribute" onchange="magicalGirlAttributeSearch()" value="ABCCC">ABCCC</label>
+            </form>
+
+            <!-- 属性选择简易显示用div -->
+            <div id="at_result"></div>
+        </fieldset>
+
+        <!-- 显示搜索结果的部分 -->
+        <div class="result" id="mytable"></div>
+        <div class="result" id="mytable2"></div>
+
+        <!-- 显示用HTML结束。以下为javascript ============================================================================= -->
+        <script>
+            //右下固定图标设置////////////////////////////////////
+            //页面顶部返回箭头实现
+            $(function () {
+                /** 页面顶部处理 **/
+                $("#sty_pagetop").fadeIn("slow");
+                // 点击时
+                $("#sty_pagetop").click(function () {
+                    // 滚动到页面顶部
+                    $("html, body").animate({
+                        scrollTop: 0,
+                    },
+                        "slow"
+                    );
+                    return false;
+                });
+            });
+        </script>
+
+        <script>
+            //跳转到角色选择顶部
+            $(function () {
+                $("#sty_pagecharatop").fadeIn("slow");
+                // 点击时
+                $("#sty_pagecharatop").click(function () {
+                    $("html, body").animate({
+                        scrollTop: $("#girltop").offset().top,
+                    },
+                        "slow"
+                    );
+                    return false;
+                });
+            });
+        </script>
+
+        <script>
+            //搜索按钮
+            $(function () {
+                $("#sty_seach").fadeIn("slow");
+                return false;
+            });
+        </script>
+
+        <script>
+            //跳转到角色选择末尾
+            $(function () {
+                $("#sty_pagecharaend").fadeIn("slow");
+                // 点击时
+                $("#sty_pagecharaend").click(function () {
+                    $("html, body").animate({
+                        scrollTop: $("#girlend").offset().top - $(window).height(),
+                    },
+                        "slow"
+                    );
+                    return false;
+                });
+            });
+        </script>
+
+        <script>
+            //跳转到结果顶部
+            $(function () {
+                $("#sty_pagetbl").fadeIn("slow");
+                // 点击时
+                $("#sty_pagetbl").click(function () {
+                    // 滚动到页面底部
+                    $("html, body").animate({
+                        scrollTop: $("#mytable").offset().top,
+                    },
+                        "slow"
+                    );
+                    return false;
+                });
+            });
+        </script>
+
+        <script>
+            //跳转到页面底部
+            $(function () {
+                /** 页面底部处理 **/
+                $("#sty_pagebtm").fadeIn("slow");
+                // 点击时
+                $("#sty_pagebtm").click(function () {
+                    // 滚动到页面底部
+                    $("html, body").animate({
+                        scrollTop: $(document).height(),
+                    },
+                        "slow"
+                    );
+                    return false;
+                });
+            });
+        </script>
+        <!-- 顶部图标设置 -->
+        <a id="sty_pagetop" href="#top" class="page_top" style="display: none"><i class="fa fa-arrow-circle-o-up fa-3x"></i></a>
+
+        <!-- 魔法少女顶部设置 -->
+        <a id="sty_pagecharatop" href="#girltop" class="page_mdl" style="display: none"><i class="fa fa-address-book-o fa-3x"></i></a>
+
+        <!-- 搜索按钮设置 -->
+        <a id="sty_seach" href="#" onclick="isCheck()" class="page_seach" style="display: none"><i class="fa fa-search fa-3x"></i></a>
+
+        <!-- 魔法少女末尾设置 -->
+        <a id="sty_pagecharaend" href="#girlenl" class="page_mdl" style="display: none"><i class="fa fa-address-book fa-3x"></i></a>
+
+        <!-- 表格图标设置 -->
+        <a id="sty_pagetbl" href="#tbl" class="girl_top" style="display: none"><i class="fa fa-table fa-3x"></i></a>
+
+        <!-- 底部图标设置 -->
+        <a id="sty_pagebtm" href="#btm" class="page_btm" style="display: none"><i class="fa fa-arrow-circle-o-down fa-3x"></i></a>
+        <!-- 右下固定图标实现结束================================================================================================== -->
+
+        <script>
+            //随机显示横幅。收到横幅后在此处添加信息。
+            //为加快横幅显示，最先处理。
+            const images = {
+                0: {
+                    imgID: "愛川.webp",
+                    height: "100",
+                    name: "愛川",
+                    linkUrl: "https://www.pixiv.net/users/41044900",
+                },
+                1: {
+                    imgID: "粉くずff.webp",
+                    height: "150",
+                    name: "こな",
+                    linkUrl: "https://twitter.com/kona_kuzu",
+                },
+            };
+            const num = Math.floor(Math.random() * 2); //与横幅数量一致
+            const bannerTag =
+                '<a href="' +
+                images[num].linkUrl +
+                '" target="_blank"><img class="headerBanner shadow-3" src="./banner/' +
+                images[num].imgID +
+                '"></a><BR><span class="headerExpl">↑由<a href="' +
+                images[num].linkUrl +
+                '" target="_blank">' +
+                images[num].name +
+                "</a>様提供!<BR>";
+            document.getElementById("headerBanner").innerHTML = bannerTag;
+        </script>
+
+        <!-- 因为耗时，所以在这里读取外部文件 -->
+        <!--读取角色的属性设置文件(javascript对象) -->
+        <script src="./myfile/charaAt.js"></script>
+        <!-- 读取通用处理文件 -->
+        <script src="./myfile/myCommon.js"></script>
+        <!-- 读取魔法少女筛选的javascript方法-->
+        <script src="./myfile/mgirlNarrow.js"></script>
+        <!-- 读取属性搜索的javascript方法-->
+        <script src="./myfile/mgirlAtSearch.js"></script>
+        <!-- 读取筛选重置的javascript方法 -->
+        <script src="./myfile/ndownReset.js"></script>
+
+        <!-- javascript正文总结 -->
+        <script>
+            // 以下是html加载完成后的处理。
+            document.addEventListener("DOMContentLoaded", function () {
+                //设置本地存储中记忆的复选框。
+                //设置AND_OR单选框
+                if (localStorage.getItem("and_or") == "OR") {
+                    document.getElementById("myForm").and_or[1].checked = true;
+                } else if (localStorage.getItem("and_or") == "XOR") {
+                    document.getElementById("myForm").and_or[2].checked = true;
+                } else if (localStorage.getItem("and_or") == "ONLY") {
+                    document.getElementById("myForm").and_or[3].checked = true;
+                }
+
+                //设置剧透复选框
+                if (localStorage.getItem("netabare") === "true") {
+                    document.getElementById("netabare").checked = true;
+                } else {
+                    document.getElementById("netabare").checked = false;
+                }
+
+                //设置★复选框
+                if (localStorage.getItem("star") === "true") {
+                    document.getElementById("star").checked = true;
+                } else {
+                    document.getElementById("star").checked = false;
+                }
+
+                //设置故事选择复选框
+                const storyArr = localStorage.getItem("storyChice").split(",");
+                storyArr.forEach(function (setstory) {
+                    document.getElementById(setstory).checked = true;
+                });
+
+                //设置魔法少女复选框
+                document.getElementById("mgreset").disabled = true;
+                document.getElementById("mgreset2").disabled = true;
+                const magicalGirlArr = localStorage
+                    .getItem("magicalGirlChoice")
+                    .split(",");
+                magicalGirlArr.forEach(function (setgirl) {
+                    document.getElementById(setgirl).checked = true;
+                });
+                if (magicalGirlArr.length > 0) {
+                    document.getElementById("mgreset").disabled = false;
+                    document.getElementById("mgreset2").disabled = false;
+                }
+            });
+
+            // 故事复选框一键开关事件处理。
+            const strycheckall = document.getElementById("strycheckall");
+            strycheckall.addEventListener("click", function () {
+                const checkboxes = document.getElementsByName("story");
+                for (i in checkboxes) {
+                    checkboxes[i].checked = this.checked;
+                }
+            });
+
+            //重置魔法少女的选择。
+            function girlReset() {
+                const checkboxes = document.getElementsByName("chara");
+                for (i in checkboxes) {
+                    checkboxes[i].checked = false;
+                }
+                //禁用重置按钮。
+                document.getElementById("mgreset").disabled = true;
+                document.getElementById("mgreset2").disabled = true;
+            }
+
+            //根据是否选中魔法少女复选框来设置取消选择按钮的启用/禁用状态。
+            $(function () {
+                $('[name="chara"]').change(function () { //如果角色复选框发生变化
+                    let chkflg = false;
+                    $('[name="chara"]:checked').each(function () {
+                        chkflg = true;
+                        return false;
+                    });
+                    if (chkflg) {
+                        //如果选择了复选框，则启用重置按钮
+                        document.getElementById("mgreset").disabled = false;
+                        document.getElementById("mgreset2").disabled = false;
+                    } else {
+                        document.getElementById("mgreset").disabled = true;
+                        document.getElementById("mgreset2").disabled = true;
+                    }
+                });
+            });
+
+            //搜索按钮按下时的处理。////////////////////////////////////////////////////////////////////////////////////////////////////
+            //检查故事和魔法少女的选择，并输出结果。
+            function isCheck() {
+                // 重置本地存储。
+                localStorage.clear();
+
+                const storyChoice = []; //故事指定的数组
+                const magicalGirlChoice = []; //选择的魔法少女的数组
+                let arr_checkBoxes = document.getElementsByClassName("story");
+                let keywordtext = document.getElementById('keyword').value.replace(/　/g, ' '); //剧透搜索关键词。将全角空格替换为半角空格
+                keywordtext = keywordtext.replace(/ +/g, ' '); //将连续的半角空格替换为单个
+                if (keywordtext === " ") {
+                    keywordtext = "";
+                } //如果搜索词仅为空格，则替换为空字符串
+
+                let count = 0;
+                for (let i = 0; i < arr_checkBoxes.length; i++) {
+                    if (arr_checkBoxes[i].checked) {
+                        count++;
+                        storyChoice.push(arr_checkBoxes[i].value);
+                    }
+                }
+                if (count == 0) {
+                    window.alert("请至少选择一个故事。");
+                    return false;
+                }
+
+                arr_checkBoxes = document.getElementsByClassName("MagicalChk");
+                count = 0;
+                for (let i = 0; i < arr_checkBoxes.length; i++) {
+                    if (arr_checkBoxes[i].checked) {
+                        count++;
+                        magicalGirlChoice.push(arr_checkBoxes[i].value);
+                    }
+                }
+
+                if (count === 0 && !keywordtext) {
+                    window.alert("请至少选择一名魔法少女，或输入剧透关键词。");
+                    return false;
+                }
+
+                //如果关键词搜索有输入，则勾选剧透
+                if (keywordtext) {
+                    document.getElementById("netabare").checked = true;
+                }
+
+                //如果没有问题，则将设置数据保存到本地存储。
+                //保存AND, OR设置
+                localStorage.setItem(
+                    "and_or",
+                    document.getElementById("myForm").and_or.value
+                );
+                //保存剧透设置
+                localStorage.setItem(
+                    "netabare",
+                    document.getElementById("netabare").checked
+                );
+                //保存★标记设置
+                localStorage.setItem("star", document.getElementById("star").checked);
+                //保存故事选择
+                localStorage.setItem("storyChice", storyChoice);
+                //保存魔法少女选择
+                localStorage.setItem("magicalGirlChoice", magicalGirlChoice);
+
+                const and_or = document.getElementById("myForm").and_or.value;
+                const netabare = document.getElementById("netabare").checked; //剧透(true/false)
+                const story_csv = storyChoice.join(",");
+                const chara_csv = magicalGirlChoice.join(",");
+                const star = document.getElementById("star").checked;
+                const searchWord = keywordtext;
+
+                // 创建结果的页头。
+                let resultHeader = '<H3 class="seachResult">搜索结果</H3>';
+
+                //如果选择了魔法少女
+                if (count) {
+                    magicalGirlChoice.forEach((girlname) => {
+                        resultHeader +=
+                            '<span class="resultGirl" style="position:relative;"><img src="./img/webp/' +
+                            girlname +
+                            '.webp" alt="' +
+                            girlname +
+                            '"><span class="girlName">' +
+                            girlname +
+                            "</span></span>";
+                    });
+                    resultHeader += "登场的故事（" + and_or + "搜索";
+                    if (netabare) {
+                        resultHeader += "・有剧透";
+                    }
+                    if (star) {
+                        resultHeader += "・包含不同版本的角色";
+                    }
+                    resultHeader += "）";
+                }
+                //如果设置了搜索关键词
+                if (keywordtext) {
+                    resultHeader += "<BR>剧透关键词搜索：「" + keywordtext + "」";
+
+                }
+
+                resultHeader += " 的搜索结果。<BR>";
+                document.getElementById("mytable").innerHTML = resultHeader;
+                document.getElementById("mytable2").innerHTML =
+                    '<img border="0" src="./img/webp/loading.webp" width="100" height="100" alt="loading...">';
+
+                //移动到结果顶部。
+                $("html, body").animate({
+                    scrollTop: $("#mytable").offset().top,
+                },
+                    "slow"
+                );
+
+                /* 整理输入数据
+                                              storyChoice : 选择的故事数组
+                                        magicalGirlChoice : 选择的魔法少女数组
+                                                   and_or : AND,OR,EXE,ONLY的选择
+                                                 netabare : 剧透的选择(true/false)
+                  document.getElementById("star").checked : ★的选择(true/false)
+                                              keywordtext : 剧透搜索的关键词
+                */
+                const DataUrl =
+                    "https://script.google.com/macros/s/AKfycbz7rqYmZAcY-Cu0QG_XfcqH1JfRrgZXLkk7XRhU2Df7VYNNbOMBwwqrKdcqQQmokndm/exec";
+                $.ajax({
+                    //type: "GET",
+                    type: "GET", //GAS web发布支持跨域，所以get和post都可以
+                    url: DataUrl,
+                    dataType: "json",
+                    data: {
+                        and_or: and_or,
+                        story_csv: story_csv,
+                        netabare: netabare,
+                        chara_csv: chara_csv,
+                        star: star,
+                        keywordtext: keywordtext,
+                    }
+                })
+                    .then(outdata => { //Ajax通信成功时的处理
+                        let allCnt = 0; //计算总命中数。
+
+                        //outputdata中包含数据对象，据此创建输出表格
+                        let outTable =
+                            '<BR><span class="resultLinkCaution">↓点击故事名称可打开搜索引擎。</span><BR>';
+                        outTable += "<table><tr><th>故事</th><th>登场人物</th>";
+                        if (netabare) {
+                            outTable += "<th>剧透</th>";
+                        } //有剧透时
+                        outTable += "</tr>";
+
+                        /*
+                        //测试用变量////////////////////////////////////////////////////
+                        const storyChoice = ["主线【第1部】", "主线【第2部】"];
+                        const netabare = false;
+                        const magicalGirlChoice = ['八云御魂', '七海八千代', '十咎桃子'];
+                        const and_or = "AND";
+                        const star = false;
+                        */
+                        storyChoice.forEach((storyName) => {
+                            const storyCnt = outdata[storyName].length;
+                            allCnt += storyCnt;
+                            const colspanNum = netabare ? 3 : 2;
+
+                            outTable +=
+                                '<tr class="' +
+                                storyName +
+                                '"><td colspan="' +
+                                colspanNum +
+                                '">' +
+                                storyName +
+                                "（命中数：" +
+                                storyCnt +
+                                "）</td></tr>";
+                            if (storyCnt === 0) {
+                                outTable +=
+                                    '<tr><td colspan="' +
+                                    colspanNum +
+                                    '" style="text-align:center;">没有符合条件的数据。</td></tr>';
+                            } else {
+                                outdata[storyName].forEach((storyLine) => {
+                                    const captureName = (storyName.search(/活动|特别|魔法少女|衣装/) !== -1) ?
+                                        storyLine[0] : `${storyName} ${storyLine[0]}`;
+                                    //const captureName = `${storyName} ${storyLine[0]}` ;
+
+                                    const searchWord = captureName.split("<BR>");
+                                    const searchtag =
+                                        '<a href="https://www.google.com/search?q=魔法纪录+故事+' +
+                                        searchWord[0] +
+                                        '&tbm=vid" target="_blank">';
+
+                                    outTable +=
+                                        '<tr><td class="resultStory">' +
+                                        searchtag +
+                                        captureName +
+                                        '</a></td><td class="resultGirlTd">';
+                                    const girlArray = storyLine[1];
+                                    girlArray.forEach((girlname) => {
+                                        outTable +=
+                                            '<span class="resultGirl" style="position:relative;"><img src="./img/webp/' +
+                                            girlname +
+                                            '.webp" alt="' +
+                                            girlname +
+                                            '"><span class="girlName">' +
+                                            girlname +
+                                            "</span></span>";
+                                    });
+                                    outTable += "</td>";
+                                    if (netabare) {
+                                        outTable +=
+                                            '<td class="resultNetabare">' + storyLine[2] + "</td>";
+                                    }
+                                    outTable += "</tr>";
+                                });
+                            }
+                        });
+                        outTable += "</table>";
+
+                        const resultHeader2 =
+                            "命中的故事数量为 " + allCnt + " 件。<BR>";
+
+                        document.getElementById("mytable2").innerHTML =
+                            resultHeader2 + outTable;
+                        //移动到结果顶部。
+                        $("html, body").animate({
+                            scrollTop: $("#mytable").offset().top,
+                        },
+                            "slow"
+                        );
+                    },
+                        error => { //Ajax通信失败时的处理
+                            document.getElementById("mytable2").innerHTML =
+                                "<BR>获取数据失败。请稍后再试。";
+                        }
+                    );
+            }
+        </script>
+    </div>
+    <script>
+        // 页面加载完成后，自动为所有角色复选框设置背景图片
+        document.addEventListener("DOMContentLoaded", function () {
+            // 定义存放中文名图片的目录
+            const imgDir = "./img/png/"; // 【注意】根据你的文件夹结构，这里可能是 "./img/webp/"
+
+            // 获取所有的角色复选框元素
+            const allCheckboxes = document.myForm.chara; // 【注意】表单name是myForm
+
+            // 遍历每一个复选框
+            for (let i = 0; i < allCheckboxes.length; i++) {
+                const checkbox = allCheckboxes[i];
+
+                // 【关键】在index.html中，value就是中文名，不需要提取
+                const shortName = checkbox.value.trim();
+
+                // 构建图片的URL，例如: "./img/png/环彩羽.png"
+                const imageUrl = imgDir + shortName + ".png"; // 同样注意是png还是webp
+
+                // 获取复选框的外层 <label> 元素
+                const label = checkbox.parentElement;
+
+                // 用JS直接设置label的背景图片
+                if (label) {
+                    label.style.backgroundImage = `url('${imageUrl}')`;
+                    label.style.backgroundSize = "contain";
+                    label.style.backgroundRepeat = "no-repeat";
+                    label.style.backgroundPosition = "center 2px";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

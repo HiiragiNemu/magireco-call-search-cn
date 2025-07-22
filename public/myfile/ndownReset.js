@@ -1,8 +1,8 @@
 function ndownReset(htmlName) {
-    //入力情報を削除
+    // 删除输入信息
     document.getElementById('ndownword1').value = '';
     document.getElementById('ndownword2').value = '';
-    allShow(); //全魔法少女を表示
+    allShow(); // 显示所有魔法少女
     ndownResetButternReset();
     if (document.forms["at_form"]) {
         document.forms["at_form"].reset();
@@ -15,7 +15,7 @@ function ndownReset(htmlName) {
 }
 
 function ndownResetButternCaution() {
-    //絞り込みリセットボタンを強調する。
+    // 强调筛选重置按钮。
     let ndownResetEle = document.getElementsByClassName("ndownReset");
     Array.prototype.forEach.call(ndownResetEle, function (element) {
         element.classList.add("ndownReset_caution");
@@ -23,10 +23,9 @@ function ndownResetButternCaution() {
 }
 
 function ndownResetButternReset() {
-    //絞り込みリセットボタン強調を解除する。
+    // 取消筛选重置按钮的强调。
     let ndownResetEle = document.getElementsByClassName("ndownReset");
     Array.prototype.forEach.call(ndownResetEle, function (element) {
         element.classList.remove("ndownReset_caution");
     });
 }
-

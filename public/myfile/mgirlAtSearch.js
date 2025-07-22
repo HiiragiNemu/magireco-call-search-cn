@@ -1,107 +1,111 @@
+/**
+ * 属性による魔法少女の絞り込み検索（call.html用に改修版）
+ * call.htmlのキャラクター選択ボックスの表示・非表示を切り替える。
+ * charaAt.jsのキー（例：「七海やちよ(水着ver)」）とHTMLのID（例：「七海やちよ」）が
+ * 不一致でも、前方一致で賢くマッピングする。
+ */
 function magicalGirlAttributeSearch(htmlName) {
-    //属性でチェックされた値だけを配列に入れる。配列attributeに選択した値が入る。
-    const elFavorites = document.querySelectorAll(
-        '#at_form [name="at_attribute"]'
-    );
-    const attribute = [...elFavorites]
+    // 1. ユーザーが選択した属性（学校、学年など）を配列に取得
+    const elFavorites = document.querySelectorAll('#at_form [name="at_attribute"]');
+    const selectedAttributes = [...elFavorites]
         .filter((el) => el.checked)
         .map((el) => el.value);
 
-    //ボタンを押したときのスクロール座標をコピー
-    //const y = window.pageYOffset;
-
-    //絞り込み検索テキストをリセットする。
+    // 絞り込み検索テキストをリセット
     document.getElementById('ndownword1').value = '';
     document.getElementById('ndownword2').value = '';
 
-    //もし属性チェックが設定が空の場合は、魔法少女選択と属性表示をリセットして終わり。
-    if (attribute.length === 0) {
+    // 2. 属性が何も選択されていない場合は、全員表示して終了
+    if (selectedAttributes.length === 0) {
         allShow();
-        //絞り込みリセットボタン強調を解除する。
         ndownResetButternReset();
-
-        if(!htmlName){
-        document.getElementById("at_result").style.border = "";
-        document.getElementById("at_result").innerHTML = "";
-        }
-        //y座標をスクロールさせる
-        //scrollTo( 0, y );
-
         return;
     }
 
-    //一旦魔法少女ボックスをすべて隠す。
-    allHidden();
+    // 3. HTMLに存在するすべてのキャラクターの「基礎ID」を取得する
+    const baseCharaIDs = new Set();
+    const checkboxes = document.getElementsByName("chara");
+    Array.prototype.forEach.call(checkboxes, (checkbox) => {
+        if (checkbox.id) {
+            baseCharaIDs.add(checkbox.id);
+        }
+    });
 
-    let charaindex = [];
+    // 4. 表示すべき基礎IDを格納するSetを準備
+    const idsToShow = new Set();
+    const andOrMode = document.getElementById("at_form").at_and_or.value;
 
-    //キャラ全員の属性値オブジェクトの配列を回す。
-    for (let [girlname, at] of charaAttribute) {
-        let muchCnt = 0;
-        attribute.forEach(set_at_data => {
-            if (at.has(set_at_data)) {
-                muchCnt++;
+    // 5. charaAttribute.js の全データをループして、表示すべきキャラを決定
+    for (let [versionedName, charaAttrs] of charaAttribute) {
+        let matchCount = 0;
+        selectedAttributes.forEach(selectedAttr => {
+            if (charaAttrs.has(selectedAttr)) {
+                matchCount++;
             }
         });
 
-        //alert(muchCnt + "+" +document.getElementById("at_form").at_and_or.value);
-        //該当キャラの属性が設定値と一致した個数がmuchCntに入っている。
-        if (
-            (document.getElementById("at_form").at_and_or.value === "AND" &&
-                attribute.length === muchCnt) ||
-            (document.getElementById("at_form").at_and_or.value === "OR" &&
-                muchCnt > 0)
-        ) {
-            //属性検索がandで、設定値とマッチした個数が一致したとき、または属性絵検索がorでマッチした個数が1個以上のときhit。
+        const isMatch = (andOrMode === "AND" && matchCount === selectedAttributes.length) ||
+                        (andOrMode === "OR" && matchCount > 0);
 
-            //キャラを表示する。
-            document.getElementById(girlname).parentNode.style.display = "inline";
-            //allnamesをキャラ名でサーチしてindexを積む。
-            charaindex.push(allnames.findIndex(charaname => charaname === girlname));
+        if (isMatch) {
+            // マッチした場合、このバージョン名（例：七海やちよ(水着ver)）が
+            // どの基礎ID（例：七海やちよ）に属するかを探す
+            for (const baseId of baseCharaIDs) {
+                if (versionedName.startsWith(baseId)) {
+                    idsToShow.add(baseId);
+                    break; // 見つかったら次のバージョン名のチェックへ
+                }
+            }
         }
-    };
-    //charaindexを数字の若い順にソートする。
-    charaindex.sort((a, b) => a - b);
-    //console.log(attribute);
+    }
 
-    //属性検索結果を表示するhtmlを作る。
-    let at_resultHtml = "";
-    let at_and_or = document.getElementById("at_form").at_and_or.value;
-    at_and_or = at_and_or.toLowerCase();
+    // 6. 最後に、HTML要素の表示・非表示をまとめて実行
+    allHidden(); // まず全員を隠す
+    for (const baseId of idsToShow) {
+        const element = document.getElementById(baseId);
+        if (element && element.parentNode) {
+            element.parentNode.style.display = "inline"; // 表示すべきキャラだけ表示
+        }
+    }
 
-    //属性検索結果のヘッダを作る。
-    at_resultHtml += '<h2 class="at_resultHeader" >';
-    attribute.forEach(value => {
-        at_resultHtml += value + " " + at_and_or + " ";
-    });
-    const delnum = -(at_and_or.length + 2);
-    at_resultHtml = at_resultHtml.slice(0, delnum);
-    at_resultHtml += "</h2>";
-
-    //属性検索結果の画像アイコンを並べる。
-    charaindex.forEach(cindex => {
-        at_resultHtml += '<span class="resultGirl result" style="position:relative;"><img src="./img/webp/' +
-            allnames[cindex] +
-            '.webp" alt="' + allnames[cindex] + '"><span class="girlName">' + allnames[cindex] + "</span></span>";
-    });
-    if(!htmlName){
-    //index.htmlの場合、絞り込み結果を表示＆ボーダーのスタイルを追加
-    document.getElementById("at_result").innerHTML = at_resultHtml;
-    document.getElementById("at_result").style.border = "solid 1px #ff3b66";
-}
-
-    //絞り込みリセットボタンを強調する。
+    // 絞り込みリセットボタンを強調
     ndownResetButternCaution();
 }
 
-//属性検索フォームのリセット設定
+// 属性検索フォームのリセット（補助関数、既存のまま）
 function mgirlShReset(htmlName) {
     allShow();
     document.forms["at_form"].reset();
     ndownResetButternReset();
+}
 
-    if(!htmlName){
-    document.getElementById("at_result").style.border = "";
-    document.getElementById("at_result").innerHTML = "";
+// 全キャラクターを表示（補助関数、mgirlNarrow.jsにあるはずだが念のため定義）
+function allShow() {
+    const girlboxes = document.getElementsByClassName("girlbox");
+    for (i = 0; i < girlboxes.length; i++) {
+        girlboxes[i].style.display = "inline";
     }
+}
+
+// 全キャラクターを非表示（補助関数、mgirlNarrow.jsにあるはずだが念のため定義）
+function allHidden() {
+    const girlboxes = document.getElementsByClassName("girlbox");
+    for (i = 0; i < girlboxes.length; i++) {
+        girlboxes[i].style.display = "none";
+    }
+}
+
+// リセットボタンのスタイル変更（補助関数、ndownReset.jsにあるはずだが念のため定義）
+function ndownResetButternCaution(){
+	const elements = document.getElementsByClassName("ndownReset");
+    Array.prototype.forEach.call(elements, (el) => {
+        el.classList.add("ndownReset_caution");
+    });
+}
+
+function ndownResetButternReset(){
+	const elements = document.getElementsByClassName("ndownReset");
+    Array.prototype.forEach.call(elements, (el) => {
+        el.classList.remove("ndownReset_caution");
+    });
 }

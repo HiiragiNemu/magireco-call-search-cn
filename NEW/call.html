@@ -90,13 +90,7 @@
 						角色故事数据(魔法纪录)
 					</a>
 				</li>
-				<li>
-					<a href="https://pd.qq.com/s/3z37njq6g?b=9" target="_blank">群928098518</a>
-				</li>
-				<li>
-					<a href="https://space.bilibili.com/625821" target="_blank">B站主页找教程</a>
-				</li>
-				<li><a href="https://github.com/HiiragiNemu/magireco-call-search-cn">源文件(GitHub)forked from chiki3839</a></li>
+				<li><a href="https://github.com/chiki3839/">源文件(GitHub)</a></li>
 			</ul>
 		</header>
 		<!-- 汉堡菜单结束 -->
@@ -610,7 +604,6 @@
 <div id="heightChartContainer" style="display: none; width: 90%; margin: 20px auto;">
     <!-- 身高图表将由JavaScript动态生成在这里 -->
 </div>
-<div id="chart-tooltip" class="chart-tooltip"></div>
 				<BR>
 				画布尺寸：宽
 				<input type="number" value="90" style="width:60px" id="canvasWidth">
@@ -621,7 +614,6 @@
 				<input type="button" value="设置" onClick="canvasSet();">
 
 				<a href="" id="canvasImgLink" download="">保存为图片</a>
-				<button id="saveHeightChartBtn" style="display: none;" onclick="saveHeightChart()">保存身高图</button>
 				<BR>
 				<!-- X(Twitter)分享按钮实现 -->
 				<a href="https://twitter.com/share?ref_src=twsrc%5Etfw&hashtags=マギレコ,まどドラ" class="twitter-share-button"
@@ -1147,42 +1139,21 @@ function drawNet_Table() {
 let isHeightView = false; 
 
 // --- 主切换函数 ---
-// === 用下面的代码，完整替换旧的 toggleHeightView 函数 ===
 function toggleHeightView(show) {
     const networkContainer = document.getElementById('mynetwork').parentElement;
     const heightContainer = document.getElementById('heightChartContainer');
     const tableContainer = document.getElementById('mytable');
     
-    // --- 新增的按钮控制逻辑 ---
-    const originalSaveLink = document.getElementById('canvasImgLink');
-    const heightChartSaveBtn = document.getElementById('saveHeightChartBtn');
-    const twitterBtn = document.querySelector('.twitter-share-button'); // 获取推特按钮
-    
     isHeightView = show;
 
     if (isHeightView) {
-        // 显示身高图时
         networkContainer.style.display = 'none';
         tableContainer.style.display = 'none';
         heightContainer.style.display = 'block';
-        
-        // 隐藏旧的保存按钮和推特按钮
-        originalSaveLink.style.display = 'none';
-        if(twitterBtn) twitterBtn.style.display = 'none';
-        // 显示新的保存按钮
-        heightChartSaveBtn.style.display = 'inline-block';
-
     } else {
-        // 显示关系图时
         heightContainer.style.display = 'none';
         networkContainer.style.display = 'block';
         tableContainer.style.display = 'block';
-
-        // 显示旧的保存按钮和推特按钮
-        originalSaveLink.style.display = 'inline-block';
-        if(twitterBtn) twitterBtn.style.display = 'inline-block';
-        // 隐藏新的保存按钮
-        heightChartSaveBtn.style.display = 'none';
     }
 }
 
@@ -1330,87 +1301,32 @@ function displayHeightChart(dataSource, mode) {
             categories = ['マギアユニオン', '時女一族', 'プロミストブラッド', 'ネオマギウス', 'フォークロア', 'ピュエラケア', 'ヒストリア'];
             categoryLabels = ['神滨魔法联盟', '时女一族', 'PROMISED BLOOD', 'Neo-Magius', 'Folklore of 0', 'Puella Care', '历史篇'];
             break;
-// === 开始替换 ===
-case 'attribute': { // 使用大括号以确保变量作用域安全
-    // 1. 建立一个临时的、包含所有翻译的“万能词典”
-    const translationMap = new Map([
-        ...schoolTranslations.entries(), // 您已有的学校翻译
-        // 手动加入组织翻译
-        ['マギアユニオン', '神滨魔法联盟'], ['時女一族', '时女一族'],
-        ['プロミストブラッド', 'PROMISED BLOOD'], ['ネオマギウス', 'Neo-Magius'],
-        ['フォークロア', 'Folklore of 0'], ['ピュエラケア', 'Puella Care'],
-        ['ヒストリア', '历史篇'],
-        // 手动加入年级翻译
-        ['小学生', '小学生'], ['中1', '初一'], ['中2', '初二'], ['中3', '初三'],
-        ['高1', '高一'], ['高2', '高二'], ['高3', '高三'], ['中学生', '初中生'],
-        ['高校生', '高中生'], ['その他', '其他'], ['学年不明', '年级不详'],
-        // 手动加入其他翻译
-        ['まどマギ', '魔法少女小圆'], ['マギレコ', '魔法纪录'], ['まどドラ', '小圆前辈']
-    ]);
-
-    // 2. 获取所有被勾选的复选框的value（日文键），存入categories
-    const attributeCheckboxes = document.querySelectorAll('#at_form input[type="checkbox"]:checked');
-    attributeCheckboxes.forEach(cb => categories.push(cb.value));
-    if (categories.length === 0) categories = ['未勾选任何属性'];
-
-    // 3. 核心修正：遍历categories，用万能词典查找中文名来创建categoryLabels
-    // 如果在词典里找不到，就用日文键本身作为标签
-    categoryLabels = categories.map(key => translationMap.get(key) || key);
-    break;
-}
-// === 结束替换 ===
+        case 'attribute':
+            const attributeCheckboxes = document.querySelectorAll('#at_form input[type="checkbox"]:checked');
+            attributeCheckboxes.forEach(cb => categories.push(cb.value));
+            if (categories.length === 0) categories = ['未勾选任何属性'];
+            categoryLabels = categories;
+            break;
     }
 
     const chartGrid = document.getElementById('chartGridAndPoints');
-	const heightChartArea = document.getElementById('heightChartArea');
     const xAxisContainer = document.getElementById('xAxisContainer');
   document.getElementById('yAxisContainer').innerHTML = ''; // 保留这行来清理外部容器
-  const createYAxisLabels = (positionProps) => {
-    for (let h = 180; h >= 120; h -= 5) {
-        const label = document.createElement('span');
-        label.textContent = `${h}cm`;
-        
-        // --- 应用通用样式 ---
-        label.style.position = 'absolute';
-        label.style.zIndex = '5'; // 确保标签在图标之上
-        const yPosPercent = ((h - 120) / (180 - 120)) * 100;
-        label.style.bottom = `${yPosPercent}%`;
-        
-        // --- 应用传入的定位样式 ---
-        let transformValue = 'translateY(-50%)'; // 默认垂直居中
-        if (positionProps.left) {
-            label.style.left = positionProps.left;
-            if (positionProps.left === '50%') {
-                // 如果是居中，需要再加一个水平平移
-                transformValue = 'translate(-50%, -50%)'; 
-            }
-        }
-        if (positionProps.right) {
-            label.style.right = positionProps.right;
-        }
-        label.style.transform = transformValue;
-
-        // 为了避免中间的标签与角色图标重叠，给它加个背景
-        if (positionProps.left === '50%') {
-            label.style.backgroundColor = 'rgba(255, 255, 255, 0.75)';
-            label.style.padding = '0 3px';
-            label.style.borderRadius = '3px';
-        }
-        
-        chartGrid.appendChild(label);
-    }
-};
-
-// 2. 调用三次生成器，分别创建左、中、右三组刻度
-createYAxisLabels({ left: '5px' });         // 最左侧 (保留)
-createYAxisLabels({ left: '50%' });         // 正中间
-createYAxisLabels({ right: '5px' });        // 最右侧
+for (let h = 180; h >= 120; h -= 5) {
+    const label = document.createElement('span');
+    label.textContent = `${h}cm`;
+    label.style.position = 'absolute';
+    label.style.left = '5px'; // 恢复：左对齐
+    const yPosPercent = ((h - 120) / (180 - 120)) * 100;
+    label.style.bottom = `${yPosPercent}%`; // 恢复：移除错误的-7px
+    label.style.transform = 'translateY(-50%)'; // 恢复：使用transform来垂直居中对齐
+    chartGrid.appendChild(label); // 恢复：将刻度标签写回到图表网格内部
+}
     const columnMinWidth = 120;
     const totalGridWidth = categories.length * columnMinWidth;
     chartGrid.style.minWidth = `${totalGridWidth}px`;
     chartGrid.style.gridTemplateColumns = `repeat(${categories.length}, 1fr)`;
     xAxisContainer.style.minWidth = `${totalGridWidth}px`;
-	heightChartArea.style.minWidth = `${totalGridWidth}px`;
     xAxisContainer.style.gridTemplateColumns = `repeat(${categories.length}, 1fr)`;
     categoryLabels.forEach(label => {
         xAxisContainer.innerHTML += `<div class="x-axis-label">${label}</div>`;
@@ -1467,9 +1383,8 @@ createYAxisLabels({ right: '5px' });        // 最右侧
 
             let schoolAttr = [...attributes].find(attr => schoolTranslations.has(attr)) || '不明';
             let translatedSchool = schoolTranslations.get(schoolAttr) || schoolAttr;
-			const gradeStr = details.get("学年") || "学年不详";
-			point.title = `${shortName}\n身高: ${details.get("身高")}\n年龄: ${ageStr}\n学年: ${gradeStr}\n学校: ${translatedSchool}`;
-			            point.innerHTML = `<img src="./img/png/${shortName}.png" alt="${shortName}">`;
+            point.title = `${shortName}\n身高: ${details.get("身高")}\n年龄: ${ageStr}\n学校: ${translatedSchool}`;
+            point.innerHTML = `<img src="./img/png/${shortName}.png" alt="${shortName}">`;
             
             chartGrid.appendChild(point);
             columnCounters.set(targetCategory, counter + 1);
@@ -1540,98 +1455,9 @@ const barWrapper = chartGrid.querySelectorAll('.grid-column')[catIndex];        
             barWrapper.appendChild(bar);
         });
     }
-	// 1. 在所有图表DOM都已生成完毕后，再安全地获取元素
-const tooltip = document.getElementById('chart-tooltip');
-const chartContainer = document.getElementById('heightChartContainer'); // 重新获取container
-const allPoints = chartContainer.querySelectorAll('.chart-point');
-
-// 2. 定义一个函数来显示提示框
-const showTooltip = (pointElement) => {
-    tooltip.innerHTML = pointElement.title;
-    
-    const rect = pointElement.getBoundingClientRect();
-    tooltip.style.display = 'block';
-    // 修正位置计算，使其相对于视口，更稳定
-    tooltip.style.left = `${rect.left}px`;
-    tooltip.style.top = `${rect.bottom + 5}px`;
-};
-
-// 3. 定义一个函数来隐藏提示框
-const hideTooltip = () => {
-    tooltip.style.display = 'none';
-};
-
-// 4. 为每个角色头像绑定触摸/点击事件
-allPoints.forEach(point => {
-    point.addEventListener('click', (e) => {
-        e.stopPropagation(); // 阻止事件冒泡
-        showTooltip(e.currentTarget);
-    });
-});
-
-// 5. 为图表容器绑定一个全局的点击事件，用于隐藏提示框
-chartContainer.addEventListener('click', (e) => {
-    // 只有当点击的不是角色头像时，才隐藏
-    if (!e.target.closest('.chart-point')) {
-        hideTooltip();
-    }
-});
-}
-function saveHeightChart() {
-    const btn = document.getElementById('saveHeightChartBtn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '正在生成...';
-    btn.disabled = true;
-
-    // --- 1. 获取所有需要的元素 ---
-    const wrapper = document.getElementById('heightChartWrapper');
-    const yAxis = document.getElementById('yAxisContainer');
-    const scrollArea = document.getElementById('chart-scroll-area');
-
-    // --- 2. 保存原始状态 ---
-    const originalWrapperStyle = wrapper.style.cssText;
-    const originalScrollLeft = scrollArea.scrollLeft;
-
-    // --- 3. 核心技巧：临时修改样式以“展开”所有内容 ---
-    // 计算出包含Y轴和全部滚动内容的总宽度
-    const fullWidth = yAxis.offsetWidth + scrollArea.scrollWidth;
-    wrapper.style.width = `${fullWidth}px`;
-    // 阻止flex布局可能产生的压缩
-    wrapper.style.flex = 'none'; 
-    // 确保我们从最左边开始截图
-    scrollArea.scrollLeft = 0;
-
-    // --- 4. 使用 setTimeout 等待浏览器应用新样式并重绘 ---
-    setTimeout(() => {
-        // 截图目标是整个 wrapper，这样才能包含左侧的Y轴
-        html2canvas(wrapper, { 
-            useCORS: true,
-            allowTaint: true
-            // 注意：这里不再需要 width 和 height，因为我们已经把元素本身变大了
-        }).then(canvas => {
-            const tempLink = document.createElement('a');
-            tempLink.href = canvas.toDataURL('image/png');
-            tempLink.download = '身高分布图_完整版.png';
-            
-            document.body.appendChild(tempLink);
-            tempLink.click();
-            document.body.removeChild(tempLink);
-
-        }).catch(err => {
-            console.error("生成身高图失败:", err);
-            alert("抱歉，生成图片时遇到错误。");
-            
-        }).finally(() => {
-            // --- 5. 关键：无论成功失败，都必须恢复原始状态 ---
-            wrapper.style.cssText = originalWrapperStyle; // 一键恢复所有内联样式
-            scrollArea.scrollLeft = originalScrollLeft; // 恢复滚动条位置
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        });
-    }, 100); // 给出100毫秒的延迟，确保最复杂的图表也能完成重绘
 }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 </body>
 
 </html>

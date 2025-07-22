@@ -1,0 +1,176 @@
+body {
+    margin: 0;
+    font-family: "Futura", Helvetica, sans-serif;
+}
+
+/* Navbar & Navmenu color */
+:root {
+    --background-navbar: #fc6ab1;
+}
+
+.header {
+    background: var(--background-navbar);
+    position: relative;
+    width: 100%;
+    /* height: 52px; */
+    height: 52px;
+}
+
+/* Nav items */
+.menu {
+    list-style: none;
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 0;
+    margin-top: 52px;
+    /* margin-top: 45px; */
+    padding: 0 0 15px 0;
+    clear: both;
+    background: var(--background-navbar);
+    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
+    transform: scale(1, 0);
+    transform-origin: top;
+    z-index: 10000;
+}
+
+/* Hamburger menu button */
+.menu-btn:checked~.menu {
+    transform: scale(1, 1);
+    transform-origin: top;
+    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
+}
+
+/* Hamburger menu text */
+.menu a {
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0px;
+    font-size: 16px;
+    text-transform: capitalize;
+    color: #fdf1f7;
+    opacity: 0;
+}
+
+.menu li {
+    border-top: 1px solid #fc6ab1;
+    padding: 2px 0;
+    margin: 0 50px;
+    opacity: 0;
+    transition: 0.5s;
+    width: 100%;
+}
+
+.menulabel {
+    color: #ffffff;
+    font-size: 22px;
+    letter-spacing: 8px;
+}
+
+.thismenu {
+    color: #ac4878;
+}
+
+.menu-btn:checked~.menu a,
+.menu-btn:checked~.menu li {
+    opacity: 1;
+    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.2s;
+}
+
+.menu-btn {
+    display: none;
+}
+
+.menu-icon {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    padding: 24px 14px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.navicon {
+    background: #ffffff;
+    display: block;
+    height: 3px;
+    width: 26px;
+    position: relative;
+    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
+}
+
+.navicon:before,
+.navicon:after {
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: #ffffff;
+    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
+}
+
+.navicon:before {
+    top: 9px;
+}
+
+.navicon:after {
+    bottom: 9px;
+}
+
+/* Hamburger Menu Animation Start */
+.menu-btn:checked~.menu-icon .navicon:before {
+    transform: rotate(-45deg);
+}
+
+.menu-btn:checked~.menu-icon .navicon:after {
+    transform: rotate(45deg);
+}
+
+.menu-btn:checked~.menu-icon:not(.steps) .navicon:before {
+    top: 0;
+}
+
+.menu-btn:checked~.menu-icon:not(.steps) .navicon:after {
+    bottom: 0;
+}
+
+.menu-btn:checked~.menu-icon .navicon {
+    background: rgba(0, 0, 0, 0);
+    transition: 0.2192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
+}
+
+/* Hamburger Menu Animation End */
+
+/* Navbar Container */
+.navtext-container {
+    width: 100%;
+    height: 52px;
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Navbar Text */
+.navtext {
+    position: absolute;
+    text-transform: uppercase;
+    color: #ffffff;
+    font-size: 20px;
+}
+
+/* PC用 */
+@media(min-width:751px) {
+    .navtext {
+        font-size: 20px;
+        letter-spacing: 4px;
+    }
+}
+
+/* スマホ用 */
+@media(max-width:750px) {
+    .navtext {
+        font-size: 16px;
+    }
+}

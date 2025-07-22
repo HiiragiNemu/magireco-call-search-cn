@@ -1,8 +1,12 @@
-﻿/* 共通設定 */
+/* 共通設定 */
 body {
-  font-family: sans-serif;
+  font-family: "Futura", Helvetica, sans-serif;
   /*font-size: small;*/
   -webkit-text-size-adjust: 100%;
+}
+
+div.IndexMainFooterSpace {
+  margin: 0 0 250px 0;
 }
 
 #wrapper {
@@ -51,11 +55,11 @@ select {
 }
 
 #girltable tr:nth-child(odd) {
-  background-color: #ffcce5;
+  background-color: #fcdcec;
 }
 
 #girltable tr:nth-child(even) {
-  background-color: #efffff;
+  background-color: #fcf2f7;
 }
 
 #girltable tr {
@@ -68,6 +72,19 @@ td {
 }
 
 /* 呼びかけ一覧tableのスタイルここまで */
+
+/* 呼びかけの画像保存リンクのスタイル */
+#canvasImgLink {
+  font-size: larger;
+  background-color: #fdd8ea;
+  border: 2px solid #fc6ab1;
+  border-radius: 5px;
+  margin: 0px 10px;
+  padding: 2px 2px;
+  color: #333;
+  text-decoration: none;
+}
+
 
 div.caution {
   font-size: small;
@@ -88,7 +105,7 @@ img.headerBanner {
   width: 100%;
   height: 100%;
   padding: 0px;
-  margin: 0px;
+  margin: 2px 0px 0px 0px;
   border-style: none;
 }
 
@@ -103,14 +120,18 @@ dl.searchOption {
   padding: 0;
 }
 
+
 dl.searchOption dt {
   position: relative;
   padding-left: 1.2em;
+
 }
+
 
 dl.searchOption dt:not(:first-child) {
   margin: 0.3em 0 0 0;
 }
+
 
 dl.searchOption dt::before {
   position: absolute;
@@ -253,6 +274,7 @@ h2.at_resultHeader {
   background-color: #fdd8ea;
   border: 2px solid #fc6ab1;
   border-radius: 7px;
+  margin: 7px 0px;
   -webkit-appearance: none;
 }
 
@@ -279,6 +301,7 @@ h2.at_resultHeader {
 div.magicalgirl {
   display: inline-flex;
   flex-wrap: wrap;
+  margin-left: 4px;
 }
 
 /* 魔法少女選択のboxの仕様 */
@@ -334,6 +357,11 @@ label.girlbox:hover::after {
   background-color: #ffffdb;
 }
 
+/*ヒストリアカラー*/
+.hisColor {
+  background-color: #f8a2ea;
+}
+
 /*うめ先生デザイン別バージョンキャラ*/
 .umeOtherColor {
   background-color: #dbdbff;
@@ -371,7 +399,7 @@ label.girlbox:hover::after {
 
 /*コラボキャラ*/
 .collaboColor {
-  background-color: #ffeddb;
+  background-color: #ffe5ab;
 }
 
 /*モブキャラ*/
@@ -382,6 +410,47 @@ label.girlbox:hover::after {
 /*未実装キャラ*/
 .unimpColor {
   background-color: #cacaca;
+}
+
+/*呼びかけ用カラー*/
+/*ユニオンカラー*/
+.unionColor {
+  background-color: #ffc8d4;
+}
+
+/*時女一族カラー*/
+.tokimeColor {
+  background-color: #a7eca7;
+}
+
+/*ミスドカラー*/
+.misdColor {
+  background-color: #f59292;
+}
+
+/*ネギウスカラー*/
+.negiusColor {
+  background-color: #bcb7ff;
+}
+
+/*里見家カラー*/
+.satomiColor {
+  background-color: #fbfcb6;
+}
+
+/*ピュエラケアカラー*/
+.pueraColor {
+  background-color: #f8f5e3;
+}
+
+/*水名カラー*/
+.mizunaColor {
+  background-color: #faacf6;
+}
+
+/*中央カラー*/
+.chuoColor {
+  background-color: #98faed;
 }
 
 /*魔法少女選択の名前フォントの大きさ*/
@@ -531,6 +600,8 @@ fieldset {
 .magicalgirl input[type="checkbox"]:checked {
   filter: brightness(90%);
   filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.8));
+  will-change: filter;
+  /* iOSでフィルタ実行が遅くなる対策。リソースを使う */
 }
 
 :focus {
@@ -646,28 +717,42 @@ span.specialTime {
 }
 
 tr.メイン【第1部】 {
-  background: #6C6691;
+  background: #877099;
   color: white;
   font-weight: bold;
   text-align: center;
 }
 
 tr.メイン【第2部】 {
-  background: #6C6691;
+  background: #877099;
   color: white;
   font-weight: bold;
   text-align: center;
 }
 
+tr.scene0 {
+  background: #02a54c;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+tr.ピュエラ・ヒストリア {
+  background: #ffff7a;
+  color: rgb(80, 80, 80);
+  font-weight: bold;
+  text-align: center;
+}
+
 tr.アナザー【第1部】 {
-  background: #4C8785;
+  background: #4c9482;
   color: white;
   font-weight: bold;
   text-align: center;
 }
 
 tr.アナザー【第2部】 {
-  background: #4C8785;
+  background: #4c9482;
   color: white;
   font-weight: bold;
   text-align: center;
@@ -696,14 +781,14 @@ tr.ミラーズ {
 
 tr.イベント {
   background: #ffff7a;
-  color: black;
+  color: rgb(80, 80, 80);
   font-weight: bold;
   text-align: center;
 }
 
 tr.バトルミュージアム {
   background: hsl(128, 91%, 87%);
-  color: black;
+  color: rgb(80, 80, 80);
   font-weight: bold;
   text-align: center;
 }
@@ -715,23 +800,53 @@ tr.スペシャル {
   text-align: center;
 }
 
-tr.EDムービー {
+tr.メモリア {
+  background: #fa2991;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+tr.シール図鑑 {
+
+  background: #f8f892;
+  color: rgb(80, 80, 80);
+  font-weight: bold;
+  text-align: center;
+}
+
+tr.第1部EDムービー {
   background: #060A1F;
   color: white;
   font-weight: bold;
   text-align: center;
 }
 
+tr.第2部EDムービー {
+  background: #060A1F;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+
 tr.アニメ【1st】 {
   background: #ff7fbf;
-  color: black;
+  color: rgb(59, 59, 59);
   font-weight: bold;
   text-align: center;
 }
 
 tr.アニメ【2nd】 {
   background: #ff7fbf;
-  color: black;
+  color: rgb(59, 59, 59);
+  font-weight: bold;
+  text-align: center;
+}
+
+tr.アニメ【Final】 {
+  background: #ff7fbf;
+  color: rgb(59, 59, 59);
   font-weight: bold;
   text-align: center;
 }
@@ -912,4 +1027,174 @@ tr.gachaboder td {
   border-radius: 5px;
   border: 1px solid rgb(70, 70, 70);
   margin-top: 1px;
+}
+
+/* --- 身高图表专属样式 --- */
+#heightChartContainer {
+    position: relative;
+    background-color: #fdfdfd;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#chartControlPanel {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+}
+#chartControlPanel .note {
+    font-size: smaller;
+    color: #555;
+    margin-left: 10px;
+}
+#heightChartWrapper {
+    display: flex;
+    width: 100%;
+    height: 700px; /* 增加高度 */
+    overflow-x: auto;
+    position: relative;
+}
+#yAxisContainer {
+    position: relative; /* 设定为定位上下文，这是必须的 */
+    flex-shrink: 0;
+    width: 50px; /* 给予一个固定的宽度 */
+    padding: 0;
+    font-size: 12px;
+    color: #333;
+    background-color: #f0f0f0;
+}
+#heightChartArea {
+   flex-grow: 1;
+    position: relative;
+    /* 修正：添加两种背景图像，分别用于1cm和5cm的刻度线 */
+    background-image:
+        linear-gradient(to top, #e0e0e0 1px, transparent 1px), /* 1cm 刻度的细线 */
+/* 用下面这行代码替换上面那一行 */
+linear-gradient(to top, #35001f 2px, transparent 2px); /* 5cm 刻度的加重标记线 */    /* 修正：设置正确的background-size以生成水平重复的线条 */
+    background-size:
+        100% 1.66667%, /* 100% / (60cm / 1cm) = 1.66667% */
+        100% 8.33333%; /* 100% / (60cm / 5cm) = 8.33333% */
+}
+#chartGridAndPoints {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+.grid-column {
+    border-right: 1px dashed #ccc;
+}
+#xAxisContainer {
+    display: grid;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ccc;
+    width: 100%;
+}
+.x-axis-label {
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 12px;
+    border-right: 1px solid #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.chart-point {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    transform: translateX(-50%); /* 水平居中 */
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.chart-point:hover {
+    transform: translateX(-50%) scale(1.2);
+    z-index: 100;
+}
+.chart-point img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #f85ab6;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.chart-point::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 20px; /* 从图标中心开始 */
+    width: 100vw;
+    height: 1px;
+    background-image: linear-gradient(to left, #f85ab6, #f85ab6 5px, transparent 5px, transparent 10px);
+    background-size: 10px 1px;
+    z-index: -1;
+}
+#chart-scroll-area {
+    flex-grow: 1;
+    overflow-x: auto; /* 使其可以水平滚动 */
+    display: flex;
+    flex-direction: column;
+}
+
+#heightChartArea {
+    flex-grow: 1; /* 让图表区域填满剩余垂直空间 */
+}
+/* --- 为身高图表的条形图模式新增 --- */
+.height-bar {
+  align-self: end; /* 将条形图与网格单元底部对齐 */
+  width: 75%; /* 条形图相对于其列的宽度 */
+  margin: 0 auto; /* 在列内居中条形图 */
+  background-color: #f85ab6; /* 使用一个主题颜色作为条形图的颜色 */
+  border-top: 2px solid #c03a8a;
+  border-radius: 4px 4px 0 0; /* 圆角顶部 */
+  transition: height 0.5s ease-in-out; /* 为高度变化添加动画效果 */
+  position: relative; /* 用于添加数据标签 */
+}
+
+.height-bar::after {
+  content: attr(data-label); /* 显示来自 data-label 属性的值 */
+  position: absolute;
+  top: -20px; /* 将标签定位在条形图的上方 */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+/* --- 自定义图表提示框样式 --- */
+.chart-tooltip {
+  position: fixed; /* 固定定位，确保在最上层 */
+  display: none; /* 默认隐藏 */
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line; /* 允许 \n 换行 */
+  z-index: 10000;
+  pointer-events: none; /* 穿透鼠标事件，不影响下层元素 */
+  transition: opacity 0.2s;
+  text-align: left;
+}
+/* --- 为新增的“保存身高图”按钮添加样式 --- */
+#saveHeightChartBtn {
+  font-size: larger;
+  background-color: #fdd8ea;
+  border: 2px solid #fc6ab1;
+  border-radius: 5px;
+  margin: 0px 10px;
+  padding: 2px 2px;
+  color: #333;
+  cursor: pointer;
+  -webkit-appearance: none; /* 移除移动端默认样式 */
+}
+
+#saveHeightChartBtn:active {
+  background-color: #fc6ab1; /* 添加点击效果 */
 }

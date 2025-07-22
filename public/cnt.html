@@ -1,366 +1,412 @@
 <!DOCTYPE html>
-<html lang="ja">
+
+<html lang="zh-CN">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="ゲーム「マギアレコード」の、キャラクタ同士の対面回数をランキング表示するツールを公開しています。">
-  <base target="_top">
-  <link rel="icon" type="image/x-icon" href="./img/webp/ファビコン.webp">
-  <link rel="apple-touch-icon" sizes="180x180" href="./img/webp/apple_fabicon.webp">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="公开一个以排行榜形式显示游戏《魔法纪录》中角色之间见面次数的工具。">
+<base target="_top">
+<link rel="icon" type="image/x-icon" href="./img/webp/ファビコン.webp">
+<link rel="apple-touch-icon" sizes="180x180" href="./img/webp/apple_fabicon.webp">
 
-  <title>マギレコ魔法少女同席ランキング</title>
+<title>魔法纪录魔法少女同席次数排行榜</title>
 
-  <!-- CSSファイル読み出し -->
-  <link rel="stylesheet" href="./myfile/mycss.css">
-  <link rel="stylesheet" href="./myfile/charaBox_webp.css">
-  <link rel="stylesheet" href="./myfile/graph.css">
-  <!-- チェック前でもアイコンが暗くならないようにcssを上書き -->
-  <style>
-    .magicalgirl input[type="checkbox"] {
-      filter: brightness(90%);
-    }
+<!-- 加载CSS文件 -->
 
-    .magicalgirl input[type="checkbox"]:checked {
-      filter: brightness(90%);
-      filter: drop-shadow(0px rgba(0, 0, 0, 0));
-    }
-  </style>
+<link rel="stylesheet" href="./myfile/mycss.css">
+<link rel="stylesheet" href="./myfile/charaBox_webp.css">
+<link rel="stylesheet" href="./myfile/graph.css">
+<!-- 覆盖CSS以防止图标在选中前变暗 -->
+<style>
+.magicalgirl input[type="checkbox"] {
+filter: brightness(90%);
+}
 
-  <!-- 上に進む、下に進むボタンの設置 -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <!-- 魔法少女絞り込みのjavascriptメソッドを読む-->
-  <script src="./myfile/mgirlNarrow.js"></script>
+Generated code
+.magicalgirl input[type="checkbox"]:checked {
+  filter: brightness(90%);
+  filter: drop-shadow(0px rgba(0, 0, 0, 0));
+}
+
+</style>
+
+<!-- 设置向上、向下滚动按钮 -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<!-- 读取魔法少女筛选的javascript方法 -->
+<script src="./myfile/mgirlNarrow.js"></script>
 </head>
 
 <body>
-  <H2 class="title">マギレコ魔法少女同席回数ランキング</H2>
-  <a href="index.html">マギレコキャラクタストーリー検索</a>&ensp;
-  <a href="https://drive.google.com/file/d/1sLTb1mObjbs7gwzfyHvMsGpEvexQLjN9/view?usp=sharing">
-    GML形式データファイル</a>
+    <H2 class="title">魔法纪录魔法少女同席次数排行榜</H2>
+    <a href="index.html">魔法纪录角色故事搜索</a>&ensp;
+    <a href="https://drive.google.com/file/d/1sLTb1mObjbs7gwzfyHvMsGpEvexQLjN9/view?usp=sharing">
+        GML格式数据文件
+    </a>
 
-  <p class="top">
-    キャラクタを選択すると、同席した魔法少女の回数(話数)をランキング形式で表示します。<BR>
-  </p>
-  <!-- 魔法少女絞り込みテキスト入力実装 -->
-  <input type="text" spellcheck="false" class="ndownword" name="ndownword" placeholder="かなカナ漢字名前で絞り込み。スペースでOR。削除で戻る" id="ndownword1" oninput="mgirlNarrow('call', 'ndownword1')">
-  <input type="button" value="絞り込みリセット" class="ndownReset" onClick="ndownReset('call')">
-  <!-- 魔法少女チェックボックス実装 -->
-  <form name="magicalgirl">
-    <div class="magicalgirl">
+    <p class="top">
+        选择一个角色，将以排行榜的形式显示共同出场的魔法少女的次数（话数）。<BR>
+    </p>
+    <!-- 实现魔法少女筛选文本输入 -->
+    <input type="text" spellcheck="false" class="ndownword" name="ndownword" placeholder="按平假名、片假名、汉字名称筛选。空格表示或。删除以返回" id="ndownword1" oninput="mgirlNarrow('call', 'ndownword1')">
+    <input type="button" value="重置筛选" class="ndownReset" onClick="ndownReset('call')">
+    <!-- 实现魔法少女复选框 -->
+    <form name="magicalgirl">
+        <div class="magicalgirl">
 
-      <label class="girlbox umeColor" data-kana="たまき いろは"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="環いろは" value="環いろは"><br>環いろは★</label>
-      <label class="girlbox umeColor" data-kana="ななみ やちよ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="七海やちよ" value="七海やちよ"><br>七海やちよ★</label>
-      <label class="girlbox umeColor" data-kana="ゆい つるの"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="由比鶴乃" value="由比鶴乃"><br>由比鶴乃★</label>
-      <label class="girlbox umeColor" data-kana="ふたば さな"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="二葉さな" value="二葉さな"><br>二葉さな★</label>
-      <label class="girlbox umeColor" id="feri" data-kana="みつき ふぇりしあ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="深月フェリシア" value="深月フェリシア"><br>深月<br>フェリシア★</label>
-      <label class="girlbox umeColor" data-kana="たまき うい"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="環うい" value="環うい"><br>環うい</label>
-      <label class="girlbox umeColor" data-kana="ちいさなきゅぅべぇ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="小さなキュゥべえ" value="小さなキュゥべえ"><br>小さなキュゥべえ</label>
-      <label class="girlbox umeColor" data-kana="あずさ みふゆ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="梓みふゆ" value="梓みふゆ"><br>梓みふゆ★</label>
-      <label class="girlbox umeColor" data-kana="さとみ とうか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="里見灯花" value="里見灯花"><br>里見灯花★</label>
-      <label class="girlbox umeColor" data-kana="ひいらぎ ねむ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="柊ねむ" value="柊ねむ"><br>柊ねむ★</label>
-      <label class="girlbox umeColor" data-kana="ありな ぐれい"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="アリナ・グレイ" value="アリナ・グレイ"><br>アリナ・<br>グレイ★</label>
-      <label class="girlbox umeColor" data-kana="みその かりん"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="御園かりん" value="御園かりん"><br>御園かりん</label>
-      <label class="girlbox umeColor" data-kana="みなみ れな"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="水波レナ" value="水波レナ"><br>水波レナ★</label>
-      <label class="girlbox umeColor" data-kana="とがめ ももこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="十咎ももこ" value="十咎ももこ"><br>十咎ももこ★</label>
-      <label class="girlbox umeColor" data-kana="あきの かえで"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="秋野かえで" value="秋野かえで"><br>秋野かえで★</label>
-      <label class="girlbox umeColor" data-kana="いずみ かなぎ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="和泉十七夜" value="和泉十七夜"><br>和泉十七夜★</label>
-      <label class="girlbox umeColor" data-kana="やくも みたま"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="八雲みたま" value="八雲みたま"><br>八雲<br>みたま★</label>
-      <label class="girlbox umeColor" data-kana="あまね つくよ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="天音月夜" value="天音月夜"><br>天音月夜★</label>
-      <label class="girlbox umeColor" data-kana="あまね つかさ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="天音月咲" value="天音月咲"><br>天音月咲★</label>
-      <label class="girlbox umeColor" data-kana="みやこ ひなの"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="都ひなの" value="都ひなの"><br>都ひなの</label>
-      <label class="girlbox umeColor" data-kana="まんねんざくらのうわさ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="万年桜のウワサ" value="万年桜のウワサ"><br>万年桜の<br>ウワサ★</label>
-      <label class="girlbox umeColor" data-kana="みどり りょう"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="観鳥令" value="観鳥令"><br>観鳥令</label>
-      <label class="girlbox umeColor" data-kana="まきの いくみ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="牧野郁美" value="牧野郁美"><br>牧野郁美</label>
-      <label class="girlbox umeColor" data-kana="たつき あすか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="竜城明日香" value="竜城明日香"><br>竜城明日香</label>
-      <label class="girlbox umeColor" data-kana="みなぎ ささら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美凪ささら" value="美凪ささら"><br>美凪ささら</label>
+            Generated code
+            <label class="girlbox umeColor" data-pinyin="huán cǎi yǔ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="环彩羽" value="环彩羽"><br>环彩羽★</label>
+            <label class="girlbox umeColor" data-pinyin="qī hǎi bā qiān dài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="七海八千代" value="七海八千代"><br>七海八千代★</label>
+            <label class="girlbox umeColor" data-pinyin="yóu bǐ hè nǎi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="由比鹤乃" value="由比鹤乃"><br>由比鹤乃★</label>
+            <label class="girlbox umeColor" data-pinyin="èr yè shā nài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="二叶莎奈" value="二叶莎奈"><br>二叶莎奈★</label>
+            <label class="girlbox umeColor" id="feri" data-pinyin="shēn yuè fēi lì xī yà"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="深月菲莉希亚" value="深月菲莉希亚"><br>深月<br>菲莉希亚★</label>
+            <label class="girlbox umeColor" data-pinyin="huán yōu"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="环忧" value="环忧"><br>环忧</label>
+            <label class="girlbox umeColor" data-pinyin="xiǎo qiū bǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="小丘比" value="小丘比"><br>小丘比</label>
+            <label class="girlbox umeColor" data-pinyin="zǐ měi dōng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="梓美冬" value="梓美冬"><br>梓美冬★</label>
+            <label class="girlbox umeColor" data-pinyin="lǐ jiàn dēng huā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="里见灯花" value="里见灯花"><br>里见灯花★</label>
+            <label class="girlbox umeColor" data-pinyin="zhōng yīn mèng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="柊音梦" value="柊音梦"><br>柊音梦★</label>
+            <label class="girlbox umeColor" data-pinyin="ā lì nà gé léi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="阿莉娜·格雷" value="阿莉娜·格雷"><br>阿莉娜·<br>格雷★</label>
+            <label class="girlbox umeColor" data-pinyin="yù yuán huā lǐn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="御园花凛" value="御园花凛"><br>御园花凛</label>
+            <label class="girlbox umeColor" data-pinyin="shuǐ bō líng nài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="水波玲奈" value="水波玲奈"><br>水波玲奈★</label>
+            <label class="girlbox umeColor" data-pinyin="shí jiù táo zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="十咎桃子" value="十咎桃子"><br>十咎桃子★</label>
+            <label class="girlbox umeColor" data-pinyin="qiū yě fēng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="秋野枫" value="秋野枫"><br>秋野枫★</label>
+            <label class="girlbox umeColor" data-pinyin="hé quán shí qī yè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="和泉十七夜" value="和泉十七夜"><br>和泉十七夜★</label>
+            <label class="girlbox umeColor" data-pinyin="bā yún yù hún"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="八云御魂" value="八云御魂"><br>八云<br>御魂★</label>
+            <label class="girlbox umeColor" data-pinyin="tiān yīn yuè yè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="天音月夜" value="天音月夜"><br>天音月夜★</label>
+            <label class="girlbox umeColor" data-pinyin="tiān yīn yuè xiào"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="天音月咲" value="天音月咲"><br>天音月咲★</label>
+            <label class="girlbox umeColor" data-pinyin="dōu chú nǎi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="都雏乃" value="都雏乃"><br>都雏乃</label>
+            <label class="girlbox umeColor" data-pinyin="wàn nián yīng zhī yáo"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="万年樱之谣" value="万年樱之谣"><br>万年樱之<br>谣★</label>
+            <label class="girlbox umeColor" data-pinyin="guān niǎo lìng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="观鸟令" value="观鸟令"><br>观鸟令</label>
+            <label class="girlbox umeColor" data-pinyin="mù yě yù měi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="牧野郁美" value="牧野郁美"><br>牧野郁美</label>
+            <label class="girlbox umeColor" data-pinyin="lóng chéng míng rì xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="龙城明日香" value="龙城明日香"><br>龙城明日香</label>
+            <label class="girlbox umeColor" data-pinyin="měi nǎ shā shā luó"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美凪纱纱罗" value="美凪纱纱罗"><br>美凪纱纱罗</label>
 
-      <label class="girlbox umeOtherColor leftm" data-kana="くれは ゆな"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="紅晴結菜" value="紅晴結菜"><br>紅晴結菜</label>
-      <label class="girlbox umeOtherColor" data-kana="きらり ひかる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="煌里ひかる" value="煌里ひかる"><br>煌里ひかる</label>
-      <label class="girlbox umeOtherColor" data-kana="かさね あお"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="笠音アオ" value="笠音アオ"><br>笠音アオ</label>
-      <label class="girlbox umeOtherColor" data-kana="おおば じゅり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="大庭樹里" value="大庭樹里"><br>大庭樹里</label>
-      <label class="girlbox umeOtherColor" data-kana="すずか さくや"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="鈴鹿さくや" value="鈴鹿さくや"><br>鈴鹿さくや</label>
-      <label class="girlbox umeOtherColor" data-kana="ちず らんか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="智珠らんか" value="智珠らんか"><br>智珠らんか</label>
-      <label class="girlbox umeOtherColor" data-kana="ゆめ うらら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="有愛うらら" value="有愛うらら"><br>有愛うらら</label>
+            <label class="girlbox umeOtherColor leftm" data-pinyin="hóng qíng jié cài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="红晴结菜" value="红晴结菜"><br>红晴结菜</label>
+            <label class="girlbox umeOtherColor" data-pinyin="huáng lǐ guāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="煌里光" value="煌里光"><br>煌里光</label>
+            <label class="girlbox umeOtherColor" data-pinyin="lì yīn qīng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="笠音青" value="笠音青"><br>笠音青</label>
+            <label class="girlbox umeOtherColor" data-pinyin="dà tíng shù lǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="大庭树里" value="大庭树里"><br>大庭树里</label>
+            <label class="girlbox umeOtherColor" data-pinyin="líng lù shuò yè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="铃鹿朔夜" value="铃鹿朔夜"><br>铃鹿朔夜</label>
+            <label class="girlbox umeOtherColor" data-pinyin="zhì zhū lán huá"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="智珠兰华" value="智珠兰华"><br>智珠兰华</label>
+            <label class="girlbox umeOtherColor" data-pinyin="yǒu ài lì"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="有爱丽" value="有爱丽"><br>有爱丽</label>
 
-      <label class="girlbox PMHQColor leftm" data-kana="ときめ しずか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="時女静香" value="時女静香"><br>時女静香</label>
-      <label class="girlbox PMHQColor" data-kana="ひろえ ちはる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="広江ちはる" value="広江ちはる"><br>広江ちはる</label>
-      <label class="girlbox PMHQColor" data-kana="とき すなお"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="土岐すなお" value="土岐すなお"><br>土岐すなお</label>
-      <label class="girlbox PMHQColor" data-kana="あおば ちか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="青葉ちか" value="青葉ちか"><br>青葉ちか</label>
-      <label class="girlbox PMHQColor" data-kana="なつ りょうこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="南津涼子" value="南津涼子"><br>南津涼子</label>
-      <label class="girlbox PMHQColor" data-kana="みうら あさひ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三浦旭" value="三浦旭"><br>三浦旭</label>
+            <label class="girlbox PMHQColor leftm" data-pinyin="shí nǚ jìng xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="时女静香" value="时女静香"><br>时女静香</label>
+            <label class="girlbox PMHQColor" data-pinyin="guǎng jiāng qiān chūn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="广江千春" value="广江千春"><br>广江千春</label>
+            <label class="girlbox PMHQColor" data-pinyin="tǔ qí shā xù"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="土岐沙绪" value="土岐沙绪"><br>土岐沙绪</label>
+            <label class="girlbox PMHQColor" data-pinyin="qīng yè zhī huā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="青叶知花" value="青叶知花"><br>青叶知花</label>
+            <label class="girlbox PMHQColor" data-pinyin="nán jīn liáng zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="南津凉子" value="南津凉子"><br>南津凉子</label>
+            <label class="girlbox PMHQColor" data-pinyin="sān pǔ xù"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三浦旭" value="三浦旭"><br>三浦旭</label>
 
-      <label class="girlbox PMHQotherColor leftm" data-kana="あいか ひめな"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="藍家ひめな" value="藍家ひめな"><br>藍家ひめな</label>
-      <label class="girlbox PMHQotherColor" data-kana="みやび しぐれ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="宮尾時雨" value="宮尾時雨"><br>宮尾時雨</label>
-      <label class="girlbox PMHQotherColor" data-kana="あずみ はぐむ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="安積はぐむ" value="安積はぐむ"><br>安積はぐむ</label>
-      <label class="girlbox PMHQotherColor" data-kana="くるす あれくさんどら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="栗栖アレクサンドラ" value="栗栖アレクサンドラ"><br>栗栖アレクサンドラ</label>
-      <label class="girlbox PMHQotherColor" data-kana="かぐら さん"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="神楽燦" value="神楽燦"><br>神楽燦</label>
-      <label class="girlbox PMHQotherColor" data-kana="ゆかり みゆり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="遊狩ミユリ" value="遊狩ミユリ"><br>遊狩ミユリ</label>
-      <label class="girlbox PMHQotherColor" data-kana="かざり じゅん"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="飾利潤" value="飾利潤"><br>飾利潤</label>
-      <label class="girlbox PMHQotherColor" data-kana="みわ みつね"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三輪みつね" value="三輪みつね"><br>三輪みつね</label>
+            <label class="girlbox PMHQotherColor leftm" data-pinyin="lán jiā jī nài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="蓝家姬奈" value="蓝家姬奈"><br>蓝家姬奈</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="gōng wěi shí yǔ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="宫尾时雨" value="宫尾时雨"><br>宫尾时雨</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="ān jī yù mèng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="安积育梦" value="安积育梦"><br>安积育梦</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="lì qī yà lì shān dé lā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="栗栖亚历山德拉" value="栗栖亚历山德拉"><br>栗栖亚历山德拉</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="shén lè càn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="神乐灿" value="神乐灿"><br>神乐灿</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="yóu shòu měi yóu lì"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="游狩美由利" value="游狩美由利"><br>游狩美由利</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="shì lì rùn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="饰利润" value="饰利润"><br>饰利润</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="sān lún guāng yīn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三轮光音" value="三轮光音"><br>三轮光音</label>
 
-      <label class="girlbox otherColor leftm" data-kana="やくも みかげ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="八雲みかげ" value="八雲みかげ"><br>八雲みかげ</label>
-      <label class="girlbox otherColor" data-kana="ひむろ らび"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="氷室ラビ" value="氷室ラビ"><br>氷室ラビ</label>
-      <label class="girlbox otherColor" data-kana="さとみ なゆた"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="里見那由他" value="里見那由他"><br>里見那由他</label>
+            <label class="girlbox otherColor leftm" data-pinyin="bā yún yù yǐng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="八云御影" value="八云御影"><br>八云御影</label>
+            <label class="girlbox otherColor" data-pinyin="bīng shì lā bǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="冰室拉比" value="冰室拉比"><br>冰室拉比</label>
+            <label class="girlbox otherColor" data-pinyin="lǐ jiàn nà yóu tā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="里见那由他" value="里见那由他"><br>里见那由他</label>
 
-      <label class="girlbox otherColor2 leftm" data-kana="さわ すだち"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佐和月出里" value="佐和月出里"><br>佐和月出里</label>
-      <label class="girlbox otherColor2" data-kana="ささめ よづる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="篠目ヨヅル" value="篠目ヨヅル"><br>篠目ヨヅル</label>
-      <label class="girlbox otherColor2" data-kana="りゔぃあ めでぃろす"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="リヴィア・メディロス" value="リヴィア・メディロス"><br>リヴィア・メディロス</label>
+            <label class="girlbox otherColor2 leftm" data-pinyin="zuǒ hé yuè chū lǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佐和月出里" value="佐和月出里"><br>佐和月出里</label>
+            <label class="girlbox otherColor2" data-pinyin="xiǎo mù yè hè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="篠目夜鹤" value="篠目夜鹤"><br>篠目夜鹤</label>
+            <label class="girlbox otherColor2" data-pinyin="lì wēi yà méi dài luò sī"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="莉薇娅·梅黛洛斯" value="莉薇娅·梅黛洛斯"><br>莉薇娅·梅黛洛斯</label>
 
-      <label class="girlbox otherotherColor leftm" data-kana="かなめ まどか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="鹿目まどか" value="鹿目まどか"><br>鹿目<br>まどか★</label>
-      <label class="girlbox otherotherColor" data-kana="あけみ ほむら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="暁美ほむら" value="暁美ほむら"><br>暁美<br>ほむら★</label>
-      <label class="girlbox otherotherColor" data-kana="みき さやか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美樹さやか" value="美樹さやか"><br>美樹さやか★</label>
-      <label class="girlbox otherotherColor" data-kana="ともえ まみ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="巴マミ" value="巴マミ"><br>巴マミ★</label>
-      <label class="girlbox otherotherColor" data-kana="さくら きょうこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佐倉杏子" value="佐倉杏子"><br>佐倉杏子★</label>
-      <label class="girlbox otherotherColor" data-kana="ももえ なぎさ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="百江なぎさ" value="百江なぎさ"><br>百江なぎさ★</label>
+            <label class="girlbox otherotherColor leftm" data-pinyin="lù mù yuán"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="鹿目圆" value="鹿目圆"><br>鹿目<br>圆★</label>
+            <label class="girlbox otherotherColor" data-pinyin="xiǎo měi yàn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="晓美焰" value="晓美焰"><br>晓美<br>焰★</label>
+            <label class="girlbox otherotherColor" data-pinyin="měi shù shā yé xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美树沙耶香" value="美树沙耶香"><br>美树沙耶香★</label>
+            <label class="girlbox otherotherColor" data-pinyin="bā má měi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="巴麻美" value="巴麻美"><br>巴麻美★</label>
+            <label class="girlbox otherotherColor" data-pinyin="zuǒ cāng xìng zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佐仓杏子" value="佐仓杏子"><br>佐仓杏子★</label>
+            <label class="girlbox otherotherColor" data-pinyin="bǎi jiāng zhǔ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="百江渚" value="百江渚"><br>百江渚★</label>
 
-      <label class="girlbox umeColor leftm" data-kana="やよい かのこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="矢宵かのこ" value="矢宵かのこ"><br>矢宵かのこ</label>
-      <label class="girlbox umeColor" data-kana="うつほ なつき"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="空穂夏希" value="空穂夏希"><br>空穂夏希</label>
-      <label class="girlbox umeColor" data-kana="えり あいみ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="江利あいみ" value="江利あいみ"><br>江利あいみ</label>
-      <label class="girlbox umeColor" data-kana="きさき えみり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="木崎衣美里" value="木崎衣美里"><br>木崎衣美里</label>
-      <label class="girlbox umeColor" data-kana="ほずみ しずく"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="保澄雫" value="保澄雫"><br>保澄雫</label>
-      <label class="girlbox umeColor" data-kana="まりこ あやか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="毬子あやか" value="毬子あやか"><br>毬子あやか</label>
-      <label class="girlbox umeColor" data-kana="あわね こころ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="粟根こころ" value="粟根こころ"><br>粟根こころ</label>
-      <label class="girlbox umeColor" id="masara" data-kana="かがみ まさら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="加賀見まさら" value="加賀見まさら"><br>加賀見まさら</label>
-      <label class="girlbox umeColor" data-kana="まお ひみか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="眞尾ひみか" value="眞尾ひみか"><br>眞尾ひみか</label>
-      <label class="girlbox umeColor" data-kana="はるな このみ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="春名このみ" value="春名このみ"><br>春名このみ</label>
-      <label class="girlbox umeColor" data-kana="あやの りか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="綾野梨花" value="綾野梨花"><br>綾野梨花★</label>
-      <label class="girlbox umeColor" data-kana="いすず れん"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="五十鈴れん" value="五十鈴れん"><br>五十鈴れん★</label>
-      <label class="girlbox umeColor" data-kana="さらさ はんな"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="更紗帆奈" value="更紗帆奈"><br>更紗帆奈</label>
-      <label class="girlbox umeColor" data-kana="ちあき りこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="千秋理子" value="千秋理子"><br>千秋理子</label>
-      <label class="girlbox umeColor" id="ash" data-kana="あしゅりー ていらー"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="アシュリー・テイラー" value="アシュリー・テイラー"><br>アシュリー・テイラー</label>
-      <label class="girlbox umeColor" data-kana="めぐみ もか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="恵萌花" value="恵萌花"><br>恵萌花</label>
-      <label class="girlbox umeColor" data-kana="ひびき めぐる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="枇々木めぐる" value="枇々木めぐる"><br>枇々木めぐる</label>
-      <label class="girlbox umeColor" data-kana="ゆら ほたる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="由良蛍" value="由良蛍"><br>由良蛍</label>
-      <label class="girlbox umeColor" data-kana="まい あかり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="真井あかり" value="真井あかり"><br>真井あかり</label>
+            <label class="girlbox umeColor leftm" data-pinyin="shǐ xiāo lù nǎi zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="矢宵鹿乃子" value="矢宵鹿乃子"><br>矢宵鹿乃子</label>
+            <label class="girlbox umeColor" data-pinyin="kōng suì xià xī"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="空穗夏希" value="空穗夏希"><br>空穗夏希</label>
+            <label class="girlbox umeColor" data-pinyin="jiāng lì ài shí"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="江利爱实" value="江利爱实"><br>江利爱实</label>
+            <label class="girlbox umeColor" data-pinyin="mù qí yī měi lǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="木崎衣美里" value="木崎衣美里"><br>木崎衣美里</label>
+            <label class="girlbox umeColor" data-pinyin="bǎo chéng nǎ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="保澄雫" value="保澄雫"><br>保澄雫</label>
+            <label class="girlbox umeColor" data-pinyin="qiú zǐ yà mí huá"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="毬子亚弥华" value="毬子亚弥华"><br>毬子亚弥华</label>
+            <label class="girlbox umeColor" data-pinyin="sù gēn xīn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="粟根心" value="粟根心"><br>粟根心</label>
+            <label class="girlbox umeColor" id="masara" data-pinyin="jiā hè jiàn zhēn liáng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="加贺见真良" value="加贺见真良"><br>加贺见真良</label>
+            <label class="girlbox umeColor" data-pinyin="zhēn wěi rì měi xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="真尾日美香" value="真尾日美香"><br>真尾日美香</label>
+            <label class="girlbox umeColor" data-pinyin="chūn míng mù nǎi měi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="春名木乃美" value="春名木乃美"><br>春名木乃美</label>
+            <label class="girlbox umeColor" data-pinyin="líng yě lí huā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="绫野梨花" value="绫野梨花"><br>绫野梨花★</label>
+            <label class="girlbox umeColor" data-pinyin="wǔ shí líng lián"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="五十铃怜" value="五十铃怜"><br>五十铃怜★</label>
+            <label class="girlbox umeColor" data-pinyin="gèng shā fān nài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="更纱帆奈" value="更纱帆奈"><br>更纱帆奈</label>
+            <label class="girlbox umeColor" data-pinyin="qiān qiū lǐ zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="千秋理子" value="千秋理子"><br>千秋理子</label>
+            <label class="girlbox umeColor" id="ash" data-pinyin="ā shí lì tài lè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="阿什莉·泰勒" value="阿什莉·泰勒"><br>阿什莉·泰勒</label>
+            <label class="girlbox umeColor" data-pinyin="huì méng huā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="惠萌花" value="惠萌花"><br>惠萌花</label>
+            <label class="girlbox umeColor" data-pinyin="pí pí mù xún"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="枇枇木巡" value="枇枇木巡"><br>枇枇木巡</label>
+            <label class="girlbox umeColor" data-pinyin="yóu liáng yíng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="由良萤" value="由良萤"><br>由良萤</label>
+            <label class="girlbox umeColor" data-pinyin="zhēn jǐng dēng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="真井灯" value="真井灯"><br>真井灯</label>
 
-      <label class="girlbox umeOtherColor leftm" data-kana="くるみ まなか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="胡桃まなか" value="胡桃まなか"><br>胡桃まなか</label>
-      <label class="girlbox umeOtherColor" data-kana="わかな つむぎ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="若菜つむぎ" value="若菜つむぎ"><br>若菜つむぎ</label>
-      <label class="girlbox umeOtherColor" data-kana="あみ りあ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="阿見莉愛" value="阿見莉愛"><br>阿見莉愛</label>
-      <label class="girlbox umeOtherColor" data-kana="こづえ まゆ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="梢麻友" value="梢麻友"><br>梢麻友</label>
-      <label class="girlbox umeOtherColor" data-kana="ふみの さゆき"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="史乃沙優希" value="史乃沙優希"><br>史乃沙優希</label>
+            <label class="girlbox umeOtherColor leftm" data-pinyin="hú táo ài xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="胡桃爱香" value="胡桃爱香"><br>胡桃爱香</label>
+            <label class="girlbox umeOtherColor" data-pinyin="ruò cài fǎng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="若菜纺" value="若菜纺"><br>若菜纺</label>
+            <label class="girlbox umeOtherColor" data-pinyin="ā jiàn lì ài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="阿见莉爱" value="阿见莉爱"><br>阿见莉爱</label>
+            <label class="girlbox umeOtherColor" data-pinyin="shāo má yǒu"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="梢麻友" value="梢麻友"><br>梢麻友</label>
+            <label class="girlbox umeOtherColor" data-pinyin="shǐ nǎi shā yōu xī"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="史乃沙优希" value="史乃沙优希"><br>史乃沙优希</label>
 
-      <label class="girlbox PMHQColor leftm" data-kana="ときわ ななか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="常盤ななか" value="常盤ななか"><br>常盤ななか</label>
-      <label class="girlbox PMHQColor" data-kana="しのぶ あきら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="志伸あきら" value="志伸あきら"><br>志伸あきら</label>
-      <label class="girlbox PMHQColor" data-kana="なつめ かこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="夏目かこ" value="夏目かこ"><br>夏目かこ</label>
-      <label class="girlbox PMHQColor" data-kana="ちゅん めいゆい"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="純美雨" value="純美雨"><br>純美雨</label>
+            <label class="girlbox PMHQColor leftm" data-pinyin="cháng pán qī xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="常盘七香" value="常盘七香"><br>常盘七香</label>
+            <label class="girlbox PMHQColor" data-pinyin="zhì shēn jīng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="志伸晶" value="志伸晶"><br>志伸晶</label>
+            <label class="girlbox PMHQColor" data-pinyin="xià mù jiā zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="夏目佳子" value="夏目佳子"><br>夏目佳子</label>
+            <label class="girlbox PMHQColor" data-pinyin="chún měi yǔ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="纯美雨" value="纯美雨"><br>纯美雨</label>
 
-      <label class="girlbox PMHQotherColor leftm" data-kana="いぶき れいら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="伊吹れいら" value="伊吹れいら"><br>伊吹れいら</label>
-      <label class="girlbox PMHQotherColor" data-kana="くみ せいか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="桑水せいか" value="桑水せいか"><br>桑水せいか</label>
-      <label class="girlbox PMHQotherColor" data-kana="あいの みと"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="相野みと" value="相野みと"><br>相野みと</label>
-      <label class="girlbox PMHQotherColor leftm" data-kana="しずみ このは"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="静海このは" value="静海このは"><br>静海このは★</label>
-      <label class="girlbox PMHQotherColor" data-kana="ゆさ はづき"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="遊佐葉月" value="遊佐葉月"><br>遊佐葉月★</label>
-      <label class="girlbox PMHQotherColor" data-kana="みくり あやめ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三栗あやめ" value="三栗あやめ"><br>三栗あやめ</label>
-      <label class="girlbox PMHQotherColor leftm" data-kana="ゆき まりあ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="由貴真里愛" value="由貴真里愛"><br>由貴真里愛</label>
-      <label class="girlbox PMHQotherColor" data-kana="きりの さえ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="桐野紗枝" value="桐野紗枝"><br>桐野紗枝</label>
+            <label class="girlbox PMHQotherColor leftm" data-pinyin="yī chuī lì liáng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="伊吹丽良" value="伊吹丽良"><br>伊吹丽良</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="sāng shuǐ qīng jiā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="桑水清佳" value="桑水清佳"><br>桑水清佳</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="xiāng yě wèi dōu"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="相野未都" value="相野未都"><br>相野未都</label>
+            <label class="girlbox PMHQotherColor leftm" data-pinyin="jìng hǎi mù yè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="静海木叶" value="静海木叶"><br>静海木叶★</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="yóu zuǒ yè yuè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="游佐叶月" value="游佐叶月"><br>游佐叶月★</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="sān lì chāng pú"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三栗菖蒲" value="三栗菖蒲"><br>三栗菖蒲</label>
+            <label class="girlbox PMHQotherColor leftm" data-pinyin="yóu guì zhēn lǐ ài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="由贵真里爱" value="由贵真里爱"><br>由贵真里爱</label>
+            <label class="girlbox PMHQotherColor" data-pinyin="tóng yě shā zhī"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="桐野纱枝" value="桐野纱枝"><br>桐野纱枝</label>
 
-      <label class="girlbox otherColor leftm" data-kana="こまち みくら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="古町みくら" value="古町みくら"><br>古町みくら</label>
-      <label class="girlbox otherColor" data-kana="みほの せいら"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三穂野せいら" value="三穂野せいら"><br>三穂野せいら</label>
-      <label class="girlbox otherColor" data-kana="きら てまり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="吉良てまり" value="吉良てまり"><br>吉良てまり</label>
-      <label class="girlbox otherColor" data-kana="みずき るい"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="水樹塁" value="水樹塁"><br>水樹塁</label>
-      <label class="girlbox otherColor leftm" data-kana="ゆずき ほとり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="柚希ほとり" value="柚希ほとり"><br>柚希ほとり</label>
-      <label class="girlbox otherColor" data-kana="ゆずき りおん"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="柚希りおん" value="柚希りおん"><br>柚希りおん</label>
-      <label class="girlbox otherColor" data-kana="かはる ゆうな"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="香春ゆうな" value="香春ゆうな"><br>香春ゆうな</label>
-      <label class="girlbox otherColor" data-kana="ななせ ゆきか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="七瀬ゆきか" value="七瀬ゆきか"><br>七瀬ゆきか</label>
-      <label class="girlbox otherColor" data-kana="いりな くしゅ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="入名クシュ" value="入名クシュ"><br>入名クシュ</label>
+            <label class="girlbox otherColor leftm" data-pinyin="gǔ tīng měi cāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="古町美仓" value="古町美仓"><br>古町美仓</label>
+            <label class="girlbox otherColor" data-pinyin="sān suì yě xīng luó"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="三穗野星罗" value="三穗野星罗"><br>三穗野星罗</label>
+            <label class="girlbox otherColor" data-pinyin="jí liáng shǒu jū"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="吉良手鞠" value="吉良手鞠"><br>吉良手鞠</label>
+            <label class="girlbox otherColor" data-pinyin="shuǐ shù lěi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="水树垒" value="水树垒"><br>水树垒</label>
+            <label class="girlbox otherColor leftm" data-pinyin="yòu xī bù niǎo"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="柚希步鸟" value="柚希步鸟"><br>柚希步鸟</label>
+            <label class="girlbox otherColor" data-pinyin="yòu xī lǐ yīn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="柚希理音" value="柚希理音"><br>柚希理音</label>
+            <label class="girlbox otherColor" data-pinyin="xiāng chūn yōu nài"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="香春优奈" value="香春优奈"><br>香春优奈</label>
+            <label class="girlbox otherColor" data-pinyin="qī lài xìng jiā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="七濑幸佳" value="七濑幸佳"><br>七濑幸佳</label>
+            <label class="girlbox otherColor" data-pinyin="rù míng kù shí"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="入名库什" value="入名库什"><br>入名库什</label>
 
-      <label class="girlbox otherColor2 leftm" data-kana="ゆきの かなえ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="雪野かなえ" value="雪野かなえ"><br>雪野かなえ</label>
-      <label class="girlbox otherColor2" data-kana="あんな める"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="安名メル" value="安名メル"><br>安名メル</label>
+            <label class="girlbox otherColor2 leftm" data-pinyin="xuě yě jiā nài huì"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="雪野加奈惠" value="雪野加奈惠"><br>雪野加奈惠</label>
+            <label class="girlbox otherColor2" data-pinyin="ān míng méi lù"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="安名梅露" value="安名梅露"><br>安名梅露</label>
 
-      <!-- ここから外伝キャラ -->
-      <label class="girlbox gaidenColor leftm" data-kana="みくに おりこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美国織莉子" value="美国織莉子"><br>美国織莉子</label>
-      <label class="girlbox gaidenColor" data-kana="くれ きりか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="呉キリカ" value="呉キリカ"><br>呉キリカ</label>
-      <label class="girlbox gaidenColor" data-kana="ちとせ ゆま"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="千歳ゆま" value="千歳ゆま"><br>千歳ゆま</label>
+            <!-- 从这里开始是外传角色 -->
+            <label class="girlbox gaidenColor leftm" data-pinyin="měi guó zhī lì zǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美国织莉子" value="美国织莉子"><br>美国织莉子</label>
+            <label class="girlbox gaidenColor" data-pinyin="wú jì lǐ xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="吴纪里香" value="吴纪里香"><br>吴纪里香</label>
+            <label class="girlbox gaidenColor" data-pinyin="qiān suì yóu má"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="千岁由麻" value="千岁由麻"><br>千岁由麻</label>
 
-      <label class="girlbox PMHQColor leftm" data-kana="かずみ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="かずみ" value="かずみ"><br>かずみ</label>
-      <label class="girlbox PMHQColor" data-kana="みさき うみか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="御崎海香" value="御崎海香"><br>御崎海香</label>
-      <label class="girlbox PMHQColor" data-kana="まき かおる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="牧カオル" value="牧カオル"><br>牧カオル</label>
-      <label class="girlbox PMHQColor" data-kana="かずさ みちる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="和紗ミチル" value="和紗ミチル"><br>和紗ミチル</label>
-      <label class="girlbox PMHQColor" data-kana="あさみ さき"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="浅海サキ" value="浅海サキ"><br>浅海サキ</label>
-      <label class="girlbox PMHQColor" data-kana="かんな にこ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="神那ニコ" value="神那ニコ"><br>神那ニコ</label>
+            <label class="girlbox PMHQColor leftm" data-pinyin="hé měi"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="和美" value="和美"><br>和美</label>
+            <label class="girlbox PMHQColor" data-pinyin="yù qí hǎi xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="御崎海香" value="御崎海香"><br>御崎海香</label>
+            <label class="girlbox PMHQColor" data-pinyin="mù xūn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="牧薰" value="牧薰"><br>牧薰</label>
+            <label class="girlbox PMHQColor" data-pinyin="hé shā měi qiān liú"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="和纱美千瑠" value="和纱美千瑠"><br>和纱美千瑠</label>
+            <label class="girlbox PMHQColor" data-pinyin="qiǎn hǎi zǎo jì"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="浅海早纪" value="浅海早纪"><br>浅海早纪</label>
+            <label class="girlbox PMHQColor" data-pinyin="shén nà nī kě"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="神那妮可" value="神那妮可"><br>神那妮可</label>
 
-      <label class="girlbox gaidenColor leftm" data-kana="たると"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="タルト" value="タルト"><br>タルト★</label>
-      <label class="girlbox gaidenColor" data-kana="りず"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="リズ" value="リズ"><br>リズ</label>
-      <label class="girlbox gaidenColor" data-kana="めりっさ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="メリッサ" value="メリッサ"><br>メリッサ</label>
-      <label class="girlbox gaidenColor" data-kana="えりざ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="エリザ" value="エリザ"><br>エリザ</label>
-      <label class="girlbox gaidenColor" data-kana="ぺれねる"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="ペレネル" value="ペレネル"><br>ペレネル</label>
-      <label class="girlbox gaidenColor" data-kana="みぬぅ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="ミヌゥ" value="ミヌゥ"><br>ミヌゥ</label>
-      <label class="girlbox gaidenColor" data-kana="こるぼー"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="コルボー" value="コルボー"><br>コルボー</label>
-      <label class="girlbox gaidenColor" data-kana="らぴぬ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="ラピヌ" value="ラピヌ"><br>ラピヌ</label>
-      <label class="girlbox gaidenColor" data-kana="いざぼー"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="イザボー" value="イザボー"><br>イザボー<BR></label>
+            <label class="girlbox gaidenColor leftm" data-pinyin="tǎ lǔ tè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="塔鲁特" value="塔鲁特"><br>塔鲁特★</label>
+            <label class="girlbox gaidenColor" data-pinyin="lì zī"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="莉兹" value="莉兹"><br>莉兹</label>
+            <label class="girlbox gaidenColor" data-pinyin="méi lì shā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="梅丽莎" value="梅丽莎"><br>梅丽莎</label>
+            <label class="girlbox gaidenColor" data-pinyin="ài lì shā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="爱丽莎" value="爱丽莎"><br>爱丽莎</label>
+            <label class="girlbox gaidenColor" data-pinyin="pèi ěr nèi lè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佩尔内勒" value="佩尔内勒"><br>佩尔内勒</label>
+            <label class="girlbox gaidenColor" data-pinyin="mǐ nuò"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="米诺" value="米诺"><br>米诺</label>
+            <label class="girlbox gaidenColor" data-pinyin="kě lǔ bō"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="可鲁波" value="可鲁波"><br>可鲁波</label>
+            <label class="girlbox gaidenColor" data-pinyin="lā pí nǔ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="拉皮努" value="拉皮努"><br>拉皮努</label>
+            <label class="girlbox gaidenColor" data-pinyin="yī shā bèi lā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="伊莎贝拉" value="伊莎贝拉"><br>伊莎贝拉<BR></label>
 
-      <label class="girlbox PMHQColor leftm" data-kana="あまの すずね"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="天乃鈴音" value="天乃鈴音"><br>天乃鈴音</label>
-      <label class="girlbox PMHQColor" data-kana="ひなた まつり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="日向茉莉" value="日向茉莉"><br>日向茉莉</label>
-      <label class="girlbox PMHQColor" data-kana="なるみ ありさ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="成見亜里紗" value="成見亜里紗"><br>成見亜里紗</label>
-      <label class="girlbox PMHQColor" data-kana="しおん ちさと"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="詩音千里" value="詩音千里"><br>詩音千里</label>
-      <label class="girlbox PMHQColor" data-kana="かなで はるか"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="奏遥香" value="奏遥香"><br>奏遥香</label>
-      <label class="girlbox PMHQColor" data-kana="みこと つばき"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美琴椿" value="美琴椿"><br>美琴椿</label>
-      <label class="girlbox PMHQColor" data-kana="ひなた かがり"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="日向華々莉" value="日向華々莉"><br>日向華々莉</label>
+            <label class="girlbox PMHQColor leftm" data-pinyin="tiān nǎi líng yīn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="天乃铃音" value="天乃铃音"><br>天乃铃音</label>
+            <label class="girlbox PMHQColor" data-pinyin="rì xiàng mò lì"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="日向茉莉" value="日向茉莉"><br>日向茉莉</label>
+            <label class="girlbox PMHQColor" data-pinyin="chéng jiàn yà lǐ shā"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="成见亚里纱" value="成见亚里纱"><br>成见亚里纱</label>
+            <label class="girlbox PMHQColor" data-pinyin="shī yīn qiān lǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="诗音千里" value="诗音千里"><br>诗音千里</label>
+            <label class="girlbox PMHQColor" data-pinyin="zòu yáo xiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="奏遥香" value="奏遥香"><br>奏遥香</label>
+            <label class="girlbox PMHQColor" data-pinyin="měi qín chūn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="美琴椿" value="美琴椿"><br>美琴椿</label>
+            <label class="girlbox PMHQColor" data-pinyin="rì xiàng huà huà lì"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="日向华华莉" value="日向华华莉"><br>日向华华莉</label>
 
-      <label class="girlbox collaboColor leftm" data-kana="たかまち なのは"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="高町なのは" value="高町なのは"><br>高町なのは</label>
-      <label class="girlbox collaboColor" id="fate_t" data-kana="ふぇいと てぃー はらおうん"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="フェイト・T・ハラオウン" value="フェイト・T・ハラオウン"><br>フェイト・T<br>・ハラオウン</label>
-      <label class="girlbox collaboColor" data-kana="やがみ はやて"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="八神はやて" value="八神はやて"><br>八神はやて</label>
+            <label class="girlbox collaboColor leftm" data-pinyin="gāo tīng nài yè"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="高町奈叶" value="高町奈叶"><br>高町奈叶</label>
+            <label class="girlbox collaboColor" id="fate_t" data-pinyin="fēi tè T hā lā wēn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="菲特·T·哈拉温" value="菲特·T·哈拉温"><br>菲特·T<br>·哈拉温</label>
+            <label class="girlbox collaboColor" data-pinyin="bā shén jí fēng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="八神疾风" value="八神疾风"><br>八神疾风</label>
 
-      <!-- ここから魔法少女以外 -->
-      <label class="girlbox mobColor leftm" data-kana="きゅぅべえ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="キュゥべえ" value="キュゥべえ"><br>キュゥべえ★</label>
+            <!-- 从这里开始非魔法少女 -->
+            <label class="girlbox mobColor leftm" data-pinyin="qiū bǐ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="丘比" value="丘比"><br>丘比★</label>
 
-      <label class="girlbox unimpColor" data-kana="さとり かごめ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佐鳥かごめ" value="佐鳥かごめ"><br>佐鳥かごめ</label>
-      <label class="girlbox unimpColor" data-kana="くろえ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="黒江" value="黒江"><br>黒江</label>
-      <label class="girlbox unimpColor" data-kana="あき まばゆ"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="愛生まばゆ" value="愛生まばゆ"><br>愛生まばゆ</label>
+            <label class="girlbox unimpColor" data-pinyin="zuǒ niǎo lóng mù"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="佐鸟笼目" value="佐鸟笼目"><br>佐鸟笼目</label>
+            <label class="girlbox unimpColor" data-pinyin="hēi jiāng"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="黑江" value="黑江"><br>黑江</label>
+            <label class="girlbox unimpColor" data-pinyin="ài shēng xuàn"><input type="checkbox" class="MagicalChk" onchange="chkBoxCng(this.value);" name="chara" id="爱生眩" value="爱生眩"><br>爱生眩</label>
 
-    </div>
-  </form>
-  <!-- 魔法少女チェックボックス実装おわり -->
-  <input type="button" value="絞り込みリセット" class="ndownReset" onClick="ndownReset('call');">
-  <!-- 魔法少女絞り込みテキスト入力実装 -->
-  <input type="text" spellcheck="false" class="ndownword" name="ndownword" placeholder="かなカナ漢字名前で絞り込み。スペースでOR。削除で戻る" id="ndownword2" oninput="mgirlNarrow('call', 'ndownword2')">
+        </div>
+        IGNORE_WHEN_COPYING_START
+        content_copy
+        download
+        Use code with caution.
+        IGNORE_WHEN_COPYING_END
+    </form>
+    <!-- 实现魔法少女复选框结束 -->
+    <input type="button" value="重置筛选" class="ndownReset" onClick="ndownReset('call');">
+    <!-- 实现魔法少女筛选文本输入 -->
+    <input type="text" spellcheck="false" class="ndownword" name="ndownword" placeholder="按平假名、片假名、汉字名称筛选。空格表示或。删除以返回" id="ndownword2" oninput="mgirlNarrow('call', 'ndownword2')">
 
-  <!-- 結果表示領域-->
-  <div id="container"></div>
+    <!-- 结果显示区域 -->
 
-  <!-- 表示部分終わり。以下処理用javascriptなど ============================================== -->
-  <!--スプレッドシートで作った呼びかけのhashファイルを読み出す。-->
-  <!-- 共通処理ファイルを読む -->
-  <script src="./myfile/myCommon.js"></script>
-  <!-- 魔法少女絞り込みのjavascriptメソッドを読む -->
-  <script src="./myfile/mgirlNarrow.js"></script>
-  <!-- 絞り込みリセットのjavascriptメソッドを読む -->
-  <script src="./myfile/ndownReset.js"></script>
+    <div id="container"></div>
 
-  <script>
-    //ページトップへ進む。jqueryで実装。
-    $(function() {
-      /** ページトップ処理 **/
-      $('#pagetop').fadeIn("slow");
-      // クリックした場合
-      $('#pagetop').click(function() {
-        // ページトップへスクロール
-        $("html, body").animate({
-          scrollTop: 0,
-        }, "slow");
-        return false;
-      });
-    });
-  </script>
+    <!-- 显示部分结束。以下为处理用的javascript等 ============================================== -->
+    <!--读取用电子表格创建的调用哈希文件。-->
+    <!-- 读取通用处理文件 -->
 
-  <script>
-    //ページボトムへ進む。jqueryで実装。
-    $(function() {
-      /** ページボトム処理 **/
-      $('#pagebtm').fadeIn("slow");
-      // クリックした場合
-      $('#pagebtm').click(function() {
-        // ページボトムへスクロール
-        $('html, body').animate({
-          scrollTop: $(document).height()
-        }, "slow");
-        return false;
-      });
-    });
-  </script>
+    <script src="./myfile/myCommon.js"></script>
 
-  <script>
-    //ページ真ん中へ進む。jqueryで実装。
-    $(function() {
-      /** ページ真ん中処理 **/
-      $('#pagemdl').fadeIn("slow");
-      // クリックした場合
-      $('#pagemdl').click(function() {
-        // ページボトムへスクロール
-        $('html, body').animate({
-          scrollTop: $("#container").offset().top
-        }, "slow");
-        return false;
-      });
-    });
-  </script>
+    <!-- 读取魔法少女筛选的javascript方法 -->
 
-  <!-- トップアイコンの設定 -->
-  <a id="pagetop" href="#top" class="page_top" style="display: none;"><i class="fa fa-arrow-circle-o-up fa-3x"></i></a>
-  <!-- 真ん中アイコンの設定 -->
-  <a id="pagemdl" href="#mdl" class="page_mdl" style="display: none;"><i class="fa fa-bar-chart fa-3x"></i></a>
-  <!-- ボトムアイコンの設定 -->
-  <a id="pagebtm" href="#btm" class="page_btm" style="display: none;"><i class="fa fa-arrow-circle-o-down fa-3x"></i></a>
+    <script src="./myfile/mgirlNarrow.js"></script>
 
-  <script>
-    //チェックボックスが変更になったときに動作させる関数
-    function chkBoxCng(girlName) {
-      //前の結果を消す。
-      if (document.getElementById("graphtable") !== null) {
-        document.getElementById("graphtable").remove();
-      }
+    <!-- 读取魔法少女筛选的javascript方法 -->
 
-      //グラフまでジャンプ
-      $("html, body").animate({
-        scrollTop: $("#container").offset().top,
-      }, "slow");
-      //チェックボックスを全てリセット(見えない)
-      girlReset();
+    <script src="./myfile/ndownReset.js"></script>
 
-      //ローディングを表示
-      document.getElementById("container").insertAdjacentHTML('afterbegin',
-        '<img id="loading" border="0" src="./img/webp/loading.webp" width="60" height="60" alt="loading...">');
-
-      //ajaxでデータを貰う。
-      const DataUrl =
-        "https://script.google.com/macros/s/AKfycbyXrQPl-k-SPUxM4MFHkdlFgHQp3kUp7p3iZgaTIc4Hbu8_lghESfjjLOjFPJXTDGbd/exec";
-      $.ajax({
-          //type: "GET",
-          type: "GET", //GASのweb公開はクロスドメイン対応なのでgetでもpostでもOK
-          url: DataUrl,
-          dataType: "json",
-          data: {
-            gname: girlName
-          }
-        })
-        .then(outdata => { //Ajax通信に成功したときの処理
-            //loadingアイコンを消す。
-            document.getElementById("loading").remove();
-
-            const data = outdata.map(dataAry => {
-              return {
-                name: dataAry[0],
-                value: dataAry[1]
-              };
+    <script>
+        //前进到页面顶部。用jquery实现。
+        $(function () {
+            /** 页面顶部处理 **/
+            $('#pagetop').fadeIn("slow");
+            // 单击时
+            $('#pagetop').click(function () {
+                // 滚动到页面顶部
+                $("html, body").animate({
+                    scrollTop: 0,
+                }, "slow");
+                return false;
             });
-            //console.log(data);
-            //グラフを表示する。
-            let threshold = data[0]["value"]; //グラフのmax値
+        });
+    </script>
 
-            let grafTable = "<table class='graphtable' id='graphtable'>";
-            grafTable += `<caption style="text-align:left;"><img class="graf-icon" src="./img/webp/${girlName}.webp">の同席ランキング</caption>`;
+    <script>
+        //前进到页面底部。用jquery实现。
+        $(function () {
+            /** 页面底部处理 **/
+            $('#pagebtm').fadeIn("slow");
+            // 单击时
+            $('#pagebtm').click(function () {
+                // 滚动到页面底部
+                $('html, body').animate({
+                    scrollTop: $(document).height()
+                }, "slow");
+                return false;
+            });
+        });
+    </script>
 
-            for (var variable of data) {
-              // しきい値からパーセンテージを計算
-              variable.percentage = Math.round(variable.value / threshold * 100);
+    <script>
+        //前进到页面中间。用jquery实现。
+        $(function () {
+            /** 页面中间处理 **/
+            $('#pagemdl').fadeIn("slow");
+            // 单击时
+            $('#pagemdl').click(function () {
+                // 滚动到页面中间
+                $('html, body').animate({
+                    scrollTop: $("#container").offset().top
+                }, "slow");
+                return false;
+            });
+        });
+    </script>
 
-              // tableに追加
-              grafTable += `<tr><td class="data-name">${variable.name}</td>`;
-              grafTable += `<td class="graf-icon-td"><img class="graf-icon" src="./img/webp/${variable.name}.webp"></td>`;
-              grafTable += `<td><div class="graf-bar-bg"><div class="graf-bar" id="${variable.name}_bar" style="width:${variable.percentage}%"><span>${variable.value}</span></div></div></td>`;
-              grafTable += "</tr>";
+    <!-- 顶部图标设置 -->
+
+
+    <a id="pagetop" href="#top" class="page_top" style="display: none;"><i class="fa fa-arrow-circle-o-up fa-3x"></i></a>
+
+    <!-- 中间图标设置 -->
+
+
+    <a id="pagemdl" href="#mdl" class="page_mdl" style="display: none;"><i class="fa fa-bar-chart fa-3x"></i></a>
+
+    <!-- 底部图标设置 -->
+
+
+    <a id="pagebtm" href="#btm" class="page_btm" style="display: none;"><i class="fa fa-arrow-circle-o-down fa-3x"></i></a>
+
+    <script>
+        //复选框更改时要运行的函数
+        function chkBoxCng(girlName) {
+            //清除之前的结果。
+            if (document.getElementById("graphtable") !== null) {
+                document.getElementById("graphtable").remove();
             }
-            grafTable += "</table>"
-            document.getElementById("container").insertAdjacentHTML('beforeend', grafTable);
-          },
-          error => { //Ajax通信に失敗したときの処理
-            //loadingアイコンを消す。
-            document.getElementById("loading").remove();
-            document.getElementById("container").insertAdjacentHTML('beforeend',
-              "<div id='result'><BR>データ取得に失敗しました。しばらく時間をおいてから再検索をお願いします。</div>");
-          });
-    }
+
+            //跳转到图表
+            $("html, body").animate({
+                scrollTop: $("#container").offset().top,
+            }, "slow");
+            //重置所有复选框（不可见）
+            girlReset();
+
+            //显示加载中
+            document.getElementById("container").insertAdjacentHTML('afterbegin',
+                '<img id="loading" border="0" src="./img/webp/loading.webp" width="60" height="60" alt="loading...">');
+
+            //通过ajax获取数据。
+            const DataUrl =
+                "https://script.google.com/macros/s/AKfycbyXrQPl-k-SPUxM4MFHkdlFgHQp3kUp7p3iZgaTIc4Hbu8_lghESfjjLOjFPJXTDGbd/exec";
+            $.ajax({
+                //type: "GET",
+                type: "GET", //GAS的web发布支持跨域，所以get和post都可以
+                url: DataUrl,
+                dataType: "json",
+                data: {
+                    gname: girlName
+                }
+            })
+                .then(outdata => { //Ajax通信成功时的处理
+                    //删除loading图标。
+                    document.getElementById("loading").remove();
+
+                    const data = outdata.map(dataAry => {
+                        return {
+                            name: dataAry,
+                            value: dataAry
+                        };
+                    });
+                    //console.log(data);
+                    //显示图表。
+                    let threshold = data["value"]; //图表的最大值
+
+                    let grafTable = "<table class='graphtable' id='graphtable'>";
+                    grafTable += `<caption style="text-align:left;"><img class="graf-icon" src="./img/webp/${girlName}.webp">的同席次数排行榜</caption>`;
+
+                    for (var variable of data) {
+                        // 根据阈值计算百分比
+                        variable.percentage = Math.round(variable.value / threshold * 100);
+
+                        // 添加到table
+                        grafTable += `<tr><td class="data-name">${variable.name}</td>`;
+                        grafTable += `<td class="graf-icon-td"><img class="graf-icon" src="./img/webp/${variable.name}.webp"></td>`;
+                        grafTable += `<td><div class="graf-bar-bg"><div class="graf-bar" id="${variable.name}_bar" style="width:${variable.percentage}%"><span>${variable.value}</span></div></div></td>`;
+                        grafTable += "</tr>";
+                    }
+                    grafTable += "</table>"
+                    document.getElementById("container").insertAdjacentHTML('beforeend', grafTable);
+                },
+                    error => { //Ajax通信失败时的处理
+                        //删除loading图标。
+                        document.getElementById("loading").remove();
+                        document.getElementById("container").insertAdjacentHTML('beforeend',
+                            "<div id='result'><BR>数据获取失败。请稍等片刻后再重新搜索。</div>");
+                    });
+        }
 
 
-    //魔法少女の選択をリセットする。
-    function girlReset() {
-      const checkboxes = document.getElementsByName("chara");
-      for (i in checkboxes) {
-        checkboxes[i].checked = false;
-      }
-    }
-  </script>
+        //重置魔法少女的选择。
+        function girlReset() {
+            const checkboxes = document.getElementsByName("chara");
+            for (i in checkboxes) {
+                checkboxes[i].checked = false;
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const imgDir = "./img/png/";
+            const allCheckboxes = document.magicalgirl.chara; // 表单名是magicalgirl
+
+            for (let i = 0; i < allCheckboxes.length; i++) {
+                const checkbox = allCheckboxes[i];
+                const shortName = checkbox.value.trim();
+                const imageUrl = imgDir + shortName + ".png"; // 确认使用webp
+                const label = checkbox.parentElement;
+
+                if (label) {
+                    label.style.backgroundImage = `url('${imageUrl}')`;
+                    label.style.backgroundSize = "contain";
+                    label.style.backgroundRepeat = "no-repeat";
+                    label.style.backgroundPosition = "center 2px";
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,6 +1,406 @@
-﻿/* 個別キャラ設定 */
+/* 個別キャラ設定 */
+.magicalgirl input[value="朱音麻衣"] {
+  background: url(../img/webp/朱音麻衣.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="人見リナ"] {
+  background: url(../img/webp/人見リナ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="佐木京"] {
+  background: url(../img/webp/佐木京.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="煤名美緒"] {
+  background: url(../img/webp/煤名美緒.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="浅古小巻"] {
+  background: url(../img/webp/浅古小巻.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="浅古小糸"] {
+  background: url(../img/webp/浅古小糸.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="行方晶"] {
+  background: url(../img/webp/行方晶.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="優木沙々"] {
+  background: url(../img/webp/優木沙々.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ナマエ"] {
+  background: url(../img/webp/ナマエ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="A-Q"] {
+  background: url(../img/webp/A-Q.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="まばゆの母"] {
+  background: url(../img/webp/まばゆの母.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="上条恭介"] {
+  background: url(../img/webp/上条恭介.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="早乙女先生"] {
+  background: url(../img/webp/早乙女先生.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="鹿目詢子"] {
+  background: url(../img/webp/鹿目詢子.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="シィ"] {
+  background: url(../img/webp/シィ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="いろは・黒江"] {
+  background: url(../img/webp/いろは・黒江.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="れいら・せいか"] {
+  background: url(../img/webp/れいら・せいか.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="まどか先輩・いろはちゃん"] {
+  background: url(../img/webp/まどか先輩・いろはちゃん.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="巴マミ(scene0ver)"] {
+  background: url(../img/webp/巴マミ\(scene0ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="竜城明日香(新春龍神ver)"] {
+  background: url(../img/webp/竜城明日香\(新春龍神ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ウワサのみこと"] {
+  background: url(../img/webp/ウワサのみこと.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="結菜・樹里(ヴァンパイアver)"] {
+  background: url(../img/webp/結菜・樹里\(ヴァンパイアver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="志筑仁美"] {
+  background: url(../img/webp/志筑仁美.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="愛生咲笑"] {
+  background: url(../img/webp/愛生咲笑.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="美樹さやか(scene0ver)"] {
+  background: url(../img/webp/美樹さやか\(scene0ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="佐倉杏子(scene0ver)"] {
+  background: url(../img/webp/佐倉杏子\(scene0ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="暁美ほむら(scene0ver)"] {
+  background: url(../img/webp/暁美ほむら\(scene0ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="鹿目まどか(scene0ver)"] {
+  background: url(../img/webp/鹿目まどか\(scene0ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="愛生まばゆ"] {
+  background: url(../img/webp/愛生まばゆ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="井ノ上たきな"] {
+  background: url(../img/webp/井ノ上たきな.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="クルミ"] {
+  background: url(../img/webp/クルミ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="錦木千束"] {
+  background: url(../img/webp/錦木千束.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="伊並満"] {
+  background: url(../img/webp/伊並満.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="悪魔ほむら"] {
+  background: url(../img/webp/悪魔ほむら.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="七海やちよ(ヒストリアver)"] {
+  background: url(../img/webp/七海やちよ\(ヒストリアver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="佐鳥かごめ(百鬼夜行ver)"] {
+  background: url(../img/webp/佐鳥かごめ\(百鬼夜行ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ユニア"] {
+  background: url(../img/webp/ユニア.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="コルネリア"] {
+  background: url(../img/webp/コルネリア.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="アマリュリス"] {
+  background: url(../img/webp/アマリュリス.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="百江なぎさ(水着ver)"] {
+  background: url(../img/webp/百江なぎさ\(水着ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="卑弥呼"] {
+  background: url(../img/webp/卑弥呼.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="トヨ"] {
+  background: url(../img/webp/トヨ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="まさら・こころ(花嫁ver)"] {
+  background: url(../img/webp/まさら・こころ\(花嫁ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ドルマ"] {
+  background: url(../img/webp/ドルマ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ドロアダイ"] {
+  background: url(../img/webp/ドロアダイ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ヘルカ"] {
+  background: url(../img/webp/ヘルカ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ラマ"] {
+  background: url(../img/webp/ラマ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="エッペ"] {
+  background: url(../img/webp/エッペ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ハーラル"] {
+  background: url(../img/webp/ハーラル.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="長老"] {
+  background: url(../img/webp/長老.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="クレオパトラ"] {
+  background: url(../img/webp/クレオパトラ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="オルガ"] {
+  background: url(../img/webp/オルガ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ガンヒルト"] {
+  background: url(../img/webp/ガンヒルト.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="未完成いろは"] {
+  background: url(../img/webp/未完成いろは.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="無限大いろはちゃん"] {
+  background: url(../img/webp/無限大いろはちゃん.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="エボニー"] {
+  background: url(../img/webp/エボニー.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="くろ"] {
+  background: url(../img/webp/くろ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="佐和月出里\(バレンタインver\)"] {
+  background: url(../img/webp/佐和月出里\(バレンタインver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="万守山右衛門"] {
+  background: url(../img/webp/万守山右衛門.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="玄雲"] {
+  background: url(../img/webp/玄雲.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="水名正綱"] {
+  background: url(../img/webp/水名正綱.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="暁美ほむら\(晴着ver\)"] {
+  background: url(../img/webp/暁美ほむら\(晴着ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="七海やちよ\(おとぎ話ver\)"] {
+  background: url(../img/webp/七海やちよ\(おとぎ話ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="梓みふゆ\(おとぎ話ver\)"] {
+  background: url(../img/webp/梓みふゆ\(おとぎ話ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="氷室ラビ\(キモチver\)"] {
+  background: url(../img/webp/氷室ラビ\(キモチver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="和泉壮月"] {
+  background: url(../img/webp/和泉壮月.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="塩屋晴海"] {
+  background: url(../img/webp/塩屋晴海.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="八雲みたま(常闇ver)"] {
+  background: url(../img/webp/八雲みたま\(常闇ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="和泉十七夜(常闇ver)"] {
+  background: url(../img/webp/和泉十七夜\(常闇ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="∞いろは"] {
+  background: url(../img/webp/∞いろは.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="鹿目まどか(水着ver)"] {
+  background: url(../img/webp/鹿目まどか\(水着ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="黒江(水着ver)"] {
+  background: url(../img/webp/黒江\(水着ver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="ウワサの鶴乃(アニメver)"] {
+  background: url(../img/webp/ウワサの鶴乃\(アニメver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="千鶴"] {
+  background: url(../img/webp/千鶴.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="水名露"] {
+  background: url(../img/webp/水名露.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="水波レナ(アニメver)"] {
+  background: url(../img/webp/水波レナ\(アニメver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="美国織莉子(ver.Final)"] {
+  background: url(../img/webp/美国織莉子\(ver.Final\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="出涸嵐マナ"] {
+  background: url(../img/webp/出涸嵐マナ.webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="環いろは(アニメver)"] {
+  background: url(../img/webp/環いろは\(アニメver\).webp);
+  background-size: 60px 60px;
+}
+
+.magicalgirl input[value="悪魔ほむらちゃん"] {
+  background: url(../img/webp/悪魔ほむらちゃん.webp);
+  background-size: 60px 60px;
+}
+
 .magicalgirl input[value="トルテ"] {
-  background: url(../img/png/トルテ.png);
+  background: url(../img/webp/トルテ.webp);
   background-size: 60px 60px;
 }
 
