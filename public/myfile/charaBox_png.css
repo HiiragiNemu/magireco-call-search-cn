@@ -160,7 +160,7 @@ background-repeat: no-repeat;
 background-position: center;
 }
 
-.magicalgirl input[value="爱生咲笑 (愛生咲笑 / Sakie Aki)"] {
+.magicalgirl input[value="爱生咲笑 (愛生咲笑 / Aki Sakie)"] {
     background: url(../img/png/爱生咲笑.png);
     background-size: contain;
 background-repeat: no-repeat;
@@ -300,15 +300,15 @@ background-repeat: no-repeat;
 background-position: center;
 }
 
-.magicalgirl input[value="多尔玛 (ドルマ / Dolma)"] {
-    background: url(../img/png/多尔玛.png);
+.magicalgirl input[value="卓玛 (ドルマ / Dolma)"] {
+    background: url(../img/png/卓玛.png);
     background-size: contain;
 background-repeat: no-repeat;
 background-position: center;
 }
 
-.magicalgirl input[value="多罗艾代 (ドロアダイ / Dolo'adai)"] {
-    background: url(../img/png/多罗艾代.png);
+.magicalgirl input[value="朵啰阿歹 (ドロアダイ / Dolo'adai)"] {
+    background: url(../img/png/朵啰阿歹.png);
     background-size: contain;
 background-repeat: no-repeat;
 background-position: center;
