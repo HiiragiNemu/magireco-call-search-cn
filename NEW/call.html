@@ -614,6 +614,13 @@
 				<input type="button" value="设置" onClick="canvasSet();">
 
 				<a href="" id="canvasImgLink" download="">保存为图片</a>
+				<div id="callTextOptions" style="margin:8px 0; line-height:1.8;">
+					显示文本：
+					<label style="white-space:nowrap; margin-right:10px;"><input type="checkbox" id="callShowJapanese" checked onchange="refreshCallDisplay();">日文</label>
+					<label style="white-space:nowrap; margin-right:10px;"><input type="checkbox" id="callShowRomaji" checked onchange="refreshCallDisplay();">罗马音</label>
+					<label style="white-space:nowrap; margin-right:10px;"><input type="checkbox" id="callShowChinese" checked onchange="refreshCallDisplay();">中文</label>
+					<span style="font-size:0.9em;color:#666;">取消勾选可压缩关系图标签和表格内容</span>
+				</div>
 				<BR>
 				<!-- X(Twitter)分享按钮实现 -->
 				<a href="https://twitter.com/share?ref_src=twsrc%5Etfw&hashtags=マギレコ,まどドラ" class="twitter-share-button"
@@ -917,6 +924,219 @@ for (let [charaName, attributes] of charaAttribute) {
 
 				} //网络写入结束
 
+function getCallDisplayOptions() {
+    const getChecked = function(id, fallback) {
+        const element = document.getElementById(id);
+        return element ? element.checked : fallback;
+    };
+
+    return {
+        japanese: getChecked("callShowJapanese", true),
+        romaji: getChecked("callShowRomaji", true),
+        chinese: getChecked("callShowChinese", true)
+    };
+}
+
+function buildCallDisplayGroup(japaneseText, romajiText, chineseText, displayOptions) {
+    const japanese = String(japaneseText || "").trim();
+    const romaji = String(romajiText || "").trim();
+    const chinese = String(chineseText || "").trim();
+    const subParts = [];
+
+    if (displayOptions.romaji && romaji) subParts.push(romaji);
+    if (displayOptions.chinese && chinese) subParts.push(chinese);
+
+    if (displayOptions.japanese && japanese && subParts.length > 0) {
+        return japanese + " (" + subParts.join(" / ") + ")";
+    }
+    if (displayOptions.japanese && japanese) return japanese;
+    return subParts.join(" / ");
+}
+
+function splitTopLevelSlash(text) {
+    const parts = [];
+    let current = "";
+    let parenDepth = 0;
+    let squareDepth = 0;
+    let cornerDepth = 0;
+
+    for (const ch of String(text || "")) {
+        if (ch === "(" || ch === "（") parenDepth++;
+        else if ((ch === ")" || ch === "）") && parenDepth > 0) parenDepth--;
+        else if (ch === "[" || ch === "［") squareDepth++;
+        else if ((ch === "]" || ch === "］") && squareDepth > 0) squareDepth--;
+        else if (ch === "【") cornerDepth++;
+        else if (ch === "】" && cornerDepth > 0) cornerDepth--;
+
+        if (ch === "/" && parenDepth === 0 && squareDepth === 0 && cornerDepth === 0) {
+            parts.push(current.trim());
+            current = "";
+        } else {
+            current += ch;
+        }
+    }
+    parts.push(current.trim());
+    return parts;
+}
+
+function findMatchingParen(text, openIndex) {
+    let depth = 0;
+    for (let i = openIndex; i < text.length; i++) {
+        const ch = text[i];
+        if (ch === "(" || ch === "（") depth++;
+        else if (ch === ")" || ch === "）") {
+            depth--;
+            if (depth === 0) return i;
+        }
+    }
+    return -1;
+}
+
+function findCallTermStart(buffer) {
+    const delimiters = new Set(["/", "／", "。", "、", "，", ",", "；", ";", "：", ":", "|", "\n", "\r", "\t"]);
+    let i = buffer.length - 1;
+    let parenDepth = 0;
+    let squareDepth = 0;
+    let cornerDepth = 0;
+
+    while (i >= 0 && /\s/.test(buffer[i])) i--;
+
+    for (; i >= 0; i--) {
+        const ch = buffer[i];
+        if (ch === ")" || ch === "）") parenDepth++;
+        else if ((ch === "(" || ch === "（") && parenDepth > 0) parenDepth--;
+        else if (ch === "]" || ch === "］") squareDepth++;
+        else if ((ch === "[" || ch === "［") && squareDepth > 0) squareDepth--;
+        else if (ch === "】") cornerDepth++;
+        else if (ch === "【" && cornerDepth > 0) cornerDepth--;
+        else if (parenDepth === 0 && squareDepth === 0 && cornerDepth === 0 && delimiters.has(ch)) {
+            return i + 1;
+        }
+    }
+    return 0;
+}
+
+function stripChineseNotes(text) {
+    return String(text || "").replace(/【[^】]*】/g, "").trim();
+}
+
+function extractChineseNotes(text) {
+    const notes = [];
+    String(text || "").replace(/【([^】]*)】/g, function(_match, note) {
+        const cleaned = String(note || "").trim();
+        if (cleaned) notes.push(cleaned);
+        return _match;
+    });
+    return notes.join(" / ");
+}
+
+function formatCallText(rawText, displayOptions) {
+    const text = String(rawText || "").trim();
+    if (!text) return "";
+    if (displayOptions.japanese && displayOptions.romaji && displayOptions.chinese) return text;
+    if (!displayOptions.japanese && !displayOptions.romaji && !displayOptions.chinese) return "";
+
+    let matched = false;
+    let result = "";
+
+    for (let i = 0; i < text.length;) {
+        const ch = text[i];
+        if (ch !== "(" && ch !== "（") {
+            result += ch;
+            i++;
+            continue;
+        }
+
+        const closeIndex = findMatchingParen(text, i);
+        if (closeIndex < 0) {
+            result += ch;
+            i++;
+            continue;
+        }
+
+        const annotation = text.slice(i + 1, closeIndex);
+        const parts = splitTopLevelSlash(annotation);
+        if (parts.length < 2) {
+            result += text.slice(i, closeIndex + 1);
+            i = closeIndex + 1;
+            continue;
+        }
+
+        matched = true;
+        const termStart = findCallTermStart(result);
+        const prefix = result.slice(0, termStart);
+        const japanese = result.slice(termStart).trim();
+        const romaji = parts.shift();
+        const chinese = parts.join(" / ");
+        result = prefix + buildCallDisplayGroup(japanese, romaji, chinese, displayOptions);
+        i = closeIndex + 1;
+    }
+
+    if (matched) {
+        return result
+            .replace(/\s*\/\s*/g, " / ")
+            .replace(/^\s*\/\s*|\s*\/\s*$/g, "")
+            .trim();
+    }
+
+    // 没有“日文 (romaji / 中文)”结构时，只能保守处理。
+    // 例如“お前 / オマエ【说明】”：关闭中文时去掉【说明】，只保留日文/假名称呼。
+    if (displayOptions.japanese) return displayOptions.chinese ? text : stripChineseNotes(text);
+
+    if (displayOptions.chinese) {
+        const chineseNotes = extractChineseNotes(text);
+        if (chineseNotes) return chineseNotes;
+        if (!/[ぁ-ゟァ-ヿ]/.test(text)) return text;
+    }
+
+    if (displayOptions.romaji && /^[A-Za-z0-9 ._\-]+$/.test(text)) return text;
+    return "";
+}
+
+function formatNameText(fullName, displayOptions) {
+    const text = String(fullName || "").trim();
+    if (!text) return "";
+    if (displayOptions.japanese && displayOptions.romaji && displayOptions.chinese) return text;
+    if (!displayOptions.japanese && !displayOptions.romaji && !displayOptions.chinese) return "";
+
+    const match = text.match(/^(.+?)\s+\((.*)\)$/);
+    if (!match) return displayOptions.chinese ? text : "";
+
+    const chineseName = match[1].trim();
+    const nameParts = splitTopLevelSlash(match[2]);
+    const japaneseName = (nameParts.shift() || "").trim();
+    const romajiName = nameParts.join(" / ").trim();
+    const subParts = [];
+
+    if (displayOptions.japanese && japaneseName) subParts.push(japaneseName);
+    if (displayOptions.romaji && romajiName) subParts.push(romajiName);
+
+    if (displayOptions.chinese && chineseName && subParts.length > 0) {
+        return chineseName + " (" + subParts.join(" / ") + ")";
+    }
+    if (displayOptions.chinese && chineseName) return chineseName;
+    return subParts.join(" / ");
+}
+
+function formatNodeLabel(fullName, fallbackName, displayOptions) {
+    const label = formatNameText(fullName, displayOptions) || fallbackName || "";
+    return String(label).replace(/\s*\(/, "\n(");
+}
+
+function getSecondPersonNodeLabel(displayOptions) {
+    if (displayOptions.chinese || displayOptions.japanese) return "二人称";
+    if (displayOptions.romaji) return "second person";
+    return "";
+}
+
+function refreshCallDisplay() {
+    const hasSelectedCharacter = !!document.querySelector('input.MagicalChk[name="chara"]:checked');
+    const hasRenderedTable = !!document.querySelector('#mytable table');
+    if (hasSelectedCharacter || hasRenderedTable || network) {
+        drawNet_Table();
+    }
+}
+
 function drawNet_Table() {
 
     // 1. 初始化网络和表格
@@ -924,37 +1144,62 @@ function drawNet_Table() {
     nodes = [];
     edges = [];
     network = null;
+    const displayOptions = getCallDisplayOptions();
     var girltable = "<table id='girltable'><tr><th>↓称呼者 被称呼者→</th><th>第一人称</th><th>第二人称</th>";
 
-    // 2.【核心修正】创建两个查找表，实现双向映射
-    // nameToLongKeyMap: 用短中文名，查找HTML中那个完整的value值
-    // nameToJsKeyMap:   用短中文名，查找callTable.js中那个带英文注释的key值
-    const nameToHtmlValue = new Map();
-    const nameToJsKey = new Map();
-    
-    // 从HTML中构建 "短中文名" -> "完整value" 的映射
+    // 2. 统一“显示名”和“数据键名”。
+    // 旧写法 /^(.*?)\s*\(/ 会把「晓美焰(眼镜ver)」截断成「晓美焰」，
+    // 导致普通晓美焰和眼镜ver共用同一个短名，后者覆盖前者。
+    function getDisplayShortName(fullName) {
+        return String(fullName || "").replace(/\s+\(.+$/, "").trim();
+    }
+
+    function normalizeCallName(name) {
+        return getDisplayShortName(name)
+            // HTML显示名使用「-眼镜ver」，callTable数据键使用「(眼镜ver)」。
+            .replace(/-眼镜ver$/g, "(眼镜ver)")
+            // HTML显示「名小姐」，callTable数据键是「名字」。
+            .replace(/^名小姐$/g, "名字")
+            // calledMap里有一处日文字形，统一到中文「垒」。
+            .replace(/^水树塁$/g, "水树垒")
+            .trim();
+    }
+
+    const nameToHtmlValue = new Map();       // 规范短名 -> HTML完整value，用于表头/标签显示
+    const nameToJsKey = new Map();           // 规范短名 -> callTable完整key，用于取数据
+    const nameToImageShortName = new Map();  // 规范短名 -> 图片文件使用的显示短名
+
+    // 从HTML中构建映射。注意：图片文件名继续使用HTML显示短名，例如「晓美焰-眼镜ver」。
     for (const checkbox of document.magicalgirl.chara) {
-        const htmlValue = checkbox.value; // "真尾日美香 (眞尾ひみか / Mao Himika)"
-        const match = htmlValue.match(/^(.*?)\s*\(/);
-        const shortName = (match && match[1]) ? match[1].trim() : htmlValue; // "真尾日美香"
-        nameToHtmlValue.set(shortName, htmlValue);
+        const htmlValue = checkbox.value;
+        const displayShortName = getDisplayShortName(htmlValue);
+        const normalizedShortName = normalizeCallName(displayShortName);
+        nameToHtmlValue.set(normalizedShortName, htmlValue);
+        nameToImageShortName.set(normalizedShortName, displayShortName);
     }
 
-    // 从callTable.js中构建 "短中文名" -> "JS key" 的映射
+    // 从callTable.js中构建映射。这里必须保留「(眼镜ver)」这种角色版本标记。
     for (const jsKey of callTable.keys()) {
-        const match = jsKey.match(/^(.*?)\s*\(/);
-        const shortName = (match && match[1]) ? match[1].trim() : jsKey; // "真尾日美香"
-        nameToJsKey.set(shortName, jsKey);
+        const normalizedShortName = normalizeCallName(jsKey);
+        if (nameToJsKey.has(normalizedShortName)) {
+            console.warn("重复的称呼数据短名：", normalizedShortName, nameToJsKey.get(normalizedShortName), jsKey);
+        }
+        nameToJsKey.set(normalizedShortName, jsKey);
     }
 
-    // 3. 收集被选中的角色的“短中文名”
+    // 3. 收集被选中的角色。没有callTable数据的角色不参与绘图/表格，避免表头和行单元格错位。
     const selectedShortNames = [];
     for (const checkbox of document.magicalgirl.chara) {
-        if (checkbox.checked) {
-            const htmlValue = checkbox.value;
-            const match = htmlValue.match(/^(.*?)\s*\(/);
-            const shortName = (match && match[1]) ? match[1].trim() : htmlValue;
-            selectedShortNames.push(shortName);
+        if (!checkbox.checked) continue;
+
+        const displayShortName = getDisplayShortName(checkbox.value);
+        const normalizedShortName = normalizeCallName(displayShortName);
+        if (!nameToJsKey.has(normalizedShortName)) {
+            console.warn("数据同步错误：在callTable.js中找不到与 '" + displayShortName + "' 对应的键。", checkbox.value);
+            continue;
+        }
+        if (!selectedShortNames.includes(normalizedShortName)) {
+            selectedShortNames.push(normalizedShortName);
         }
     }
 
@@ -973,26 +1218,24 @@ function drawNet_Table() {
     // 5. 添加节点和表格标题
     const DIR = "./img/png/";
     for (const shortName of selectedShortNames) {
-        const htmlValue = nameToHtmlValue.get(shortName);
+        const htmlValue = nameToHtmlValue.get(shortName) || shortName;
         const jsKey = nameToJsKey.get(shortName);
-        if (!jsKey) {
-            console.error("数据同步错误：在callTable.js中找不到与 '" + shortName + "' 对应的键。");
-            continue;
-        }
+        if (!jsKey) continue;
         const charaData = callTable.get(jsKey);
         if (!charaData) {
             console.error("数据源错误：使用键 '" + jsKey + "' 在callTable中找不到数据。");
             continue;
         }
-        
-        const girlImgURL = DIR + shortName + ".png";
+
+        const imageShortName = nameToImageShortName.get(shortName) || shortName;
+        const girlImgURL = DIR + imageShortName + ".png";
         nodes.push({
-            id: shortName, // 节点ID使用统一的短中文名
+            id: shortName, // 节点ID使用规范短名，避免晓美焰两个版本互相覆盖
             shape: "circularImage",
             image: girlImgURL,
-            label: htmlValue.replace(/\s*\(/, '\n(') // 标签显示HTML里最完整的信息
+            label: formatNodeLabel(htmlValue, shortName, displayOptions) // 按显示选项压缩节点标签
         });
-        girltable += "<th>" + htmlValue + "</th>"; // 表格标题也用最完整的信息
+        girltable += "<th>" + (formatNameText(htmlValue, displayOptions) || shortName) + "</th>";
     }
     girltable += "</tr>";
 
@@ -1003,23 +1246,24 @@ function drawNet_Table() {
         const callerData = callTable.get(callerJsKey);
         if (!callerData) continue;
 
-        const callerHtmlValue = nameToHtmlValue.get(callerShortName);
-        girltable += "<tr><th>" + callerHtmlValue + "</th>";
-        girltable += "<td>" + (callerData.get("第一人称") || "") + "</td>";
-        girltable += "<td>" + (callerData.get("二人称") || "") + "</td>";
+        const callerHtmlValue = nameToHtmlValue.get(callerShortName) || callerShortName;
+        girltable += "<tr><th>" + (formatNameText(callerHtmlValue, displayOptions) || callerShortName) + "</th>";
+        girltable += "<td>" + formatCallText(callerData.get("第一人称") || "", displayOptions) + "</td>";
+        girltable += "<td>" + formatCallText(callerData.get("二人称") || "", displayOptions) + "</td>";
 
         for (const calleeShortName of selectedShortNames) {
             if (callerShortName === calleeShortName) {
                 girltable += "<td>—</td>";
                 continue;
             }
-            
-            // 【最关键的查找】用“被称呼者的短名称”作为键，去查询称呼数据
-            const callValue = callerData.get(calleeShortName); 
-            
+
+            // callTable内部的被称呼者键使用规范短名，例如「晓美焰(眼镜ver)」。
+            const callValue = callerData.get(calleeShortName);
+
             if (callValue) {
-                edges.push({ from: callerShortName, to: calleeShortName, label: callValue });
-                girltable += "<td>" + callValue + "</td>";
+                const displayCallValue = formatCallText(callValue, displayOptions);
+                edges.push({ from: callerShortName, to: calleeShortName, label: displayCallValue });
+                girltable += "<td>" + displayCallValue + "</td>";
             } else {
                 girltable += "<td></td>";
             }
@@ -1036,24 +1280,23 @@ function drawNet_Table() {
         nodes[i].y = radius * Math.sin(angle * i);
     }
     if (nodes.length) {
-        nodes.push({ id: "二人称", shape: "circularImage", image: "./img/png/二人称.png", label: "二人称" });
+        nodes.push({ id: "二人称", shape: "circularImage", image: "./img/png/二人称.png", label: getSecondPersonNodeLabel(displayOptions) });
         for (const shortName of selectedShortNames) {
             const jsKey = nameToJsKey.get(shortName);
             if (!jsKey) continue;
             const charaData = callTable.get(jsKey);
             if (charaData.get("第一人称")) {
-                edges.push({ from: shortName, to: shortName, label: charaData.get("第一人称") });
+                edges.push({ from: shortName, to: shortName, label: formatCallText(charaData.get("第一人称"), displayOptions) });
             }
             if (charaData.get("二人称")) {
-                edges.push({ from: shortName, to: "二人称", label: charaData.get("二人称") });
+                edges.push({ from: shortName, to: "二人称", label: formatCallText(charaData.get("二人称"), displayOptions) });
             }
         }
     }
-    
+
     document.getElementById('mytable').innerHTML = girltable;
     draw();
 }
-
 				// 重置魔法少女的选择。函数
 				function girlReset() {
 					var checkboxes = document.getElementsByName('chara');

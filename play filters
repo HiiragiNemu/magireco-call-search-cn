@@ -1,0 +1,297 @@
+warning: in the working copy of 'public/index.html', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/public/index.html b/public/index.html[m
+[1mindex f180009..a55098e 100644[m
+[1m--- a/public/index.html[m
+[1m+++ b/public/index.html[m
+[36m@@ -629,6 +629,13 @@[m
+ [m
+ 				<a href="" id="canvasImgLink" download="">保存为图片</a>[m
+ 				<button id="saveHeightChartBtn" style="display: none;" onclick="saveHeightChart()">保存身高图</button>[m
+[32m+[m				[32m<div id="callTextOptions" style="margin:8px 0; line-height:1.8;">[m
+[32m+[m					[32m显示文本：[m
+[32m+[m					[32m<label style="white-space:nowrap; margin-right:10px;"><input type="checkbox" id="callShowJapanese" checked onchange="refreshCallDisplay();">日文</label>[m
+[32m+[m					[32m<label style="white-space:nowrap; margin-right:10px;"><input type="checkbox" id="callShowRomaji" checked onchange="refreshCallDisplay();">罗马音</label>[m
+[32m+[m					[32m<label style="white-space:nowrap; margin-right:10px;"><input type="checkbox" id="callShowChinese" checked onchange="refreshCallDisplay();">中文</label>[m
+[32m+[m					[32m<span style="font-size:0.9em;color:#666;">取消勾选可压缩关系图标签和表格内容</span>[m
+[32m+[m				[32m</div>[m
+ 				<BR>[m
+ 				<!-- X(Twitter)分享按钮实现 -->[m
+ 				<a href="https://twitter.com/share?ref_src=twsrc%5Etfw&hashtags=マギレコ,まどドラ" class="twitter-share-button"[m
+[36m@@ -932,6 +939,219 @@[m [mfor (let [charaName, attributes] of charaAttribute) {[m
+ [m
+ 				} //网络写入结束[m
+ [m
+[32m+[m[32mfunction getCallDisplayOptions() {[m
+[32m+[m[32m    const getChecked = function(id, fallback) {[m
+[32m+[m[32m        const element = document.getElementById(id);[m
+[32m+[m[32m        return element ? element.checked : fallback;[m
+[32m+[m[32m    };[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        japanese: getChecked("callShowJapanese", true),[m
+[32m+[m[32m        romaji: getChecked("callShowRomaji", true),[m
+[32m+[m[32m        chinese: getChecked("callShowChinese", true)[m
+[32m+[m[32m    };[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction buildCallDisplayGroup(japaneseText, romajiText, chineseText, displayOptions) {[m
+[32m+[m[32m    const japanese = String(japaneseText || "").trim();[m
+[32m+[m[32m    const romaji = String(romajiText || "").trim();[m
+[32m+[m[32m    const chinese = String(chineseText || "").trim();[m
+[32m+[m[32m    const subParts = [];[m
+[32m+[m
+[32m+[m[32m    if (displayOptions.romaji && romaji) subParts.push(romaji);[m
+[32m+[m[32m    if (displayOptions.chinese && chinese) subParts.push(chinese);[m
+[32m+[m
+[32m+[m[32m    if (displayOptions.japanese && japanese && subParts.length > 0) {[m
+[32m+[m[32m        return japanese + " (" + subParts.join(" / ") + ")";[m
+[32m+[m[32m    }[m
+[32m+[m[32m    if (displayOptions.japanese && japanese) return japanese;[m
+[32m+[m[32m    return subParts.join(" / ");[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction splitTopLevelSlash(text) {[m
+[32m+[m[32m    const parts = [];[m
+[32m+[m[32m    let current = "";[m
+[32m+[m[32m    let parenDepth = 0;[m
+[32m+[m[32m    let squareDepth = 0;[m
+[32m+[m[32m    let cornerDepth = 0;[m
+[32m+[m
+[32m+[m[32m    for (const ch of String(text || "")) {[m
+[32m+[m[32m        if (ch === "(" || ch === "（") parenDepth++;[m
+[32m+[m[32m        else if ((ch === ")" || ch === "）") && parenDepth > 0) parenDepth--;[m
+[32m+[m[32m        else if (ch === "[" || ch === "［") squareDepth++;[m
+[32m+[m[32m        else if ((ch === "]" || ch === "］") && squareDepth > 0) squareDepth--;[m
+[32m+[m[32m        else if (ch === "【") cornerDepth++;[m
+[32m+[m[32m        else if (ch === "】" && cornerDepth > 0) cornerDepth--;[m
+[32m+[m
+[32m+[m[32m        if (ch === "/" && parenDepth === 0 && squareDepth === 0 && cornerDepth === 0) {[m
+[32m+[m[32m            parts.push(current.trim());[m
+[32m+[m[32m            current = "";[m
+[32m+[m[32m        } else {[m
+[32m+[m[32m            current += ch;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m    parts.push(current.trim());[m
+[32m+[m[32m    return parts;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction findMatchingParen(text, openIndex) {[m
+[32m+[m[32m    let depth = 0;[m
+[32m+[m[32m    for (let i = openIndex; i < text.length; i++) {[m
+[32m+[m[32m        const ch = text[i];[m
+[32m+[m[32m        if (ch === "(" || ch === "（") depth++;[m
+[32m+[m[32m        else if (ch === ")" || ch === "）") {[m
+[32m+[m[32m            depth--;[m
+[32m+[m[32m            if (depth === 0) return i;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return -1;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction findCallTermStart(buffer) {[m
+[32m+[m[32m    const delimiters = new Set(["/", "／", "。", "、", "，", ",", "；", ";", "：", ":", "|", "\n", "\r", "\t"]);[m
+[32m+[m[32m    let i = buffer.length - 1;[m
+[32m+[m[32m    let parenDepth = 0;[m
+[32m+[m[32m    let squareDepth = 0;[m
+[32m+[m[32m    let cornerDepth = 0;[m
+[32m+[m
+[32m+[m[32m    while (i >= 0 && /\s/.test(buffer[i])) i--;[m
+[32m+[m
+[32m+[m[32m    for (; i >= 0; i--) {[m
+[32m+[m[32m        const ch = buffer[i];[m
+[32m+[m[32m        if (ch === ")" || ch === "）") parenDepth++;[m
+[32m+[m[32m        else if ((ch === "(" || ch === "（") && parenDepth > 0) parenDepth--;[m
+[32m+[m[32m        else if (ch === "]" || ch === "］") squareDepth++;[m
+[32m+[m[32m        else if ((ch === "[" || ch === "［") && squareDepth > 0) squareDepth--;[m
+[32m+[m[32m        else if (ch === "】") cornerDepth++;[m
+[32m+[m[32m        else if (ch === "【" && cornerDepth > 0) cornerDepth--;[m
+[32m+[m[32m        else if (parenDepth === 0 && squareDepth === 0 && cornerDepth === 0 && delimiters.has(ch)) {[m
+[32m+[m[32m            return i + 1;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m    return 0;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction stripChineseNotes(text) {[m
+[32m+[m[32m    return String(text || "").replace(/【[^】]*】/g, "").trim();[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction extractChineseNotes(text) {[m
+[32m+[m[32m    const notes = [];[m
+[32m+[m[32m    String(text || "").replace(/【([^】]*)】/g, function(_match, note) {[m
+[32m+[m[32m        const cleaned = String(note || "").trim();[m
+[32m+[m[32m        if (cleaned) notes.push(cleaned);[m
+[32m+[m[32m        return _match;[m
+[32m+[m[32m    });[m
+[32m+[m[32m    return notes.join(" / ");[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction formatCallText(rawText, displayOptions) {[m
+[32m+[m[32m    const text = String(rawText || "").trim();[m
+[32m+[m[32m    if (!text) return "";[m
+[32m+[m[32m    if (displayOptions.japanese && displayOptions.romaji && displayOptions.chinese) return text;[m
+[32m+[m[32m    if (!displayOptions.japanese && !displayOptions.romaji && !displayOptions.chinese) return "";[m
+[32m+[m
+[32m+[m[32m    let matched = false;[m
+[32m+[m[32m    let result = "";[m
+[32m+[m
+[32m+[m[32m    for (let i = 0; i < text.length;) {[m
+[32m+[m[32m        const ch = text[i];[m
+[32m+[m[32m        if (ch !== "(" && ch !== "（") {[m
+[32m+[m[32m            result += ch;[m
+[32m+[m[32m            i++;[m
+[32m+[m[32m            continue;[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        const closeIndex = findMatchingParen(text, i);[m
+[32m+[m[32m        if (closeIndex < 0) {[m
+[32m+[m[32m            result += ch;[m
+[32m+[m[32m            i++;[m
+[32m+[m[32m            continue;[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        const annotation = text.slice(i + 1, closeIndex);[m
+[32m+[m[32m        const parts = splitTopLevelSlash(annotation);[m
+[32m+[m[32m        if (parts.length < 2) {[m
+[32m+[m[32m            result += text.slice(i, closeIndex + 1);[m
+[32m+[m[32m            i = closeIndex + 1;[m
+[32m+[m[32m            continue;[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        matched = true;[m
+[32m+[m[32m        const termStart = findCallTermStart(result);[m
+[32m+[m[32m        const prefix = result.slice(0, termStart);[m
+[32m+[m[32m        const japanese = result.slice(termStart).trim();[m
+[32m+[m[32m        const romaji = parts.shift();[m
+[32m+[m[32m        const chinese = parts.join(" / ");[m
+[32m+[m[32m        result = prefix + buildCallDisplayGroup(japanese, romaji, chinese, displayOptions);[m
+[32m+[m[32m        i = closeIndex + 1;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    if (matched) {[m
+[32m+[m[32m        return result[m
+[32m+[m[32m            .replace(/\s*\/\s*/g, " / ")[m
+[32m+[m[32m            .replace(/^\s*\/\s*|\s*\/\s*$/g, "")[m
+[32m+[m[32m            .trim();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    // 没有“日文 (romaji / 中文)”结构时，只能保守处理。[m
+[32m+[m[32m    // 例如“お前 / オマエ【说明】”：关闭中文时去掉【说明】，只保留日文/假名称呼。[m
+[32m+[m[32m    if (displayOptions.japanese) return displayOptions.chinese ? text : stripChineseNotes(text);[m
+[32m+[m
+[32m+[m[32m    if (displayOptions.chinese) {[m
+[32m+[m[32m        const chineseNotes = extractChineseNotes(text);[m
+[32m+[m[32m        if (chineseNotes) return chineseNotes;[m
+[32m+[m[32m        if (!/[ぁ-ゟァ-ヿ]/.test(text)) return text;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    if (displayOptions.romaji && /^[A-Za-z0-9 ._\-]+$/.test(text)) return text;[m
+[32m+[m[32m    return "";[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction formatNameText(fullName, displayOptions) {[m
+[32m+[m[32m    const text = String(fullName || "").trim();[m
+[32m+[m[32m    if (!text) return "";[m
+[32m+[m[32m    if (displayOptions.japanese && displayOptions.romaji && displayOptions.chinese) return text;[m
+[32m+[m[32m    if (!displayOptions.japanese && !displayOptions.romaji && !displayOptions.chinese) return "";[m
+[32m+[m
+[32m+[m[32m    const match = text.match(/^(.+?)\s+\((.*)\)$/);[m
+[32m+[m[32m    if (!match) return displayOptions.chinese ? text : "";[m
+[32m+[m
+[32m+[m[32m    const chineseName = match[1].trim();[m
+[32m+[m[32m    const nameParts = splitTopLevelSlash(match[2]);[m
+[32m+[m[32m    const japaneseName = (nameParts.shift() || "").trim();[m
+[32m+[m[32m    const romajiName = nameParts.join(" / ").trim();[m
+[32m+[m[32m    const subParts = [];[m
+[32m+[m
+[32m+[m[32m    if (displayOptions.japanese && japaneseName) subParts.push(japaneseName);[m
+[32m+[m[32m    if (displayOptions.romaji && romajiName) subParts.push(romajiName);[m
+[32m+[m
+[32m+[m[32m    if (displayOptions.chinese && chineseName && subParts.length > 0) {[m
+[32m+[m[32m        return chineseName + " (" + subParts.join(" / ") + ")";[m
+[32m+[m[32m    }[m
+[32m+[m[32m    if (displayOptions.chinese && chineseName) return chineseName;[m
+[32m+[m[32m    return subParts.join(" / ");[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction formatNodeLabel(fullName, fallbackName, displayOptions) {[m
+[32m+[m[32m    const label = formatNameText(fullName, displayOptions) || fallbackName || "";[m
+[32m+[m[32m    return String(label).replace(/\s*\(/, "\n(");[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction getSecondPersonNodeLabel(displayOptions) {[m
+[32m+[m[32m    if (displayOptions.chinese || displayOptions.japanese) return "二人称";[m
+[32m+[m[32m    if (displayOptions.romaji) return "second person";[m
+[32m+[m[32m    return "";[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunction refreshCallDisplay() {[m
+[32m+[m[32m    const hasSelectedCharacter = !!document.querySelector('input.MagicalChk[name="chara"]:checked');[m
+[32m+[m[32m    const hasRenderedTable = !!document.querySelector('#mytable table');[m
+[32m+[m[32m    if (hasSelectedCharacter || hasRenderedTable || network) {[m
+[32m+[m[32m        drawNet_Table();[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[32m+[m
+ function drawNet_Table() {[m
+ [m
+     // 1. 初始化网络和表格[m
+[36m@@ -939,37 +1159,62 @@[m [mfunction drawNet_Table() {[m
+     nodes = [];[m
+     edges = [];[m
+     network = null;[m
+[32m+[m[32m    const displayOptions = getCallDisplayOptions();[m
+     var girltable = "<table id='girltable'><tr><th>↓称呼者 被称呼者→</th><th>第一人称</th><th>第二人称</th>";[m
+ [m
+[31m-    // 2.【核心修正】创建两个查找表，实现双向映射[m
+[31m-    // nameToLongKeyMap: 用短中文名，查找HTML中那个完整的value值[m
+[31m-    // nameToJsKeyMap:   用短中文名，查找callTable.js中那个带英文注释的key值[m
+[31m-    const nameToHtmlValue = new Map();[m
+[31m-    const nameToJsKey = new Map();[m
+[31m-    [m
+[31m-    // 从HTML中构建 "短中文名" -> "完整value" 的映射[m
+[32m+[m[32m    // 2. 统一“显示名”和“数据键名”。[m
+[32m+[m[32m    // 旧写法 /^(.*?)\s*\(/ 会把「晓美焰(眼镜ver)」截断成「晓美焰」，[m
+[32m+[m[32m    // 导致普通晓美焰和眼镜ver共用同一个短名，后者覆盖前者。[m
+[32m+[m[32m    function getDisplayShortName(fullName) {[m
+[32m+[m[32m        return String(fullName || "").replace(/\s+\(.+$/, "").trim();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    function normalizeCallName(name) {[m
+[32m+[m[32m        return getDisplayShortName(name)[m
+[32m+[m[32m            // HTML显示名使用「-眼镜ver」，callTable数据键使用「(眼镜ver)」。[m
+[32m+[m[32m            .replace(/-眼镜ver$/g, "(眼镜ver)")[m
+[32m+[m[32m            // HTML显示「名小姐」，callTable数据键是「名字」。[m
+[32m+[m[32m            .replace(/^名小姐$/g, "名字")[m
+[32m+[m[32m            // calledMap里有一处日文字形，统一到中文「垒」。[m
+[32m+[m[32m            .replace(/^水树塁$/g, "水树垒")[m
+[32m+[m[32m            .trim();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    const nameToHtmlValue = new Map();       // 规范短名 -> HTML完整value，用于表头/标签显示[m
+[32m+[m[32m    const nameToJsKey = new Map();           // 规范短名 -> callTable完整key，用于取数据[m
+[32m+[m[32m    const nameToImageShortName = new Map();  // 规范短名 -> 图片文件使用的显示短名[m
+[32m+[m
+[32m+[m[32m    // 从HTML中构建映射。注意：图片文件名继续使用HTML显示短名，例如「晓美焰-眼镜ver」。[m
+     for (const checkbox of document.magicalgirl.chara) {[m
+[31m-        const htmlValue = checkbox.value; // "真尾日美香 (眞尾ひみか / Mao Himika)"[m
+[31m-        const match = htmlValue.match(/^(.*?)\s*\(/);[m
+[31m-        const shortName = (match && match[1]) ? match[1].trim() : htmlValue; // "真尾日美香"[m
+[31m-        nameToHtmlValue.set(shortName, htmlValue);[m
+[32m+[m[32m        const htmlValue = checkbox.value;[m
+[32m+[m[32m        const displayShortName = getDisplayShortName(htmlValue);[m
+[32m+[m[32m        const normalizedShortName = normalizeCallName(displayShortName);[m
+[32m+[m[32m        nameToHtmlValue.set(normalizedShortName, htmlValue);[m
+[32m+[m[32m        nameToImageShortName.set(normalizedShortName, displayShortName);[m
+     }[m
+ [m
+[31m-    // 从callTable.js中构建 "短中文名" -> "JS key" 的映射[m
+[32m+[m[32m    // 从callTable.js中构建映射。这里必须保留「(眼镜ver)」这种角色版本标记。[m
+     for (const jsKey of callTable.keys()) {[m
+[31m-        const match = jsKey.match(/^(.*?)\s*\(/);[m
+[31m-        const shortName = (match && match[1]) ? match[1].trim() : jsKey; // "真尾日美香"[m
+[31m-        nameToJsKey.set(shortName, jsKey);[m
+[32m+[m[32m        const normalizedShortName = normalizeCallName(jsKey);[m
+[32m+[m[32m        if (nameToJsKey.has(normalizedShortName)) {[m
+[32m+[m[32m            console.warn("重复的�
