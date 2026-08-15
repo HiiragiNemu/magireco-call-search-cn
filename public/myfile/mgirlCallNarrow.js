@@ -1,4 +1,4 @@
-// Double-click filtering based on outgoing and incoming call relationships.
+// Triple-tap/click filtering based on outgoing and incoming call relationships.
 (function (global) {
     'use strict';
 

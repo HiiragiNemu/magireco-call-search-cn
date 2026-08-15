@@ -16,6 +16,7 @@
 	<link rel="stylesheet" href="./myfile/site-correction-v2.css">
 	<link rel="stylesheet" href="./myfile/site-correction-v3.css">
 	<link rel="stylesheet" href="./myfile/site-correction-v4.css">
+	<link rel="stylesheet" href="./myfile/tools-suite.css">
 	<!-- 此页面专属样式 -->
 	<style>
 		/* 关系网络图样式 */
@@ -44,7 +45,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<body data-build="neo11-height-guide-v4-20260816">
+<body data-build="integrated-tools-v5-20260816">
 	<div id="wrapper">
 		<!-- 汉堡菜单 -->
 		<header class="header">
@@ -67,7 +68,9 @@
 					<a href="https://app.the-timeline.jp/2PACX-1vTYF8Mj66tnTEhK2jPwzJzwKWJgtC0Y2-PQGIUwVbkO9csvt1IofUzv0LO0X_bjVpVgKCDyel4_jEry">
 						运营时间表
 					</a>
-				<li><a href="https://magireco-chara-search.vercel.app/mdkOCR/index.html">魔女文字解读工具</a></li>
+				<li><a href="./story.html">角色故事搜索</a></li>
+				<li><a href="./attendance.html">共同出场次数排行</a></li>
+				<li><a href="./runes.html">魔女文字解读工具</a></li>
 				<li>
 					<a href="https://docs.google.com/spreadsheets/d/1V0QTP3YZsoc7h5wOC8oqg7NKJpA6ZPyck9yCYfbJGlk/">
 						称呼数据
@@ -118,10 +121,10 @@
 			<span style="color:rgb(255, 0, 0);font-weight:bold;">或“搜索”按钮</span>
 		</p>
 		页面底部将显示称呼关系图和表格。(点击右下角的箭头可以上下移动)<BR>
-		双击图标可以筛选称呼/被称呼的对象。<BR>
+		三击图标可以筛选称呼/被称呼的对象。单击仍用于选择角色。<BR>
 		</p>
 		<fieldset class="calloption">
-			<legend>双击选项</legend>
+			<legend>三击筛选选项</legend>
 			<form id="callFilterForm">
 				<label><input type="radio" name="vector" value="call">称呼</label>
 				<label><input type="radio" name="vector" value="called">被称呼</label>
@@ -145,225 +148,225 @@
 		<form name="magicalgirl">
 			<div class="magicalgirl">
 
-				<label class="girlbox umeColor" data-kana="たまき いろは"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="環いろは" value="环彩羽 (環いろは / Tamaki Iroha)"><br>环彩羽★</label>
-				<label class="girlbox umeColor" data-kana="ななみ やちよ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="七海やちよ" value="七海八千代 (七海やちよ / Nanami Yachiyo)"><br>七海八千代★</label>
-				<label class="girlbox umeColor" data-kana="ゆい つるの"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="由比鶴乃" value="由比鹤乃 (由比鶴乃 / Yui Tsuruno)"><br>由比鹤乃★</label>
-				<label class="girlbox umeColor" data-kana="ふたば さな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="二葉さな" value="二叶莎奈 (二葉さな / Futaba Sana)"><br>二叶莎奈★</label>
-				<label class="girlbox umeColor" id="feri" data-kana="みつき ふぇりしあ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="深月フェリシア" value="深月菲莉希亚 (深月フェリシア / Mitsuki Felicia)"><br>深月<br>菲莉希亚★</label>
-				<label class="girlbox umeColor" data-kana="たまき うい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="環うい" value="环忧 (環うい / Tamaki Ui)"><br>环忧★</label>
-				<label class="girlbox umeColor" data-kana="さとみ とうか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="里見灯花" value="里见灯花 (里見灯花 / Satomi Touka)"><br>里见灯花★</label>
-				<label class="girlbox umeColor" data-kana="ひいらぎ ねむ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="柊ねむ" value="柊音梦 (柊ねむ / Hiiragi Nemu)"><br>柊音梦★</label>
-				<label class="girlbox umeColor" data-kana="まんねんざくらのうわさ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="万年桜のウワサ" value="万年樱之谣 (万年桜のウワサ / Eternal Sakura)"><br>万年樱之<br>谣★</label>
-				<label class="girlbox umeColor" data-kana="あずさ みふゆ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="梓みふゆ" value="梓美冬 (梓みふゆ / Azusa Mifuyu)"><br>梓美冬★</label>
-				<label class="girlbox umeColor" data-kana="あまね つくよ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="天音月夜" value="天音月夜 (天音月夜 / Amane Tsukuyo)"><br>天音月夜★</label>
-				<label class="girlbox umeColor" data-kana="あまね つかさ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="天音月咲" value="天音月咲 (天音月咲 / Amane Tsukasa)"><br>天音月咲★</label>
-				<label class="girlbox umeColor" data-kana="ありな ぐれい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="アリナ・グレイ" value="阿莉娜·格雷 (アリナ・グレイ / Alina Gray)"><br>阿莉娜·<br>格雷★</label>
-				<label class="girlbox umeColor" data-kana="みその かりん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="御園かりん" value="御园花凛 (御園かりん / Misono Karin)"><br>御园花凛★</label>
-				<label class="girlbox umeColor" data-kana="みなみ れな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="水波レナ" value="水波玲奈 (水波レナ / Minami Rena)"><br>水波玲奈★</label>
-				<label class="girlbox umeColor" data-kana="とがめ ももこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="十咎ももこ" value="十咎桃子 (十咎ももこ / Togame Momoko)"><br>十咎桃子★</label>
-				<label class="girlbox umeColor" data-kana="あきの かえで"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="秋野かえで" value="秋野枫 (秋野かえで / Akino Kaede)"><br>秋野枫★</label>
-				<label class="girlbox umeColor" data-kana="いずみ かなぎ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="和泉十七夜" value="和泉十七夜 (和泉十七夜 / Izumi Kanagi)"><br>和泉十七夜★</label>
-				<label class="girlbox umeColor" data-kana="やくも みたま"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="八雲みたま" value="八云御魂 (八雲みたま / Yakumo Mitama)"><br>八云<br>御魂★</label>
-				<label class="girlbox umeColor" data-kana="みやこ ひなの"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="都ひなの" value="都雏乃 (都ひなの / Miyako Hinano)"><br>都雏乃★</label>
-				<label class="girlbox umeColor" data-kana="みどり りょう"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="観鳥令" value="观鸟令 (観鳥令 / Midori Ryo)"><br>观鸟令★</label>
-				<label class="girlbox umeColor" data-kana="まきの いくみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="牧野郁美" value="牧野郁美 (牧野郁美 / Makino Ikumi)"><br>牧野郁美★</label>
-				<label class="girlbox umeColor" data-kana="たつき あすか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="竜城明日香" value="龙城明日香 (竜城明日香 / Tatsuki Asuka)"><br>龙城明日香★</label>
-				<label class="girlbox umeColor" data-kana="みなぎ ささら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="美凪ささら" value="美凪纱纱罗 (美凪ささら / Minagi Sasara)"><br>美凪纱纱罗★</label>
-				<label class="girlbox umeColor" data-kana="くろえ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="黒江" value="黑江 (黒江 / Kuroe)"><br>黑江★</label>
+				<label class="girlbox umeColor" data-kana="たまき いろは"><input type="checkbox" class="MagicalChk" name="chara" id="環いろは" value="环彩羽 (環いろは / Tamaki Iroha)"><br>环彩羽★</label>
+				<label class="girlbox umeColor" data-kana="ななみ やちよ"><input type="checkbox" class="MagicalChk" name="chara" id="七海やちよ" value="七海八千代 (七海やちよ / Nanami Yachiyo)"><br>七海八千代★</label>
+				<label class="girlbox umeColor" data-kana="ゆい つるの"><input type="checkbox" class="MagicalChk" name="chara" id="由比鶴乃" value="由比鹤乃 (由比鶴乃 / Yui Tsuruno)"><br>由比鹤乃★</label>
+				<label class="girlbox umeColor" data-kana="ふたば さな"><input type="checkbox" class="MagicalChk" name="chara" id="二葉さな" value="二叶莎奈 (二葉さな / Futaba Sana)"><br>二叶莎奈★</label>
+				<label class="girlbox umeColor" id="feri" data-kana="みつき ふぇりしあ"><input type="checkbox" class="MagicalChk" name="chara" id="深月フェリシア" value="深月菲莉希亚 (深月フェリシア / Mitsuki Felicia)"><br>深月<br>菲莉希亚★</label>
+				<label class="girlbox umeColor" data-kana="たまき うい"><input type="checkbox" class="MagicalChk" name="chara" id="環うい" value="环忧 (環うい / Tamaki Ui)"><br>环忧★</label>
+				<label class="girlbox umeColor" data-kana="さとみ とうか"><input type="checkbox" class="MagicalChk" name="chara" id="里見灯花" value="里见灯花 (里見灯花 / Satomi Touka)"><br>里见灯花★</label>
+				<label class="girlbox umeColor" data-kana="ひいらぎ ねむ"><input type="checkbox" class="MagicalChk" name="chara" id="柊ねむ" value="柊音梦 (柊ねむ / Hiiragi Nemu)"><br>柊音梦★</label>
+				<label class="girlbox umeColor" data-kana="まんねんざくらのうわさ"><input type="checkbox" class="MagicalChk" name="chara" id="万年桜のウワサ" value="万年樱之谣 (万年桜のウワサ / Eternal Sakura)"><br>万年樱之<br>谣★</label>
+				<label class="girlbox umeColor" data-kana="あずさ みふゆ"><input type="checkbox" class="MagicalChk" name="chara" id="梓みふゆ" value="梓美冬 (梓みふゆ / Azusa Mifuyu)"><br>梓美冬★</label>
+				<label class="girlbox umeColor" data-kana="あまね つくよ"><input type="checkbox" class="MagicalChk" name="chara" id="天音月夜" value="天音月夜 (天音月夜 / Amane Tsukuyo)"><br>天音月夜★</label>
+				<label class="girlbox umeColor" data-kana="あまね つかさ"><input type="checkbox" class="MagicalChk" name="chara" id="天音月咲" value="天音月咲 (天音月咲 / Amane Tsukasa)"><br>天音月咲★</label>
+				<label class="girlbox umeColor" data-kana="ありな ぐれい"><input type="checkbox" class="MagicalChk" name="chara" id="アリナ・グレイ" value="阿莉娜·格雷 (アリナ・グレイ / Alina Gray)"><br>阿莉娜·<br>格雷★</label>
+				<label class="girlbox umeColor" data-kana="みその かりん"><input type="checkbox" class="MagicalChk" name="chara" id="御園かりん" value="御园花凛 (御園かりん / Misono Karin)"><br>御园花凛★</label>
+				<label class="girlbox umeColor" data-kana="みなみ れな"><input type="checkbox" class="MagicalChk" name="chara" id="水波レナ" value="水波玲奈 (水波レナ / Minami Rena)"><br>水波玲奈★</label>
+				<label class="girlbox umeColor" data-kana="とがめ ももこ"><input type="checkbox" class="MagicalChk" name="chara" id="十咎ももこ" value="十咎桃子 (十咎ももこ / Togame Momoko)"><br>十咎桃子★</label>
+				<label class="girlbox umeColor" data-kana="あきの かえで"><input type="checkbox" class="MagicalChk" name="chara" id="秋野かえで" value="秋野枫 (秋野かえで / Akino Kaede)"><br>秋野枫★</label>
+				<label class="girlbox umeColor" data-kana="いずみ かなぎ"><input type="checkbox" class="MagicalChk" name="chara" id="和泉十七夜" value="和泉十七夜 (和泉十七夜 / Izumi Kanagi)"><br>和泉十七夜★</label>
+				<label class="girlbox umeColor" data-kana="やくも みたま"><input type="checkbox" class="MagicalChk" name="chara" id="八雲みたま" value="八云御魂 (八雲みたま / Yakumo Mitama)"><br>八云<br>御魂★</label>
+				<label class="girlbox umeColor" data-kana="みやこ ひなの"><input type="checkbox" class="MagicalChk" name="chara" id="都ひなの" value="都雏乃 (都ひなの / Miyako Hinano)"><br>都雏乃★</label>
+				<label class="girlbox umeColor" data-kana="みどり りょう"><input type="checkbox" class="MagicalChk" name="chara" id="観鳥令" value="观鸟令 (観鳥令 / Midori Ryo)"><br>观鸟令★</label>
+				<label class="girlbox umeColor" data-kana="まきの いくみ"><input type="checkbox" class="MagicalChk" name="chara" id="牧野郁美" value="牧野郁美 (牧野郁美 / Makino Ikumi)"><br>牧野郁美★</label>
+				<label class="girlbox umeColor" data-kana="たつき あすか"><input type="checkbox" class="MagicalChk" name="chara" id="竜城明日香" value="龙城明日香 (竜城明日香 / Tatsuki Asuka)"><br>龙城明日香★</label>
+				<label class="girlbox umeColor" data-kana="みなぎ ささら"><input type="checkbox" class="MagicalChk" name="chara" id="美凪ささら" value="美凪纱纱罗 (美凪ささら / Minagi Sasara)"><br>美凪纱纱罗★</label>
+				<label class="girlbox umeColor" data-kana="くろえ"><input type="checkbox" class="MagicalChk" name="chara" id="黒江" value="黑江 (黒江 / Kuroe)"><br>黑江★</label>
 
-				<label class="girlbox otherColor leftm" data-kana="さとり かごめ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="佐鳥かごめ" value="佐鸟笼目 (佐鳥かごめ / Satori Kagome)"><br>佐鸟笼目★</label>
-				<label class="girlbox otherColor" data-kana="ひむろ らび"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="氷室ラビ" value="冰室拉比 (氷室ラビ / Himuro Lavi)"><br>冰室拉比★</label>
-				<label class="girlbox otherColor" data-kana="さとみ なゆた"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="里見那由他" value="里见那由他 (里見那由他 / Satomi Nayuta)"><br>里见那由他★</label>
-				<label class="girlbox otherColor" data-kana="やくも みかげ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="八雲みかげ" value="八云御影 (八雲みかげ / Yakumo Mikage)"><br>八云御影★</label>
+				<label class="girlbox otherColor leftm" data-kana="さとり かごめ"><input type="checkbox" class="MagicalChk" name="chara" id="佐鳥かごめ" value="佐鸟笼目 (佐鳥かごめ / Satori Kagome)"><br>佐鸟笼目★</label>
+				<label class="girlbox otherColor" data-kana="ひむろ らび"><input type="checkbox" class="MagicalChk" name="chara" id="氷室ラビ" value="冰室拉比 (氷室ラビ / Himuro Lavi)"><br>冰室拉比★</label>
+				<label class="girlbox otherColor" data-kana="さとみ なゆた"><input type="checkbox" class="MagicalChk" name="chara" id="里見那由他" value="里见那由他 (里見那由他 / Satomi Nayuta)"><br>里见那由他★</label>
+				<label class="girlbox otherColor" data-kana="やくも みかげ"><input type="checkbox" class="MagicalChk" name="chara" id="八雲みかげ" value="八云御影 (八雲みかげ / Yakumo Mikage)"><br>八云御影★</label>
 
-				<label class="girlbox PMHQColor leftm" data-kana="ときめ しずか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="時女静香" value="时女静香 (時女静香 / Tokime Shizuka)"><br>时女静香★</label>
-				<label class="girlbox PMHQColor" data-kana="ひろえ ちはる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="広江ちはる" value="广江千春 (広江ちはる / Hiroe Chiharu)"><br>广江千春★</label>
-				<label class="girlbox PMHQColor" data-kana="とき すなお"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="土岐すなお" value="土岐沙绪 (土岐すなお / Toki Sunao)"><br>土岐沙绪★</label>
-				<label class="girlbox PMHQColor" data-kana="あおば ちか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="青葉ちか" value="青叶知花 (青葉ちか / Aoba Chika)"><br>青叶知花★</label>
-				<label class="girlbox PMHQColor" data-kana="なつ りょうこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="南津涼子" value="南津凉子 (南津涼子 / Natsu Ryoko)"><br>南津凉子★</label>
-				<label class="girlbox PMHQColor" data-kana="みうら あさひ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="三浦旭" value="三浦旭 (三浦旭 / Miura Asahi)"><br>三浦旭★</label>
+				<label class="girlbox PMHQColor leftm" data-kana="ときめ しずか"><input type="checkbox" class="MagicalChk" name="chara" id="時女静香" value="时女静香 (時女静香 / Tokime Shizuka)"><br>时女静香★</label>
+				<label class="girlbox PMHQColor" data-kana="ひろえ ちはる"><input type="checkbox" class="MagicalChk" name="chara" id="広江ちはる" value="广江千春 (広江ちはる / Hiroe Chiharu)"><br>广江千春★</label>
+				<label class="girlbox PMHQColor" data-kana="とき すなお"><input type="checkbox" class="MagicalChk" name="chara" id="土岐すなお" value="土岐沙绪 (土岐すなお / Toki Sunao)"><br>土岐沙绪★</label>
+				<label class="girlbox PMHQColor" data-kana="あおば ちか"><input type="checkbox" class="MagicalChk" name="chara" id="青葉ちか" value="青叶知花 (青葉ちか / Aoba Chika)"><br>青叶知花★</label>
+				<label class="girlbox PMHQColor" data-kana="なつ りょうこ"><input type="checkbox" class="MagicalChk" name="chara" id="南津涼子" value="南津凉子 (南津涼子 / Natsu Ryoko)"><br>南津凉子★</label>
+				<label class="girlbox PMHQColor" data-kana="みうら あさひ"><input type="checkbox" class="MagicalChk" name="chara" id="三浦旭" value="三浦旭 (三浦旭 / Miura Asahi)"><br>三浦旭★</label>
 
-				<label class="girlbox umeOtherColor leftm" data-kana="くれは ゆな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="紅晴結菜" value="红晴结菜 (紅晴結菜 / Kureha Yuna)"><br>红晴结菜★</label>
-				<label class="girlbox umeOtherColor" data-kana="きらり ひかる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="煌里ひかる" value="煌里光 (煌里ひかる / Kirari Hikaru)"><br>煌里光★</label>
-				<label class="girlbox umeOtherColor" data-kana="かさね あお"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="笠音アオ" value="笠音青 (笠音アオ / Kasane Ao)"><br>笠音青★</label>
-				<label class="girlbox umeOtherColor" data-kana="おおば じゅり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="大庭樹里" value="大庭树里 (大庭樹里 / Oba Juri)"><br>大庭树里★</label>
-				<label class="girlbox umeOtherColor" data-kana="すずか さくや"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="鈴鹿さくや" value="铃鹿朔夜 (鈴鹿さくや / Suzuka Sakuya)"><br>铃鹿朔夜★</label>
-				<label class="girlbox umeOtherColor" data-kana="ちず らんか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="智珠らんか" value="智珠兰华 (智珠らんか / Chizu Ranka)"><br>智珠兰华★</label>
-				<label class="girlbox umeOtherColor" data-kana="ゆめ うらら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="有愛うらら" value="有爱丽 (有愛うらら / Yume Urara)"><br>有爱丽★</label>
-				<label class="girlbox umeOtherColor" data-kana="いなみ みつる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="伊並満" value="伊并满 (伊並満 / Inami Mitsuru)"><br>伊并满★</label>
+				<label class="girlbox umeOtherColor leftm" data-kana="くれは ゆな"><input type="checkbox" class="MagicalChk" name="chara" id="紅晴結菜" value="红晴结菜 (紅晴結菜 / Kureha Yuna)"><br>红晴结菜★</label>
+				<label class="girlbox umeOtherColor" data-kana="きらり ひかる"><input type="checkbox" class="MagicalChk" name="chara" id="煌里ひかる" value="煌里光 (煌里ひかる / Kirari Hikaru)"><br>煌里光★</label>
+				<label class="girlbox umeOtherColor" data-kana="かさね あお"><input type="checkbox" class="MagicalChk" name="chara" id="笠音アオ" value="笠音青 (笠音アオ / Kasane Ao)"><br>笠音青★</label>
+				<label class="girlbox umeOtherColor" data-kana="おおば じゅり"><input type="checkbox" class="MagicalChk" name="chara" id="大庭樹里" value="大庭树里 (大庭樹里 / Oba Juri)"><br>大庭树里★</label>
+				<label class="girlbox umeOtherColor" data-kana="すずか さくや"><input type="checkbox" class="MagicalChk" name="chara" id="鈴鹿さくや" value="铃鹿朔夜 (鈴鹿さくや / Suzuka Sakuya)"><br>铃鹿朔夜★</label>
+				<label class="girlbox umeOtherColor" data-kana="ちず らんか"><input type="checkbox" class="MagicalChk" name="chara" id="智珠らんか" value="智珠兰华 (智珠らんか / Chizu Ranka)"><br>智珠兰华★</label>
+				<label class="girlbox umeOtherColor" data-kana="ゆめ うらら"><input type="checkbox" class="MagicalChk" name="chara" id="有愛うらら" value="有爱丽 (有愛うらら / Yume Urara)"><br>有爱丽★</label>
+				<label class="girlbox umeOtherColor" data-kana="いなみ みつる"><input type="checkbox" class="MagicalChk" name="chara" id="伊並満" value="伊并满 (伊並満 / Inami Mitsuru)"><br>伊并满★</label>
 
-				<label class="girlbox PMHQotherColor leftm" data-kana="あいか ひめな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="藍家ひめな" value="蓝家姬奈 (藍家ひめな / Aika Himena)"><br>蓝家姬奈★</label>
-				<label class="girlbox PMHQotherColor" data-kana="みやび しぐれ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="宮尾時雨" value="宫尾时雨 (宮尾時雨 / Miyabi Shigure)"><br>宫尾时雨★</label>
-				<label class="girlbox PMHQotherColor" data-kana="あずみ はぐむ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="安積はぐむ" value="安积育梦 (安積はぐむ / Azumi Hagumu)"><br>安积育梦★</label>
-				<label class="girlbox PMHQotherColor" data-kana="かぐら さん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="神楽燦" value="神乐灿 (神楽燦 / Kagura San)"><br>神乐灿★</label>
-				<label class="girlbox PMHQotherColor" data-kana="ゆかり みゆり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="遊狩ミユリ" value="游狩美由利 (遊狩ミユリ / Yukari Miyuri)"><br>游狩美由利★</label>
-				<label class="girlbox PMHQotherColor" data-kana="くるす あれくさんどら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="栗栖アレクサンドラ" value="栗栖亚历山德拉 (栗栖アレクサンドラ / Kurisu Alexandra)"><br>栗栖亚历山德拉★</label>
-				<label class="girlbox PMHQotherColor" data-kana="かざり じゅん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="飾利潤" value="饰利润 (飾利潤 / Kazari Jun)"><br>饰利润★</label>
-				<label class="girlbox PMHQotherColor" data-kana="みわ みつね"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="三輪みつね" value="三轮光音 (三輪みつね / Miwa Mitsune)"><br>三轮光音★</label>
+				<label class="girlbox PMHQotherColor leftm" data-kana="あいか ひめな"><input type="checkbox" class="MagicalChk" name="chara" id="藍家ひめな" value="蓝家姬奈 (藍家ひめな / Aika Himena)"><br>蓝家姬奈★</label>
+				<label class="girlbox PMHQotherColor" data-kana="みやび しぐれ"><input type="checkbox" class="MagicalChk" name="chara" id="宮尾時雨" value="宫尾时雨 (宮尾時雨 / Miyabi Shigure)"><br>宫尾时雨★</label>
+				<label class="girlbox PMHQotherColor" data-kana="あずみ はぐむ"><input type="checkbox" class="MagicalChk" name="chara" id="安積はぐむ" value="安积育梦 (安積はぐむ / Azumi Hagumu)"><br>安积育梦★</label>
+				<label class="girlbox PMHQotherColor" data-kana="かぐら さん"><input type="checkbox" class="MagicalChk" name="chara" id="神楽燦" value="神乐灿 (神楽燦 / Kagura San)"><br>神乐灿★</label>
+				<label class="girlbox PMHQotherColor" data-kana="ゆかり みゆり"><input type="checkbox" class="MagicalChk" name="chara" id="遊狩ミユリ" value="游狩美由利 (遊狩ミユリ / Yukari Miyuri)"><br>游狩美由利★</label>
+				<label class="girlbox PMHQotherColor" data-kana="くるす あれくさんどら"><input type="checkbox" class="MagicalChk" name="chara" id="栗栖アレクサンドラ" value="栗栖亚历山德拉 (栗栖アレクサンドラ / Kurisu Alexandra)"><br>栗栖亚历山德拉★</label>
+				<label class="girlbox PMHQotherColor" data-kana="かざり じゅん"><input type="checkbox" class="MagicalChk" name="chara" id="飾利潤" value="饰利润 (飾利潤 / Kazari Jun)"><br>饰利润★</label>
+				<label class="girlbox PMHQotherColor" data-kana="みわ みつね"><input type="checkbox" class="MagicalChk" name="chara" id="三輪みつね" value="三轮光音 (三輪みつね / Miwa Mitsune)"><br>三轮光音★</label>
 
-				<label class="girlbox otherColor2 leftm" data-kana="さわ すだち"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="佐和月出里" value="佐和月出里 (佐和月出里 / Sawa Sudachi)"><br>佐和月出里★</label>
-				<label class="girlbox otherColor2" data-kana="ささめ よづる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="篠目ヨヅル" value="篠目夜鹤 (篠目ヨヅル / Shinome Yozuru)"><br>篠目夜鹤★</label>
-				<label class="girlbox otherColor2" data-kana="りゔぃあ めでぃろす"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="リヴィア・メディロス" value="莉薇娅·梅黛洛斯 (リヴィア・メディロス / Livia Medeiros)"><br>莉薇娅·梅黛洛斯★</label>
+				<label class="girlbox otherColor2 leftm" data-kana="さわ すだち"><input type="checkbox" class="MagicalChk" name="chara" id="佐和月出里" value="佐和月出里 (佐和月出里 / Sawa Sudachi)"><br>佐和月出里★</label>
+				<label class="girlbox otherColor2" data-kana="ささめ よづる"><input type="checkbox" class="MagicalChk" name="chara" id="篠目ヨヅル" value="篠目夜鹤 (篠目ヨヅル / Shinome Yozuru)"><br>篠目夜鹤★</label>
+				<label class="girlbox otherColor2" data-kana="りゔぃあ めでぃろす"><input type="checkbox" class="MagicalChk" name="chara" id="リヴィア・メディロス" value="莉薇娅·梅黛洛斯 (リヴィア・メディロス / Livia Medeiros)"><br>莉薇娅·梅黛洛斯★</label>
 
-				<label class="girlbox otherotherColor leftm" data-kana="かなめ まどか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="鹿目まどか" value="鹿目圆 (鹿目まどか / Kaname Madoka)"><br>鹿目<br>圆★</label>
-				<label class="girlbox otherotherColor" data-kana="あけみ ほむら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="暁美ほむら" value="晓美焰 (暁美ほむら / Akemi Homura)"><br>晓美<br>焰★</label>
-				<label class="girlbox otherotherColor" data-kana="あけみ ほむら めがね"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="暁美ほむら(眼鏡ver)" value="晓美焰-眼镜ver (暁美ほむら(眼鏡ver) / Akemi Homura (Glasses ver))"><br>晓美焰<br>-眼镜ver★</label>
-				<label class="girlbox otherotherColor" data-kana="みき さやか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="美樹さやか" value="美树沙耶香 (美樹さやか / Miki Sayaka)"><br>美树沙耶香★</label>
-				<label class="girlbox otherotherColor" data-kana="ともえ まみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="巴マミ" value="巴麻美 (巴マミ / Tomoe Mami)"><br>巴麻美★</label>
-				<label class="girlbox otherotherColor" data-kana="さくら きょうこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="佐倉杏子" value="佐仓杏子 (佐倉杏子 / Sakura Kyoko)"><br>佐仓杏子★</label>
-				<label class="girlbox otherotherColor" data-kana="ももえ なぎさ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="百江なぎさ" value="百江渚 (百江なぎさ / Momoe Nagisa)"><br>百江渚★</label>
-				<label class="girlbox unimpColor" data-kana="あき まばゆ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="愛生まばゆ" value="爱生眩 (愛生まばゆ / Aki Mabayu)"><br>爱生眩</label>
-				<label class="girlbox unimpColor" data-kana="あき さきえ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="愛生咲笑" value="爱生咲笑 (愛生咲笑 / Aki Sakie)"><br>爱生咲笑</label>
-				<label class="girlbox unimpColor" data-kana="まばゆのはは"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="まばゆの母" value="眩的母亲 (まばゆの母 / Mrs. Aki)"><br>眩的母亲</label>
-				<label class="girlbox otherotherColor" data-kana="しづき ひとみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="志筑仁美" value="志筑仁美 (志筑仁美 / Shizuki Hitomi)"><br>志筑仁美</label>
-				<label class="girlbox otherotherColor" data-kana="かみじょう きょうすけ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="上条恭介" value="上条恭介 (上条恭介 / Kamijo Kyosuke)"><br>上条恭介</label>
-				<label class="girlbox otherotherColor" data-kana="かなめ じゅんこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="鹿目詢子" value="鹿目询子 (鹿目詢子 / Kaname Junko)"><br>鹿目询子</label>
-				<label class="girlbox otherotherColor" data-kana="さおとめ かずこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="早乙女和子" value="早乙女和子 (早乙女和子 / Saotome Kazuko)"><br>早乙女和子</label>
+				<label class="girlbox otherotherColor leftm" data-kana="かなめ まどか"><input type="checkbox" class="MagicalChk" name="chara" id="鹿目まどか" value="鹿目圆 (鹿目まどか / Kaname Madoka)"><br>鹿目<br>圆★</label>
+				<label class="girlbox otherotherColor" data-kana="あけみ ほむら"><input type="checkbox" class="MagicalChk" name="chara" id="暁美ほむら" value="晓美焰 (暁美ほむら / Akemi Homura)"><br>晓美<br>焰★</label>
+				<label class="girlbox otherotherColor" data-kana="あけみ ほむら めがね"><input type="checkbox" class="MagicalChk" name="chara" id="暁美ほむら(眼鏡ver)" value="晓美焰-眼镜ver (暁美ほむら(眼鏡ver) / Akemi Homura (Glasses ver))"><br>晓美焰<br>-眼镜ver★</label>
+				<label class="girlbox otherotherColor" data-kana="みき さやか"><input type="checkbox" class="MagicalChk" name="chara" id="美樹さやか" value="美树沙耶香 (美樹さやか / Miki Sayaka)"><br>美树沙耶香★</label>
+				<label class="girlbox otherotherColor" data-kana="ともえ まみ"><input type="checkbox" class="MagicalChk" name="chara" id="巴マミ" value="巴麻美 (巴マミ / Tomoe Mami)"><br>巴麻美★</label>
+				<label class="girlbox otherotherColor" data-kana="さくら きょうこ"><input type="checkbox" class="MagicalChk" name="chara" id="佐倉杏子" value="佐仓杏子 (佐倉杏子 / Sakura Kyoko)"><br>佐仓杏子★</label>
+				<label class="girlbox otherotherColor" data-kana="ももえ なぎさ"><input type="checkbox" class="MagicalChk" name="chara" id="百江なぎさ" value="百江渚 (百江なぎさ / Momoe Nagisa)"><br>百江渚★</label>
+				<label class="girlbox unimpColor" data-kana="あき まばゆ"><input type="checkbox" class="MagicalChk" name="chara" id="愛生まばゆ" value="爱生眩 (愛生まばゆ / Aki Mabayu)"><br>爱生眩</label>
+				<label class="girlbox unimpColor" data-kana="あき さきえ"><input type="checkbox" class="MagicalChk" name="chara" id="愛生咲笑" value="爱生咲笑 (愛生咲笑 / Aki Sakie)"><br>爱生咲笑</label>
+				<label class="girlbox unimpColor" data-kana="まばゆのはは"><input type="checkbox" class="MagicalChk" name="chara" id="まばゆの母" value="眩的母亲 (まばゆの母 / Mrs. Aki)"><br>眩的母亲</label>
+				<label class="girlbox otherotherColor" data-kana="しづき ひとみ"><input type="checkbox" class="MagicalChk" name="chara" id="志筑仁美" value="志筑仁美 (志筑仁美 / Shizuki Hitomi)"><br>志筑仁美</label>
+				<label class="girlbox otherotherColor" data-kana="かみじょう きょうすけ"><input type="checkbox" class="MagicalChk" name="chara" id="上条恭介" value="上条恭介 (上条恭介 / Kamijo Kyosuke)"><br>上条恭介</label>
+				<label class="girlbox otherotherColor" data-kana="かなめ じゅんこ"><input type="checkbox" class="MagicalChk" name="chara" id="鹿目詢子" value="鹿目询子 (鹿目詢子 / Kaname Junko)"><br>鹿目询子</label>
+				<label class="girlbox otherotherColor" data-kana="さおとめ かずこ"><input type="checkbox" class="MagicalChk" name="chara" id="早乙女和子" value="早乙女和子 (早乙女和子 / Saotome Kazuko)"><br>早乙女和子</label>
 
-				<label class="girlbox umeOtherColor leftm" data-kana="やよい かのこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="矢宵かのこ" value="矢宵鹿乃子 (矢宵かのこ / Yayoi Kanoko)"><br>矢宵鹿乃子★</label>
-				<label class="girlbox umeOtherColor" data-kana="くるみ まなか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="胡桃まなか" value="胡桃爱香 (胡桃まなか / Kurumi Manaka)"><br>胡桃爱香★</label>
-				<label class="girlbox umeOtherColor" data-kana="わかな つむぎ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="若菜つむぎ" value="若菜纺 (若菜つむぎ / Wakana Tsumugi)"><br>若菜纺★</label>
-				<label class="girlbox umeOtherColor" data-kana="あみ りあ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="阿見莉愛" value="阿见莉爱 (阿見莉愛 / Ami Ria)"><br>阿见莉爱★</label>
-				<label class="girlbox umeOtherColor" data-kana="こづえ まゆ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="梢麻友" value="梢麻友 (梢麻友 / Kozue Mayu)"><br>梢麻友★</label>
-				<label class="girlbox umeOtherColor" data-kana="ふみの さゆき"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="史乃沙優希" value="史乃沙优希 (史乃沙優希 / Fumino Sayuki)"><br>史乃沙优希★</label>
-				<label class="girlbox umeOtherColor" data-kana="ななせ ゆきか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="七瀬ゆきか" value="七濑幸佳 (七瀬ゆきか / Nanase Yukika)"><br>七濑幸佳★</label>
+				<label class="girlbox umeOtherColor leftm" data-kana="やよい かのこ"><input type="checkbox" class="MagicalChk" name="chara" id="矢宵かのこ" value="矢宵鹿乃子 (矢宵かのこ / Yayoi Kanoko)"><br>矢宵鹿乃子★</label>
+				<label class="girlbox umeOtherColor" data-kana="くるみ まなか"><input type="checkbox" class="MagicalChk" name="chara" id="胡桃まなか" value="胡桃爱香 (胡桃まなか / Kurumi Manaka)"><br>胡桃爱香★</label>
+				<label class="girlbox umeOtherColor" data-kana="わかな つむぎ"><input type="checkbox" class="MagicalChk" name="chara" id="若菜つむぎ" value="若菜纺 (若菜つむぎ / Wakana Tsumugi)"><br>若菜纺★</label>
+				<label class="girlbox umeOtherColor" data-kana="あみ りあ"><input type="checkbox" class="MagicalChk" name="chara" id="阿見莉愛" value="阿见莉爱 (阿見莉愛 / Ami Ria)"><br>阿见莉爱★</label>
+				<label class="girlbox umeOtherColor" data-kana="こづえ まゆ"><input type="checkbox" class="MagicalChk" name="chara" id="梢麻友" value="梢麻友 (梢麻友 / Kozue Mayu)"><br>梢麻友★</label>
+				<label class="girlbox umeOtherColor" data-kana="ふみの さゆき"><input type="checkbox" class="MagicalChk" name="chara" id="史乃沙優希" value="史乃沙优希 (史乃沙優希 / Fumino Sayuki)"><br>史乃沙优希★</label>
+				<label class="girlbox umeOtherColor" data-kana="ななせ ゆきか"><input type="checkbox" class="MagicalChk" name="chara" id="七瀬ゆきか" value="七濑幸佳 (七瀬ゆきか / Nanase Yukika)"><br>七濑幸佳★</label>
 
-				<label class="girlbox otherColor" data-kana="ゆずき ほとり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="柚希ほとり" value="柚希步鸟 (柚希ほとり / Yuzuki Hotori)"><br>柚希步鸟★</label>
-				<label class="girlbox otherColor" data-kana="ゆずき りおん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="柚希りおん" value="柚希理音 (柚希りおん / Yuzuki Rion)"><br>柚希理音★</label>
-				<label class="girlbox otherColor" data-kana="かはる ゆうな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="香春ゆうな" value="香春优奈 (香春ゆうな / Kaharu Yuuna)"><br>香春优奈★</label>
-				<label class="girlbox otherColor" data-kana="いりな くしゅ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="入名クシュ" value="入名库什 (入名クシュ / Kush Irina)"><br>入名库什★</label>
+				<label class="girlbox otherColor" data-kana="ゆずき ほとり"><input type="checkbox" class="MagicalChk" name="chara" id="柚希ほとり" value="柚希步鸟 (柚希ほとり / Yuzuki Hotori)"><br>柚希步鸟★</label>
+				<label class="girlbox otherColor" data-kana="ゆずき りおん"><input type="checkbox" class="MagicalChk" name="chara" id="柚希りおん" value="柚希理音 (柚希りおん / Yuzuki Rion)"><br>柚希理音★</label>
+				<label class="girlbox otherColor" data-kana="かはる ゆうな"><input type="checkbox" class="MagicalChk" name="chara" id="香春ゆうな" value="香春优奈 (香春ゆうな / Kaharu Yuuna)"><br>香春优奈★</label>
+				<label class="girlbox otherColor" data-kana="いりな くしゅ"><input type="checkbox" class="MagicalChk" name="chara" id="入名クシュ" value="入名库什 (入名クシュ / Kush Irina)"><br>入名库什★</label>
 
-				<label class="girlbox umeColor" data-kana="めぐみ もか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="恵萌花" value="惠萌花 (恵萌花 / Megumi Moka)"><br>惠萌花★</label>
-				<label class="girlbox umeColor" data-kana="ゆら ほたる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="由良蛍" value="由良萤 (由良蛍 / Yura Hotaru)"><br>由良萤★</label>
-				<label class="girlbox umeColor" data-kana="まい あかり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="真井あかり" value="真井灯 (真井あかり / Mai Akari)"><br>真井灯★</label>
+				<label class="girlbox umeColor" data-kana="めぐみ もか"><input type="checkbox" class="MagicalChk" name="chara" id="恵萌花" value="惠萌花 (恵萌花 / Megumi Moka)"><br>惠萌花★</label>
+				<label class="girlbox umeColor" data-kana="ゆら ほたる"><input type="checkbox" class="MagicalChk" name="chara" id="由良蛍" value="由良萤 (由良蛍 / Yura Hotaru)"><br>由良萤★</label>
+				<label class="girlbox umeColor" data-kana="まい あかり"><input type="checkbox" class="MagicalChk" name="chara" id="真井あかり" value="真井灯 (真井あかり / Mai Akari)"><br>真井灯★</label>
 
-				<label class="girlbox PMHQotherColor" data-kana="ひびき めぐる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="枇々木めぐる" value="枇枇木巡 (枇々木めぐる / Hibiki Meguru)"><br>枇枇木巡★</label>
-				<label class="girlbox PMHQotherColor" data-kana="ゆき まりあ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="由貴真里愛" value="由贵真里爱 (由貴真里愛 / Yuki Maria)"><br>由贵真里爱★</label>
-				<label class="girlbox PMHQotherColor" data-kana="きりの さえ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="桐野紗枝" value="桐野纱枝 (桐野紗枝 / Kirino Sae)"><br>桐野纱枝★</label>
+				<label class="girlbox PMHQotherColor" data-kana="ひびき めぐる"><input type="checkbox" class="MagicalChk" name="chara" id="枇々木めぐる" value="枇枇木巡 (枇々木めぐる / Hibiki Meguru)"><br>枇枇木巡★</label>
+				<label class="girlbox PMHQotherColor" data-kana="ゆき まりあ"><input type="checkbox" class="MagicalChk" name="chara" id="由貴真里愛" value="由贵真里爱 (由貴真里愛 / Yuki Maria)"><br>由贵真里爱★</label>
+				<label class="girlbox PMHQotherColor" data-kana="きりの さえ"><input type="checkbox" class="MagicalChk" name="chara" id="桐野紗枝" value="桐野纱枝 (桐野紗枝 / Kirino Sae)"><br>桐野纱枝★</label>
 
-				<label class="girlbox umeColor" data-kana="えり あいみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="江利あいみ" value="江利爱实 (江利あいみ / Eri Aimi)"><br>江利爱实★</label>
-				<label class="girlbox umeColor" data-kana="うつほ なつき"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="空穂夏希" value="空穗夏希 (空穂夏希 / Utsuho Natsuki)"><br>空穗夏希★</label>
-				<label class="girlbox umeColor" data-kana="あわね こころ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="粟根こころ" value="粟根心 (粟根こころ / Awane Kokoro)"><br>粟根心★</label>
-				<label class="girlbox umeColor" id="masara" data-kana="かがみ まさら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="加賀見まさら" value="加贺见真良 (加賀見まさら / Kagami Masara)"><br>加贺见真良★</label>
-				<label class="girlbox umeColor" data-kana="あやの りか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="綾野梨花" value="绫野梨花 (綾野梨花 / Ayano Rika)"><br>绫野梨花★</label>
-				<label class="girlbox umeColor" data-kana="いすず れん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="五十鈴れん" value="五十铃怜 (五十鈴れん / Isuzu Ren)"><br>五十铃怜★</label>
-				<label class="girlbox umeColor" data-kana="まりこ あやか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="毬子あやか" value="毬子亚弥华 (毬子あやか / Mariko Ayaka)"><br>毬子亚弥华★</label>
-				<label class="girlbox umeColor" data-kana="ほずみ しずく"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="保澄雫" value="保澄雫 (保澄雫 / Hozumi Shizuku)"><br>保澄雫★</label>
+				<label class="girlbox umeColor" data-kana="えり あいみ"><input type="checkbox" class="MagicalChk" name="chara" id="江利あいみ" value="江利爱实 (江利あいみ / Eri Aimi)"><br>江利爱实★</label>
+				<label class="girlbox umeColor" data-kana="うつほ なつき"><input type="checkbox" class="MagicalChk" name="chara" id="空穂夏希" value="空穗夏希 (空穂夏希 / Utsuho Natsuki)"><br>空穗夏希★</label>
+				<label class="girlbox umeColor" data-kana="あわね こころ"><input type="checkbox" class="MagicalChk" name="chara" id="粟根こころ" value="粟根心 (粟根こころ / Awane Kokoro)"><br>粟根心★</label>
+				<label class="girlbox umeColor" id="masara" data-kana="かがみ まさら"><input type="checkbox" class="MagicalChk" name="chara" id="加賀見まさら" value="加贺见真良 (加賀見まさら / Kagami Masara)"><br>加贺见真良★</label>
+				<label class="girlbox umeColor" data-kana="あやの りか"><input type="checkbox" class="MagicalChk" name="chara" id="綾野梨花" value="绫野梨花 (綾野梨花 / Ayano Rika)"><br>绫野梨花★</label>
+				<label class="girlbox umeColor" data-kana="いすず れん"><input type="checkbox" class="MagicalChk" name="chara" id="五十鈴れん" value="五十铃怜 (五十鈴れん / Isuzu Ren)"><br>五十铃怜★</label>
+				<label class="girlbox umeColor" data-kana="まりこ あやか"><input type="checkbox" class="MagicalChk" name="chara" id="毬子あやか" value="毬子亚弥华 (毬子あやか / Mariko Ayaka)"><br>毬子亚弥华★</label>
+				<label class="girlbox umeColor" data-kana="ほずみ しずく"><input type="checkbox" class="MagicalChk" name="chara" id="保澄雫" value="保澄雫 (保澄雫 / Hozumi Shizuku)"><br>保澄雫★</label>
 
-				<label class="girlbox umeColor" data-kana="きさき えみり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="木崎衣美里" value="木崎衣美里 (木崎衣美里 / Kisaki Emiri)"><br>木崎衣美里★</label>
-				<label class="girlbox umeColor" data-kana="はるな このみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="春名このみ" value="春名木乃美 (春名このみ / Haruna Konomi)"><br>春名木乃美★</label>
-				<label class="girlbox umeColor" data-kana="まお ひみか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="眞尾ひみか" value="真尾日美香 (眞尾ひみか / Mao Himika)"><br>真尾日美香★</label>
-				<label class="girlbox umeColor" data-kana="ちあき りこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="千秋理子" value="千秋理子 (千秋理子 / Chiaki Riko)"><br>千秋理子★</label>
-				<label class="girlbox umeColor" id="ash" data-kana="あしゅりー ていらー"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="アシュリー・テイラー" value="阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)"><br>阿什莉·泰勒★</label>
+				<label class="girlbox umeColor" data-kana="きさき えみり"><input type="checkbox" class="MagicalChk" name="chara" id="木崎衣美里" value="木崎衣美里 (木崎衣美里 / Kisaki Emiri)"><br>木崎衣美里★</label>
+				<label class="girlbox umeColor" data-kana="はるな このみ"><input type="checkbox" class="MagicalChk" name="chara" id="春名このみ" value="春名木乃美 (春名このみ / Haruna Konomi)"><br>春名木乃美★</label>
+				<label class="girlbox umeColor" data-kana="まお ひみか"><input type="checkbox" class="MagicalChk" name="chara" id="眞尾ひみか" value="真尾日美香 (眞尾ひみか / Mao Himika)"><br>真尾日美香★</label>
+				<label class="girlbox umeColor" data-kana="ちあき りこ"><input type="checkbox" class="MagicalChk" name="chara" id="千秋理子" value="千秋理子 (千秋理子 / Chiaki Riko)"><br>千秋理子★</label>
+				<label class="girlbox umeColor" id="ash" data-kana="あしゅりー ていらー"><input type="checkbox" class="MagicalChk" name="chara" id="アシュリー・テイラー" value="阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)"><br>阿什莉·泰勒★</label>
 
-				<label class="girlbox otherColor" data-kana="こまち みくら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="古町みくら" value="古町美仓 (古町みくら / Komachi Mikura)"><br>古町美仓★</label>
-				<label class="girlbox otherColor" data-kana="みほの せいら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="三穂野せいら" value="三穗野星罗 (三穂野せいら / Mihono Seira)"><br>三穗野星罗★</label>
-				<label class="girlbox otherColor" data-kana="きら てまり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="吉良てまり" value="吉良手鞠 (吉良てまり / Kira Temari)"><br>吉良手鞠★</label>
-				<label class="girlbox otherColor" data-kana="みずき るい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="水樹塁" value="水树垒 (水樹塁 / Mizuki Rui)"><br>水树垒★</label>
+				<label class="girlbox otherColor" data-kana="こまち みくら"><input type="checkbox" class="MagicalChk" name="chara" id="古町みくら" value="古町美仓 (古町みくら / Komachi Mikura)"><br>古町美仓★</label>
+				<label class="girlbox otherColor" data-kana="みほの せいら"><input type="checkbox" class="MagicalChk" name="chara" id="三穂野せいら" value="三穗野星罗 (三穂野せいら / Mihono Seira)"><br>三穗野星罗★</label>
+				<label class="girlbox otherColor" data-kana="きら てまり"><input type="checkbox" class="MagicalChk" name="chara" id="吉良てまり" value="吉良手鞠 (吉良てまり / Kira Temari)"><br>吉良手鞠★</label>
+				<label class="girlbox otherColor" data-kana="みずき るい"><input type="checkbox" class="MagicalChk" name="chara" id="水樹塁" value="水树垒 (水樹塁 / Mizuki Rui)"><br>水树垒★</label>
 
-				<label class="girlbox PMHQColor" data-kana="ときわ ななか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="常盤ななか" value="常盘七香 (常盤ななか / Tokiwa Nanaka)"><br>常盘七香★</label>
-				<label class="girlbox PMHQColor" data-kana="しのぶ あきら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="志伸あきら" value="志伸晶 (志伸あきら / Shinobu Akira)"><br>志伸晶★</label>
-				<label class="girlbox PMHQColor" data-kana="なつめ かこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="夏目かこ" value="夏目佳子 (夏目かこ / Natsume Kako)"><br>夏目佳子★</label>
-				<label class="girlbox PMHQColor" data-kana="ちゅん めいゆい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="純美雨" value="纯美雨 (純美雨 / Chun Meiyui)"><br>纯美雨★</label>
+				<label class="girlbox PMHQColor" data-kana="ときわ ななか"><input type="checkbox" class="MagicalChk" name="chara" id="常盤ななか" value="常盘七香 (常盤ななか / Tokiwa Nanaka)"><br>常盘七香★</label>
+				<label class="girlbox PMHQColor" data-kana="しのぶ あきら"><input type="checkbox" class="MagicalChk" name="chara" id="志伸あきら" value="志伸晶 (志伸あきら / Shinobu Akira)"><br>志伸晶★</label>
+				<label class="girlbox PMHQColor" data-kana="なつめ かこ"><input type="checkbox" class="MagicalChk" name="chara" id="夏目かこ" value="夏目佳子 (夏目かこ / Natsume Kako)"><br>夏目佳子★</label>
+				<label class="girlbox PMHQColor" data-kana="ちゅん めいゆい"><input type="checkbox" class="MagicalChk" name="chara" id="純美雨" value="纯美雨 (純美雨 / Chun Meiyui)"><br>纯美雨★</label>
 
-				<label class="girlbox PMHQotherColor" data-kana="いぶき れいら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="伊吹れいら" value="伊吹丽良 (伊吹れいら / Ibuki Leila)"><br>伊吹丽良★</label>
-				<label class="girlbox PMHQotherColor" data-kana="くみ せいか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="桑水せいか" value="桑水清佳 (桑水せいか / Kumi Seika)"><br>桑水清佳★</label>
-				<label class="girlbox PMHQotherColor" data-kana="あいの みと"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="相野みと" value="相野未都 (相野みと / Aino Mito)"><br>相野未都★</label>
+				<label class="girlbox PMHQotherColor" data-kana="いぶき れいら"><input type="checkbox" class="MagicalChk" name="chara" id="伊吹れいら" value="伊吹丽良 (伊吹れいら / Ibuki Leila)"><br>伊吹丽良★</label>
+				<label class="girlbox PMHQotherColor" data-kana="くみ せいか"><input type="checkbox" class="MagicalChk" name="chara" id="桑水せいか" value="桑水清佳 (桑水せいか / Kumi Seika)"><br>桑水清佳★</label>
+				<label class="girlbox PMHQotherColor" data-kana="あいの みと"><input type="checkbox" class="MagicalChk" name="chara" id="相野みと" value="相野未都 (相野みと / Aino Mito)"><br>相野未都★</label>
 
-				<label class="girlbox PMHQotherColor" data-kana="しずみ このは"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="静海このは" value="静海木叶 (静海このは / Shizumi Konoha)"><br>静海木叶★</label>
-				<label class="girlbox PMHQotherColor" data-kana="ゆさ はづき"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="遊佐葉月" value="游佐叶月 (遊佐葉月 / Yusa Hazuki)"><br>游佐叶月★</label>
-				<label class="girlbox PMHQotherColor" data-kana="みくり あやめ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="三栗あやめ" value="三栗菖蒲 (三栗あやめ / Mikuri Ayame)"><br>三栗菖蒲★</label>
+				<label class="girlbox PMHQotherColor" data-kana="しずみ このは"><input type="checkbox" class="MagicalChk" name="chara" id="静海このは" value="静海木叶 (静海このは / Shizumi Konoha)"><br>静海木叶★</label>
+				<label class="girlbox PMHQotherColor" data-kana="ゆさ はづき"><input type="checkbox" class="MagicalChk" name="chara" id="遊佐葉月" value="游佐叶月 (遊佐葉月 / Yusa Hazuki)"><br>游佐叶月★</label>
+				<label class="girlbox PMHQotherColor" data-kana="みくり あやめ"><input type="checkbox" class="MagicalChk" name="chara" id="三栗あやめ" value="三栗菖蒲 (三栗あやめ / Mikuri Ayame)"><br>三栗菖蒲★</label>
 
-				<label class="girlbox umeColor" data-kana="さらさ はんな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="更紗帆奈" value="更纱帆奈 (更紗帆奈 / Sarasa Hanna)"><br>更纱帆奈★</label>
-				<label class="girlbox umeColor" data-kana="せな みこと"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="瀬奈みこと" value="濑奈命 (瀬奈みこと / Sena Mikoto)"><br>濑奈命★</label>
+				<label class="girlbox umeColor" data-kana="さらさ はんな"><input type="checkbox" class="MagicalChk" name="chara" id="更紗帆奈" value="更纱帆奈 (更紗帆奈 / Sarasa Hanna)"><br>更纱帆奈★</label>
+				<label class="girlbox umeColor" data-kana="せな みこと"><input type="checkbox" class="MagicalChk" name="chara" id="瀬奈みこと" value="濑奈命 (瀬奈みこと / Sena Mikoto)"><br>濑奈命★</label>
 
-				<label class="girlbox otherColor" data-kana="ゆぅ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ユゥ" value="夕 (ユゥ / Yu)"><br>夕★</label>
-				<label class="girlbox otherColor" data-kana="しぃ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="シィ" value="椎 (シィ / Shi)"><br>椎★</label>
+				<label class="girlbox otherColor" data-kana="ゆぅ"><input type="checkbox" class="MagicalChk" name="chara" id="ユゥ" value="夕 (ユゥ / Yu)"><br>夕★</label>
+				<label class="girlbox otherColor" data-kana="しぃ"><input type="checkbox" class="MagicalChk" name="chara" id="シィ" value="椎 (シィ / Shi)"><br>椎★</label>
 
-				<label class="girlbox otherColor2" data-kana="ゆきの かなえ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="雪野かなえ" value="雪野加奈惠 (雪野かなえ / Yukino Kanae)"><br>雪野加奈惠★</label>
-				<label class="girlbox otherColor2" data-kana="あんな める"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="安名メル" value="安名梅露 (安名メル / Anna Meru)"><br>安名梅露★</label>
+				<label class="girlbox otherColor2" data-kana="ゆきの かなえ"><input type="checkbox" class="MagicalChk" name="chara" id="雪野かなえ" value="雪野加奈惠 (雪野かなえ / Yukino Kanae)"><br>雪野加奈惠★</label>
+				<label class="girlbox otherColor2" data-kana="あんな める"><input type="checkbox" class="MagicalChk" name="chara" id="安名メル" value="安名梅露 (安名メル / Anna Meru)"><br>安名梅露★</label>
 
 				<!-- その他キャラ -->
-				<label class="girlbox mobColor" data-kana="くろ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="黒" value="黑 (黒 / Kuro)"><br>黑★</label>
-				<label class="girlbox mobColor" data-kana="くろ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="くろ" value="小黑 (くろ / Kuro)"><br>小黑★</label>
+				<label class="girlbox mobColor" data-kana="くろ"><input type="checkbox" class="MagicalChk" name="chara" id="黒" value="黑 (黒 / Kuro)"><br>黑★</label>
+				<label class="girlbox mobColor" data-kana="くろ"><input type="checkbox" class="MagicalChk" name="chara" id="くろ" value="小黑 (くろ / Kuro)"><br>小黑★</label>
 
 				<!-- ヒストリアキャラ -->
-				<label class="girlbox hisColor leftm" data-kana="みずな つゆ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="水名露" value="水名露 (水名露 / Mizuna Tsuyu)"><br>水名露★</label>
-				<label class="girlbox hisColor" data-kana="ちづる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="千鶴" value="千鹤 (千鶴 / Chizuru)"><br>千鹤★</label>
-				<label class="girlbox hisColor" data-kana="みずなまさつな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="水名正綱" value="水名正纲 (水名正綱 / Masatsuna Mizuna)"><br>水名正纲</label>
-				<label class="girlbox hisColor" data-kana="げんうん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="玄雲" value="玄云 (玄雲 / Gen'un)"><br>玄云</label>
-				<label class="girlbox hisColor" data-kana="ばんしゅ さんえもん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="万守山右衛門" value="万守山右卫门 (万守山右衛門 / San'emon Banshu)"><br>万守山右卫门</label>
-				<label class="girlbox hisColor" data-kana="えぼにー"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="エボニー" value="埃博妮 (エボニー / Ebony)"><br>埃博妮★</label>
-				<label class="girlbox hisColor" data-kana="くれおぱとら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="クレオパトラ" value="克利奥帕特拉 (クレオパトラ / Cleopatra)"><br>克利奥帕特拉</label>
-				<label class="girlbox hisColor" data-kana="ちょうろう"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="長老" value="长老 (長老 / Met Clan Elder)"><br>长老</label>
-				<label class="girlbox hisColor" data-kana="おるが"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="オルガ" value="奥尔加 (オルガ / Olga)"><br>奥尔加★</label>
-				<label class="girlbox hisColor" data-kana="がんひると"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ガンヒルト" value="冈希尔德 (ガンヒルト / Gunhild)"><br>冈希尔德★</label>
-				<label class="girlbox hisColor" data-kana="えっぺ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="エッペ" value="埃佩 (エッペ / Ebbe)"><br>埃佩</label>
-				<label class="girlbox hisColor" data-kana="はーらる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ハーラル" value="哈拉尔 (ハーラル / Harald Hardrada)"><br>哈拉尔</label>
-				<label class="girlbox hisColor" data-kana="へるか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ヘルカ" value="赫露迦 (ヘルカ / Heruka)"><br>赫露迦★</label>
-				<label class="girlbox hisColor" data-kana="どるま"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ドルマ" value="卓玛 (ドルマ / Dolma)"><br>卓玛</label>
-				<label class="girlbox hisColor" data-kana="どろあだい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ドロアダイ" value="朵啰阿歹 (ドロアダイ / Dolo'adai)"><br>朵啰阿歹</label>
-				<label class="girlbox hisColor" data-kana="とよ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="トヨ" value="台与 (トヨ / Toyo)"><br>台与★</label>
-				<label class="girlbox hisColor" data-kana="ひみこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="卑弥呼" value="卑弥呼 (卑弥呼 / Himiko)"><br>卑弥呼</label>
-				<label class="girlbox hisColor" data-kana="あまりゅりす"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="アマリュリス" value="阿玛琉莉丝 (アマリュリス / Amaryllis)"><br>阿玛琉莉丝★</label>
-				<label class="girlbox hisColor" data-kana="こるねりあ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="コルネリア" value="科尔内利娅 (コルネリア / Cornelia)"><br>科尔内利娅</label>
-				<label class="girlbox hisColor" data-kana="ゆにあ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ユニア" value="尤尼娅 (ユニア / Junia)"><br>尤尼娅</label>
+				<label class="girlbox hisColor leftm" data-kana="みずな つゆ"><input type="checkbox" class="MagicalChk" name="chara" id="水名露" value="水名露 (水名露 / Mizuna Tsuyu)"><br>水名露★</label>
+				<label class="girlbox hisColor" data-kana="ちづる"><input type="checkbox" class="MagicalChk" name="chara" id="千鶴" value="千鹤 (千鶴 / Chizuru)"><br>千鹤★</label>
+				<label class="girlbox hisColor" data-kana="みずなまさつな"><input type="checkbox" class="MagicalChk" name="chara" id="水名正綱" value="水名正纲 (水名正綱 / Masatsuna Mizuna)"><br>水名正纲</label>
+				<label class="girlbox hisColor" data-kana="げんうん"><input type="checkbox" class="MagicalChk" name="chara" id="玄雲" value="玄云 (玄雲 / Gen'un)"><br>玄云</label>
+				<label class="girlbox hisColor" data-kana="ばんしゅ さんえもん"><input type="checkbox" class="MagicalChk" name="chara" id="万守山右衛門" value="万守山右卫门 (万守山右衛門 / San'emon Banshu)"><br>万守山右卫门</label>
+				<label class="girlbox hisColor" data-kana="えぼにー"><input type="checkbox" class="MagicalChk" name="chara" id="エボニー" value="埃博妮 (エボニー / Ebony)"><br>埃博妮★</label>
+				<label class="girlbox hisColor" data-kana="くれおぱとら"><input type="checkbox" class="MagicalChk" name="chara" id="クレオパトラ" value="克利奥帕特拉 (クレオパトラ / Cleopatra)"><br>克利奥帕特拉</label>
+				<label class="girlbox hisColor" data-kana="ちょうろう"><input type="checkbox" class="MagicalChk" name="chara" id="長老" value="长老 (長老 / Met Clan Elder)"><br>长老</label>
+				<label class="girlbox hisColor" data-kana="おるが"><input type="checkbox" class="MagicalChk" name="chara" id="オルガ" value="奥尔加 (オルガ / Olga)"><br>奥尔加★</label>
+				<label class="girlbox hisColor" data-kana="がんひると"><input type="checkbox" class="MagicalChk" name="chara" id="ガンヒルト" value="冈希尔德 (ガンヒルト / Gunhild)"><br>冈希尔德★</label>
+				<label class="girlbox hisColor" data-kana="えっぺ"><input type="checkbox" class="MagicalChk" name="chara" id="エッペ" value="埃佩 (エッペ / Ebbe)"><br>埃佩</label>
+				<label class="girlbox hisColor" data-kana="はーらる"><input type="checkbox" class="MagicalChk" name="chara" id="ハーラル" value="哈拉尔 (ハーラル / Harald Hardrada)"><br>哈拉尔</label>
+				<label class="girlbox hisColor" data-kana="へるか"><input type="checkbox" class="MagicalChk" name="chara" id="ヘルカ" value="赫露迦 (ヘルカ / Heruka)"><br>赫露迦★</label>
+				<label class="girlbox hisColor" data-kana="どるま"><input type="checkbox" class="MagicalChk" name="chara" id="ドルマ" value="卓玛 (ドルマ / Dolma)"><br>卓玛</label>
+				<label class="girlbox hisColor" data-kana="どろあだい"><input type="checkbox" class="MagicalChk" name="chara" id="ドロアダイ" value="朵啰阿歹 (ドロアダイ / Dolo'adai)"><br>朵啰阿歹</label>
+				<label class="girlbox hisColor" data-kana="とよ"><input type="checkbox" class="MagicalChk" name="chara" id="トヨ" value="台与 (トヨ / Toyo)"><br>台与★</label>
+				<label class="girlbox hisColor" data-kana="ひみこ"><input type="checkbox" class="MagicalChk" name="chara" id="卑弥呼" value="卑弥呼 (卑弥呼 / Himiko)"><br>卑弥呼</label>
+				<label class="girlbox hisColor" data-kana="あまりゅりす"><input type="checkbox" class="MagicalChk" name="chara" id="アマリュリス" value="阿玛琉莉丝 (アマリュリス / Amaryllis)"><br>阿玛琉莉丝★</label>
+				<label class="girlbox hisColor" data-kana="こるねりあ"><input type="checkbox" class="MagicalChk" name="chara" id="コルネリア" value="科尔内利娅 (コルネリア / Cornelia)"><br>科尔内利娅</label>
+				<label class="girlbox hisColor" data-kana="ゆにあ"><input type="checkbox" class="MagicalChk" name="chara" id="ユニア" value="尤尼娅 (ユニア / Junia)"><br>尤尼娅</label>
 
 				<!-- ここから外伝キャラ -->
-				<label class="girlbox gaidenColor leftm" data-kana="みくに おりこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="美国織莉子" value="美国织莉子 (美国織莉子 / Mikuni Oriko)"><br>美国织莉子★</label>
-				<label class="girlbox gaidenColor" data-kana="くれ きりか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="呉キリカ" value="吴纪里香 (呉キリカ / Kure Kirika)"><br>吴纪里香★</label>
-				<label class="girlbox gaidenColor" data-kana="ちとせ ゆま"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="千歳ゆま" value="千岁由麻 (千歳ゆま / Chitose Yuma)"><br>千岁由麻★</label>
-				<label class="girlbox gaidenColor" data-kana="あさこ こまき"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="浅古小巻" value="浅古小卷 (浅古小巻 / Asako Komaki)"><br>浅古小卷</label>
-				<label class="girlbox gaidenColor" data-kana="あさこ こいと"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="浅古小糸" value="浅古小糸 (浅古小糸 / Asako Koito)"><br>浅古小糸★</label>
-				<label class="girlbox gaidenColor" data-kana="ゆうき ささ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="優木沙々" value="优木沙沙 (優木沙々 / Yuuki Sasa)"><br>优木沙沙</label>
-				<label class="girlbox gaidenColor" data-kana="なめかた あきら"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="行方晶" value="行方晶 (行方晶 / Namekata Akira)"><br>行方晶</label>
-				<label class="girlbox gaidenColor" data-kana="すずな みお"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="煤名美緒" value="煤名美绪 (煤名美緒 / Suzuna Mio)"><br>煤名美绪</label>
-				<label class="girlbox gaidenColor" data-kana="さき みやこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="佐木京" value="佐木京 (佐木京 / Saki Miyako)"><br>佐木京</label>
-				<label class="girlbox gaidenColor" data-kana="ひとみ りな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="人見リナ" value="人见里奈 (人見リナ / Hitomi Lina)"><br>人见里奈</label>
-				<label class="girlbox gaidenColor" data-kana="あかね まい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="朱音麻衣" value="朱音麻衣 (朱音麻衣 / Akane Mai)"><br>朱音麻衣</label>
+				<label class="girlbox gaidenColor leftm" data-kana="みくに おりこ"><input type="checkbox" class="MagicalChk" name="chara" id="美国織莉子" value="美国织莉子 (美国織莉子 / Mikuni Oriko)"><br>美国织莉子★</label>
+				<label class="girlbox gaidenColor" data-kana="くれ きりか"><input type="checkbox" class="MagicalChk" name="chara" id="呉キリカ" value="吴纪里香 (呉キリカ / Kure Kirika)"><br>吴纪里香★</label>
+				<label class="girlbox gaidenColor" data-kana="ちとせ ゆま"><input type="checkbox" class="MagicalChk" name="chara" id="千歳ゆま" value="千岁由麻 (千歳ゆま / Chitose Yuma)"><br>千岁由麻★</label>
+				<label class="girlbox gaidenColor" data-kana="あさこ こまき"><input type="checkbox" class="MagicalChk" name="chara" id="浅古小巻" value="浅古小卷 (浅古小巻 / Asako Komaki)"><br>浅古小卷</label>
+				<label class="girlbox gaidenColor" data-kana="あさこ こいと"><input type="checkbox" class="MagicalChk" name="chara" id="浅古小糸" value="浅古小糸 (浅古小糸 / Asako Koito)"><br>浅古小糸★</label>
+				<label class="girlbox gaidenColor" data-kana="ゆうき ささ"><input type="checkbox" class="MagicalChk" name="chara" id="優木沙々" value="优木沙沙 (優木沙々 / Yuuki Sasa)"><br>优木沙沙</label>
+				<label class="girlbox gaidenColor" data-kana="なめかた あきら"><input type="checkbox" class="MagicalChk" name="chara" id="行方晶" value="行方晶 (行方晶 / Namekata Akira)"><br>行方晶</label>
+				<label class="girlbox gaidenColor" data-kana="すずな みお"><input type="checkbox" class="MagicalChk" name="chara" id="煤名美緒" value="煤名美绪 (煤名美緒 / Suzuna Mio)"><br>煤名美绪</label>
+				<label class="girlbox gaidenColor" data-kana="さき みやこ"><input type="checkbox" class="MagicalChk" name="chara" id="佐木京" value="佐木京 (佐木京 / Saki Miyako)"><br>佐木京</label>
+				<label class="girlbox gaidenColor" data-kana="ひとみ りな"><input type="checkbox" class="MagicalChk" name="chara" id="人見リナ" value="人见里奈 (人見リナ / Hitomi Lina)"><br>人见里奈</label>
+				<label class="girlbox gaidenColor" data-kana="あかね まい"><input type="checkbox" class="MagicalChk" name="chara" id="朱音麻衣" value="朱音麻衣 (朱音麻衣 / Akane Mai)"><br>朱音麻衣</label>
 
-				<label class="girlbox gaidenColor leftm" data-kana="かずみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="かずみ" value="和美 (かずみ / Kazumi)"><br>和美★</label>
-				<label class="girlbox gaidenColor" data-kana="みさき うみか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="御崎海香" value="御崎海香 (御崎海香 / Misaki Umika)"><br>御崎海香★</label>
-				<label class="girlbox gaidenColor" data-kana="まき かおる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="牧カオル" value="牧薰 (牧カオル / Maki Kaoru)"><br>牧薰★</label>
-				<label class="girlbox gaidenColor" data-kana="かずさ みちる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="和紗ミチル" value="和纱美千瑠 (和紗ミチル / Kazusa Michiru)"><br>和纱美千瑠</label>
-				<label class="girlbox gaidenColor" data-kana="あさみ さき"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="浅海サキ" value="浅海早纪 (浅海サキ / Asami Saki)"><br>浅海早纪</label>
-				<label class="girlbox gaidenColor" data-kana="かんな にこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="神那ニコ" value="神那妮可 (神那ニコ / Kanna Niko)"><br>神那妮可</label>
+				<label class="girlbox gaidenColor leftm" data-kana="かずみ"><input type="checkbox" class="MagicalChk" name="chara" id="かずみ" value="和美 (かずみ / Kazumi)"><br>和美★</label>
+				<label class="girlbox gaidenColor" data-kana="みさき うみか"><input type="checkbox" class="MagicalChk" name="chara" id="御崎海香" value="御崎海香 (御崎海香 / Misaki Umika)"><br>御崎海香★</label>
+				<label class="girlbox gaidenColor" data-kana="まき かおる"><input type="checkbox" class="MagicalChk" name="chara" id="牧カオル" value="牧薰 (牧カオル / Maki Kaoru)"><br>牧薰★</label>
+				<label class="girlbox gaidenColor" data-kana="かずさ みちる"><input type="checkbox" class="MagicalChk" name="chara" id="和紗ミチル" value="和纱美千瑠 (和紗ミチル / Kazusa Michiru)"><br>和纱美千瑠</label>
+				<label class="girlbox gaidenColor" data-kana="あさみ さき"><input type="checkbox" class="MagicalChk" name="chara" id="浅海サキ" value="浅海早纪 (浅海サキ / Asami Saki)"><br>浅海早纪</label>
+				<label class="girlbox gaidenColor" data-kana="かんな にこ"><input type="checkbox" class="MagicalChk" name="chara" id="神那ニコ" value="神那妮可 (神那ニコ / Kanna Niko)"><br>神那妮可</label>
 
-				<label class="girlbox gaidenColor leftm" data-kana="たると"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="タルト" value="塔鲁特 (タルト / Tart)"><br>塔鲁特★</label>
-				<label class="girlbox gaidenColor" data-kana="りず"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="リズ" value="莉兹 (リズ / Riz Hawkwood)"><br>莉兹★</label>
-				<label class="girlbox gaidenColor" data-kana="めりっさ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="メリッサ" value="梅丽莎 (メリッサ / Melissa de Vignolles)"><br>梅丽莎★</label>
-				<label class="girlbox gaidenColor" data-kana="えりざ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="エリザ" value="爱丽莎 (エリザ / Eliza Celjska)"><br>爱丽莎★</label>
-				<label class="girlbox gaidenColor" data-kana="ぺれねる"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ペレネル" value="佩尔内勒 (ペレネル / Pernelle Flamel)"><br>佩尔内勒★</label>
-				<label class="girlbox gaidenColor" data-kana="みぬぅ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ミヌゥ" value="米诺 (ミヌゥ / Minou)"><br>米诺★</label>
-				<label class="girlbox gaidenColor" data-kana="こるぼー"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="コルボー" value="可鲁波 (コルボー / Corbeau)"><br>可鲁波★</label>
-				<label class="girlbox gaidenColor" data-kana="らぴぬ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ラピヌ" value="拉皮努 (ラピヌ / Lapin)"><br>拉皮努★</label>
-				<label class="girlbox gaidenColor" data-kana="いざぼー"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="イザボー" value="伊莎贝拉 (イザボー / Isabeau de Bavière)"><br>伊莎贝拉★</label>
+				<label class="girlbox gaidenColor leftm" data-kana="たると"><input type="checkbox" class="MagicalChk" name="chara" id="タルト" value="塔鲁特 (タルト / Tart)"><br>塔鲁特★</label>
+				<label class="girlbox gaidenColor" data-kana="りず"><input type="checkbox" class="MagicalChk" name="chara" id="リズ" value="莉兹 (リズ / Riz Hawkwood)"><br>莉兹★</label>
+				<label class="girlbox gaidenColor" data-kana="めりっさ"><input type="checkbox" class="MagicalChk" name="chara" id="メリッサ" value="梅丽莎 (メリッサ / Melissa de Vignolles)"><br>梅丽莎★</label>
+				<label class="girlbox gaidenColor" data-kana="えりざ"><input type="checkbox" class="MagicalChk" name="chara" id="エリザ" value="爱丽莎 (エリザ / Eliza Celjska)"><br>爱丽莎★</label>
+				<label class="girlbox gaidenColor" data-kana="ぺれねる"><input type="checkbox" class="MagicalChk" name="chara" id="ペレネル" value="佩尔内勒 (ペレネル / Pernelle Flamel)"><br>佩尔内勒★</label>
+				<label class="girlbox gaidenColor" data-kana="みぬぅ"><input type="checkbox" class="MagicalChk" name="chara" id="ミヌゥ" value="米诺 (ミヌゥ / Minou)"><br>米诺★</label>
+				<label class="girlbox gaidenColor" data-kana="こるぼー"><input type="checkbox" class="MagicalChk" name="chara" id="コルボー" value="可鲁波 (コルボー / Corbeau)"><br>可鲁波★</label>
+				<label class="girlbox gaidenColor" data-kana="らぴぬ"><input type="checkbox" class="MagicalChk" name="chara" id="ラピヌ" value="拉皮努 (ラピヌ / Lapin)"><br>拉皮努★</label>
+				<label class="girlbox gaidenColor" data-kana="いざぼー"><input type="checkbox" class="MagicalChk" name="chara" id="イザボー" value="伊莎贝拉 (イザボー / Isabeau de Bavière)"><br>伊莎贝拉★</label>
 
-				<label class="girlbox gaidenColor leftm" data-kana="あまの すずね"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="天乃鈴音" value="天乃铃音 (天乃鈴音 / Amano Suzune)"><br>天乃铃音★</label>
-				<label class="girlbox gaidenColor" data-kana="ひなた まつり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="日向茉莉" value="日向茉莉 (日向茉莉 / Hinata Matsuri)"><br>日向茉莉★</label>
-				<label class="girlbox gaidenColor" data-kana="なるみ ありさ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="成見亜里紗" value="成见亚里纱 (成見亜里紗 / Narumi Arisa)"><br>成见亚里纱★</label>
-				<label class="girlbox gaidenColor" data-kana="しおん ちさと"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="詩音千里" value="诗音千里 (詩音千里 / Shion Chisato)"><br>诗音千里★</label>
-				<label class="girlbox gaidenColor" data-kana="かなで はるか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="奏遥香" value="奏遥香 (奏遥香 / Kanade Haruka)"><br>奏遥香★</label>
-				<label class="girlbox gaidenColor" data-kana="みこと つばき"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="美琴椿" value="美琴椿 (美琴椿 / Mikoto Tsubaki)"><br>美琴椿★</label>
-				<label class="girlbox gaidenColor" data-kana="ひなた かがり"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="日向華々莉" value="日向华华莉 (日向華々莉 / Hinata Kagari)"><br>日向华华莉</label>
+				<label class="girlbox gaidenColor leftm" data-kana="あまの すずね"><input type="checkbox" class="MagicalChk" name="chara" id="天乃鈴音" value="天乃铃音 (天乃鈴音 / Amano Suzune)"><br>天乃铃音★</label>
+				<label class="girlbox gaidenColor" data-kana="ひなた まつり"><input type="checkbox" class="MagicalChk" name="chara" id="日向茉莉" value="日向茉莉 (日向茉莉 / Hinata Matsuri)"><br>日向茉莉★</label>
+				<label class="girlbox gaidenColor" data-kana="なるみ ありさ"><input type="checkbox" class="MagicalChk" name="chara" id="成見亜里紗" value="成见亚里纱 (成見亜里紗 / Narumi Arisa)"><br>成见亚里纱★</label>
+				<label class="girlbox gaidenColor" data-kana="しおん ちさと"><input type="checkbox" class="MagicalChk" name="chara" id="詩音千里" value="诗音千里 (詩音千里 / Shion Chisato)"><br>诗音千里★</label>
+				<label class="girlbox gaidenColor" data-kana="かなで はるか"><input type="checkbox" class="MagicalChk" name="chara" id="奏遥香" value="奏遥香 (奏遥香 / Kanade Haruka)"><br>奏遥香★</label>
+				<label class="girlbox gaidenColor" data-kana="みこと つばき"><input type="checkbox" class="MagicalChk" name="chara" id="美琴椿" value="美琴椿 (美琴椿 / Mikoto Tsubaki)"><br>美琴椿★</label>
+				<label class="girlbox gaidenColor" data-kana="ひなた かがり"><input type="checkbox" class="MagicalChk" name="chara" id="日向華々莉" value="日向华华莉 (日向華々莉 / Hinata Kagari)"><br>日向华华莉</label>
 
 				<!-- ここからコラボキャラ -->
-				<label class="girlbox collaboColor leftm" data-kana="たかまち なのは"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="高町なのは" value="高町奈叶 (高町なのは / Takamachi Nanoha)"><br>高町奈叶★</label>
-				<label class="girlbox collaboColor" id="fate_t" data-kana="ふぇいと てぃー はらおうん"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="フェイト・T・ハラオウン" value="菲特·T·哈拉温 (フェイト・T・ハラオウン / Fate T. Harlaown)"><br>菲特·T<br>·哈拉温★</label>
-				<label class="girlbox collaboColor" data-kana="やがみ はやて"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="八神はやて" value="八神疾风 (八神はやて / Yagami Hayate)"><br>八神疾风★</label>
-				<label class="girlbox collaboColor" data-kana="にしきぎ ちさと"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="錦木千束" value="锦木千束 (錦木千束 / Nishikigi Chisato)"><br>锦木千束★</label>
-				<label class="girlbox collaboColor" data-kana="いのうえ たきな"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="井ノ上たきな" value="井之上泷奈 (井ノ上たきな / Inoue Takina)"><br>井之上泷奈★</label>
-				<label class="girlbox collaboColor" data-kana="くるみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="クルミ" value="胡桃 (クルミ / Kurumi)"><br>胡桃</label>
+				<label class="girlbox collaboColor leftm" data-kana="たかまち なのは"><input type="checkbox" class="MagicalChk" name="chara" id="高町なのは" value="高町奈叶 (高町なのは / Takamachi Nanoha)"><br>高町奈叶★</label>
+				<label class="girlbox collaboColor" id="fate_t" data-kana="ふぇいと てぃー はらおうん"><input type="checkbox" class="MagicalChk" name="chara" id="フェイト・T・ハラオウン" value="菲特·T·哈拉温 (フェイト・T・ハラオウン / Fate T. Harlaown)"><br>菲特·T<br>·哈拉温★</label>
+				<label class="girlbox collaboColor" data-kana="やがみ はやて"><input type="checkbox" class="MagicalChk" name="chara" id="八神はやて" value="八神疾风 (八神はやて / Yagami Hayate)"><br>八神疾风★</label>
+				<label class="girlbox collaboColor" data-kana="にしきぎ ちさと"><input type="checkbox" class="MagicalChk" name="chara" id="錦木千束" value="锦木千束 (錦木千束 / Nishikigi Chisato)"><br>锦木千束★</label>
+				<label class="girlbox collaboColor" data-kana="いのうえ たきな"><input type="checkbox" class="MagicalChk" name="chara" id="井ノ上たきな" value="井之上泷奈 (井ノ上たきな / Inoue Takina)"><br>井之上泷奈★</label>
+				<label class="girlbox collaboColor" data-kana="くるみ"><input type="checkbox" class="MagicalChk" name="chara" id="クルミ" value="胡桃 (クルミ / Kurumi)"><br>胡桃</label>
 
 				<!-- ここから魔法少女以外 -->
-				<label class="girlbox mobColor leftm" data-kana="きゅぅべえ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="キュゥべえ" value="丘比 (キュゥべえ / Kyubey)"><br>丘比★</label>
-				<label class="girlbox mobColor leftm" data-kana="エーキュゥ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="A-Q" value="A-Q (A-Q / A-Q)"><br>A-Q</label>
-				<label class="girlbox mobColor leftm" data-kana="なまえ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="ナマエ" value="名小姐 (ナマエ / Name)"><br>名小姐</label>
+				<label class="girlbox mobColor leftm" data-kana="きゅぅべえ"><input type="checkbox" class="MagicalChk" name="chara" id="キュゥべえ" value="丘比 (キュゥべえ / Kyubey)"><br>丘比★</label>
+				<label class="girlbox mobColor leftm" data-kana="エーキュゥ"><input type="checkbox" class="MagicalChk" name="chara" id="A-Q" value="A-Q (A-Q / A-Q)"><br>A-Q</label>
+				<label class="girlbox mobColor leftm" data-kana="なまえ"><input type="checkbox" class="MagicalChk" name="chara" id="ナマエ" value="名小姐 (ナマエ / Name)"><br>名小姐</label>
 
-				<label class="girlbox unimpColor leftm" data-kana="さとみ たすけ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="里見太助" value="里见太助 (里見太助 / Tasuke Satomi)"><br>里见太助</label>
-				<label class="girlbox unimpColor" data-kana="とうかのちち"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="灯花の父" value="灯花之父 (灯花の父 / Dr. Satomi)"><br>灯花之父</label>
-				<label class="girlbox unimpColor" data-kana="いずみ そうげつ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="和泉壮月" value="和泉壮月 (和泉壮月 / Sougetsu Izumi)"><br>和泉壮月</label>
-				<label class="girlbox unimpColor" data-kana="しおや はるみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="塩屋晴海" value="盐屋晴海 (塩屋晴海 / Harumi Shioya)"><br>盐屋晴海</label>
+				<label class="girlbox unimpColor leftm" data-kana="さとみ たすけ"><input type="checkbox" class="MagicalChk" name="chara" id="里見太助" value="里见太助 (里見太助 / Tasuke Satomi)"><br>里见太助</label>
+				<label class="girlbox unimpColor" data-kana="とうかのちち"><input type="checkbox" class="MagicalChk" name="chara" id="灯花の父" value="灯花之父 (灯花の父 / Dr. Satomi)"><br>灯花之父</label>
+				<label class="girlbox unimpColor" data-kana="いずみ そうげつ"><input type="checkbox" class="MagicalChk" name="chara" id="和泉壮月" value="和泉壮月 (和泉壮月 / Sougetsu Izumi)"><br>和泉壮月</label>
+				<label class="girlbox unimpColor" data-kana="しおや はるみ"><input type="checkbox" class="MagicalChk" name="chara" id="塩屋晴海" value="盐屋晴海 (塩屋晴海 / Harumi Shioya)"><br>盐屋晴海</label>
 			</div>
 		</form>
 		<!-- 魔法少女复选框实现结束 -->
@@ -551,6 +554,30 @@
 				<label class="at">
 					<input type="checkbox" class="at_attribute" name="at_attribute"
 						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }" value="聖乙女学園">圣乙女学园
+				</label>
+
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }"
+						   value="春方此花学園">春方此花学园
+				</label>
+
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }"
+						   value="湯国市立岩切山高等学校">汤国市立岩切山高等学校
+				</label>
+
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }"
+						   value="湯国市立湯国学園">汤国市立汤国学园
+				</label>
+
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }"
+						   value="湯国青波学園">汤国青波学园
 				</label>
 
 				<label class="at">
@@ -1307,6 +1334,12 @@ function drawNet_Table() {
 <script src="./myfile/site-correction-v3-network.js"></script>
 <script src="./myfile/site-correction-v3-height.js"></script>
 <script src="./myfile/site-correction-v4.js"></script>
+
+<script src="./myfile/tools-suite.js"></script>
+<script>
+  if (window.MagiTools) window.MagiTools.renderNav('calls');
+</script>
+<script src="./myfile/triple-tap-filter.js"></script>
 </body>
 
 </html>

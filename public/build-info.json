@@ -1,5 +1,5 @@
 {
-  "release": "neo11-height-guide-v4-20260816",
+  "release": "integrated-tools-v5-20260816",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -21,5 +21,16 @@
     "all-left",
     "all-right"
   ],
-  "resultJumpMode": "stable-post-render-scroll"
+  "resultJumpMode": "stable-post-render-scroll",
+  "rollbackBeforeIntegratedToolsV5": "rollback/pre-integrated-tools-v5-20260816",
+  "integratedTools": [
+    "calls-height",
+    "story-search",
+    "attendance-ranking",
+    "witch-rune-ocr"
+  ],
+  "interactionFilterGesture": "triple-tap-or-triple-click",
+  "updateMode": "manual-static-only",
+  "ocrDataMode": "local-traineddata-browser-only",
+  "translationAudit": "public/data/translation-audit-v5.json"
 }

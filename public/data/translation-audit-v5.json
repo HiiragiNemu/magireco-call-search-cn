@@ -1,0 +1,316 @@
+{
+  "release": "integrated-tools-v5-20260816",
+  "catalogCount": 186,
+  "uniqueJapaneseKeys": 186,
+  "uniqueChineseDisplayNames": 186,
+  "callTableCallerCount": 188,
+  "callTableLeafCount": 3643,
+  "hardErrors": [],
+  "warnings": [
+    "称呼表中 3 个主键未直接映射到当前角色目录，通常是非可选配角或旧名。",
+    "称呼目标中 4 个名称未直接映射到当前可选角色目录，已列入人工复核清单。"
+  ],
+  "duplicateJapaneseKeys": [],
+  "duplicateChineseNames": [],
+  "attributeTranslations": [
+    {
+      "key": "まどマギ",
+      "expected": "魔法少女小圆",
+      "actual": [
+        "魔法少女小圆"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "マギレコ",
+      "expected": "魔法纪录",
+      "actual": [
+        "魔法纪录"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "まどドラ",
+      "expected": "Magia Exedra",
+      "actual": [
+        "Magia Exedra"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "神浜市立大附属",
+      "expected": "神滨市立大学附属学校",
+      "actual": [
+        "神滨市立大学附属学校"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "水名女学園",
+      "expected": "水名女子学园",
+      "actual": [
+        "水名女子学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "参京院教育学園",
+      "expected": "参京院教育学园",
+      "actual": [
+        "参京院教育学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "栄総合学園",
+      "expected": "荣综合学园",
+      "actual": [
+        "荣综合学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "中央学園",
+      "expected": "中央学园",
+      "actual": [
+        "中央学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "南凪自由学園",
+      "expected": "南凪自由学园",
+      "actual": [
+        "南凪自由学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "工匠学舎",
+      "expected": "工匠学舍",
+      "actual": [
+        "工匠学舍"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "大東学院",
+      "expected": "大东学院",
+      "actual": [
+        "大东学院"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "聖リリアンナ学園",
+      "expected": "圣莉莉安娜学园",
+      "actual": [
+        "圣莉莉安娜学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "神浜未来アカデミー",
+      "expected": "神滨未来学院",
+      "actual": [
+        "神滨未来学院"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "湯の花国際中学・高等学校",
+      "expected": "汤之花国际中学・高等学校",
+      "actual": [
+        "汤之花国际中学・高等学校"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "松宮市立第一中学校",
+      "expected": "松宫市立第一中学",
+      "actual": [
+        "松宫市立第一中学"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "霧峰村立霧峰中学校",
+      "expected": "雾峰村立雾峰中学",
+      "actual": [
+        "雾峰村立雾峰中学"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "虎屋町学園",
+      "expected": "虎屋町学园",
+      "actual": [
+        "虎屋町学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "竜ケ崎学院",
+      "expected": "龙崎学院",
+      "actual": [
+        "龙崎学院"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "蛇の宮中学・高等学校",
+      "expected": "蛇之宫中学・高等学校",
+      "actual": [
+        "蛇之宫中学・高等学校"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "宝崎順心学園",
+      "expected": "宝崎顺心学园",
+      "actual": [
+        "宝崎顺心学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "宝崎市立光塚中等教育学校",
+      "expected": "宝崎市立光冢中等教育学校",
+      "actual": [
+        "宝崎市立光冢中等教育学校"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "見滝原中学校",
+      "expected": "见泷原中学",
+      "actual": [
+        "见泷原中学"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "白羽女学院",
+      "expected": "白羽女学院",
+      "actual": [
+        "白羽女学院"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "あすなろ市立南部中学校",
+      "expected": "翌桧市立南部中学",
+      "actual": [
+        "翌桧市立南部中学"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "茜ヶ咲中学校",
+      "expected": "茜咲中学",
+      "actual": [
+        "茜咲中学"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "聖乙女学園",
+      "expected": "圣乙女学园",
+      "actual": [
+        "圣乙女学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "春方此花学園",
+      "expected": "春方此花学园",
+      "actual": [
+        "春方此花学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "湯国市立岩切山高等学校",
+      "expected": "汤国市立岩切山高等学校",
+      "actual": [
+        "汤国市立岩切山高等学校"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "湯国市立湯国学園",
+      "expected": "汤国市立汤国学园",
+      "actual": [
+        "汤国市立汤国学园"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "湯国青波学園",
+      "expected": "汤国青波学园",
+      "actual": [
+        "汤国青波学园"
+      ],
+      "status": "ok"
+    }
+  ],
+  "schoolAttributeKeys": [
+    "あすなろ市立南部中学校",
+    "中央学園",
+    "南凪自由学園",
+    "参京院教育学園",
+    "大東学院",
+    "宝崎市立光塚中等教育学校",
+    "宝崎順心学園",
+    "工匠学舎",
+    "春方此花学園",
+    "松宮市立第一中学校",
+    "栄総合学園",
+    "水名女学園",
+    "湯の花国際中学・高等学校",
+    "湯国市立岩切山高等学校",
+    "湯国市立湯国学園",
+    "湯国青波学園",
+    "白羽女学院",
+    "竜ケ崎学院",
+    "聖リリアンナ学園",
+    "聖乙女学園",
+    "茜ヶ咲中学校",
+    "虎屋町学園",
+    "蛇の宮中学・高等学校",
+    "見滝原中学校",
+    "霧峰村立霧峰中学校"
+  ],
+  "unmappedSchoolAttributeKeys": [],
+  "unmappedCallers": [
+    "水名前辈 (水名の先輩 / Mizuna no Senpai)",
+    "朱比 (ジュゥべえ / Juubey)",
+    "小丘比 (小さなキュゥべえ / Lil' Kyubey)"
+  ],
+  "unmappedRelationTargets": [
+    [
+      "二人称",
+      109
+    ],
+    [
+      "朱比",
+      3
+    ],
+    [
+      "小丘比",
+      1
+    ],
+    [
+      "水名前辈",
+      1
+    ]
+  ],
+  "candidateJapaneseOnlyCallValues": [],
+  "displayNamePolicy": {
+    "環いろは": "环彩羽",
+    "常盤ななか": "常盘七香",
+    "万年桜のウワサ": "万年樱之谣",
+    "早乙女先生": "早乙女和子"
+  },
+  "scopeNote": "结构审计可以证明键、标签、角色目录和关系目标是否可映射；称呼措辞的语用准确性仍需结合剧情语境进行人工逐条复核。"
+}

@@ -1,0 +1,2455 @@
+[
+  {
+    "zh": "环彩羽",
+    "jp": "環いろは",
+    "roman": "Tamaki Iroha",
+    "kana": "たまき いろは",
+    "image": "环彩羽",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": [
+      "环伊吕波"
+    ]
+  },
+  {
+    "zh": "七海八千代",
+    "jp": "七海やちよ",
+    "roman": "Nanami Yachiyo",
+    "kana": "ななみ やちよ",
+    "image": "七海八千代",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "由比鹤乃",
+    "jp": "由比鶴乃",
+    "roman": "Yui Tsuruno",
+    "kana": "ゆい つるの",
+    "image": "由比鹤乃",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "二叶莎奈",
+    "jp": "二葉さな",
+    "roman": "Futaba Sana",
+    "kana": "ふたば さな",
+    "image": "二叶莎奈",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "深月菲莉希亚",
+    "jp": "深月フェリシア",
+    "roman": "Mitsuki Felicia",
+    "kana": "みつき ふぇりしあ",
+    "image": "深月菲莉希亚",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "环忧",
+    "jp": "環うい",
+    "roman": "Tamaki Ui",
+    "kana": "たまき うい",
+    "image": "环忧",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "里见灯花",
+    "jp": "里見灯花",
+    "roman": "Satomi Touka",
+    "kana": "さとみ とうか",
+    "image": "里见灯花",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "柊音梦",
+    "jp": "柊ねむ",
+    "roman": "Hiiragi Nemu",
+    "kana": "ひいらぎ ねむ",
+    "image": "柊音梦",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "万年樱之谣",
+    "jp": "万年桜のウワサ",
+    "roman": "Eternal Sakura",
+    "kana": "まんねんざくらのうわさ",
+    "image": "万年樱之谣",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": [
+      "万年樱的传闻"
+    ]
+  },
+  {
+    "zh": "梓美冬",
+    "jp": "梓みふゆ",
+    "roman": "Azusa Mifuyu",
+    "kana": "あずさ みふゆ",
+    "image": "梓美冬",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "天音月夜",
+    "jp": "天音月夜",
+    "roman": "Amane Tsukuyo",
+    "kana": "あまね つくよ",
+    "image": "天音月夜",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "天音月咲",
+    "jp": "天音月咲",
+    "roman": "Amane Tsukasa",
+    "kana": "あまね つかさ",
+    "image": "天音月咲",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "阿莉娜·格雷",
+    "jp": "アリナ・グレイ",
+    "roman": "Alina Gray",
+    "kana": "ありな ぐれい",
+    "image": "阿莉娜·格雷",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "御园花凛",
+    "jp": "御園かりん",
+    "roman": "Misono Karin",
+    "kana": "みその かりん",
+    "image": "御园花凛",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "水波玲奈",
+    "jp": "水波レナ",
+    "roman": "Minami Rena",
+    "kana": "みなみ れな",
+    "image": "水波玲奈",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "十咎桃子",
+    "jp": "十咎ももこ",
+    "roman": "Togame Momoko",
+    "kana": "とがめ ももこ",
+    "image": "十咎桃子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "秋野枫",
+    "jp": "秋野かえで",
+    "roman": "Akino Kaede",
+    "kana": "あきの かえで",
+    "image": "秋野枫",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "和泉十七夜",
+    "jp": "和泉十七夜",
+    "roman": "Izumi Kanagi",
+    "kana": "いずみ かなぎ",
+    "image": "和泉十七夜",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "八云御魂",
+    "jp": "八雲みたま",
+    "roman": "Yakumo Mitama",
+    "kana": "やくも みたま",
+    "image": "八云御魂",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "都雏乃",
+    "jp": "都ひなの",
+    "roman": "Miyako Hinano",
+    "kana": "みやこ ひなの",
+    "image": "都雏乃",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "观鸟令",
+    "jp": "観鳥令",
+    "roman": "Midori Ryo",
+    "kana": "みどり りょう",
+    "image": "观鸟令",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "牧野郁美",
+    "jp": "牧野郁美",
+    "roman": "Makino Ikumi",
+    "kana": "まきの いくみ",
+    "image": "牧野郁美",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "龙城明日香",
+    "jp": "竜城明日香",
+    "roman": "Tatsuki Asuka",
+    "kana": "たつき あすか",
+    "image": "龙城明日香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "美凪纱纱罗",
+    "jp": "美凪ささら",
+    "roman": "Minagi Sasara",
+    "kana": "みなぎ ささら",
+    "image": "美凪纱纱罗",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "黑江",
+    "jp": "黒江",
+    "roman": "Kuroe",
+    "kana": "くろえ",
+    "image": "黑江",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "佐鸟笼目",
+    "jp": "佐鳥かごめ",
+    "roman": "Satori Kagome",
+    "kana": "さとり かごめ",
+    "image": "佐鸟笼目",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "冰室拉比",
+    "jp": "氷室ラビ",
+    "roman": "Himuro Lavi",
+    "kana": "ひむろ らび",
+    "image": "冰室拉比",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "里见那由他",
+    "jp": "里見那由他",
+    "roman": "Satomi Nayuta",
+    "kana": "さとみ なゆた",
+    "image": "里见那由他",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "八云御影",
+    "jp": "八雲みかげ",
+    "roman": "Yakumo Mikage",
+    "kana": "やくも みかげ",
+    "image": "八云御影",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "时女静香",
+    "jp": "時女静香",
+    "roman": "Tokime Shizuka",
+    "kana": "ときめ しずか",
+    "image": "时女静香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "广江千春",
+    "jp": "広江ちはる",
+    "roman": "Hiroe Chiharu",
+    "kana": "ひろえ ちはる",
+    "image": "广江千春",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "土岐沙绪",
+    "jp": "土岐すなお",
+    "roman": "Toki Sunao",
+    "kana": "とき すなお",
+    "image": "土岐沙绪",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "青叶知花",
+    "jp": "青葉ちか",
+    "roman": "Aoba Chika",
+    "kana": "あおば ちか",
+    "image": "青叶知花",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "南津凉子",
+    "jp": "南津涼子",
+    "roman": "Natsu Ryoko",
+    "kana": "なつ りょうこ",
+    "image": "南津凉子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "三浦旭",
+    "jp": "三浦旭",
+    "roman": "Miura Asahi",
+    "kana": "みうら あさひ",
+    "image": "三浦旭",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "红晴结菜",
+    "jp": "紅晴結菜",
+    "roman": "Kureha Yuna",
+    "kana": "くれは ゆな",
+    "image": "红晴结菜",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "煌里光",
+    "jp": "煌里ひかる",
+    "roman": "Kirari Hikaru",
+    "kana": "きらり ひかる",
+    "image": "煌里光",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "笠音青",
+    "jp": "笠音アオ",
+    "roman": "Kasane Ao",
+    "kana": "かさね あお",
+    "image": "笠音青",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "大庭树里",
+    "jp": "大庭樹里",
+    "roman": "Oba Juri",
+    "kana": "おおば じゅり",
+    "image": "大庭树里",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "铃鹿朔夜",
+    "jp": "鈴鹿さくや",
+    "roman": "Suzuka Sakuya",
+    "kana": "すずか さくや",
+    "image": "铃鹿朔夜",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "智珠兰华",
+    "jp": "智珠らんか",
+    "roman": "Chizu Ranka",
+    "kana": "ちず らんか",
+    "image": "智珠兰华",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "有爱丽",
+    "jp": "有愛うらら",
+    "roman": "Yume Urara",
+    "kana": "ゆめ うらら",
+    "image": "有爱丽",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "伊并满",
+    "jp": "伊並満",
+    "roman": "Inami Mitsuru",
+    "kana": "いなみ みつる",
+    "image": "伊并满",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "蓝家姬奈",
+    "jp": "藍家ひめな",
+    "roman": "Aika Himena",
+    "kana": "あいか ひめな",
+    "image": "蓝家姬奈",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "宫尾时雨",
+    "jp": "宮尾時雨",
+    "roman": "Miyabi Shigure",
+    "kana": "みやび しぐれ",
+    "image": "宫尾时雨",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "安积育梦",
+    "jp": "安積はぐむ",
+    "roman": "Azumi Hagumu",
+    "kana": "あずみ はぐむ",
+    "image": "安积育梦",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "神乐灿",
+    "jp": "神楽燦",
+    "roman": "Kagura San",
+    "kana": "かぐら さん",
+    "image": "神乐灿",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "游狩美由利",
+    "jp": "遊狩ミユリ",
+    "roman": "Yukari Miyuri",
+    "kana": "ゆかり みゆり",
+    "image": "游狩美由利",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "栗栖亚历山德拉",
+    "jp": "栗栖アレクサンドラ",
+    "roman": "Kurisu Alexandra",
+    "kana": "くるす あれくさんどら",
+    "image": "栗栖亚历山德拉",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "饰利润",
+    "jp": "飾利潤",
+    "roman": "Kazari Jun",
+    "kana": "かざり じゅん",
+    "image": "饰利润",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "三轮光音",
+    "jp": "三輪みつね",
+    "roman": "Miwa Mitsune",
+    "kana": "みわ みつね",
+    "image": "三轮光音",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "佐和月出里",
+    "jp": "佐和月出里",
+    "roman": "Sawa Sudachi",
+    "kana": "さわ すだち",
+    "image": "佐和月出里",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor2",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "篠目夜鹤",
+    "jp": "篠目ヨヅル",
+    "roman": "Shinome Yozuru",
+    "kana": "ささめ よづる",
+    "image": "篠目夜鹤",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor2"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "莉薇娅·梅黛洛斯",
+    "jp": "リヴィア・メディロス",
+    "roman": "Livia Medeiros",
+    "kana": "りゔぃあ めでぃろす",
+    "image": "莉薇娅·梅黛洛斯",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor2"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "鹿目圆",
+    "jp": "鹿目まどか",
+    "roman": "Kaname Madoka",
+    "kana": "かなめ まどか",
+    "image": "鹿目圆",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "晓美焰",
+    "jp": "暁美ほむら",
+    "roman": "Akemi Homura",
+    "kana": "あけみ ほむら",
+    "image": "晓美焰",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "晓美焰-眼镜ver",
+    "jp": "暁美ほむら(眼鏡ver)",
+    "roman": "Akemi Homura (Glasses ver)",
+    "kana": "あけみ ほむら めがね",
+    "image": "晓美焰-眼镜ver",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": [
+      "晓美焰(眼镜ver)",
+      "晓美焰(眼镜ver.)"
+    ]
+  },
+  {
+    "zh": "美树沙耶香",
+    "jp": "美樹さやか",
+    "roman": "Miki Sayaka",
+    "kana": "みき さやか",
+    "image": "美树沙耶香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "巴麻美",
+    "jp": "巴マミ",
+    "roman": "Tomoe Mami",
+    "kana": "ともえ まみ",
+    "image": "巴麻美",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "佐仓杏子",
+    "jp": "佐倉杏子",
+    "roman": "Sakura Kyoko",
+    "kana": "さくら きょうこ",
+    "image": "佐仓杏子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "百江渚",
+    "jp": "百江なぎさ",
+    "roman": "Momoe Nagisa",
+    "kana": "ももえ なぎさ",
+    "image": "百江渚",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "爱生眩",
+    "jp": "愛生まばゆ",
+    "roman": "Aki Mabayu",
+    "kana": "あき まばゆ",
+    "image": "爱生眩",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "爱生咲笑",
+    "jp": "愛生咲笑",
+    "roman": "Aki Sakie",
+    "kana": "あき さきえ",
+    "image": "爱生咲笑",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "眩的母亲",
+    "jp": "まばゆの母",
+    "roman": "Mrs. Aki",
+    "kana": "まばゆのはは",
+    "image": "眩的母亲",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "志筑仁美",
+    "jp": "志筑仁美",
+    "roman": "Shizuki Hitomi",
+    "kana": "しづき ひとみ",
+    "image": "志筑仁美",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "上条恭介",
+    "jp": "上条恭介",
+    "roman": "Kamijo Kyosuke",
+    "kana": "かみじょう きょうすけ",
+    "image": "上条恭介",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "鹿目询子",
+    "jp": "鹿目詢子",
+    "roman": "Kaname Junko",
+    "kana": "かなめ じゅんこ",
+    "image": "鹿目询子",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "早乙女和子",
+    "jp": "早乙女和子",
+    "roman": "Saotome Kazuko",
+    "kana": "さおとめ かずこ",
+    "image": "早乙女和子",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": [
+      "早乙女老师",
+      "早乙女先生"
+    ]
+  },
+  {
+    "zh": "矢宵鹿乃子",
+    "jp": "矢宵かのこ",
+    "roman": "Yayoi Kanoko",
+    "kana": "やよい かのこ",
+    "image": "矢宵鹿乃子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "胡桃爱香",
+    "jp": "胡桃まなか",
+    "roman": "Kurumi Manaka",
+    "kana": "くるみ まなか",
+    "image": "胡桃爱香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "若菜纺",
+    "jp": "若菜つむぎ",
+    "roman": "Wakana Tsumugi",
+    "kana": "わかな つむぎ",
+    "image": "若菜纺",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "阿见莉爱",
+    "jp": "阿見莉愛",
+    "roman": "Ami Ria",
+    "kana": "あみ りあ",
+    "image": "阿见莉爱",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "梢麻友",
+    "jp": "梢麻友",
+    "roman": "Kozue Mayu",
+    "kana": "こづえ まゆ",
+    "image": "梢麻友",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "史乃沙优希",
+    "jp": "史乃沙優希",
+    "roman": "Fumino Sayuki",
+    "kana": "ふみの さゆき",
+    "image": "史乃沙优希",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "七濑幸佳",
+    "jp": "七瀬ゆきか",
+    "roman": "Nanase Yukika",
+    "kana": "ななせ ゆきか",
+    "image": "七濑幸佳",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "柚希步鸟",
+    "jp": "柚希ほとり",
+    "roman": "Yuzuki Hotori",
+    "kana": "ゆずき ほとり",
+    "image": "柚希步鸟",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "柚希理音",
+    "jp": "柚希りおん",
+    "roman": "Yuzuki Rion",
+    "kana": "ゆずき りおん",
+    "image": "柚希理音",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "香春优奈",
+    "jp": "香春ゆうな",
+    "roman": "Kaharu Yuuna",
+    "kana": "かはる ゆうな",
+    "image": "香春优奈",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "入名库什",
+    "jp": "入名クシュ",
+    "roman": "Kush Irina",
+    "kana": "いりな くしゅ",
+    "image": "入名库什",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "惠萌花",
+    "jp": "恵萌花",
+    "roman": "Megumi Moka",
+    "kana": "めぐみ もか",
+    "image": "惠萌花",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "由良萤",
+    "jp": "由良蛍",
+    "roman": "Yura Hotaru",
+    "kana": "ゆら ほたる",
+    "image": "由良萤",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "真井灯",
+    "jp": "真井あかり",
+    "roman": "Mai Akari",
+    "kana": "まい あかり",
+    "image": "真井灯",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "枇枇木巡",
+    "jp": "枇々木めぐる",
+    "roman": "Hibiki Meguru",
+    "kana": "ひびき めぐる",
+    "image": "枇枇木巡",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "由贵真里爱",
+    "jp": "由貴真里愛",
+    "roman": "Yuki Maria",
+    "kana": "ゆき まりあ",
+    "image": "由贵真里爱",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "桐野纱枝",
+    "jp": "桐野紗枝",
+    "roman": "Kirino Sae",
+    "kana": "きりの さえ",
+    "image": "桐野纱枝",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "江利爱实",
+    "jp": "江利あいみ",
+    "roman": "Eri Aimi",
+    "kana": "えり あいみ",
+    "image": "江利爱实",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "空穗夏希",
+    "jp": "空穂夏希",
+    "roman": "Utsuho Natsuki",
+    "kana": "うつほ なつき",
+    "image": "空穗夏希",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "粟根心",
+    "jp": "粟根こころ",
+    "roman": "Awane Kokoro",
+    "kana": "あわね こころ",
+    "image": "粟根心",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "加贺见真良",
+    "jp": "加賀見まさら",
+    "roman": "Kagami Masara",
+    "kana": "かがみ まさら",
+    "image": "加贺见真良",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "绫野梨花",
+    "jp": "綾野梨花",
+    "roman": "Ayano Rika",
+    "kana": "あやの りか",
+    "image": "绫野梨花",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "五十铃怜",
+    "jp": "五十鈴れん",
+    "roman": "Isuzu Ren",
+    "kana": "いすず れん",
+    "image": "五十铃怜",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "毬子亚弥华",
+    "jp": "毬子あやか",
+    "roman": "Mariko Ayaka",
+    "kana": "まりこ あやか",
+    "image": "毬子亚弥华",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "保澄雫",
+    "jp": "保澄雫",
+    "roman": "Hozumi Shizuku",
+    "kana": "ほずみ しずく",
+    "image": "保澄雫",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "木崎衣美里",
+    "jp": "木崎衣美里",
+    "roman": "Kisaki Emiri",
+    "kana": "きさき えみり",
+    "image": "木崎衣美里",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "春名木乃美",
+    "jp": "春名このみ",
+    "roman": "Haruna Konomi",
+    "kana": "はるな このみ",
+    "image": "春名木乃美",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "真尾日美香",
+    "jp": "眞尾ひみか",
+    "roman": "Mao Himika",
+    "kana": "まお ひみか",
+    "image": "真尾日美香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "千秋理子",
+    "jp": "千秋理子",
+    "roman": "Chiaki Riko",
+    "kana": "ちあき りこ",
+    "image": "千秋理子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "阿什莉·泰勒",
+    "jp": "アシュリー・テイラー",
+    "roman": "Ashley Taylor",
+    "kana": "あしゅりー ていらー",
+    "image": "阿什莉·泰勒",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "古町美仓",
+    "jp": "古町みくら",
+    "roman": "Komachi Mikura",
+    "kana": "こまち みくら",
+    "image": "古町美仓",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "三穗野星罗",
+    "jp": "三穂野せいら",
+    "roman": "Mihono Seira",
+    "kana": "みほの せいら",
+    "image": "三穗野星罗",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "吉良手鞠",
+    "jp": "吉良てまり",
+    "roman": "Kira Temari",
+    "kana": "きら てまり",
+    "image": "吉良手鞠",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "水树垒",
+    "jp": "水樹塁",
+    "roman": "Mizuki Rui",
+    "kana": "みずき るい",
+    "image": "水树垒",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": [
+      "水树塁",
+      "水樹塁"
+    ]
+  },
+  {
+    "zh": "常盘七香",
+    "jp": "常盤ななか",
+    "roman": "Tokiwa Nanaka",
+    "kana": "ときわ ななか",
+    "image": "常盘七香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": [
+      "常盘七夏"
+    ]
+  },
+  {
+    "zh": "志伸晶",
+    "jp": "志伸あきら",
+    "roman": "Shinobu Akira",
+    "kana": "しのぶ あきら",
+    "image": "志伸晶",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "夏目佳子",
+    "jp": "夏目かこ",
+    "roman": "Natsume Kako",
+    "kana": "なつめ かこ",
+    "image": "夏目佳子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "纯美雨",
+    "jp": "純美雨",
+    "roman": "Chun Meiyui",
+    "kana": "ちゅん めいゆい",
+    "image": "纯美雨",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "伊吹丽良",
+    "jp": "伊吹れいら",
+    "roman": "Ibuki Leila",
+    "kana": "いぶき れいら",
+    "image": "伊吹丽良",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "桑水清佳",
+    "jp": "桑水せいか",
+    "roman": "Kumi Seika",
+    "kana": "くみ せいか",
+    "image": "桑水清佳",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "相野未都",
+    "jp": "相野みと",
+    "roman": "Aino Mito",
+    "kana": "あいの みと",
+    "image": "相野未都",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "静海木叶",
+    "jp": "静海このは",
+    "roman": "Shizumi Konoha",
+    "kana": "しずみ このは",
+    "image": "静海木叶",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "游佐叶月",
+    "jp": "遊佐葉月",
+    "roman": "Yusa Hazuki",
+    "kana": "ゆさ はづき",
+    "image": "游佐叶月",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "三栗菖蒲",
+    "jp": "三栗あやめ",
+    "roman": "Mikuri Ayame",
+    "kana": "みくり あやめ",
+    "image": "三栗菖蒲",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "更纱帆奈",
+    "jp": "更紗帆奈",
+    "roman": "Sarasa Hanna",
+    "kana": "さらさ はんな",
+    "image": "更纱帆奈",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "濑奈命",
+    "jp": "瀬奈みこと",
+    "roman": "Sena Mikoto",
+    "kana": "せな みこと",
+    "image": "濑奈命",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "夕",
+    "jp": "ユゥ",
+    "roman": "Yu",
+    "kana": "ゆぅ",
+    "image": "夕",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "椎",
+    "jp": "シィ",
+    "roman": "Shi",
+    "kana": "しぃ",
+    "image": "椎",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "雪野加奈惠",
+    "jp": "雪野かなえ",
+    "roman": "Yukino Kanae",
+    "kana": "ゆきの かなえ",
+    "image": "雪野加奈惠",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor2"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "安名梅露",
+    "jp": "安名メル",
+    "roman": "Anna Meru",
+    "kana": "あんな める",
+    "image": "安名梅露",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "otherColor2"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "黑",
+    "jp": "黒",
+    "roman": "Kuro",
+    "kana": "くろ",
+    "image": "黑",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "小黑",
+    "jp": "くろ",
+    "roman": "Kuro",
+    "kana": "くろ",
+    "image": "小黑",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "水名露",
+    "jp": "水名露",
+    "roman": "Mizuna Tsuyu",
+    "kana": "みずな つゆ",
+    "image": "水名露",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "千鹤",
+    "jp": "千鶴",
+    "roman": "Chizuru",
+    "kana": "ちづる",
+    "image": "千鹤",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "水名正纲",
+    "jp": "水名正綱",
+    "roman": "Masatsuna Mizuna",
+    "kana": "みずなまさつな",
+    "image": "水名正纲",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "玄云",
+    "jp": "玄雲",
+    "roman": "Gen'un",
+    "kana": "げんうん",
+    "image": "玄云",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "万守山右卫门",
+    "jp": "万守山右衛門",
+    "roman": "San'emon Banshu",
+    "kana": "ばんしゅ さんえもん",
+    "image": "万守山右卫门",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "埃博妮",
+    "jp": "エボニー",
+    "roman": "Ebony",
+    "kana": "えぼにー",
+    "image": "埃博妮",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "克利奥帕特拉",
+    "jp": "クレオパトラ",
+    "roman": "Cleopatra",
+    "kana": "くれおぱとら",
+    "image": "克利奥帕特拉",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "长老",
+    "jp": "長老",
+    "roman": "Met Clan Elder",
+    "kana": "ちょうろう",
+    "image": "长老",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "奥尔加",
+    "jp": "オルガ",
+    "roman": "Olga",
+    "kana": "おるが",
+    "image": "奥尔加",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "冈希尔德",
+    "jp": "ガンヒルト",
+    "roman": "Gunhild",
+    "kana": "がんひると",
+    "image": "冈希尔德",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "埃佩",
+    "jp": "エッペ",
+    "roman": "Ebbe",
+    "kana": "えっぺ",
+    "image": "埃佩",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "哈拉尔",
+    "jp": "ハーラル",
+    "roman": "Harald Hardrada",
+    "kana": "はーらる",
+    "image": "哈拉尔",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "赫露迦",
+    "jp": "ヘルカ",
+    "roman": "Heruka",
+    "kana": "へるか",
+    "image": "赫露迦",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "卓玛",
+    "jp": "ドルマ",
+    "roman": "Dolma",
+    "kana": "どるま",
+    "image": "卓玛",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "朵啰阿歹",
+    "jp": "ドロアダイ",
+    "roman": "Dolo'adai",
+    "kana": "どろあだい",
+    "image": "朵啰阿歹",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "台与",
+    "jp": "トヨ",
+    "roman": "Toyo",
+    "kana": "とよ",
+    "image": "台与",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "卑弥呼",
+    "jp": "卑弥呼",
+    "roman": "Himiko",
+    "kana": "ひみこ",
+    "image": "卑弥呼",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "阿玛琉莉丝",
+    "jp": "アマリュリス",
+    "roman": "Amaryllis",
+    "kana": "あまりゅりす",
+    "image": "阿玛琉莉丝",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "科尔内利娅",
+    "jp": "コルネリア",
+    "roman": "Cornelia",
+    "kana": "こるねりあ",
+    "image": "科尔内利娅",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "尤尼娅",
+    "jp": "ユニア",
+    "roman": "Junia",
+    "kana": "ゆにあ",
+    "image": "尤尼娅",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "美国织莉子",
+    "jp": "美国織莉子",
+    "roman": "Mikuni Oriko",
+    "kana": "みくに おりこ",
+    "image": "美国织莉子",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "吴纪里香",
+    "jp": "呉キリカ",
+    "roman": "Kure Kirika",
+    "kana": "くれ きりか",
+    "image": "吴纪里香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "千岁由麻",
+    "jp": "千歳ゆま",
+    "roman": "Chitose Yuma",
+    "kana": "ちとせ ゆま",
+    "image": "千岁由麻",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "浅古小卷",
+    "jp": "浅古小巻",
+    "roman": "Asako Komaki",
+    "kana": "あさこ こまき",
+    "image": "浅古小卷",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "浅古小糸",
+    "jp": "浅古小糸",
+    "roman": "Asako Koito",
+    "kana": "あさこ こいと",
+    "image": "浅古小糸",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "优木沙沙",
+    "jp": "優木沙々",
+    "roman": "Yuuki Sasa",
+    "kana": "ゆうき ささ",
+    "image": "优木沙沙",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "行方晶",
+    "jp": "行方晶",
+    "roman": "Namekata Akira",
+    "kana": "なめかた あきら",
+    "image": "行方晶",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "煤名美绪",
+    "jp": "煤名美緒",
+    "roman": "Suzuna Mio",
+    "kana": "すずな みお",
+    "image": "煤名美绪",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "佐木京",
+    "jp": "佐木京",
+    "roman": "Saki Miyako",
+    "kana": "さき みやこ",
+    "image": "佐木京",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "人见里奈",
+    "jp": "人見リナ",
+    "roman": "Hitomi Lina",
+    "kana": "ひとみ りな",
+    "image": "人见里奈",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "朱音麻衣",
+    "jp": "朱音麻衣",
+    "roman": "Akane Mai",
+    "kana": "あかね まい",
+    "image": "朱音麻衣",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "和美",
+    "jp": "かずみ",
+    "roman": "Kazumi",
+    "kana": "かずみ",
+    "image": "和美",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "御崎海香",
+    "jp": "御崎海香",
+    "roman": "Misaki Umika",
+    "kana": "みさき うみか",
+    "image": "御崎海香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "牧薰",
+    "jp": "牧カオル",
+    "roman": "Maki Kaoru",
+    "kana": "まき かおる",
+    "image": "牧薰",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "和纱美千瑠",
+    "jp": "和紗ミチル",
+    "roman": "Kazusa Michiru",
+    "kana": "かずさ みちる",
+    "image": "和纱美千瑠",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "浅海早纪",
+    "jp": "浅海サキ",
+    "roman": "Asami Saki",
+    "kana": "あさみ さき",
+    "image": "浅海早纪",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "神那妮可",
+    "jp": "神那ニコ",
+    "roman": "Kanna Niko",
+    "kana": "かんな にこ",
+    "image": "神那妮可",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "塔鲁特",
+    "jp": "タルト",
+    "roman": "Tart",
+    "kana": "たると",
+    "image": "塔鲁特",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "莉兹",
+    "jp": "リズ",
+    "roman": "Riz Hawkwood",
+    "kana": "りず",
+    "image": "莉兹",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "梅丽莎",
+    "jp": "メリッサ",
+    "roman": "Melissa de Vignolles",
+    "kana": "めりっさ",
+    "image": "梅丽莎",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "爱丽莎",
+    "jp": "エリザ",
+    "roman": "Eliza Celjska",
+    "kana": "えりざ",
+    "image": "爱丽莎",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "佩尔内勒",
+    "jp": "ペレネル",
+    "roman": "Pernelle Flamel",
+    "kana": "ぺれねる",
+    "image": "佩尔内勒",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "米诺",
+    "jp": "ミヌゥ",
+    "roman": "Minou",
+    "kana": "みぬぅ",
+    "image": "米诺",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "可鲁波",
+    "jp": "コルボー",
+    "roman": "Corbeau",
+    "kana": "こるぼー",
+    "image": "可鲁波",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "拉皮努",
+    "jp": "ラピヌ",
+    "roman": "Lapin",
+    "kana": "らぴぬ",
+    "image": "拉皮努",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "伊莎贝拉",
+    "jp": "イザボー",
+    "roman": "Isabeau de Bavière",
+    "kana": "いざぼー",
+    "image": "伊莎贝拉",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "天乃铃音",
+    "jp": "天乃鈴音",
+    "roman": "Amano Suzune",
+    "kana": "あまの すずね",
+    "image": "天乃铃音",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "日向茉莉",
+    "jp": "日向茉莉",
+    "roman": "Hinata Matsuri",
+    "kana": "ひなた まつり",
+    "image": "日向茉莉",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "成见亚里纱",
+    "jp": "成見亜里紗",
+    "roman": "Narumi Arisa",
+    "kana": "なるみ ありさ",
+    "image": "成见亚里纱",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "诗音千里",
+    "jp": "詩音千里",
+    "roman": "Shion Chisato",
+    "kana": "しおん ちさと",
+    "image": "诗音千里",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "奏遥香",
+    "jp": "奏遥香",
+    "roman": "Kanade Haruka",
+    "kana": "かなで はるか",
+    "image": "奏遥香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "美琴椿",
+    "jp": "美琴椿",
+    "roman": "Mikoto Tsubaki",
+    "kana": "みこと つばき",
+    "image": "美琴椿",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "日向华华莉",
+    "jp": "日向華々莉",
+    "roman": "Hinata Kagari",
+    "kana": "ひなた かがり",
+    "image": "日向华华莉",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "高町奈叶",
+    "jp": "高町なのは",
+    "roman": "Takamachi Nanoha",
+    "kana": "たかまち なのは",
+    "image": "高町奈叶",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "collaboColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "菲特·T·哈拉温",
+    "jp": "フェイト・T・ハラオウン",
+    "roman": "Fate T. Harlaown",
+    "kana": "ふぇいと てぃー はらおうん",
+    "image": "菲特·T·哈拉温",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "八神疾风",
+    "jp": "八神はやて",
+    "roman": "Yagami Hayate",
+    "kana": "やがみ はやて",
+    "image": "八神疾风",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "锦木千束",
+    "jp": "錦木千束",
+    "roman": "Nishikigi Chisato",
+    "kana": "にしきぎ ちさと",
+    "image": "锦木千束",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "井之上泷奈",
+    "jp": "井ノ上たきな",
+    "roman": "Inoue Takina",
+    "kana": "いのうえ たきな",
+    "image": "井之上泷奈",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "胡桃",
+    "jp": "クルミ",
+    "roman": "Kurumi",
+    "kana": "くるみ",
+    "image": "胡桃",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "丘比",
+    "jp": "キュゥべえ",
+    "roman": "Kyubey",
+    "kana": "きゅぅべえ",
+    "image": "丘比",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "mobColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "A-Q",
+    "jp": "A-Q",
+    "roman": "A-Q",
+    "kana": "エーキュゥ",
+    "image": "A-Q",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "名小姐",
+    "jp": "ナマエ",
+    "roman": "Name",
+    "kana": "なまえ",
+    "image": "名小姐",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor",
+      "leftm"
+    ],
+    "aliases": [
+      "名字",
+      "ナマエ"
+    ]
+  },
+  {
+    "zh": "里见太助",
+    "jp": "里見太助",
+    "roman": "Tasuke Satomi",
+    "kana": "さとみ たすけ",
+    "image": "里见太助",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "灯花之父",
+    "jp": "灯花の父",
+    "roman": "Dr. Satomi",
+    "kana": "とうかのちち",
+    "image": "灯花之父",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "和泉壮月",
+    "jp": "和泉壮月",
+    "roman": "Sougetsu Izumi",
+    "kana": "いずみ そうげつ",
+    "image": "和泉壮月",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "盐屋晴海",
+    "jp": "塩屋晴海",
+    "roman": "Harumi Shioya",
+    "kana": "しおや はるみ",
+    "image": "盐屋晴海",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  }
+]
