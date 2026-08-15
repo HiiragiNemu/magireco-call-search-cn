@@ -94,6 +94,59 @@ jobs:
           info['rollbackBeforeLayoutCorrectionV2'] = 'rollback/pre-layout-correction-v2-20260816'
           info['rollbackRejectedMobileOverhaul'] = 'rollback/rejected-mobile-overhaul-20260816'
           info_path.write_text(json.dumps(info, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          acceptance_path = Path('public/__acceptance.html')
+          acceptance = acceptance_path.read_text(encoding='utf-8')
+          old = '''          assert(Boolean(relationshipControls), 'V2 关系表控制条已渲染');
+          assert(Boolean(relationshipStage && relationshipSurface), 'V2 关系表缩放舞台已渲染');
+          assert(table.querySelectorAll('thead th').length >= 9, '关系表表头完整', table.querySelectorAll('thead th').length);
+          assert(relationshipViewport.scrollWidth > relationshipViewport.clientWidth, '关系表可以横向滚动', {
+            scrollWidth: relationshipViewport.scrollWidth,
+            clientWidth: relationshipViewport.clientWidth
+          });
+          relationshipViewport.scrollLeft = Math.max(1, relationshipViewport.scrollWidth - relationshipViewport.clientWidth);
+          relationshipViewport.scrollTop = Math.max(1, relationshipViewport.scrollHeight - relationshipViewport.clientHeight);
+          assert(relationshipViewport.scrollLeft > 0, '关系表横向滚动实际生效', relationshipViewport.scrollLeft);
+          '''
+          new = '''          assert(Boolean(relationshipControls), 'V2 关系表控制条已渲染');
+          assert(Boolean(relationshipStage && relationshipSurface), 'V2 关系表缩放舞台已渲染');
+          assert(table.querySelectorAll('thead th').length >= 9, '关系表表头完整', table.querySelectorAll('thead th').length);
+
+          const normalizeOrderText = (value) => String(value || '').replace(/\\s+/g, ' ').trim();
+          const expectedOrder = characterBoxes.slice(0, 8).map((box) => normalizeOrderText(box.value));
+          const headerOrder = [...table.querySelectorAll('thead th')]
+            .slice(-8)
+            .map((cell) => normalizeOrderText(cell.textContent));
+          const rowOrder = [...table.querySelectorAll('tbody tr')]
+            .slice(0, 8)
+            .map((row) => normalizeOrderText(row.querySelector('th, td')?.textContent));
+          assert(expectedOrder.every((value, index) => headerOrder[index] === value), '关系表列顺序保持用户选择顺序', {
+            expectedOrder,
+            headerOrder
+          });
+          assert(expectedOrder.every((value, index) => rowOrder[index] === value), '关系表行顺序保持用户选择顺序', {
+            expectedOrder,
+            rowOrder
+          });
+
+          const relationshipOverflow = relationshipViewport.scrollWidth - relationshipViewport.clientWidth;
+          if (relationshipOverflow > 1) {
+            relationshipViewport.scrollLeft = relationshipOverflow;
+            assert(relationshipViewport.scrollLeft > 0, '窄屏关系表横向滚动实际生效', {
+              overflow: relationshipOverflow,
+              scrollLeft: relationshipViewport.scrollLeft
+            });
+          } else {
+            record('宽屏关系表完整适配，无需横向滚动', {
+              scrollWidth: relationshipViewport.scrollWidth,
+              clientWidth: relationshipViewport.clientWidth
+            });
+          }
+          relationshipViewport.scrollTop = Math.max(1, relationshipViewport.scrollHeight - relationshipViewport.clientHeight);
+          '''
+          if acceptance.count(old) != 1:
+              raise SystemExit('Acceptance relationship-table assertions could not be patched safely.')
+          acceptance_path.write_text(acceptance.replace(old, new, 1), encoding='utf-8')
           PY
 
           cat > scripts/validate-site.js <<'JS'
