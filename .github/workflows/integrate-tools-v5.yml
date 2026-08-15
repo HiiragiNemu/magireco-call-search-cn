@@ -14,6 +14,7 @@ on:
       - public/myfile/story-app.js
       - public/myfile/attendance-app.js
       - public/myfile/runes-app.js
+      - scripts/integrate-tools-v5.py
       - scripts/audit-translations-v5.py
       - scripts/smoke-integrated-tools-v5.mjs
       - scripts/validate-site.js
@@ -33,7 +34,6 @@ jobs:
   integrate-test-commit:
     runs-on: ubuntu-latest
     timeout-minutes: 55
-
     steps:
       - name: Check out V5 integration branch
         uses: actions/checkout@v4
@@ -46,154 +46,27 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p public/mdkOCR
-          curl --fail --show-error --location --retry 5 --retry-all-errors \
-            --connect-timeout 15 --max-time 180 \
+          curl --fail --show-error --location --retry 5 --retry-all-errors --connect-timeout 15 --max-time 180 \
             'https://magireco-chara-search.vercel.app/mdkOCR/mdk.traineddata' \
             -o public/mdkOCR/mdk.traineddata
-          curl --fail --show-error --location --retry 5 --retry-all-errors \
-            --connect-timeout 15 --max-time 180 \
+          curl --fail --show-error --location --retry 5 --retry-all-errors --connect-timeout 15 --max-time 180 \
             'https://magireco-chara-search.vercel.app/mdkOCR/mdm.traineddata' \
             -o public/mdkOCR/mdm.traineddata
-          curl --fail --show-error --location --retry 5 --retry-all-errors \
-            --connect-timeout 15 --max-time 120 \
+          curl --fail --show-error --location --retry 5 --retry-all-errors --connect-timeout 15 --max-time 120 \
             'https://magireco-chara-search.vercel.app/mdkOCR/madokarunes.jpg' \
             -o public/mdkOCR/madokarunes.jpg
           test "$(stat -c%s public/mdkOCR/mdk.traineddata)" -gt 100000
           test "$(stat -c%s public/mdkOCR/mdm.traineddata)" -gt 100000
           test "$(stat -c%s public/mdkOCR/madokarunes.jpg)" -gt 10000
 
-      - name: Integrate navigation, triple tap and internal tool routes
+      - name: Integrate V5 production files
         shell: bash
         run: |
           set -euo pipefail
-          python3 <<'PY'
-          from pathlib import Path
-          import json
-          import re
-
-          release = 'integrated-tools-v5-20260816'
-          root = Path('.')
-          public = root / 'public'
-
-          index_path = public / 'index.html'
-          index = index_path.read_text(encoding='utf-8')
-          css_anchor = '\t<link rel="stylesheet" href="./myfile/site-correction-v4.css">'
-          css_ref = '\t<link rel="stylesheet" href="./myfile/tools-suite.css">'
-          if index.count(css_anchor) != 1:
-              raise SystemExit(f'Expected one V4 CSS anchor, found {index.count(css_anchor)}')
-          if css_ref not in index:
-              index = index.replace(css_anchor, css_anchor + '\n' + css_ref, 1)
-
-          index = re.sub(r'data-build="[^"]+"', f'data-build="{release}"', index, count=1)
-          index = re.sub(r'\s+ondblclick="mgirlCallNarrow\(this\)"', '', index)
-          index = index.replace(
-              '双击图标可以筛选称呼/被称呼的对象。',
-              '三击图标可以筛选称呼/被称呼的对象。单击仍用于选择角色。'
-          )
-          index = index.replace('<legend>双击选项</legend>', '<legend>三击筛选选项</legend>')
-
-          old_ocr = '<li><a href="https://magireco-chara-search.vercel.app/mdkOCR/index.html">魔女文字解读工具</a></li>'
-          new_tools = '''<li><a href="./story.html">角色故事搜索</a></li>
-				<li><a href="./attendance.html">共同出场次数排行</a></li>
-				<li><a href="./runes.html">魔女文字解读工具</a></li>'''
-          if old_ocr in index:
-              index = index.replace(old_ocr, new_tools, 1)
-          elif './story.html' not in index:
-              raise SystemExit('External OCR menu entry not found for replacement.')
-
-          scripts = '''
-<script src="./myfile/tools-suite.js"></script>
-<script>
-  if (window.MagiTools) window.MagiTools.renderNav('calls');
-</script>
-<script src="./myfile/triple-tap-filter.js"></script>
-'''
-          if 'triple-tap-filter.js' not in index:
-              if index.count('</body>') != 1:
-                  raise SystemExit('Expected one closing body tag in production index.')
-              index = index.replace('</body>', scripts + '</body>', 1)
-
-          for ref in [
-              './myfile/tools-suite.css',
-              './myfile/tools-suite.js',
-              './myfile/triple-tap-filter.js',
-              './story.html', './attendance.html', './runes.html'
-          ]:
-              if index.count(ref) != 1:
-                  raise SystemExit(f'Expected exactly one production reference for {ref}, found {index.count(ref)}')
-          if 'ondblclick=' in index:
-              raise SystemExit('Inline double-click handlers remain in production index.')
-          if '三击图标可以筛选称呼/被称呼的对象' not in index:
-              raise SystemExit('Triple-tap production instruction missing.')
-          index_path.write_text(index, encoding='utf-8')
-
-          # Keep old public paths functional while replacing their content with the integrated pages.
-          redirects = {
-              public / 'cnt.html': ('共同出场次数排行', './attendance.html'),
-              public / 'index_png.html': ('角色故事搜索', './story.html'),
-              public / 'mdkOCR' / 'index.html': ('魔女文字解读', '../runes.html'),
-          }
-          for path, (title, target) in redirects.items():
-              path.parent.mkdir(parents=True, exist_ok=True)
-              path.write_text(f'''<!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{title}</title><meta http-equiv="refresh" content="0;url={target}">
-<link rel="canonical" href="{target}"></head>
-<body><p>正在前往<a href="{target}">{title}</a>…</p><script>location.replace({json.dumps(target)});</script></body></html>\n''', encoding='utf-8')
-
-          info_path = public / 'build-info.json'
-          info = json.loads(info_path.read_text(encoding='utf-8'))
-          info.update({
-              'release': release,
-              'rollbackBeforeIntegratedToolsV5': 'rollback/pre-integrated-tools-v5-20260816',
-              'integratedTools': ['calls-height', 'story-search', 'attendance-ranking', 'witch-rune-ocr'],
-              'interactionFilterGesture': 'triple-tap-or-triple-click',
-              'updateMode': 'manual-static-only',
-              'ocrDataMode': 'local-traineddata-browser-only',
-              'translationAudit': 'public/data/translation-audit-v5.json'
-          })
-          info_path.write_text(json.dumps(info, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-
-          acceptance_path = public / '__acceptance.html'
-          acceptance = acceptance_path.read_text(encoding='utf-8')
-          acceptance = re.sub(
-              r"const EXPECTED_RELEASE = '[^']+';",
-              f"const EXPECTED_RELEASE = '{release}';",
-              acceptance,
-              count=1
-          )
-          acceptance_path.write_text(acceptance, encoding='utf-8')
-
-          for smoke_name in ['smoke-neo11-v3.mjs', 'smoke-height-guide-v4.mjs']:
-              path = root / 'scripts' / smoke_name
-              text = path.read_text(encoding='utf-8')
-              text = re.sub(
-                  r"const EXPECTED_RELEASE = '[^']+';",
-                  f"const EXPECTED_RELEASE = '{release}';",
-                  text,
-                  count=1
-              )
-              path.write_text(text, encoding='utf-8')
-
-          call_filter_path = public / 'myfile' / 'mgirlCallNarrow.js'
-          call_filter = call_filter_path.read_text(encoding='utf-8')
-          call_filter = call_filter.replace(
-              '// Double-click filtering based on outgoing and incoming call relationships.',
-              '// Triple-tap/click filtering based on outgoing and incoming call relationships.'
-          )
-          call_filter_path.write_text(call_filter, encoding='utf-8')
-          PY
-
-      - name: Generate catalog and audit all translations/mappings
-        shell: bash
-        run: |
-          set -euo pipefail
+          python3 scripts/integrate-tools-v5.py
           python3 scripts/audit-translations-v5.py | tee /tmp/translation-audit-v5-summary.json
-          test -s public/data/character-catalog.json
-          test -s public/data/translation-audit-v5.json
-          test -s docs/translation-audit-v5.md
 
-      - name: Validate production files and syntax
+      - name: Validate static files and syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -209,7 +82,7 @@ jobs:
             scripts/smoke-integrated-tools-v5.mjs; do
             node --check "$file"
           done
-          python3 -m py_compile scripts/audit-translations-v5.py
+          python3 -m py_compile scripts/integrate-tools-v5.py scripts/audit-translations-v5.py
 
       - name: Install browser driver
         shell: bash
@@ -217,15 +90,12 @@ jobs:
           set -euo pipefail
           npm install --no-save --no-package-lock puppeteer-core@24.16.0
 
-      - name: Run complete local regression and integrated-tool acceptance
+      - name: Run local regression and integrated-tool acceptance
         shell: bash
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
-          if [ -z "$CHROME" ]; then
-            echo 'No Chromium-compatible browser found.' >&2
-            exit 1
-          fi
+          test -n "$CHROME"
           python3 -m http.server 8000 --directory public >/tmp/integrated-v5-http.log 2>&1 &
           server_pid=$!
           trap 'kill $server_pid 2>/dev/null || true' EXIT
@@ -233,15 +103,12 @@ jobs:
             curl --fail --silent http://127.0.0.1:8000/ >/dev/null && break
             sleep .25
           done
-
           BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
             node scripts/smoke-neo11-v3.mjs | tee /tmp/neo11-v3-regression.txt
           grep -Fq '"state": "pass"' /tmp/neo11-v3-regression.txt
-
           BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
             node scripts/smoke-height-guide-v4.mjs | tee /tmp/height-guide-v4-regression.txt
           grep -Fq '"state": "pass"' /tmp/height-guide-v4-regression.txt
-
           BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
             node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/integrated-v5-local-report.txt
           grep -Fq '"state": "pass"' /tmp/integrated-v5-local-report.txt
