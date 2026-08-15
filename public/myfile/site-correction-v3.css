@@ -1,0 +1,246 @@
+/* Neo11/mobile interaction correction layer. Loaded after site-correction-v2.css. */
+:root {
+  --magi-v3-axis-width: 4.15rem;
+}
+
+/* Keep the restored relation graph stable: only the invisible dynamic edge helpers
+   are allowed to settle. Visible nodes remain directly draggable. */
+#mynetwork {
+  overscroll-behavior: contain;
+}
+
+/* Five character cards per row on ordinary portrait phones. */
+@media (max-width: 640px) {
+  body,
+  #wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #wrapper {
+    padding-inline: 0 !important;
+  }
+
+  form[name="magicalgirl"] {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  div.magicalgirl {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0;
+  }
+
+  label.girlbox,
+  label.girlbox.leftm {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .magicalgirl input[type="checkbox"] {
+    display: block;
+    width: min(60px, 100%) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+  }
+
+  .magicalgirl input[type="checkbox"]:checked::before {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* On phones the result table follows the document vertically. Only the x-axis
+     is internally scrollable, so a vertical swipe over a pink cell or empty area
+     continues scrolling the page instead of being trapped by a 66vh box. */
+  #mytable {
+    contain: none !important;
+  }
+
+  .relationship-table-viewport {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    resize: none !important;
+    contain: none !important;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  .relationship-height-control {
+    display: none !important;
+  }
+
+  /* The height chart also follows the page vertically. Horizontal panning stays
+     inside the chart while vertical panning is handed back to Chrome/page scroll. */
+  .height-chart-viewport-v2 {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    resize: none !important;
+    contain: none !important;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  #pagetop,
+  #pagemdl,
+  #pagebtm {
+    right: 2px !important;
+    opacity: 0.76;
+    transform: scale(0.78);
+    transform-origin: right center;
+  }
+}
+
+/* The axes are counter-translated by JavaScript so both cm rulers stay visible
+   while the plot is scrolled horizontally. */
+.height-y-axis-v2.height-y-axis-left-v3,
+.height-y-axis-v2.height-y-axis-right-v3 {
+  position: relative !important;
+  z-index: 40 !important;
+  background: rgba(250, 250, 250, 0.98) !important;
+  box-shadow: 0 0 0 1px rgba(120, 90, 108, 0.18);
+  will-change: transform;
+}
+
+.height-y-axis-v2.height-y-axis-left-v3 {
+  left: auto !important;
+}
+
+.height-y-axis-v2.height-y-axis-right-v3 {
+  right: auto !important;
+  border-right: 0 !important;
+  border-left: 1px solid #aaa;
+}
+
+.height-y-axis-right-v3 .height-y-label-v2 {
+  right: auto !important;
+  left: 0.45rem;
+}
+
+.height-x-axis-spacer-right-v3 {
+  grid-row: 2;
+  grid-column: 3;
+  position: relative;
+  z-index: 10;
+  border-left: 1px solid #aaa;
+  border-top: 1px solid #aaa;
+  background: rgba(250, 250, 250, 0.98);
+}
+
+/* Character-specific guides are category-local by default. This prevents every
+   line from converging into an unreadable pink wall at the left edge. */
+.height-point-guide-v2 {
+  border-top-width: 2px !important;
+  opacity: var(--guide-opacity, 0.58);
+  transition: opacity 120ms ease, border-color 120ms ease, border-width 120ms ease;
+}
+
+.height-point-guide-v2.is-active {
+  opacity: 1;
+  border-top-width: 3px !important;
+}
+
+.height-point-v2 {
+  border-color: var(--character-color, var(--magi-pink)) !important;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 1px color-mix(in srgb, var(--character-color, var(--magi-pink)) 58%, white);
+}
+
+.height-point-v2:hover,
+.height-point-v2:focus-visible,
+.height-point-v2.is-active {
+  border-color: var(--character-color, #ce176f) !important;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.94),
+    0 0 0 6px color-mix(in srgb, var(--character-color, #ce176f) 82%, black) !important;
+}
+
+.height-active-guide-v3 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: none;
+  height: 0;
+  border-top: 4px solid #ce176f;
+  pointer-events: none;
+  z-index: 18;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95));
+}
+
+.height-active-guide-label-v3 {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.32rem;
+  max-width: min(18rem, 60vw);
+  padding: 0.16rem 0.35rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.96);
+  color: #171217;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.height-active-y-label-v3 {
+  position: absolute;
+  z-index: 6;
+  display: none;
+  transform: translateY(-50%);
+  padding: 0.12rem 0.22rem;
+  border: 2px solid currentColor;
+  border-radius: 0.28rem;
+  background: #fff;
+  font-weight: 700;
+  font-size: 0.76rem;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.height-y-axis-left-v3 .height-active-y-label-v3 {
+  right: 0.2rem;
+}
+
+.height-y-axis-right-v3 .height-active-y-label-v3 {
+  left: 0.2rem;
+}
+
+@media (max-width: 640px) {
+  .relationship-table-controls,
+  .height-zoom-controls-v2 {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  .height-active-guide-label-v3 {
+    font-size: 0.68rem;
+    max-width: 48vw;
+  }
+
+  .height-y-axis-v2.height-y-axis-left-v3,
+  .height-y-axis-v2.height-y-axis-right-v3 {
+    min-width: 4.1rem;
+  }
+}
