@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - public/**
+      - scripts/smoke-neo11-v3.mjs
       - .github/workflows/verify-production.yml
   workflow_dispatch:
 
@@ -15,182 +16,99 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Wait for Cloudflare Pages to serve this accepted release
+      - name: Wait for Cloudflare Pages to serve Neo11 V3
         shell: bash
         run: |
           set -euo pipefail
           BASE='https://magireco-call-search-cn.pages.dev'
           EXPECTED_RELEASE="$(python3 -c "import json; print(json.load(open('public/build-info.json', encoding='utf-8'))['release'])")"
-          if [ "$EXPECTED_RELEASE" != 'layout-correction-v2-20260816' ]; then
-            echo "Refusing to verify unexpected release: $EXPECTED_RELEASE" >&2
-            exit 1
-          fi
+          test "$EXPECTED_RELEASE" = 'neo11-mobile-interaction-v3-20260816'
 
           ready=0
           for attempt in $(seq 1 90); do
             nonce="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}-$(date +%s%N)"
             echo "Deployment probe ${attempt}/90 for ${EXPECTED_RELEASE}"
-
             if curl --fail --silent --show-error --location \
                 --connect-timeout 10 --max-time 30 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "${BASE}/build-info.json?verify=${nonce}" \
-                -o /tmp/live-build-info.json \
+                "${BASE}/build-info.json?verify=${nonce}" -o /tmp/live-build-info.json \
               && grep -Fq "\"release\": \"${EXPECTED_RELEASE}\"" /tmp/live-build-info.json \
               && curl --fail --silent --show-error --location \
                 --connect-timeout 10 --max-time 30 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "${BASE}/?verify=${nonce}" \
-                -o /tmp/live-index.html \
+                "${BASE}/?verify=${nonce}" -o /tmp/live-index.html \
               && grep -Fq "data-build=\"${EXPECTED_RELEASE}\"" /tmp/live-index.html \
-              && grep -Fq './myfile/site-overhaul.js' /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v2.js' /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v2.css' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v3.css' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v3-network.js' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v3-height.js' /tmp/live-index.html \
               && grep -Fq 'value="まどドラ">Magia Exedra' /tmp/live-index.html \
-              && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html \
-              && curl --fail --silent --show-error --location \
-                --connect-timeout 10 --max-time 30 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                "${BASE}/myfile/site-correction-v2.js?verify=${nonce}" \
-                -o /tmp/live-site-correction-v2.js \
-              && grep -Fq 'relationship-table-viewport' /tmp/live-site-correction-v2.js \
-              && grep -Fq 'height-chart-viewport-v2' /tmp/live-site-correction-v2.js \
-              && curl --fail --silent --show-error --location \
-                --connect-timeout 10 --max-time 30 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                "${BASE}/__acceptance.html?verify=${nonce}" \
-                -o /tmp/live-acceptance-source.html \
-              && grep -Fq "const EXPECTED_RELEASE = '${EXPECTED_RELEASE}';" /tmp/live-acceptance-source.html; then
+              && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html; then
               ready=1
-              echo "Cloudflare Pages is serving ${EXPECTED_RELEASE}."
               break
             fi
-
             sleep 10
           done
 
           if [ "$ready" -ne 1 ]; then
-            echo 'Cloudflare Pages did not expose the expected release within the verification window.' >&2
-            echo 'Last build-info response:' >&2
+            echo 'Cloudflare Pages did not expose Neo11 V3 within the verification window.' >&2
             cat /tmp/live-build-info.json 2>/dev/null || true
-            echo 'Last index markers:' >&2
-            grep -E 'data-build|site-overhaul|site-correction-v2|まどドラ' /tmp/live-index.html 2>/dev/null | head -30 || true
+            grep -E 'data-build|site-correction-v3|まどドラ' /tmp/live-index.html 2>/dev/null | head -40 || true
             exit 1
           fi
 
-      - name: Run accepted browser behavior tests against the live site
+          for asset in \
+            site-correction-v3.css \
+            site-correction-v3-network.js \
+            site-correction-v3-height.js; do
+            curl --fail --silent --show-error --location \
+              --connect-timeout 10 --max-time 30 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "${BASE}/myfile/${asset}?verify=${GITHUB_RUN_ID}-$(date +%s%N)" \
+              -o "/tmp/live-${asset}"
+            test -s "/tmp/live-${asset}"
+          done
+
+      - name: Install browser driver
         shell: bash
         run: |
           set -euo pipefail
-          BASE='https://magireco-call-search-cn.pages.dev'
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Run Neo11 mobile and desktop acceptance against production
+        shell: bash
+        run: |
+          set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
           if [ -z "$CHROME" ]; then
-            echo 'No Chromium-compatible browser found on the runner.' >&2
+            echo 'No Chromium-compatible browser found.' >&2
             exit 1
           fi
-          echo "Using browser: $CHROME"
-
-          run_dump() {
-            local name="$1"
-            local size="$2"
-            local url="$3"
-            local profile
-            profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --disable-dev-shm-usage \
-              --disable-background-networking \
-              --disable-component-update \
-              --disable-default-apps \
-              --disable-extensions \
-              --disable-sync \
-              --metrics-recording-only \
-              --mute-audio \
-              --no-first-run \
-              --run-all-compositor-stages-before-draw \
-              --user-data-dir="$profile" \
-              --window-size="$size" \
-              --virtual-time-budget=50000 \
-              --dump-dom "$url" \
-              > "/tmp/${name}.html"
-            grep -Fq 'data-acceptance="pass"' "/tmp/${name}.html"
-            grep -Fq '"state": "pass"' "/tmp/${name}.html"
-          }
-
-          nonce="${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)"
-          run_dump live-mobile-full '390,844' "${BASE}/__acceptance.html?mode=full&verify=${nonce}"
-          run_dump live-desktop-full '1440,900' "${BASE}/__acceptance.html?mode=full&verify=${nonce}"
-
-          echo 'Mobile acceptance report:'
-          grep -A240 -F 'id="acceptance-status"' /tmp/live-mobile-full.html | tail -240 || true
-          echo 'Desktop acceptance report:'
-          grep -A240 -F 'id="acceptance-status"' /tmp/live-desktop-full.html | tail -240 || true
-
-      - name: Capture live mobile and desktop acceptance screenshots
-        shell: bash
-        run: |
-          set -euo pipefail
-          BASE='https://magireco-call-search-cn.pages.dev'
-          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
-
-          capture() {
-            local name="$1"
-            local size="$2"
-            local mode="$3"
-            local profile
-            profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --disable-dev-shm-usage \
-              --disable-background-networking \
-              --disable-component-update \
-              --disable-default-apps \
-              --disable-extensions \
-              --disable-sync \
-              --metrics-recording-only \
-              --mute-audio \
-              --no-first-run \
-              --run-all-compositor-stages-before-draw \
-              --user-data-dir="$profile" \
-              --window-size="$size" \
-              --virtual-time-budget=50000 \
-              --screenshot="/tmp/${name}.png" \
-              "${BASE}/__acceptance.html?mode=${mode}&verify=${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)"
-            test -s "/tmp/${name}.png"
-          }
-
-          capture live-mobile-relationship '390,844' relationship
-          capture live-mobile-height '390,844' height
-          capture live-desktop-relationship '1440,900' relationship
-          capture live-desktop-height '1440,900' height
+          BASE_URL='https://magireco-call-search-cn.pages.dev' \
+          CHROME_PATH="$CHROME" \
+          node scripts/smoke-neo11-v3.mjs | tee /tmp/neo11-v3-live-report.txt
+          grep -Fq '"state": "pass"' /tmp/neo11-v3-live-report.txt
 
       - name: Upload live production acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-production-acceptance-${{ github.sha }}
+          name: live-neo11-v3-${{ github.sha }}
           path: |
             /tmp/live-build-info.json
             /tmp/live-index.html
-            /tmp/live-acceptance-source.html
-            /tmp/live-site-correction-v2.js
-            /tmp/live-mobile-full.html
-            /tmp/live-desktop-full.html
-            /tmp/live-mobile-relationship.png
-            /tmp/live-mobile-height.png
-            /tmp/live-desktop-relationship.png
-            /tmp/live-desktop-height.png
+            /tmp/live-site-correction-v3.css
+            /tmp/live-site-correction-v3-network.js
+            /tmp/live-site-correction-v3-height.js
+            /tmp/neo11-v3-live-report.txt
+            /tmp/neo11-v3-mobile.png
+            /tmp/neo11-v3-desktop.png
           if-no-files-found: warn
           retention-days: 30
