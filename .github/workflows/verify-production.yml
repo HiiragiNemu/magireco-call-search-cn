@@ -5,7 +5,11 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/verify-production.yml
+      - public/index.html
+      - public/build-info.json
+      - public/myfile/site-correction-v2.css
+      - public/myfile/site-correction-v2.js
+      - public/__acceptance.html
   workflow_dispatch:
 
 permissions:
@@ -14,23 +18,27 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Wait for Cloudflare Pages to serve this release
+      - name: Wait for Cloudflare Pages to serve this accepted release
         shell: bash
         run: |
           set -euo pipefail
           BASE='https://magireco-call-search-cn.pages.dev'
-          RELEASE='mobile-overhaul-20260816'
-          ready=0
+          EXPECTED_RELEASE="$(python3 -c "import json; print(json.load(open('public/build-info.json', encoding='utf-8'))['release'])")"
+          if [ "$EXPECTED_RELEASE" != 'layout-correction-v2-20260816' ]; then
+            echo "Refusing to verify unexpected release: $EXPECTED_RELEASE" >&2
+            exit 1
+          fi
 
+          ready=0
           for attempt in $(seq 1 90); do
             nonce="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}-$(date +%s%N)"
-            echo "Deployment probe ${attempt}/90"
+            echo "Deployment probe ${attempt}/90 for ${EXPECTED_RELEASE}"
 
             if curl --fail --silent --show-error --location \
                 --connect-timeout 10 --max-time 30 \
@@ -38,19 +46,34 @@ jobs:
                 -H 'Pragma: no-cache' \
                 "${BASE}/build-info.json?verify=${nonce}" \
                 -o /tmp/live-build-info.json \
-              && grep -Fq '"release": "mobile-overhaul-20260816"' /tmp/live-build-info.json \
+              && grep -Fq "\"release\": \"${EXPECTED_RELEASE}\"" /tmp/live-build-info.json \
               && curl --fail --silent --show-error --location \
                 --connect-timeout 10 --max-time 30 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
                 "${BASE}/?verify=${nonce}" \
                 -o /tmp/live-index.html \
-              && grep -Fq 'data-build="mobile-overhaul-20260816"' /tmp/live-index.html \
+              && grep -Fq "data-build=\"${EXPECTED_RELEASE}\"" /tmp/live-index.html \
               && grep -Fq './myfile/site-overhaul.js' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v2.js' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v2.css' /tmp/live-index.html \
               && grep -Fq 'value="まどドラ">Magia Exedra' /tmp/live-index.html \
-              && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html; then
+              && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html \
+              && curl --fail --silent --show-error --location \
+                --connect-timeout 10 --max-time 30 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                "${BASE}/myfile/site-correction-v2.js?verify=${nonce}" \
+                -o /tmp/live-site-correction-v2.js \
+              && grep -Fq 'relationship-table-viewport' /tmp/live-site-correction-v2.js \
+              && grep -Fq 'height-chart-viewport-v2' /tmp/live-site-correction-v2.js \
+              && curl --fail --silent --show-error --location \
+                --connect-timeout 10 --max-time 30 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                "${BASE}/__acceptance.html?verify=${nonce}" \
+                -o /tmp/live-acceptance-source.html \
+              && grep -Fq "const EXPECTED_RELEASE = '${EXPECTED_RELEASE}';" /tmp/live-acceptance-source.html; then
               ready=1
-              echo "Cloudflare Pages is serving ${RELEASE}."
+              echo "Cloudflare Pages is serving ${EXPECTED_RELEASE}."
               break
             fi
 
@@ -62,55 +85,115 @@ jobs:
             echo 'Last build-info response:' >&2
             cat /tmp/live-build-info.json 2>/dev/null || true
             echo 'Last index markers:' >&2
-            grep -E 'data-build|site-overhaul|まどドラ' /tmp/live-index.html 2>/dev/null | head -20 || true
+            grep -E 'data-build|site-overhaul|site-correction-v2|まどドラ' /tmp/live-index.html 2>/dev/null | head -30 || true
             exit 1
           fi
 
-          nonce="${GITHUB_RUN_ID}-assets-$(date +%s%N)"
-          curl --fail --silent --show-error --location \
-            --connect-timeout 10 --max-time 30 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "${BASE}/myfile/site-overhaul.js?verify=${nonce}" \
-            -o /tmp/live-site-overhaul.js
-          grep -Fq 'relationship-scroll-hint' /tmp/live-site-overhaul.js
-          grep -Fq 'height-zoom-controls' /tmp/live-site-overhaul.js
-
-          curl --fail --silent --show-error --location \
-            --connect-timeout 10 --max-time 30 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "${BASE}/myfile/gradeOverrides.js?verify=${nonce}" \
-            -o /tmp/live-grade-overrides.js
-          grep -Fq "['瀬奈みこと', new Set(['中2', '中学生'])]" /tmp/live-grade-overrides.js
-          grep -Fq "['行方晶', new Set(['中3', '中学生'])]" /tmp/live-grade-overrides.js
-
-      - name: Run the mobile browser smoke test against the live site
+      - name: Run accepted browser behavior tests against the live site
         shell: bash
-        env:
-          LIVE_SITE: https://magireco-call-search-cn.pages.dev
         run: |
           set -euo pipefail
-          python3 <<'PY'
-          import os
-          from pathlib import Path
+          BASE='https://magireco-call-search-cn.pages.dev'
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME" ]; then
+            echo 'No Chromium-compatible browser found on the runner.' >&2
+            exit 1
+          fi
+          echo "Using browser: $CHROME"
 
-          source = Path('scripts/smoke-site.mjs').read_text(encoding='utf-8')
-          live_url = os.environ['LIVE_SITE'].rstrip('/') + '/?verify=' + os.environ['GITHUB_SHA'] + '-' + os.environ['GITHUB_RUN_ID']
-          old = "await send('Page.navigate', { url: 'http://127.0.0.1:8000/' });"
-          new = f"await send('Page.navigate', {{ url: {live_url!r} }});"
-          if source.count(old) != 1:
-              raise SystemExit('The smoke-test navigation target could not be replaced safely.')
-          Path('/tmp/smoke-live.mjs').write_text(source.replace(old, new, 1), encoding='utf-8')
-          PY
-          node /tmp/smoke-live.mjs
+          run_dump() {
+            local name="$1"
+            local size="$2"
+            local url="$3"
+            local profile
+            profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --disable-dev-shm-usage \
+              --disable-background-networking \
+              --disable-component-update \
+              --disable-default-apps \
+              --disable-extensions \
+              --disable-sync \
+              --metrics-recording-only \
+              --mute-audio \
+              --no-first-run \
+              --run-all-compositor-stages-before-draw \
+              --user-data-dir="$profile" \
+              --window-size="$size" \
+              --virtual-time-budget=35000 \
+              --dump-dom "$url" \
+              > "/tmp/${name}.html"
+            grep -Fq 'data-acceptance="pass"' "/tmp/${name}.html"
+            grep -Fq '"state": "pass"' "/tmp/${name}.html"
+          }
 
-      - name: Upload live mobile verification screenshots
+          nonce="${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)"
+          run_dump live-mobile-full '390,844' "${BASE}/__acceptance.html?mode=full&verify=${nonce}"
+          run_dump live-desktop-full '1440,900' "${BASE}/__acceptance.html?mode=full&verify=${nonce}"
+
+          echo 'Mobile acceptance report:'
+          grep -A120 -F 'id="acceptance-status"' /tmp/live-mobile-full.html | tail -120 || true
+          echo 'Desktop acceptance report:'
+          grep -A120 -F 'id="acceptance-status"' /tmp/live-desktop-full.html | tail -120 || true
+
+      - name: Capture live mobile and desktop acceptance screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://magireco-call-search-cn.pages.dev'
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
+
+          capture() {
+            local name="$1"
+            local size="$2"
+            local mode="$3"
+            local profile
+            profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
+            "$CHROME" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --disable-dev-shm-usage \
+              --disable-background-networking \
+              --disable-component-update \
+              --disable-default-apps \
+              --disable-extensions \
+              --disable-sync \
+              --metrics-recording-only \
+              --mute-audio \
+              --no-first-run \
+              --run-all-compositor-stages-before-draw \
+              --user-data-dir="$profile" \
+              --window-size="$size" \
+              --virtual-time-budget=35000 \
+              --screenshot="/tmp/${name}.png" \
+              "${BASE}/__acceptance.html?mode=${mode}&verify=${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)"
+            test -s "/tmp/${name}.png"
+          }
+
+          capture live-mobile-relationship '390,844' relationship
+          capture live-mobile-height '390,844' height
+          capture live-desktop-relationship '1440,900' relationship
+          capture live-desktop-height '1440,900' height
+
+      - name: Upload live production acceptance evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-mobile-verification-${{ github.sha }}
+          name: live-production-acceptance-${{ github.sha }}
           path: |
-            /tmp/mobile-relationship.png
-            /tmp/mobile-height.png
             /tmp/live-build-info.json
             /tmp/live-index.html
-          if-no-files-found: error
-          retention-days: 14
+            /tmp/live-acceptance-source.html
+            /tmp/live-site-correction-v2.js
+            /tmp/live-mobile-full.html
+            /tmp/live-desktop-full.html
+            /tmp/live-mobile-relationship.png
+            /tmp/live-mobile-height.png
+            /tmp/live-desktop-relationship.png
+            /tmp/live-desktop-height.png
+          if-no-files-found: warn
+          retention-days: 30
