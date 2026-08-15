@@ -8,6 +8,7 @@ on:
       - public/**
       - scripts/smoke-neo11-v3.mjs
       - scripts/smoke-height-guide-v4.mjs
+      - scripts/smoke-integrated-tools-v5.mjs
       - .github/workflows/verify-production.yml
   workflow_dispatch:
 
@@ -17,24 +18,24 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Wait for Cloudflare Pages to serve height-guide V4
+      - name: Wait for Cloudflare Pages to serve integrated tools V5
         shell: bash
         run: |
           set -euo pipefail
           BASE='https://magireco-call-search-cn.pages.dev'
           EXPECTED_RELEASE="$(python3 -c "import json; print(json.load(open('public/build-info.json', encoding='utf-8'))['release'])")"
-          test "$EXPECTED_RELEASE" = 'neo11-height-guide-v4-20260816'
+          test "$EXPECTED_RELEASE" = 'integrated-tools-v5-20260816'
 
           ready=0
-          for attempt in $(seq 1 90); do
+          for attempt in $(seq 1 120); do
             nonce="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}-$(date +%s%N)"
-            echo "Deployment probe ${attempt}/90 for ${EXPECTED_RELEASE}"
+            echo "Deployment probe ${attempt}/120 for ${EXPECTED_RELEASE}"
             if curl --fail --silent --show-error --location \
                 --connect-timeout 10 --max-time 30 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
@@ -47,38 +48,52 @@ jobs:
                 -H 'Pragma: no-cache' \
                 "${BASE}/?verify=${nonce}" -o /tmp/live-index.html \
               && grep -Fq "data-build=\"${EXPECTED_RELEASE}\"" /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v3.css' /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v3-network.js' /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v3-height.js' /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v4.css' /tmp/live-index.html \
-              && grep -Fq './myfile/site-correction-v4.js' /tmp/live-index.html \
-              && grep -Fq 'value="まどドラ">Magia Exedra' /tmp/live-index.html \
-              && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html; then
-              ready=1
-              break
+              && grep -Fq './myfile/tools-suite.js' /tmp/live-index.html \
+              && grep -Fq './myfile/triple-tap-filter.js' /tmp/live-index.html \
+              && grep -Fq '三击图标可以筛选称呼/被称呼的对象' /tmp/live-index.html \
+              && ! grep -Fq 'ondblclick=' /tmp/live-index.html \
+              && ! grep -Fq 'https://magireco-chara-search.vercel.app/mdkOCR/index.html' /tmp/live-index.html; then
+              page_ok=1
+              for route in story.html attendance.html runes.html; do
+                if ! curl --fail --silent --show-error --location \
+                    --connect-timeout 10 --max-time 30 \
+                    -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                    "${BASE}/${route}?verify=${nonce}" -o "/tmp/live-${route}" \
+                  || ! grep -Fq "data-build=\"${EXPECTED_RELEASE}\"" "/tmp/live-${route}"; then
+                  page_ok=0
+                  break
+                fi
+              done
+              if [ "$page_ok" -eq 1 ]; then ready=1; break; fi
             fi
             sleep 10
           done
 
           if [ "$ready" -ne 1 ]; then
-            echo 'Cloudflare Pages did not expose height-guide V4 within the verification window.' >&2
+            echo 'Cloudflare Pages did not expose integrated tools V5 within the verification window.' >&2
             cat /tmp/live-build-info.json 2>/dev/null || true
-            grep -E 'data-build|site-correction-v[34]|まどドラ' /tmp/live-index.html 2>/dev/null | head -60 || true
+            grep -E 'data-build|tools-suite|triple-tap|三击' /tmp/live-index.html 2>/dev/null | head -80 || true
             exit 1
           fi
 
           for asset in \
-            site-correction-v3.css \
-            site-correction-v3-network.js \
-            site-correction-v3-height.js \
-            site-correction-v4.css \
-            site-correction-v4.js; do
+            myfile/tools-suite.css \
+            myfile/tools-suite.js \
+            myfile/triple-tap-filter.js \
+            myfile/story-app.js \
+            myfile/attendance-app.js \
+            myfile/runes-app.js \
+            data/character-catalog.json \
+            data/translation-audit-v5.json \
+            mdkOCR/mdk.traineddata \
+            mdkOCR/mdm.traineddata \
+            mdkOCR/madokarunes.jpg; do
+            output="/tmp/live-$(echo "$asset" | tr '/' '-')"
             curl --fail --silent --show-error --location \
-              --connect-timeout 10 --max-time 30 \
+              --connect-timeout 10 --max-time 60 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "${BASE}/myfile/${asset}?verify=${GITHUB_RUN_ID}-$(date +%s%N)" \
-              -o "/tmp/live-${asset}"
-            test -s "/tmp/live-${asset}"
+              "${BASE}/${asset}?verify=${GITHUB_RUN_ID}-$(date +%s%N)" -o "$output"
+            test -s "$output"
           done
 
       - name: Install browser driver
@@ -87,7 +102,7 @@ jobs:
           set -euo pipefail
           npm install --no-save --no-package-lock puppeteer-core@24.16.0
 
-      - name: Run Neo11 regression and height-guide V4 acceptance against production
+      - name: Run complete regression and integrated-tool acceptance against production
         shell: bash
         run: |
           set -euo pipefail
@@ -96,34 +111,40 @@ jobs:
             echo 'No Chromium-compatible browser found.' >&2
             exit 1
           fi
-          BASE_URL='https://magireco-call-search-cn.pages.dev' \
-          CHROME_PATH="$CHROME" \
-          node scripts/smoke-neo11-v3.mjs | tee /tmp/neo11-v3-live-report.txt
+
+          BASE_URL='https://magireco-call-search-cn.pages.dev' CHROME_PATH="$CHROME" \
+            node scripts/smoke-neo11-v3.mjs | tee /tmp/neo11-v3-live-report.txt
           grep -Fq '"state": "pass"' /tmp/neo11-v3-live-report.txt
 
-          BASE_URL='https://magireco-call-search-cn.pages.dev' \
-          CHROME_PATH="$CHROME" \
-          node scripts/smoke-height-guide-v4.mjs | tee /tmp/height-guide-v4-live-report.txt
+          BASE_URL='https://magireco-call-search-cn.pages.dev' CHROME_PATH="$CHROME" \
+            node scripts/smoke-height-guide-v4.mjs | tee /tmp/height-guide-v4-live-report.txt
           grep -Fq '"state": "pass"' /tmp/height-guide-v4-live-report.txt
+
+          BASE_URL='https://magireco-call-search-cn.pages.dev' CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
+            node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/integrated-v5-live-report.txt
+          grep -Fq '"state": "pass"' /tmp/integrated-v5-live-report.txt
 
       - name: Upload live production acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-height-guide-v4-${{ github.sha }}
+          name: live-integrated-tools-v5-${{ github.sha }}
           path: |
             /tmp/live-build-info.json
             /tmp/live-index.html
-            /tmp/live-site-correction-v3.css
-            /tmp/live-site-correction-v3-network.js
-            /tmp/live-site-correction-v3-height.js
-            /tmp/live-site-correction-v4.css
-            /tmp/live-site-correction-v4.js
+            /tmp/live-story.html
+            /tmp/live-attendance.html
+            /tmp/live-runes.html
             /tmp/neo11-v3-live-report.txt
+            /tmp/height-guide-v4-live-report.txt
+            /tmp/integrated-v5-live-report.txt
             /tmp/neo11-v3-mobile.png
             /tmp/neo11-v3-desktop.png
-            /tmp/height-guide-v4-live-report.txt
             /tmp/height-guide-v4-mobile.png
             /tmp/height-guide-v4-desktop.png
+            /tmp/integrated-v5-root-mobile.png
+            /tmp/integrated-v5-story-mobile.png
+            /tmp/integrated-v5-attendance-mobile.png
+            /tmp/integrated-v5-runes-desktop.png
           if-no-files-found: warn
           retention-days: 30
