@@ -155,8 +155,26 @@ async function testRunes(browser) {
   });
   assert(Object.values(assets).every((item) => item.ok), 'OCR traineddata and reference image are served locally', assets);
 
-  const input = await page.$('#runesFile');
-  await input.uploadFile(path.join(REPO_ROOT, 'public', 'mdkOCR', 'madokarunes.jpg'));
+  await page.evaluate(async () => {
+    const source = new Image();
+    source.src = `./mdkOCR/madokarunes.jpg?sample=${Date.now()}`;
+    await source.decode();
+    const crop = document.createElement('canvas');
+    crop.width = 512;
+    crop.height = 400;
+    const context = crop.getContext('2d');
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, crop.width, crop.height);
+    context.imageSmoothingEnabled = false;
+    context.drawImage(source, 7, 6, 64, 50, 0, 0, crop.width, crop.height);
+    const blob = await new Promise((resolve) => crop.toBlob(resolve, 'image/png'));
+    const file = new File([blob], 'known-rune-A.png', { type: 'image/png' });
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    const input = document.getElementById('runesFile');
+    input.files = transfer.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
   await page.waitForFunction(() => !document.getElementById('runesRecognize').disabled, { timeout: 10000 });
   await page.click('#runesRecognize');
   await page.waitForFunction(() => {

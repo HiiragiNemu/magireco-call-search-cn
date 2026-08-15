@@ -63,7 +63,6 @@
     workerModel = model;
     try {
       await worker.setParameters({
-        tessedit_pageseg_mode: global.Tesseract.PSM?.SINGLE_LINE ?? '7',
         preserve_interword_spaces: '1'
       });
     } catch (error) {
@@ -187,6 +186,20 @@
       if (serial !== recognizeSerial) return;
       const current = await getWorker(nodes.runesModel.value);
       if (serial !== recognizeSerial) return;
+      const aspect = canvas.width / Math.max(1, canvas.height);
+      const psm = aspect < 1.5
+        ? (global.Tesseract.PSM?.SINGLE_CHAR ?? '10')
+        : aspect < 14
+          ? (global.Tesseract.PSM?.SINGLE_LINE ?? '7')
+          : (global.Tesseract.PSM?.SPARSE_TEXT ?? '11');
+      try {
+        await current.setParameters({
+          tessedit_pageseg_mode: psm,
+          preserve_interword_spaces: '1'
+        });
+      } catch (error) {
+        console.warn('无法切换 OCR 分页模式，将使用模型默认值。', error);
+      }
       const result = await current.recognize(canvas);
       if (serial !== recognizeSerial) return;
       const text = cleanText(result?.data?.text || '');
