@@ -1,0 +1,62 @@
+name: Repair final height-guide V4 acceptance
+
+on:
+  push:
+    branches:
+      - fix/height-guide-v4-20260816
+    paths:
+      - .github/workflows/repair-height-guide-v4-final-acceptance.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-guide-v4-20260816
+          fetch-depth: 0
+
+      - name: Test desktop visible-character semantics instead of impossible wrapper width
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/smoke-height-guide-v4.mjs')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              "await page.setViewport({ width: 6000, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });",
+              "await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });",
+              1
+          )
+          old = """  assert(fitAudit.visible === fitAudit.points,
+    'desktop scale can place every character inside the visible ruler span', fitAudit);
+  assert(fitAudit.displayed === fitAudit.points,
+    'when desktop can see every character, every character line is displayed', fitAudit);
+  assert(fitAudit.viewportScrollWidth <= fitAudit.viewportClientWidth + 4,
+    'desktop all-visible state does not require horizontal scrolling', fitAudit);"""
+          new = """  assert(fitAudit.visible >= 10,
+    'desktop viewport contains multiple fully visible characters', fitAudit);
+  assert(fitAudit.displayed === fitAudit.visible,
+    'desktop default mode displays a ruler-connected line for every fully visible character', fitAudit);"""
+          if old not in text:
+              raise SystemExit('Final desktop assertion block not found.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          node --check scripts/smoke-height-guide-v4.mjs
+
+      - name: Commit corrected acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/smoke-height-guide-v4.mjs
+          git commit -m 'Verify desktop lines for every character visible between rulers'
+          git push origin HEAD:fix/height-guide-v4-20260816
