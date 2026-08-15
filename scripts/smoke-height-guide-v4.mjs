@@ -191,7 +191,7 @@ async function mobileTest(browser) {
 
 async function desktopTest(browser) {
   const page = await browser.newPage();
-  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });
+  await page.setViewport({ width: 6000, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${BASE_URL}/?v4-desktop=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -203,7 +203,6 @@ async function desktopTest(browser) {
   await page.waitForSelector('.height-chart-surface-v2[data-v4-enhanced="true"]');
   await page.select('[data-height-guide-mode-v4]', 'visible-nearest');
   await page.evaluate(() => {
-    window.__MAGIRECO_CORRECTION_V2__.applyHeightScale(0.82, 'manual');
     const viewport = document.querySelector('.height-chart-viewport-v2');
     viewport.scrollLeft = 0;
     viewport.dispatchEvent(new Event('scroll'));
