@@ -33,3 +33,14 @@ https://magireco-chara-search.cf/call.html
 おまけ（ガチャシミュレーター）(gachasim.html)
 https://magireco-chara-search.cf/gachasim.html
 
+
+## 当前生产维护方式
+
+- 正式入口：`public/index.html`
+- 正式站点：`https://magireco-call-search-cn.pages.dev/`
+- 数据更新：仅人工静态更新；不再从已停止维护的上游自动同步。
+- 本地一致性检查：`node scripts/validate-site.js`
+- GitHub Actions：`.github/workflows/site-validation.yml`
+- 完整回滚：`rollback/pre-mobile-overhaul-20260815`
+- 仅保留核心筛选与年级修复：`rollback/core-fixes-only-20260815`
+- 保留移动端修复但撤销 HTML 结构整理：`rollback/pre-html-normalization-20260815`
