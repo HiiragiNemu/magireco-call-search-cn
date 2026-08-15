@@ -124,7 +124,7 @@
 		</p>
 		<fieldset class="calloption">
 			<legend>双击选项</legend>
-			<form id="callcate">
+			<form id="callFilterForm">
 				<label><input type="radio" name="vector" value="call">称呼</label>
 				<label><input type="radio" name="vector" value="called">被称呼</label>
 				<label><input type="radio" name="vector" value="OR" checked="checked">双方</label>
@@ -220,7 +220,7 @@
 				<label class="girlbox otherotherColor" data-kana="しづき ひとみ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="志筑仁美" value="志筑仁美 (志筑仁美 / Shizuki Hitomi)"><br>志筑仁美</label>
 				<label class="girlbox otherotherColor" data-kana="かみじょう きょうすけ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="上条恭介" value="上条恭介 (上条恭介 / Kamijo Kyosuke)"><br>上条恭介</label>
 				<label class="girlbox otherotherColor" data-kana="かなめ じゅんこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="鹿目詢子" value="鹿目询子 (鹿目詢子 / Kaname Junko)"><br>鹿目询子</label>
-				<label class="girlbox otherotherColor" data-kana="さおとめ せんせい"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="早乙女和子" value="早乙女和子 (早乙女和子 / Saotome Kazuko)"><br>早乙女和子</label>
+				<label class="girlbox otherotherColor" data-kana="さおとめ かずこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="早乙女和子" value="早乙女和子 (早乙女和子 / Saotome Kazuko)"><br>早乙女和子</label>
 
 				<label class="girlbox umeOtherColor leftm" data-kana="やよい かのこ"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="矢宵かのこ" value="矢宵鹿乃子 (矢宵かのこ / Yayoi Kanoko)"><br>矢宵鹿乃子★</label>
 				<label class="girlbox umeOtherColor" data-kana="くるみ まなか"><input type="checkbox" class="MagicalChk"   ondblclick="mgirlCallNarrow(this)" name="chara" id="胡桃まなか" value="胡桃爱香 (胡桃まなか / Kurumi Manaka)"><br>胡桃爱香★</label>
@@ -660,6 +660,8 @@
 			<script src="./myfile/ndownReset.js"></script>
 			<!-- 读取角色属性配置文件(javascript对象) -->
 			<script src="./myfile/charaAt.js"></script>
+			<script src="./myfile/gradeOverrides.js"></script>
+			<script src="./myfile/grade-classification.js"></script>
 			<!-- 读取属性筛选的javascript方法 -->
 			<script src="./myfile/mgirlAtSearch.js"></script>
 
@@ -721,79 +723,8 @@
 document.getElementById("mgreset").disabled = true;
 document.getElementById("mgreset2").disabled = true;
 
-// 1. 创建一个映射表，用于将数据中的年级文本转换为HTML复选框的value值
-const gradeMap = {
-    '初一': '中1',
-    '初二': '中2',
-    '初三': '中3',
-    '高一': '高1',
-    '高二': '高2',
-    '高三': '高3'
-};
+// 年级分类由 grade-classification.js 按明确数据和人工核验表处理。
 
-// 2. 第一次遍历：基于callTable的“学年”数据，添加精确年级和分类
-for (let [longKey, value] of callTable) {
-    const match = longKey.match(/\(([^/]+)/);
-    if (!match || !match[1]) continue;
-    const baseJapaneseName = match[1].trim();
-
-    // 从数据中获取年级，并使用 .trim() 清理前后可能存在的空格
-    const grade = value.get("学年") ? value.get("学年").trim() : null;
-    
-    if (grade && grade !== "-") {
-        const attributesToAdd = new Set();
-
-        // ★ 核心修正：使用映射表将 "初一" 转换为 "中1"
-        if (gradeMap[grade]) {
-            attributesToAdd.add(gradeMap[grade]);
-        }
-        
-        // 添加更广泛的分类
-        if (grade.startsWith('小')) {
-            attributesToAdd.add('小学生');
-        } else if (grade.startsWith('中') || grade.startsWith('初')) {
-            attributesToAdd.add('中学生');
-        } else if (grade.startsWith('高')) {
-            attributesToAdd.add('高校生');
-        } else if (["大1", "浪人生", "专门生", "成人?"].includes(grade)) {
-             attributesToAdd.add('その他');
-        } else if (grade === '?') {
-            attributesToAdd.add('学年不明');
-        }
-
-        // 将这些属性添加到charaAttribute中所有匹配的角色版本上
-        for (const charaAtKey of charaAttribute.keys()) {
-            if (charaAtKey.startsWith(baseJapaneseName)) {
-                const attrSet = charaAttribute.get(charaAtKey);
-                if (attrSet) {
-                    attributesToAdd.forEach(attr => attrSet.add(attr));
-                }
-            }
-        }
-    }
-}
-
-// 3. 第二次遍历：基于charaAttribute中已有的学校信息，补充“中学生”和“高中生”分类
-// 这是为了确保即使callTable中没有学年信息，只要有学校信息就能被正确分类
-for (let [charaName, attributes] of charaAttribute) {
-    let isJuniorHigh = attributes.has("中学生");
-    let isSeniorHigh = attributes.has("高校生");
-
-    if (!isJuniorHigh || !isSeniorHigh) {
-        for (const attr of attributes) {
-            // 检查是否为初中
-            if (!isJuniorHigh && attr.includes("中学")) {
-                attributes.add("中学生");
-                isJuniorHigh = true;
-            }
-            // 检查是否为高中（包括高等学校、学院等）
-            if (!isSeniorHigh && (attr.includes("高等") || attr.includes("学院"))) {
-                attributes.add("高校生");
-                isSeniorHigh = true;
-            }
-        }
-    }
-}
 
 				//通过函数调用用电子表格创建的称呼哈希文件。
 				//网络用变量声明

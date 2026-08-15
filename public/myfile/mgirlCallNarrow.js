@@ -1,60 +1,66 @@
-function mgirlCallNarrow(ele) {
-    //callTableのデータを元に呼びかけの有無で魔法少女boxの絞り込みをするファンクション
-    //ダブルクリックで呼び出す。
-    //ダブルクリックしたアイコンの魔法少女名をget
-    const id = ele.id;
-    //一旦全boxを隠す。
-    allHidden();
-    //本人は表示して選択する。
-    document.getElementById(id).parentNode.style.display = "inline";
-    document.getElementById(id).checked = true;
+// Double-click filtering based on outgoing and incoming call relationships.
+(function (global) {
+    'use strict';
 
-    let callRange = document.getElementById("callcate").vector.value;
-
-    if (callRange === "call") { //呼んだ事がある相手を表示
-        for (let girlname of callTable.get(id).keys()) {
-            if (document.getElementById(girlname) != null) {
-                document.getElementById(girlname).parentNode.style.display = "inline";
-            }
-        }
-
-    } else if (callRange === "called") { //呼ばれたことがある相手を表示
-        for (let girlname of calledMap.get(id)) {
-            document.getElementById(girlname).parentNode.style.display = "inline";
-        }
-
-    } else if (callRange === "mutual") { //相互に呼んだことがある相手を表示
-        for (let callname of callTable.get(id).keys()) {
-            if (calledMap.get(id).has(callname)) {
-                document.getElementById(callname).parentNode.style.display = "inline";
-            }
-        }
-
-    } else if (callRange === "OR") { //呼ぶ呼ばれるどちらかの相手を表示
-        let orname = new Set(callTable.get(id).keys());
-        for (let data of calledMap.get(id)) { orname.add(data); } //呼ばれたデータを追加
-        for (let girlname of orname) {
-            if (document.getElementById(girlname) != null) {
-                document.getElementById(girlname).parentNode.style.display = "inline";
-            }
-        }
-
-    } else if (callRange === "oneWay") { //呼ぶ呼ばれる片方だけの相手を表示
-        const orname = new Set(callTable.get(id).keys());
-        for (let data of calledMap.get(id)) { orname.add(data); } //ORを作る
-        const callnames = new Set(callTable.get(id).keys());
-        const andname = new Set();
-        for (let data of calledMap.get(id)) { //ANDを作る
-            if (callnames.has(data)) {
-                andname.add(data);
-            }
-        }
-        for (let girlname of orname) { // OR - AND = 排他(どちらか片方)
-            if (!andname.has(girlname) && document.getElementById(girlname) != null) {
-                document.getElementById(girlname).parentNode.style.display = "inline";
-            }
-        }
+    function getMode() {
+        const form = document.getElementById('callFilterForm') ||
+            document.querySelector('form[name="callcate"], form.calloption');
+        const checked = form ? form.querySelector('input[name="vector"]:checked') : null;
+        return checked ? checked.value : 'OR';
     }
-    //絞り込みリセットボタンを強調する
-    ndownResetButternCaution();
-}
+
+    function getOutgoing(canonical) {
+        const key = global.MagirecoNameUtils.findCallTableKey(canonical);
+        if (!key || typeof callTable === 'undefined') return new Set();
+        return global.MagirecoNameUtils.relationTargets(callTable.get(key));
+    }
+
+    function showCanonical(canonical) {
+        const checkbox = global.MagirecoNameUtils.findCheckboxByAnyName(canonical);
+        if (!checkbox) return;
+        const label = checkbox.closest('label.girlbox');
+        if (label) label.style.display = '';
+    }
+
+    function mgirlCallNarrow(element) {
+        const checkbox = element && element.matches && element.matches('input[name="chara"]')
+            ? element
+            : element && element.querySelector
+                ? element.querySelector('input[name="chara"]')
+                : null;
+        if (!checkbox) return;
+
+        const canonical = global.MagirecoNameUtils.canonicalFromCheckbox(checkbox);
+        const outgoing = getOutgoing(canonical);
+        const incomingMap = global.MagirecoNameUtils.buildCalledMap();
+        const incoming = incomingMap.get(canonical) || new Set();
+        const mode = getMode();
+        const result = new Set([canonical]);
+
+        if (mode === 'call') {
+            outgoing.forEach((name) => result.add(name));
+        } else if (mode === 'called') {
+            incoming.forEach((name) => result.add(name));
+        } else if (mode === 'mutual') {
+            outgoing.forEach((name) => {
+                if (incoming.has(name)) result.add(name);
+            });
+        } else if (mode === 'oneWay') {
+            const union = new Set([...outgoing, ...incoming]);
+            union.forEach((name) => {
+                if (!(outgoing.has(name) && incoming.has(name))) result.add(name);
+            });
+        } else {
+            outgoing.forEach((name) => result.add(name));
+            incoming.forEach((name) => result.add(name));
+        }
+
+        if (typeof global.allHidden === 'function') global.allHidden();
+        result.forEach(showCanonical);
+        checkbox.checked = true;
+
+        if (typeof ndownResetButternCaution === 'function') ndownResetButternCaution();
+    }
+
+    global.mgirlCallNarrow = mgirlCallNarrow;
+})(window);
