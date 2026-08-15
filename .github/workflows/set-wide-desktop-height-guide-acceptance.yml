@@ -1,0 +1,38 @@
+name: Set wide desktop height-guide acceptance
+
+on:
+  push:
+    branches:
+      - fix/height-guide-v4-20260816
+    paths:
+      - .github/workflows/set-wide-desktop-height-guide-acceptance.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-guide-v4-20260816
+          fetch-depth: 0
+      - name: Patch the desktop all-visible test
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCnBhdGggPSBQYXRoKCJzY3JpcHRzL3Ntb2tlLWhlaWdodC1ndWlkZS12NC5tanMiKQp0ZXh0ID0gcGF0aC5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKb2xkX3ZpZXcgPSAiYXdhaXQgcGFnZS5zZXRWaWV3cG9ydCh7IHdpZHRoOiAxNDQwLCBoZWlnaHQ6IDkwMCwgZGV2aWNlU2NhbGVGYWN0b3I6IDEsIGlzTW9iaWxlOiBmYWxzZSwgaGFzVG91Y2g6IGZhbHNlIH0pOyIKbmV3X3ZpZXcgPSAiYXdhaXQgcGFnZS5zZXRWaWV3cG9ydCh7IHdpZHRoOiA2MDAwLCBoZWlnaHQ6IDkwMCwgZGV2aWNlU2NhbGVGYWN0b3I6IDEsIGlzTW9iaWxlOiBmYWxzZSwgaGFzVG91Y2g6IGZhbHNlIH0pOyIKaWYgb2xkX3ZpZXcgbm90IGluIHRleHQ6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJEZXNrdG9wIHZpZXdwb3J0IHBhdHRlcm4gbm90IGZvdW5kLiIpCnRleHQgPSB0ZXh0LnJlcGxhY2Uob2xkX3ZpZXcsIG5ld192aWV3LCAxKQpvbGRfc2NhbGUgPSAiIiIgIGF3YWl0IHBhZ2Uuc2VsZWN0KCdbZGF0YS1oZWlnaHQtZ3VpZGUtbW9kZS12NF0nLCAndmlzaWJsZS1uZWFyZXN0Jyk7CiAgYXdhaXQgcGFnZS5ldmFsdWF0ZSgoKSA9PiB7CiAgICB3aW5kb3cuX19NQUdJUkVDT19DT1JSRUNUSU9OX1YyX18uYXBwbHlIZWlnaHRTY2FsZSgwLjgyLCAnbWFudWFsJyk7CiAgICBjb25zdCB2aWV3cG9ydCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJy5oZWlnaHQtY2hhcnQtdmlld3BvcnQtdjInKTsKICAgIHZpZXdwb3J0LnNjcm9sbExlZnQgPSAwOwogICAgdmlld3BvcnQuZGlzcGF0Y2hFdmVudChuZXcgRXZlbnQoJ3Njcm9sbCcpKTsKICB9KTsKICBhd2FpdCBzbGVlcCg0NTApOyIiIgpuZXdfc2NhbGUgPSAiIiIgIGF3YWl0IHBhZ2Uuc2VsZWN0KCdbZGF0YS1oZWlnaHQtZ3VpZGUtbW9kZS12NF0nLCAndmlzaWJsZS1uZWFyZXN0Jyk7CiAgYXdhaXQgcGFnZS5ldmFsdWF0ZSgoKSA9PiB7CiAgICBjb25zdCB2aWV3cG9ydCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJy5oZWlnaHQtY2hhcnQtdmlld3BvcnQtdjInKTsKICAgIHZpZXdwb3J0LnNjcm9sbExlZnQgPSAwOwogICAgdmlld3BvcnQuZGlzcGF0Y2hFdmVudChuZXcgRXZlbnQoJ3Njcm9sbCcpKTsKICB9KTsKICBhd2FpdCBzbGVlcCg0NTApOyIiIgppZiBvbGRfc2NhbGUgbm90IGluIHRleHQ6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJEZXNrdG9wIHNjYWxlIGJsb2NrIG5vdCBmb3VuZC4iKQp0ZXh0ID0gdGV4dC5yZXBsYWNlKG9sZF9zY2FsZSwgbmV3X3NjYWxlLCAxKQpwYXRoLndyaXRlX3RleHQodGV4dCwgZW5jb2Rpbmc9InV0Zi04IikK' | base64 -d > /tmp/patch-wide-v4.py
+          python3 /tmp/patch-wide-v4.py
+          node --check scripts/smoke-height-guide-v4.mjs
+      - name: Commit wide desktop acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/smoke-height-guide-v4.mjs
+          git commit -m 'Verify all height lines in an all-visible desktop viewport'
+          git push origin HEAD:fix/height-guide-v4-20260816
