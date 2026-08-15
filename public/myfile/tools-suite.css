@@ -12,7 +12,6 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
 body.suite-page {
   margin: 0;
   color: var(--suite-text);
