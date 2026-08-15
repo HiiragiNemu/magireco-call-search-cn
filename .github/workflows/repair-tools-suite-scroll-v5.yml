@@ -1,0 +1,44 @@
+name: Repair V5 root scroll isolation
+
+on:
+  push:
+    branches:
+      - fix/integrated-tools-v5-20260816
+    paths:
+      - .github/workflows/repair-tools-suite-scroll-v5.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/integrated-tools-v5-20260816
+          fetch-depth: 0
+      - name: Scope scrolling behaviour to the standalone tool pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('public/myfile/tools-suite.css')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('* { box-sizing: border-box; }\nhtml { scroll-behavior: smooth; }\nbody.suite-page {', '* { box-sizing: border-box; }\nbody.suite-page {', 1)
+          if 'html { scroll-behavior: smooth; }' in text:
+              raise SystemExit('Global smooth-scroll rule remains.')
+          path.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit scroll isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/tools-suite.css
+          git commit -m 'Keep the shared tool styles from altering root-page scrolling'
+          git push origin HEAD:fix/integrated-tools-v5-20260816
