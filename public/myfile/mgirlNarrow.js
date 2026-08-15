@@ -2,13 +2,25 @@
 (function (global) {
     'use strict';
 
-    function normalizeSearchText(value) {
+    function katakanaToHiragana(value) {
         return String(value || '')
+            .replace(/[ァ-ヶ]/g, (character) => String.fromCharCode(character.charCodeAt(0) - 0x60))
+            .replace(/ヷ/g, 'わ゙')
+            .replace(/ヸ/g, 'ゐ゙')
+            .replace(/ヹ/g, 'ゑ゙')
+            .replace(/ヺ/g, 'を゙')
+            .replace(/ヽ/g, 'ゝ')
+            .replace(/ヾ/g, 'ゞ');
+    }
+
+    function normalizeSearchText(value) {
+        return katakanaToHiragana(String(value || '')
             .normalize('NFKC')
             .replace(/\u3000/g, ' ')
+            .toLocaleLowerCase())
+            .normalize('NFKC')
             .replace(/\s+/g, ' ')
-            .trim()
-            .toLocaleLowerCase();
+            .trim();
     }
 
     function getLabel(checkbox) {
