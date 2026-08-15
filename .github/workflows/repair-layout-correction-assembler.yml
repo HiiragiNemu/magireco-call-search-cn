@@ -1,0 +1,36 @@
+name: Repair layout correction assembler
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/repair-layout-correction-assembler.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use the verified base64 chunks in exact order
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/apply-layout-correction-v2.yml')
+          text = path.read_text(encoding='utf-8')
+          old = 'cat .automation/layout-correction-v2/js-*.b64 | base64 -d | gzip -d > public/myfile/site-correction-v2.js'
+          new = 'cat .automation/layout-correction-v2/js-part-01.b64 .automation/layout-correction-v2/js-part-02.b64 .automation/layout-correction-v2/js-02.b64 .automation/layout-correction-v2/js-03.b64 | base64 -d | gzip -d > public/myfile/site-correction-v2.js'
+          if old not in text:
+              raise SystemExit('Assembler anchor not found.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          rm -f .github/workflows/repair-layout-correction-assembler.yml
+          git config user.name 'HiiragiNemu'
+          git config user.email '128921071+HiiragiNemu@users.noreply.github.com'
+          git add -A
+          git commit -m 'Repair correction workflow chunk assembly'
+          git push origin HEAD:main
