@@ -125,10 +125,53 @@
         return canonical;
     }
 
+    const selectionOrderTracker = {
+        order: [],
+        bound: false,
+        key(checkbox) {
+            return checkbox.id || checkbox.value;
+        },
+        bind() {
+            if (this.bound) return;
+            this.bound = true;
+            document.addEventListener('change', (event) => {
+                const checkbox = event.target;
+                if (!checkbox || typeof checkbox.matches !== 'function'
+                    || !checkbox.matches('input.MagicalChk[name="chara"]')) return;
+                const key = this.key(checkbox);
+                const existing = this.order.indexOf(key);
+                if (existing !== -1) this.order.splice(existing, 1);
+                if (checkbox.checked) this.order.push(key);
+            }, true);
+        },
+        orderedChecked() {
+            const checked = U.getCharacterCheckboxes().filter((checkbox) => checkbox.checked);
+            const active = new Set(checked.map((checkbox) => this.key(checkbox)));
+            this.order = this.order.filter((key) => active.has(key));
+            for (const checkbox of checked) {
+                const key = this.key(checkbox);
+                if (!this.order.includes(key)) this.order.push(key);
+            }
+            const rank = new Map(this.order.map((key, index) => [key, index]));
+            return checked
+                .map((checkbox, domIndex) => ({
+                    checkbox,
+                    domIndex,
+                    rank: rank.get(this.key(checkbox)) ?? Number.MAX_SAFE_INTEGER
+                }))
+                .sort((left, right) => left.rank - right.rank || left.domIndex - right.domIndex)
+                .map((entry) => entry.checkbox);
+        }
+    };
+    selectionOrderTracker.bind();
+    global.getSelectedCharacterCheckboxesInOrder = function getSelectedCharacterCheckboxesInOrder() {
+        selectionOrderTracker.bind();
+        return selectionOrderTracker.orderedChecked();
+    };
+
     function getSelectedEntries() {
         const keyIndex = U.buildCallTableKeyIndex();
-        return U.getCharacterCheckboxes()
-            .filter((checkbox) => checkbox.checked)
+        return global.getSelectedCharacterCheckboxesInOrder()
             .map((checkbox) => {
                 const canonical = U.canonicalFromCheckbox(checkbox);
                 return {
