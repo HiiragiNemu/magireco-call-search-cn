@@ -1,0 +1,112 @@
+name: Repair height-guide V4 desktop acceptance
+
+on:
+  push:
+    branches:
+      - fix/height-guide-v4-20260816
+    paths:
+      - .github/workflows/repair-height-guide-v4-desktop-acceptance.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-guide-v4-20260816
+          fetch-depth: 0
+
+      - name: Test the exact desktop requirement
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/smoke-height-guide-v4.mjs')
+          text = path.read_text(encoding='utf-8')
+          old = """  await page.click('.height-zoom-controls-v2 button');
+  await sleep(450);
+  await page.select('[data-height-guide-mode-v4]', 'visible-nearest');
+  await sleep(300);
+
+  const fitAudit = await page.evaluate(() => {
+    const viewport = document.querySelector('.height-chart-viewport-v2');
+    const plot = document.querySelector('.height-plot-v2');
+    const left = document.querySelector('.height-y-axis-left-v3').getBoundingClientRect().right;
+    const right = document.querySelector('.height-y-axis-right-v3').getBoundingClientRect().left;
+    const points = [...plot.querySelectorAll('.height-point-v2')];
+    const visible = points.filter((point) => {
+      const rect = point.getBoundingClientRect();
+      return rect.left >= left + 1 && rect.right <= right - 1;
+    });
+    const displayed = [...plot.querySelectorAll('.height-point-guide-v2')]
+      .filter((guide) => getComputedStyle(guide).display !== 'none');
+    return {
+      points: points.length,
+      visible: visible.length,
+      displayed: displayed.length,
+      viewportScrollWidth: viewport.scrollWidth,
+      viewportClientWidth: viewport.clientWidth
+    };
+  });
+  assert(fitAudit.visible === fitAudit.points && fitAudit.displayed === fitAudit.points,
+    'when desktop fit shows all characters, every character line is displayed', fitAudit);
+  assert(fitAudit.viewportScrollWidth <= fitAudit.viewportClientWidth + 4,
+    'desktop fit does not require horizontal scrolling', fitAudit);"""
+          new = """  await page.select('[data-height-guide-mode-v4]', 'visible-nearest');
+  await page.evaluate(() => {
+    window.__MAGIRECO_CORRECTION_V2__.applyHeightScale(0.82, 'manual');
+    const viewport = document.querySelector('.height-chart-viewport-v2');
+    viewport.scrollLeft = 0;
+    viewport.dispatchEvent(new Event('scroll'));
+  });
+  await sleep(450);
+
+  const fitAudit = await page.evaluate(() => {
+    const viewport = document.querySelector('.height-chart-viewport-v2');
+    const plot = document.querySelector('.height-plot-v2');
+    const left = document.querySelector('.height-y-axis-left-v3').getBoundingClientRect().right;
+    const right = document.querySelector('.height-y-axis-right-v3').getBoundingClientRect().left;
+    const points = [...plot.querySelectorAll('.height-point-v2')];
+    const visible = points.filter((point) => {
+      const rect = point.getBoundingClientRect();
+      return rect.left >= left + 1 && rect.right <= right - 1;
+    });
+    const displayed = [...plot.querySelectorAll('.height-point-guide-v2')]
+      .filter((guide) => getComputedStyle(guide).display !== 'none');
+    return {
+      points: points.length,
+      visible: visible.length,
+      displayed: displayed.length,
+      viewportScrollWidth: viewport.scrollWidth,
+      viewportClientWidth: viewport.clientWidth,
+      scale: window.__MAGIRECO_CORRECTION_V2__.heightState.scale
+    };
+  });
+  assert(fitAudit.visible === fitAudit.points,
+    'desktop scale can place every character inside the visible ruler span', fitAudit);
+  assert(fitAudit.displayed === fitAudit.points,
+    'when desktop can see every character, every character line is displayed', fitAudit);
+  assert(fitAudit.viewportScrollWidth <= fitAudit.viewportClientWidth + 4,
+    'desktop all-visible state does not require horizontal scrolling', fitAudit);"""
+          if old not in text:
+              raise SystemExit('Desktop acceptance block not found.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          node --check scripts/smoke-height-guide-v4.mjs
+
+      - name: Commit corrected desktop acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/smoke-height-guide-v4.mjs
+          git commit -m 'Test all height lines when every desktop character is visible'
+          git push origin HEAD:fix/height-guide-v4-20260816
