@@ -27,7 +27,9 @@ const buildInfo = JSON.parse(read(buildInfoPath));
 const release = String(buildInfo.release || '');
 const V2_RELEASE = 'layout-correction-v2-20260816';
 const V3_RELEASE = 'neo11-mobile-interaction-v3-20260816';
-const isV3 = release === V3_RELEASE;
+const V4_RELEASE = 'neo11-height-guide-v4-20260816';
+const isV4 = release === V4_RELEASE;
+const isV3 = release === V3_RELEASE || isV4;
 const isV2Family = release === V2_RELEASE || isV3;
 
 function count(pattern) {
@@ -193,6 +195,44 @@ if (isV3) {
     }
 }
 
-if (![V2_RELEASE, V3_RELEASE].includes(release)) fail(`unexpected release identifier: ${release}`);
+if (isV4) {
+    const refs = [
+        './myfile/site-correction-v4.css',
+        './myfile/site-correction-v4.js'
+    ];
+    for (const value of refs) {
+        if (!html.includes(value)) fail(`V4 production reference missing: ${value}`);
+    }
+    for (const pattern of [/site-correction-v4\.css/gi, /site-correction-v4\.js/gi]) {
+        if (count(pattern) !== 1) fail(`V4 production asset must be loaded exactly once: ${pattern}`);
+    }
+    for (const file of [
+        'public/myfile/site-correction-v4.css',
+        'public/myfile/site-correction-v4.js',
+        'scripts/smoke-height-guide-v4.mjs'
+    ]) requireFile(file);
+
+    const v4Css = read('public/myfile/site-correction-v4.css');
+    const v4Js = read('public/myfile/site-correction-v4.js');
+    for (const marker of [
+        'height-guide-mode-v4',
+        'data-v4-direction',
+        'height-guide-status-v4'
+    ]) if (!v4Css.includes(marker)) fail(`V4 CSS marker missing: ${marker}`);
+    for (const marker of [
+        'visible-nearest',
+        'all-left',
+        'all-right',
+        'rulerGeometry',
+        'scrollTarget',
+        'callResultSection',
+        'heightChartContainer'
+    ]) if (!v4Js.includes(marker)) fail(`V4 JavaScript marker missing: ${marker}`);
+    if (buildInfo.rollbackBeforeHeightGuideV4 !== 'rollback/pre-height-guide-v4-20260816') {
+        fail('V4 rollback pointer missing or incorrect');
+    }
+}
+
+if (![V2_RELEASE, V3_RELEASE, V4_RELEASE].includes(release)) fail(`unexpected release identifier: ${release}`);
 if (failed) process.exit(1);
 console.log(`Static validation passed for ${release}: ${ids.length} unique IDs, ${characterCount} characters, ${localRefs.length} local references.`);
