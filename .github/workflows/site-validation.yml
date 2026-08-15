@@ -6,6 +6,7 @@ on:
       - main
       - fix/neo11-mobile-v3-20260816
       - fix/height-guide-v4-20260816
+      - fix/integrated-tools-v5-20260816
   pull_request:
 
 permissions:
@@ -14,7 +15,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -49,9 +50,20 @@ jobs:
               scripts/smoke-height-guide-v4.mjs
             )
           fi
+          if [ -f public/myfile/tools-suite.js ]; then
+            files+=(
+              public/myfile/tools-suite.js
+              public/myfile/triple-tap-filter.js
+              public/myfile/story-app.js
+              public/myfile/attendance-app.js
+              public/myfile/runes-app.js
+              scripts/smoke-integrated-tools-v5.mjs
+            )
+          fi
           for file in "${files[@]}"; do
             node --check "$file"
           done
+          python3 -m py_compile scripts/audit-translations-v5.py
 
           python3 <<'PY'
           from pathlib import Path
