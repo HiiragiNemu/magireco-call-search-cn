@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="在浏览器内识别魔法少女小圆与魔法纪录中的魔女文字。">
+  <title>魔女文字解读</title>
+  <link rel="stylesheet" href="./myfile/tools-suite.css">
+</head>
+<body class="suite-page" data-build="integrated-tools-v5-20260816" data-suite-tool="runes">
+  <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
+  <main class="suite-shell" data-suite-nav-anchor>
+    <header class="suite-hero">
+      <span class="suite-badge">魔法少女小圆 / 魔法纪录 · 浏览器本地 OCR</span>
+      <h1>魔女文字解读</h1>
+      <p>选择只保留魔女文字区域的图片，将符文识别为拉丁字母。图片不会上传至本站服务器，识别在当前浏览器内完成。</p>
+    </header>
+
+    <section class="suite-panel runes-layout" aria-labelledby="runes-input-title">
+      <div>
+        <h2 id="runes-input-title">识别图片</h2>
+        <div id="runesDrop" class="runes-drop">
+          <div>
+            <p><strong>点击选择图片，或把图片拖到这里</strong></p>
+            <p>建议先裁掉无关画面，只保留一行或一组魔女文字；文字与背景反差越大越好。</p>
+            <input id="runesFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" class="suite-input">
+          </div>
+        </div>
+        <div class="suite-grid two" style="margin-top:12px">
+          <label class="suite-field" for="runesModel">
+            <span>文字体系</span>
+            <select id="runesModel" class="suite-select">
+              <option value="mdk">标准魔女文字（MadokaRunes）</option>
+              <option value="mdm">音乐体魔女文字（MadokaMusical）</option>
+            </select>
+          </label>
+          <label class="suite-field" for="runesPreprocess">
+            <span>图像预处理</span>
+            <select id="runesPreprocess" class="suite-select">
+              <option value="auto">自动判断明暗并增强对比</option>
+              <option value="contrast">灰度高对比</option>
+              <option value="invert">反色高对比</option>
+              <option value="original">保持原图</option>
+            </select>
+          </label>
+        </div>
+        <div class="suite-actions">
+          <button id="runesRecognize" type="button" class="suite-button primary" disabled>开始识别</button>
+          <button id="runesClear" type="button" class="suite-button secondary">清除</button>
+        </div>
+        <div id="runesStatus" class="suite-status" role="status" aria-live="polite">请选择一张图片。</div>
+        <progress id="runesProgress" class="runes-progress" max="1" value="0" hidden></progress>
+      </div>
+      <div>
+        <h2>图像预览</h2>
+        <div class="suite-notice" id="runesPreviewEmpty">尚未选择图片。</div>
+        <img id="runesPreview" class="runes-preview" alt="待识别图片预览" hidden>
+        <canvas id="runesCanvas" hidden></canvas>
+      </div>
+    </section>
+
+    <section class="suite-panel" aria-labelledby="runes-result-title">
+      <h2 id="runes-result-title">识别结果</h2>
+      <textarea id="runesOutput" class="suite-textarea" spellcheck="false" placeholder="识别出的拉丁字母会显示在这里"></textarea>
+      <div class="suite-actions">
+        <button id="runesCopy" type="button" class="suite-button secondary">复制结果</button>
+      </div>
+      <p class="suite-notice">OCR 结果可能受字体变体、透视、压缩噪点和背景纹理影响。建议尝试切换预处理方式或重新裁切图片。</p>
+    </section>
+
+    <section class="suite-panel" aria-labelledby="runes-reference-title">
+      <h2 id="runes-reference-title">已登记魔女文字对照表</h2>
+      <img class="runes-reference" src="./mdkOCR/madokarunes.jpg" alt="MadokaRunes 魔女文字与拉丁字母对照表">
+      <p class="suite-notice">本地模型：<a href="./mdkOCR/mdk.traineddata">MadokaRunes</a>、<a href="./mdkOCR/mdm.traineddata">MadokaMusical</a>。识别引擎由 Tesseract.js 在浏览器中运行。</p>
+    </section>
+
+    <footer class="suite-footer">本站仅保存识别模型和页面代码，不保存用户选择的图片。</footer>
+  </main>
+  <script src="./myfile/tools-suite.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" crossorigin="anonymous"></script>
+  <script src="./myfile/runes-app.js"></script>
+</body>
+</html>
