@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="在魔法纪录故事数据中按角色、故事类型和关键词检索。">
+  <title>魔法纪录角色故事搜索</title>
+  <link rel="stylesheet" href="./myfile/tools-suite.css">
+</head>
+<body class="suite-page" data-build="integrated-tools-v5-20260816" data-suite-tool="story">
+  <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
+  <main class="suite-shell" data-suite-nav-anchor>
+    <header class="suite-hero">
+      <span class="suite-badge">魔法纪录 · 中文整合工具</span>
+      <h1>角色故事搜索</h1>
+      <p>按角色、故事类型、出场组合和剧透关键词检索原有故事数据库。查询仍由原数据服务提供；本页负责中文界面、角色映射和现代化展示。</p>
+    </header>
+
+    <section class="suite-panel" aria-labelledby="story-options-title">
+      <h2 id="story-options-title">搜索条件</h2>
+      <div class="suite-grid two">
+        <div class="suite-field">
+          <span>故事类型</span>
+          <div id="storyTypeOptions" class="suite-checks"></div>
+          <div class="suite-actions">
+            <button type="button" class="suite-button secondary" id="storySelectAll">全选类型</button>
+            <button type="button" class="suite-button secondary" id="storyClearTypes">清空类型</button>
+          </div>
+        </div>
+        <div class="suite-field">
+          <span>多角色组合方式</span>
+          <div class="suite-checks" id="storyLogicOptions">
+            <label title="所有已选角色同时出场"><input type="radio" name="storyLogic" value="AND" checked>AND：全部出场</label>
+            <label title="任意一个已选角色出场"><input type="radio" name="storyLogic" value="OR">OR：任一出场</label>
+            <label title="分别只检索每个已选角色单独出场的故事"><input type="radio" name="storyLogic" value="EXCLUSIVE">EXCLUSIVE：分别单独</label>
+            <label title="故事出场人物仅包含已选角色"><input type="radio" name="storyLogic" value="ONLY">ONLY：仅已选角色</label>
+          </div>
+          <div class="suite-checks">
+            <label><input type="checkbox" id="storySpoiler">显示各话概要／剧透</label>
+            <label><input type="checkbox" id="storyVariants" checked>选择★角色时包含其他版本</label>
+          </div>
+          <label class="suite-field" for="storyKeyword">
+            <span>概要关键词</span>
+            <input class="suite-input" id="storyKeyword" type="search" spellcheck="false" placeholder="多个关键词以空格分隔，按 AND 检索">
+            <small>可以不选角色而只搜索关键词；输入关键词时会自动显示概要。</small>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="suite-panel" aria-labelledby="story-character-title">
+      <h2 id="story-character-title">选择角色</h2>
+      <div class="suite-grid two">
+        <label class="suite-field" for="storyCharacterFilter">
+          <span>角色名筛选</span>
+          <input class="suite-input" id="storyCharacterFilter" type="search" spellcheck="false" placeholder="中文、日文、假名或罗马音；空格表示 OR">
+        </label>
+        <div class="suite-field">
+          <span>已选角色</span>
+          <div class="suite-selected-summary" id="storySelectedSummary" aria-live="polite">尚未选择角色</div>
+          <button type="button" class="suite-button secondary" id="storyClearCharacters">取消全部角色选择</button>
+        </div>
+      </div>
+      <p id="storyCharacterCount" class="suite-status">正在加载角色目录…</p>
+      <div id="storyCharacterGrid" class="suite-character-grid" aria-label="角色列表"></div>
+      <div class="suite-actions">
+        <button type="button" class="suite-button primary" id="storySearchButton">搜索故事</button>
+        <button type="button" class="suite-button secondary" id="storyResetButton">重置全部条件</button>
+      </div>
+      <div id="storyStatus" class="suite-status" role="status" aria-live="polite">请选择至少一种故事类型，并选择角色或填写概要关键词。</div>
+    </section>
+
+    <section id="storyResults" class="suite-panel suite-results" aria-labelledby="story-results-title">
+      <h2 id="story-results-title">搜索结果</h2>
+      <div id="storyResultsBody" class="suite-notice">尚未执行搜索。</div>
+    </section>
+
+    <footer class="suite-footer">数据采用静态界面整合与原有故事查询服务；本站不自动覆盖人工中文映射。</footer>
+  </main>
+  <script src="./myfile/tools-suite.js"></script>
+  <script src="./myfile/story-app.js"></script>
+</body>
+</html>
