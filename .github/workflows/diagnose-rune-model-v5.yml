@@ -1,0 +1,75 @@
+name: Diagnose V5 rune model
+
+on:
+  push:
+    branches:
+      - fix/integrated-tools-v5-20260816
+    paths:
+      - .github/workflows/diagnose-rune-model-v5.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download model and reference chart
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/tessdata /tmp/rune-debug
+          curl --fail --show-error --location --retry 5 --retry-all-errors \
+            'https://magireco-chara-search.vercel.app/mdkOCR/mdk.traineddata' \
+            -o /tmp/tessdata/mdk.traineddata
+          curl --fail --show-error --location --retry 5 --retry-all-errors \
+            'https://magireco-chara-search.vercel.app/mdkOCR/madokarunes.jpg' \
+            -o /tmp/rune-debug/madokarunes.jpg
+          file /tmp/tessdata/mdk.traineddata /tmp/rune-debug/madokarunes.jpg | tee /tmp/rune-debug/file.txt
+
+      - name: Inspect traineddata and run native OCR matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr imagemagick
+          {
+            tesseract --version
+            echo '--- traineddata components ---'
+            combine_tessdata -d /tmp/tessdata/mdk.traineddata || true
+            echo '--- image geometry ---'
+            identify /tmp/rune-debug/madokarunes.jpg
+          } 2>&1 | tee /tmp/rune-debug/model-info.txt
+
+          magick /tmp/rune-debug/madokarunes.jpg -crop 505x60+0+0 +repage -resize 300% /tmp/rune-debug/top-row.png
+          magick /tmp/rune-debug/madokarunes.jpg -crop 72x62+0+0 +repage -resize 600% /tmp/rune-debug/first-rune.png
+          magick /tmp/rune-debug/top-row.png -colorspace Gray -contrast-stretch 2%x2% /tmp/rune-debug/top-row-contrast.png
+          magick /tmp/rune-debug/top-row.png -colorspace Gray -threshold 70% /tmp/rune-debug/top-row-threshold.png
+
+          : > /tmp/rune-debug/ocr-matrix.txt
+          for image in top-row.png top-row-contrast.png top-row-threshold.png first-rune.png; do
+            for oem in 0 1 2 3; do
+              for psm in 6 7 10 11 13; do
+                echo "=== $image OEM=$oem PSM=$psm ===" >> /tmp/rune-debug/ocr-matrix.txt
+                timeout 20s tesseract "/tmp/rune-debug/$image" stdout \
+                  --tessdata-dir /tmp/tessdata -l mdk --oem "$oem" --psm "$psm" \
+                  2>> /tmp/rune-debug/ocr-matrix.txt \
+                  | tr '\n' ' ' >> /tmp/rune-debug/ocr-matrix.txt || true
+                echo >> /tmp/rune-debug/ocr-matrix.txt
+              done
+            done
+          done
+          cat /tmp/rune-debug/ocr-matrix.txt
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rune-model-diagnostic-${{ github.sha }}
+          path: /tmp/rune-debug
+          if-no-files-found: error
+          retention-days: 7
