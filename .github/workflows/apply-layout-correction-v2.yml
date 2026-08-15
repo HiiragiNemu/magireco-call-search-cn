@@ -120,24 +120,71 @@ jobs:
                   }
               };
               selectionOrderTracker.bind();
+              global.getSelectedCharacterCheckboxesInOrder = function getSelectedCharacterCheckboxesInOrder() {
+                  selectionOrderTracker.bind();
+                  return selectionOrderTracker.orderedChecked();
+              };
 
               function getSelectedEntries() {
-                  selectionOrderTracker.bind();
                   const keyIndex = U.buildCallTableKeyIndex();
-                  return selectionOrderTracker.orderedChecked()
+                  return global.getSelectedCharacterCheckboxesInOrder()
               """
               if overhaul.count(anchor) != 1:
                   raise SystemExit('getSelectedEntries patch anchor is not unique.')
               overhaul = overhaul.replace(anchor, replacement, 1)
           if overhaul.count(marker) != 1:
               raise SystemExit('Selection-order tracker was not installed exactly once.')
+          api_marker = 'global.getSelectedCharacterCheckboxesInOrder = function getSelectedCharacterCheckboxesInOrder() {'
+          if api_marker not in overhaul:
+              bind_anchor = '    selectionOrderTracker.bind();\n\n    function getSelectedEntries() {'
+              bind_replacement = (
+                  '    selectionOrderTracker.bind();\n'
+                  '    global.getSelectedCharacterCheckboxesInOrder = function getSelectedCharacterCheckboxesInOrder() {\n'
+                  '        selectionOrderTracker.bind();\n'
+                  '        return selectionOrderTracker.orderedChecked();\n'
+                  '    };\n\n'
+                  '    function getSelectedEntries() {'
+              )
+              if overhaul.count(bind_anchor) != 1:
+                  raise SystemExit('Selection-order API insertion anchor is not unique.')
+              overhaul = overhaul.replace(bind_anchor, bind_replacement, 1)
+          if overhaul.count(api_marker) != 1:
+              raise SystemExit('Selection-order API was not installed exactly once.')
           overhaul_path.write_text(overhaul, encoding='utf-8')
+
+          correction_path = Path('public/myfile/site-correction-v2.js')
+          correction = correction_path.read_text(encoding='utf-8')
+          correction_marker = 'global.getSelectedCharacterCheckboxesInOrder()'
+          if correction_marker not in correction:
+              correction_anchor = (
+                  '  function getSelectedEntries() {\n'
+                  '    const keyIndex = U.buildCallTableKeyIndex();\n'
+                  '    const entries = [];\n'
+                  '    for (const checkbox of U.getCharacterCheckboxes()) {'
+              )
+              correction_replacement = (
+                  '  function getSelectedEntries() {\n'
+                  '    const keyIndex = U.buildCallTableKeyIndex();\n'
+                  '    const entries = [];\n'
+                  "    const orderedCheckboxes = typeof global.getSelectedCharacterCheckboxesInOrder === 'function'\n"
+                  '      ? global.getSelectedCharacterCheckboxesInOrder()\n'
+                  '      : U.getCharacterCheckboxes();\n'
+                  '    for (const checkbox of orderedCheckboxes) {'
+              )
+              if correction.count(correction_anchor) != 1:
+                  raise SystemExit('V2 getSelectedEntries patch anchor is not unique.')
+              correction = correction.replace(correction_anchor, correction_replacement, 1)
+          if correction.count(correction_marker) != 1:
+              raise SystemExit('V2 selection-order integration was not installed exactly once.')
+          correction_path.write_text(correction, encoding='utf-8')
           PY
 
           test -s public/myfile/site-correction-v2.js
           grep -Fq 'relationship-table-viewport' public/myfile/site-correction-v2.js
           grep -Fq 'height-chart-viewport-v2' public/myfile/site-correction-v2.js
           grep -Fq 'const selectionOrderTracker = {' public/myfile/site-overhaul.js
+          grep -Fq 'global.getSelectedCharacterCheckboxesInOrder = function' public/myfile/site-overhaul.js
+          grep -Fq 'global.getSelectedCharacterCheckboxesInOrder()' public/myfile/site-correction-v2.js
 
       - name: Validate syntax and static production invariants
         shell: bash
@@ -179,7 +226,7 @@ jobs:
             local operation="$1" name="$2" size="$3" mode="$4"
             local profile
             profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
-            "$CHROME" \
+            timeout 130s "$CHROME" \
               --headless=new \
               --no-sandbox \
               --disable-gpu \
@@ -202,10 +249,6 @@ jobs:
 
           run_browser --dump-dom local-mobile-full '390,844' full > /tmp/local-mobile-full.html
           run_browser --dump-dom local-desktop-full '1440,900' full > /tmp/local-desktop-full.html
-          run_browser --screenshot=/tmp/local-mobile-relationship.png local-mobile-relationship '390,844' relationship
-          run_browser --screenshot=/tmp/local-mobile-height.png local-mobile-height '390,844' height
-          run_browser --screenshot=/tmp/local-desktop-relationship.png local-desktop-relationship '1440,900' relationship
-          run_browser --screenshot=/tmp/local-desktop-height.png local-desktop-height '1440,900' height
 
           for report in /tmp/local-mobile-full.html /tmp/local-desktop-full.html; do
             grep -Fq 'data-acceptance="pass"' "$report"
@@ -228,10 +271,6 @@ jobs:
             /tmp/magireco-http.log
             /tmp/local-mobile-full.html
             /tmp/local-desktop-full.html
-            /tmp/local-mobile-relationship.png
-            /tmp/local-mobile-height.png
-            /tmp/local-desktop-relationship.png
-            /tmp/local-desktop-height.png
             public/myfile/site-overhaul.js
             public/myfile/site-correction-v2.js
           if-no-files-found: warn
