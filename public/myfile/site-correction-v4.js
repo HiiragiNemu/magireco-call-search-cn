@@ -86,7 +86,7 @@
 
       if (help) {
         help.classList.add('height-guide-help-v4');
-        help.textContent = '默认只显示当前横向视野内的角色，并让每条线连接离角色最近的左/右厘米尺；可切换为所有角色统一连接左尺或右尺。';
+        help.textContent = '默认只显示当前横向视野内完整可见的角色，并让每条线连接离角色最近的左/右厘米尺；可切换为所有角色统一连接左尺或右尺。';
       }
     } else {
       const select = wrapper.querySelector('select');
@@ -227,8 +227,8 @@
       const pointCenterScreen = pointRect.left + pointRect.width / 2;
       const pointX = px(pair.point.style.left);
       const pointRadius = Math.max(1, pointRect.width / (2 * geometry.scale));
-      const intersectsVisiblePlot = pointRect.right > geometry.leftScreen + 1
-        && pointRect.left < geometry.rightScreen - 1;
+      const intersectsVisiblePlot = pointRect.left >= geometry.leftScreen + 1
+        && pointRect.right <= geometry.rightScreen - 1;
 
       let direction;
       let rulerX;
@@ -258,7 +258,7 @@
     const status = document.querySelector('.height-guide-status-v4');
     if (status) {
       if (state.mode === 'visible-nearest') {
-        status.textContent = `当前横向视野：${visiblePointCount} 个角色，${displayedGuideCount} 条线连接最近厘米尺`;
+        status.textContent = `当前横向视野：${visiblePointCount} 个完整可见角色，${displayedGuideCount} 条线连接最近厘米尺`;
       } else {
         status.textContent = `${modeLabel(state.mode)}：已显示 ${displayedGuideCount}/${state.pairs.length} 条线`;
       }
