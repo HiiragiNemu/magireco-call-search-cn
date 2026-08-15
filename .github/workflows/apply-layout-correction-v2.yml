@@ -1,0 +1,214 @@
+name: Apply layout correction V2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/apply-layout-correction-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Assemble corrective renderer and browser acceptance test
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .automation/layout-correction-v2/js-*.b64 | base64 -d | gzip -d > public/myfile/site-correction-v2.js
+          cat .automation/layout-correction-v2/smoke-*.b64 | base64 -d | gzip -d > scripts/smoke-correction-v2.mjs
+
+      - name: Patch production entry and validation metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+
+          release = 'layout-correction-v2-20260816'
+          index_path = Path('public/index.html')
+          index = index_path.read_text(encoding='utf-8')
+          css_anchor = '\t<link rel="stylesheet" href="./myfile/site-overhaul.css">'
+          js_anchor = '<script src="./myfile/site-overhaul.js"></script>'
+          css_ref = '\t<link rel="stylesheet" href="./myfile/site-correction-v2.css">'
+          js_ref = '<script src="./myfile/site-correction-v2.js"></script>'
+          if index.count(css_anchor) != 1 or index.count(js_anchor) != 1:
+              raise SystemExit('Production anchors are not unique; refusing an unsafe patch.')
+          if css_ref not in index:
+              index = index.replace(css_anchor, css_anchor + '\n' + css_ref, 1)
+          if js_ref not in index:
+              index = index.replace(js_anchor, js_anchor + '\n' + js_ref, 1)
+          index = index.replace('data-build="mobile-overhaul-20260816"', f'data-build="{release}"')
+          if f'data-build="{release}"' not in index:
+              raise SystemExit('Build marker was not updated.')
+          index_path.write_text(index, encoding='utf-8')
+
+          info_path = Path('public/build-info.json')
+          info = json.loads(info_path.read_text(encoding='utf-8'))
+          info['release'] = release
+          info['rollbackRejectedMobileOverhaul'] = 'rollback/rejected-mobile-overhaul-20260816'
+          info_path.write_text(json.dumps(info, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          validate_path = Path('scripts/validate-site.js')
+          validate = validate_path.read_text(encoding='utf-8')
+          validate = validate.replace('data-build="mobile-overhaul-20260816"', f'data-build="{release}"')
+          if "'./myfile/site-correction-v2.css'" not in validate:
+              validate = validate.replace("    './myfile/site-overhaul.css',", "    './myfile/site-overhaul.css',\n    './myfile/site-correction-v2.css',", 1)
+          if "'./myfile/site-correction-v2.js'" not in validate:
+              validate = validate.replace("    './myfile/site-overhaul.js',", "    './myfile/site-overhaul.js',\n    './myfile/site-correction-v2.js',", 1)
+          count_anchor = "if (count(/site-overhaul\.js/gi) !== 1) fail('site-overhaul.js must be loaded exactly once.');"
+          count_line = "if (count(/site-correction-v2\.js/gi) !== 1) fail('site-correction-v2.js must be loaded exactly once.');"
+          if count_line not in validate:
+              validate = validate.replace(count_anchor, count_anchor + '\n' + count_line, 1)
+          if "    'public/myfile/site-correction-v2.css'," not in validate:
+              validate = validate.replace("    'public/myfile/site-overhaul.css',", "    'public/myfile/site-overhaul.css',\n    'public/myfile/site-correction-v2.css',", 1)
+          if "    'public/myfile/site-correction-v2.js'," not in validate:
+              validate = validate.replace("    'public/myfile/site-overhaul.js',", "    'public/myfile/site-overhaul.js',\n    'public/myfile/site-correction-v2.js',", 1)
+          validate_path.write_text(validate, encoding='utf-8')
+          PY
+
+          cat > .github/workflows/site-validation.yml <<'YAML'
+          name: Validate static site
+
+          on:
+            push:
+              branches:
+                - main
+            pull_request:
+
+          permissions:
+            contents: read
+
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              timeout-minutes: 20
+              steps:
+                - uses: actions/checkout@v4
+                - name: Validate HTML, resources and JavaScript syntax
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    node scripts/validate-site.js
+                    for file in                       public/myfile/myCommon.js                       public/myfile/mgirlNarrow.js                       public/myfile/mgirlCallNarrow.js                       public/myfile/mgirlAtSearch.js                       public/myfile/gradeOverrides.js                       public/myfile/grade-classification.js                       public/myfile/site-overhaul.js                       public/myfile/site-correction-v2.js                       scripts/smoke-correction-v2.mjs; do
+                      node --check "$file"
+                    done
+                - name: Run mobile and desktop browser acceptance locally
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    python3 -m http.server 8000 --directory public >/tmp/magireco-http.log 2>&1 &
+                    server_pid=$!
+                    trap 'kill $server_pid 2>/dev/null || true' EXIT
+                    for attempt in $(seq 1 40); do
+                      if curl --fail --silent http://127.0.0.1:8000/ >/dev/null; then break; fi
+                      sleep 0.25
+                    done
+                    TEST_URL=http://127.0.0.1:8000 node scripts/smoke-correction-v2.mjs
+          YAML
+          sed -i 's/^          //' .github/workflows/site-validation.yml
+
+          cat > .github/workflows/verify-production.yml <<'YAML'
+          name: Verify production deployment
+
+          on:
+            push:
+              branches:
+                - main
+              paths:
+                - public/**
+                - scripts/smoke-correction-v2.mjs
+                - .github/workflows/verify-production.yml
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          jobs:
+            verify:
+              runs-on: ubuntu-latest
+              timeout-minutes: 25
+              steps:
+                - uses: actions/checkout@v4
+                - name: Wait for Cloudflare Pages to serve layout correction V2
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    base='https://magireco-call-search-cn.pages.dev'
+                    release='layout-correction-v2-20260816'
+                    ready=0
+                    for attempt in $(seq 1 90); do
+                      nonce="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}-$(date +%s%N)"
+                      echo "Deployment probe ${attempt}/90"
+                      if curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30                            -H 'Cache-Control: no-cache, no-store, max-age=0'                            "${base}/build-info.json?verify=${nonce}" -o /tmp/live-build-info.json                         && grep -Fq "\"release\": \"${release}\"" /tmp/live-build-info.json                         && curl --fail --silent --show-error --location --connect-timeout 10 --max-time 30                            -H 'Cache-Control: no-cache, no-store, max-age=0'                            "${base}/?verify=${nonce}" -o /tmp/live-index.html                         && grep -Fq "data-build=\"${release}\"" /tmp/live-index.html                         && grep -Fq './myfile/site-correction-v2.css' /tmp/live-index.html                         && grep -Fq './myfile/site-correction-v2.js' /tmp/live-index.html                         && grep -Fq 'value="まどドラ">Magia Exedra' /tmp/live-index.html                         && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html; then
+                        ready=1
+                        break
+                      fi
+                      sleep 10
+                    done
+                    if [ "$ready" -ne 1 ]; then
+                      cat /tmp/live-build-info.json 2>/dev/null || true
+                      exit 1
+                    fi
+                    nonce="${GITHUB_RUN_ID}-assets-$(date +%s%N)"
+                    curl --fail --silent --show-error --location                       -H 'Cache-Control: no-cache, no-store, max-age=0'                       "${base}/myfile/site-correction-v2.js?verify=${nonce}"                       -o /tmp/live-site-correction-v2.js
+                    grep -Fq '__MAGIRECO_CORRECTION_V2__' /tmp/live-site-correction-v2.js
+                    grep -Fq 'height-point-guide-v2' /tmp/live-site-correction-v2.js
+                    grep -Fq 'physics:' /tmp/live-site-correction-v2.js
+                - name: Run live mobile and desktop browser acceptance
+                  shell: bash
+                  env:
+                    TEST_URL: https://magireco-call-search-cn.pages.dev
+                  run: |
+                    set -euo pipefail
+                    node scripts/smoke-correction-v2.mjs
+                - name: Upload live acceptance evidence
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: live-layout-correction-v2-${{ github.sha }}
+                    path: |
+                      /tmp/mobile-relationship-v2.png
+                      /tmp/mobile-height-v2.png
+                      /tmp/desktop-relationship-v2.png
+                      /tmp/live-build-info.json
+                      /tmp/live-index.html
+                    if-no-files-found: error
+                    retention-days: 14
+          YAML
+          sed -i 's/^          //' .github/workflows/verify-production.yml
+
+      - name: Validate and run browser acceptance before publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-site.js
+          node --check public/myfile/site-correction-v2.js
+          node --check scripts/smoke-correction-v2.mjs
+          python3 -m http.server 8000 --directory public >/tmp/magireco-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:8000/ >/dev/null; then break; fi
+            sleep 0.25
+          done
+          TEST_URL=http://127.0.0.1:8000 node scripts/smoke-correction-v2.mjs
+
+      - name: Commit tested correction to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/apply-layout-correction-v2.yml
+          rm -rf .automation/layout-correction-v2
+          git config user.name 'HiiragiNemu'
+          git config user.email '128921071+HiiragiNemu@users.noreply.github.com'
+          git add -A
+          git commit -m 'Correct relation and height visualizations across mobile and desktop'
+          git push origin HEAD:main
