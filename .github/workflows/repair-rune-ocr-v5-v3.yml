@@ -1,0 +1,102 @@
+name: Repair V5 rune OCR acceptance V3
+
+on:
+  push:
+    branches:
+      - fix/integrated-tools-v5-20260816
+    paths:
+      - .github/workflows/repair-rune-ocr-v5-v3.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/integrated-tools-v5-20260816
+          fetch-depth: 0
+
+      - name: Patch OCR implementation and known-rune sample
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          app_path = Path('public/myfile/runes-app.js')
+          lines = app_path.read_text(encoding='utf-8').splitlines()
+          page_mode_lines = [i for i, line in enumerate(lines) if 'tessedit_pageseg_mode: global.Tesseract.PSM?.SINGLE_LINE' in line]
+          if len(page_mode_lines) != 1:
+              raise SystemExit(f'Expected one fixed page mode line, found {len(page_mode_lines)}')
+          del lines[page_mode_lines[0]]
+
+          recognize_indices = [i for i, line in enumerate(lines) if 'const result = await current.recognize(canvas);' in line]
+          if len(recognize_indices) != 1:
+              raise SystemExit(f'Expected one recognize call, found {len(recognize_indices)}')
+          insert_at = recognize_indices[0]
+          adaptive = [
+              '      const aspect = canvas.width / Math.max(1, canvas.height);',
+              '      const psm = aspect < 1.5',
+              "        ? (global.Tesseract.PSM?.SINGLE_CHAR ?? '10')",
+              '        : aspect < 14',
+              "          ? (global.Tesseract.PSM?.SINGLE_LINE ?? '7')",
+              "          : (global.Tesseract.PSM?.SPARSE_TEXT ?? '11');",
+              '      try {',
+              '        await current.setParameters({',
+              '          tessedit_pageseg_mode: psm,',
+              "          preserve_interword_spaces: '1'",
+              '        });',
+              '      } catch (error) {',
+              "        console.warn('无法切换 OCR 分页模式，将使用模型默认值。', error);",
+              '      }'
+          ]
+          lines[insert_at:insert_at] = adaptive
+          app_path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+          test_path = Path('scripts/smoke-integrated-tools-v5.mjs')
+          test_lines = test_path.read_text(encoding='utf-8').splitlines()
+          start = next((i for i, line in enumerate(test_lines) if "const input = await page.$('#runesFile');" in line), None)
+          if start is None or start + 1 >= len(test_lines) or 'uploadFile' not in test_lines[start + 1]:
+              raise SystemExit('Full-reference OCR upload block was not found.')
+          replacement = [
+              '  await page.evaluate(async () => {',
+              '    const source = new Image();',
+              '    source.src = `./mdkOCR/madokarunes.jpg?sample=${Date.now()}`;',
+              '    await source.decode();',
+              "    const crop = document.createElement('canvas');",
+              '    crop.width = 512;',
+              '    crop.height = 400;',
+              "    const context = crop.getContext('2d');",
+              "    context.fillStyle = '#fff';",
+              '    context.fillRect(0, 0, crop.width, crop.height);',
+              '    context.imageSmoothingEnabled = false;',
+              '    context.drawImage(source, 7, 6, 64, 50, 0, 0, crop.width, crop.height);',
+              "    const blob = await new Promise((resolve) => crop.toBlob(resolve, 'image/png'));",
+              "    const file = new File([blob], 'known-rune-A.png', { type: 'image/png' });",
+              '    const transfer = new DataTransfer();',
+              '    transfer.items.add(file);',
+              "    const input = document.getElementById('runesFile');",
+              '    input.files = transfer.files;',
+              "    input.dispatchEvent(new Event('change', { bubbles: true }));",
+              '  });'
+          ]
+          test_lines[start:start + 2] = replacement
+          test_path.write_text('\n'.join(test_lines) + '\n', encoding='utf-8')
+          PY
+          node --check public/myfile/runes-app.js
+          node --check scripts/smoke-integrated-tools-v5.mjs
+
+      - name: Commit OCR correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/runes-app.js scripts/smoke-integrated-tools-v5.mjs
+          git commit -m 'Use adaptive segmentation for witch-rune OCR'
+          git push origin HEAD:fix/integrated-tools-v5-20260816
