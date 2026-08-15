@@ -25,7 +25,10 @@ requireFile(buildInfoPath);
 const html = read(htmlPath);
 const buildInfo = JSON.parse(read(buildInfoPath));
 const release = String(buildInfo.release || '');
-const isV2 = release === 'layout-correction-v2-20260816';
+const V2_RELEASE = 'layout-correction-v2-20260816';
+const V3_RELEASE = 'neo11-mobile-interaction-v3-20260816';
+const isV3 = release === V3_RELEASE;
+const isV2Family = release === V2_RELEASE || isV3;
 
 function count(pattern) {
     return (html.match(pattern) || []).length;
@@ -115,7 +118,7 @@ if (buildInfo.deploymentTarget !== 'magireco-call-search-cn.pages.dev') {
 const names = read('public/myfile/NAMELIST.txt');
 if (names.includes('早乙女老师')) fail('NAMELIST still exposes the obsolete Saotome translation.');
 
-if (isV2) {
+if (isV2Family) {
     for (const value of ['./myfile/site-correction-v2.css', './myfile/site-correction-v2.js']) {
         if (!html.includes(value)) fail(`V2 production reference missing: ${value}`);
     }
@@ -140,5 +143,56 @@ if (isV2) {
     if (!acceptance.includes('关系表行顺序保持实际点击顺序')) fail('click-order acceptance assertion missing');
 }
 
+if (isV3) {
+    const refs = [
+        './myfile/site-correction-v3.css',
+        './myfile/site-correction-v3-network.js',
+        './myfile/site-correction-v3-height.js'
+    ];
+    for (const value of refs) {
+        if (!html.includes(value)) fail(`V3 production reference missing: ${value}`);
+    }
+    for (const pattern of [
+        /site-correction-v3\.css/gi,
+        /site-correction-v3-network\.js/gi,
+        /site-correction-v3-height\.js/gi
+    ]) {
+        if (count(pattern) !== 1) fail(`V3 production asset must be loaded exactly once: ${pattern}`);
+    }
+
+    for (const file of [
+        'public/myfile/site-correction-v3.css',
+        'public/myfile/site-correction-v3-network.js',
+        'public/myfile/site-correction-v3-height.js',
+        'scripts/smoke-neo11-v3.mjs'
+    ]) requireFile(file);
+
+    const v3Css = read('public/myfile/site-correction-v3.css');
+    const v3Network = read('public/myfile/site-correction-v3-network.js');
+    const v3Height = read('public/myfile/site-correction-v3-height.js');
+    for (const marker of [
+        'grid-template-columns: repeat(5',
+        'overflow-y: hidden !important',
+        'touch-action: pan-y pinch-zoom',
+        'height-y-axis-right-v3'
+    ]) if (!v3Css.includes(marker)) fail(`V3 CSS marker missing: ${marker}`);
+    for (const marker of [
+        'node.physics = false',
+        'network.stopSimulation()',
+        'selectedEdges',
+        'page-y-inner-x'
+    ]) if (!v3Network.includes(marker)) fail(`V3 network marker missing: ${marker}`);
+    for (const marker of [
+        'CHARACTER_COLORS',
+        'height-y-axis-right-v3',
+        'height-active-guide-v3',
+        'syncRulers'
+    ]) if (!v3Height.includes(marker)) fail(`V3 height marker missing: ${marker}`);
+    if (buildInfo.rollbackBeforeNeo11V3 !== 'rollback/pre-neo11-mobile-v3-20260816') {
+        fail('V3 rollback pointer missing or incorrect');
+    }
+}
+
+if (![V2_RELEASE, V3_RELEASE].includes(release)) fail(`unexpected release identifier: ${release}`);
 if (failed) process.exit(1);
 console.log(`Static validation passed for ${release}: ${ids.length} unique IDs, ${characterCount} characters, ${localRefs.length} local references.`);
