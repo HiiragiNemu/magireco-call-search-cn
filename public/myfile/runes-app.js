@@ -55,7 +55,7 @@
     await terminateWorker();
     if (!global.Tesseract?.createWorker) throw new Error('Tesseract.js 未能加载，请检查网络连接后重试。');
     const langPath = new URL('./mdkOCR', global.location.href).href.replace(/\/$/, '');
-    worker = await global.Tesseract.createWorker(model, 1, {
+    worker = await global.Tesseract.createWorker(model, global.Tesseract.OEM?.TESSERACT_ONLY ?? 0, {
       langPath,
       gzip: false,
       logger
