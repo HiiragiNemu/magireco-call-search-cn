@@ -7,6 +7,7 @@ on:
     paths:
       - public/**
       - scripts/smoke-neo11-v3.mjs
+      - scripts/smoke-height-guide-v4.mjs
       - .github/workflows/verify-production.yml
   workflow_dispatch:
 
@@ -22,13 +23,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Wait for Cloudflare Pages to serve Neo11 V3
+      - name: Wait for Cloudflare Pages to serve height-guide V4
         shell: bash
         run: |
           set -euo pipefail
           BASE='https://magireco-call-search-cn.pages.dev'
           EXPECTED_RELEASE="$(python3 -c "import json; print(json.load(open('public/build-info.json', encoding='utf-8'))['release'])")"
-          test "$EXPECTED_RELEASE" = 'neo11-mobile-interaction-v3-20260816'
+          test "$EXPECTED_RELEASE" = 'neo11-height-guide-v4-20260816'
 
           ready=0
           for attempt in $(seq 1 90); do
@@ -49,6 +50,8 @@ jobs:
               && grep -Fq './myfile/site-correction-v3.css' /tmp/live-index.html \
               && grep -Fq './myfile/site-correction-v3-network.js' /tmp/live-index.html \
               && grep -Fq './myfile/site-correction-v3-height.js' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v4.css' /tmp/live-index.html \
+              && grep -Fq './myfile/site-correction-v4.js' /tmp/live-index.html \
               && grep -Fq 'value="まどドラ">Magia Exedra' /tmp/live-index.html \
               && ! grep -Fq 'value="まどドラ">小圆前辈' /tmp/live-index.html; then
               ready=1
@@ -58,16 +61,18 @@ jobs:
           done
 
           if [ "$ready" -ne 1 ]; then
-            echo 'Cloudflare Pages did not expose Neo11 V3 within the verification window.' >&2
+            echo 'Cloudflare Pages did not expose height-guide V4 within the verification window.' >&2
             cat /tmp/live-build-info.json 2>/dev/null || true
-            grep -E 'data-build|site-correction-v3|まどドラ' /tmp/live-index.html 2>/dev/null | head -40 || true
+            grep -E 'data-build|site-correction-v[34]|まどドラ' /tmp/live-index.html 2>/dev/null | head -60 || true
             exit 1
           fi
 
           for asset in \
             site-correction-v3.css \
             site-correction-v3-network.js \
-            site-correction-v3-height.js; do
+            site-correction-v3-height.js \
+            site-correction-v4.css \
+            site-correction-v4.js; do
             curl --fail --silent --show-error --location \
               --connect-timeout 10 --max-time 30 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
@@ -82,7 +87,7 @@ jobs:
           set -euo pipefail
           npm install --no-save --no-package-lock puppeteer-core@24.16.0
 
-      - name: Run Neo11 mobile and desktop acceptance against production
+      - name: Run Neo11 regression and height-guide V4 acceptance against production
         shell: bash
         run: |
           set -euo pipefail
@@ -96,19 +101,29 @@ jobs:
           node scripts/smoke-neo11-v3.mjs | tee /tmp/neo11-v3-live-report.txt
           grep -Fq '"state": "pass"' /tmp/neo11-v3-live-report.txt
 
+          BASE_URL='https://magireco-call-search-cn.pages.dev' \
+          CHROME_PATH="$CHROME" \
+          node scripts/smoke-height-guide-v4.mjs | tee /tmp/height-guide-v4-live-report.txt
+          grep -Fq '"state": "pass"' /tmp/height-guide-v4-live-report.txt
+
       - name: Upload live production acceptance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-neo11-v3-${{ github.sha }}
+          name: live-height-guide-v4-${{ github.sha }}
           path: |
             /tmp/live-build-info.json
             /tmp/live-index.html
             /tmp/live-site-correction-v3.css
             /tmp/live-site-correction-v3-network.js
             /tmp/live-site-correction-v3-height.js
+            /tmp/live-site-correction-v4.css
+            /tmp/live-site-correction-v4.js
             /tmp/neo11-v3-live-report.txt
             /tmp/neo11-v3-mobile.png
             /tmp/neo11-v3-desktop.png
+            /tmp/height-guide-v4-live-report.txt
+            /tmp/height-guide-v4-mobile.png
+            /tmp/height-guide-v4-desktop.png
           if-no-files-found: warn
           retention-days: 30
