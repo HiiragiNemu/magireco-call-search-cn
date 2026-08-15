@@ -1,0 +1,101 @@
+/* Height-guide V4: viewport-aware ruler connections and reliable result jumps. */
+.height-guide-mode-v4 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid rgba(179, 58, 120, 0.34);
+  border-radius: 0.4rem;
+  background: rgba(255, 245, 250, 0.92);
+  color: #4a1731;
+  font-weight: 600;
+}
+
+.height-guide-mode-v4 select {
+  max-width: min(20rem, 58vw);
+  padding: 0.28rem 0.35rem;
+  border: 1px solid #9f7189;
+  border-radius: 0.3rem;
+  background: #fff;
+  color: #24141d;
+  font: inherit;
+}
+
+.height-guide-status-v4 {
+  min-width: 9.5rem;
+  color: #7d2854;
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.height-guide-help-v4 {
+  flex-basis: 100%;
+  color: #783052;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.height-point-guide-v2[data-v4-visible="false"] {
+  display: none !important;
+}
+
+.height-point-guide-v2[data-v4-visible="true"] {
+  display: block !important;
+  z-index: 3;
+  min-width: 1px;
+  transform: translateY(-1px);
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.82));
+}
+
+.height-point-guide-v2[data-v4-visible="true"]::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 1px rgba(50, 20, 36, 0.28);
+}
+
+.height-point-guide-v2[data-v4-direction="left"]::before {
+  left: -3px;
+}
+
+.height-point-guide-v2[data-v4-direction="right"]::before {
+  right: -3px;
+}
+
+.height-point-guide-v2[data-v4-visible="true"].is-active {
+  z-index: 8;
+}
+
+.height-chart-viewport-v2[data-v4-guide-mode="visible-nearest"] .height-point-guide-v2 {
+  opacity: var(--guide-opacity, 0.72);
+}
+
+.height-chart-viewport-v2[data-v4-guide-mode="all-left"] .height-point-guide-v2,
+.height-chart-viewport-v2[data-v4-guide-mode="all-right"] .height-point-guide-v2 {
+  opacity: var(--guide-opacity, 0.52);
+}
+
+@media (max-width: 640px) {
+  .height-guide-mode-v4 {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+  }
+
+  .height-guide-mode-v4 select {
+    flex: 1 1 auto;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .height-guide-status-v4 {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+}
