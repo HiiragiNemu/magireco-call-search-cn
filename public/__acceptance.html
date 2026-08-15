@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="zh-CN" data-acceptance="pending">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>生产验收：魔法少女称呼搜索</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #site {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+    #acceptance-status {
+      position: fixed;
+      right: .45rem;
+      bottom: .45rem;
+      z-index: 2147483647;
+      max-width: min(32rem, calc(100vw - .9rem));
+      max-height: 32vh;
+      margin: 0;
+      padding: .42rem .55rem;
+      overflow: auto;
+      border: 1px solid rgba(84, 19, 53, .45);
+      border-radius: .42rem;
+      background: rgba(255, 255, 255, .94);
+      color: #3b1730;
+      box-shadow: 0 3px 16px rgba(0, 0, 0, .2);
+      font: 600 11px/1.35 ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre-wrap;
+      pointer-events: none;
+    }
+    html[data-acceptance="pass"] #acceptance-status {
+      border-color: rgba(23, 128, 65, .62);
+      color: #126b37;
+    }
+    html[data-acceptance="fail"] #acceptance-status {
+      border-color: rgba(191, 26, 63, .72);
+      color: #9e1234;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="site" title="待验收的生产网站"></iframe>
+  <pre id="acceptance-status">验收脚本正在启动……</pre>
+  <script>
+    (() => {
+      'use strict';
+
+      const EXPECTED_RELEASE = 'layout-correction-v2-20260816';
+      const params = new URLSearchParams(location.search);
+      const mode = params.get('mode') || 'full';
+      const target = params.get('target') || './';
+      const frame = document.getElementById('site');
+      const statusNode = document.getElementById('acceptance-status');
+      const startedAt = performance.now();
+      const report = {
+        release: EXPECTED_RELEASE,
+        mode,
+        outerViewport: `${window.innerWidth}x${window.innerHeight}`,
+        checks: []
+      };
+
+      let finished = false;
+
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      function record(name, details = true) {
+        report.checks.push({ name, details });
+      }
+
+      function assert(condition, message, details = undefined) {
+        if (!condition) {
+          const error = new Error(message);
+          error.details = details;
+          throw error;
+        }
+        record(message, details === undefined ? true : details);
+      }
+
+      async function waitFor(predicate, message, timeout = 15000, interval = 100) {
+        const deadline = performance.now() + timeout;
+        let lastError = null;
+        while (performance.now() < deadline) {
+          try {
+            const value = predicate();
+            if (value) return value;
+          } catch (error) {
+            lastError = error;
+          }
+          await sleep(interval);
+        }
+        throw new Error(`${message}${lastError ? `：${lastError.message}` : ''}`);
+      }
+
+      function visible(element, win) {
+        if (!element) return false;
+        const style = win.getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity || 1) !== 0;
+      }
+
+      function setRange(input, preferredValue, win) {
+        if (!input) return null;
+        const min = Number(input.min || 0);
+        const max = Number(input.max || 100);
+        const value = Math.max(min, Math.min(max, preferredValue));
+        input.value = String(value);
+        input.dispatchEvent(new win.Event('input', { bubbles: true }));
+        input.dispatchEvent(new win.Event('change', { bubbles: true }));
+        return value;
+      }
+
+      function finish(state, payload) {
+        if (finished) return;
+        finished = true;
+        report.state = state;
+        report.elapsedMs = Math.round(performance.now() - startedAt);
+        if (payload) report.payload = payload;
+        document.documentElement.dataset.acceptance = state;
+        document.body.dataset.acceptance = state;
+        statusNode.textContent = JSON.stringify(report, null, 2);
+        window.__MAGIRECO_ACCEPTANCE__ = report;
+      }
+
+      async function run() {
+        const win = frame.contentWindow;
+        const doc = frame.contentDocument;
+        const runtimeErrors = [];
+
+        win.addEventListener('error', (event) => {
+          runtimeErrors.push(event.message || 'Unknown window error');
+        });
+        win.addEventListener('unhandledrejection', (event) => {
+          runtimeErrors.push(String(event.reason || 'Unhandled rejection'));
+        });
+
+        await waitFor(
+          () => doc.readyState === 'complete'
+            && typeof win.drawAndJump === 'function'
+            && typeof win.displayHeightChart === 'function'
+            && typeof win.ndownReset === 'function',
+          '生产页面或核心函数未能完成加载'
+        );
+        await sleep(900);
+
+        const characterBoxes = [...doc.querySelectorAll('input.MagicalChk[name="chara"]')];
+        const allIds = [...doc.querySelectorAll('[id]')].map((element) => element.id);
+        const duplicateIds = [...new Set(allIds.filter((id, index) => allIds.indexOf(id) !== index))];
+        const exedraInput = doc.querySelector('input[value="まどドラ"]');
+        const exedraLabel = exedraInput ? exedraInput.closest('label') : null;
+        const exedraText = exedraLabel ? exedraLabel.textContent.replace(/\s+/g, ' ').trim() : '';
+
+        assert(doc.body.dataset.build === EXPECTED_RELEASE, '生产版本标记正确', doc.body.dataset.build || null);
+        assert(characterBoxes.length >= 180, '角色选择器数量完整', characterBoxes.length);
+        assert(duplicateIds.length === 0, '页面不存在重复 ID', duplicateIds);
+        assert(Boolean(win.MagirecoNameUtils), '名称归一化工具已加载');
+        assert(Boolean(exedraInput), '存在“まどドラ”来源筛选项');
+        assert(exedraText.includes('Magia Exedra'), '“まどドラ”正确显示为 Magia Exedra', exedraText);
+        assert(!doc.body.textContent.includes('小圆前辈'), '页面不再出现错误标签“小圆前辈”');
+
+        const searchInput = doc.getElementById('ndownword1');
+        assert(Boolean(searchInput), '角色文本筛选输入框存在');
+        searchInput.value = 'かずこ';
+        searchInput.dispatchEvent(new win.Event('input', { bubbles: true }));
+        await sleep(250);
+        const teacher = doc.getElementById('早乙女和子');
+        const teacherLabel = teacher ? teacher.closest('label.girlbox') : null;
+        const visibleAfterSearch = [...doc.querySelectorAll('label.girlbox')]
+          .filter((label) => visible(label, win)).length;
+        assert(visible(teacherLabel, win), '假名搜索可以找到早乙女和子', visibleAfterSearch);
+        assert(visibleAfterSearch > 0 && visibleAfterSearch < characterBoxes.length, '文本搜索能够缩小角色范围', visibleAfterSearch);
+        win.ndownReset('call');
+        await sleep(150);
+
+        if (mode === 'full' || mode === 'relationship') {
+          characterBoxes.forEach((box) => { box.checked = false; });
+          characterBoxes.slice(0, 8).forEach((box) => { box.checked = true; });
+          win.drawAndJump();
+
+          const relationshipViewport = await waitFor(
+            () => doc.querySelector('.relationship-table-viewport'),
+            'V2 关系表视口未渲染'
+          );
+          const relationshipControls = doc.querySelector('.relationship-table-controls');
+          const relationshipStage = doc.querySelector('.relationship-table-stage');
+          const relationshipSurface = doc.querySelector('.relationship-table-surface');
+          const table = doc.getElementById('girltable');
+          await waitFor(
+            () => table && table.querySelectorAll('tbody tr').length === 8,
+            '关系表未生成 8 个选中角色的数据行'
+          );
+          await sleep(250);
+
+          assert(Boolean(relationshipControls), 'V2 关系表控制条已渲染');
+          assert(Boolean(relationshipStage && relationshipSurface), 'V2 关系表缩放舞台已渲染');
+          assert(table.querySelectorAll('thead th').length >= 9, '关系表表头完整', table.querySelectorAll('thead th').length);
+          assert(relationshipViewport.scrollWidth > relationshipViewport.clientWidth, '关系表可以横向滚动', {
+            scrollWidth: relationshipViewport.scrollWidth,
+            clientWidth: relationshipViewport.clientWidth
+          });
+          relationshipViewport.scrollLeft = Math.max(1, relationshipViewport.scrollWidth - relationshipViewport.clientWidth);
+          relationshipViewport.scrollTop = Math.max(1, relationshipViewport.scrollHeight - relationshipViewport.clientHeight);
+          assert(relationshipViewport.scrollLeft > 0, '关系表横向滚动实际生效', relationshipViewport.scrollLeft);
+
+          const relationshipRanges = [...relationshipControls.querySelectorAll('input[type="range"]')];
+          const heightRange = relationshipRanges.find((input) => input.closest('.relationship-height-control')) || null;
+          const zoomRange = relationshipRanges.find((input) => input !== heightRange) || null;
+          const transformBefore = relationshipSurface.style.transform;
+          const zoomValue = setRange(zoomRange, 65, win);
+          const heightValue = setRange(heightRange, 68, win);
+          await sleep(250);
+          assert(Boolean(zoomRange), '关系表缩放滑块存在');
+          assert(Boolean(heightRange), '关系表高度滑块存在');
+          assert(relationshipSurface.style.transform !== transformBefore || relationshipSurface.style.transform.includes('scale'), '关系表缩放控制生效', {
+            value: zoomValue,
+            transform: relationshipSurface.style.transform
+          });
+          assert(relationshipViewport.clientHeight >= 280, '关系表视口高度保持可用', {
+            requested: heightValue,
+            actual: relationshipViewport.clientHeight
+          });
+
+          if (mode === 'relationship') {
+            const targetNode = doc.getElementById('callResultSection') || doc.getElementById('mytable');
+            if (targetNode) {
+              win.scrollTo({ top: Math.max(0, targetNode.offsetTop - 12), left: 0, behavior: 'auto' });
+            }
+          }
+        }
+
+        if (mode === 'full' || mode === 'height') {
+          win.displayHeightChart('global', 'age');
+          const heightViewport = await waitFor(
+            () => doc.querySelector('.height-chart-viewport-v2'),
+            'V2 身高图视口未渲染'
+          );
+          const heightControls = doc.querySelector('.height-zoom-controls-v2');
+          const heightStage = doc.querySelector('.height-chart-stage-v2');
+          const heightSurface = doc.querySelector('.height-chart-surface-v2');
+          await waitFor(
+            () => doc.querySelectorAll('.height-point-v2, .height-bar-v2').length > 0,
+            '身高图没有任何角色数据点'
+          );
+          await sleep(250);
+
+          const pointCount = doc.querySelectorAll('.height-point-v2').length;
+          const barCount = doc.querySelectorAll('.height-bar-v2').length;
+          assert(Boolean(heightControls), 'V2 身高图控制条已渲染');
+          assert(Boolean(heightStage && heightSurface), 'V2 身高图缩放舞台已渲染');
+          assert(pointCount + barCount > 0, '身高图角色数据点完整', { pointCount, barCount });
+          assert(heightViewport.scrollWidth >= heightViewport.clientWidth, '身高图视口尺寸有效', {
+            scrollWidth: heightViewport.scrollWidth,
+            clientWidth: heightViewport.clientWidth
+          });
+
+          const heightZoomRange = heightControls.querySelector('input[type="range"]');
+          const heightTransformBefore = heightSurface.style.transform;
+          const heightZoomValue = setRange(heightZoomRange, 45, win);
+          await sleep(250);
+          assert(Boolean(heightZoomRange), '身高图缩放滑块存在');
+          assert(heightSurface.style.transform !== heightTransformBefore || heightSurface.style.transform.includes('scale'), '身高图缩放控制生效', {
+            value: heightZoomValue,
+            transform: heightSurface.style.transform
+          });
+          heightViewport.scrollLeft = Math.max(0, Math.floor((heightViewport.scrollWidth - heightViewport.clientWidth) / 2));
+          heightViewport.scrollTop = Math.max(0, Math.floor((heightViewport.scrollHeight - heightViewport.clientHeight) / 3));
+
+          if (mode === 'height') {
+            const targetNode = doc.getElementById('heightChartContainer') || heightViewport;
+            if (targetNode) {
+              win.scrollTo({ top: Math.max(0, targetNode.offsetTop - 12), left: 0, behavior: 'auto' });
+            }
+          }
+        }
+
+        await sleep(250);
+        const horizontalOverflow = Math.max(
+          doc.documentElement.scrollWidth,
+          doc.body ? doc.body.scrollWidth : 0
+        ) - win.innerWidth;
+        assert(horizontalOverflow <= 4, '页面不会产生整页横向溢出', {
+          overflowPixels: horizontalOverflow,
+          innerWidth: win.innerWidth,
+          documentWidth: doc.documentElement.scrollWidth
+        });
+        assert(runtimeErrors.length === 0, '交互过程中没有运行时异常', runtimeErrors);
+
+        finish('pass');
+      }
+
+      frame.addEventListener('load', () => {
+        run().catch((error) => {
+          finish('fail', {
+            message: error.message,
+            details: error.details,
+            stack: error.stack
+          });
+        });
+      }, { once: true });
+
+      const separator = target.includes('?') ? '&' : '?';
+      frame.src = `${target}${separator}__acceptance=${Date.now()}`;
+
+      setTimeout(() => {
+        if (!finished) {
+          finish('fail', { message: '验收脚本在 30 秒内未完成。' });
+        }
+      }, 30000);
+    })();
+  </script>
+</body>
+</html>
