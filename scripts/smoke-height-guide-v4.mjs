@@ -75,7 +75,7 @@ async function heightGuideAudit(page, mobile) {
       const guide = plot.querySelector(`.height-point-guide-v2[data-height-guide-pair-v4="${pairId}"]`);
       const pointRect = point.getBoundingClientRect();
       const guideStyle = getComputedStyle(guide);
-      const visible = pointRect.right > leftBoundary + 1 && pointRect.left < rightBoundary - 1;
+      const visible = pointRect.left >= leftBoundary + 1 && pointRect.right <= rightBoundary - 1;
       if (!visible) {
         if (guideStyle.display === 'none' || guide.dataset.v4Visible === 'false') hiddenOutside += 1;
         continue;
@@ -214,7 +214,7 @@ async function desktopTest(browser) {
     const points = [...plot.querySelectorAll('.height-point-v2')];
     const visible = points.filter((point) => {
       const rect = point.getBoundingClientRect();
-      return rect.right > left + 1 && rect.left < right - 1;
+      return rect.left >= left + 1 && rect.right <= right - 1;
     });
     const displayed = [...plot.querySelectorAll('.height-point-guide-v2')]
       .filter((guide) => getComputedStyle(guide).display !== 'none');
