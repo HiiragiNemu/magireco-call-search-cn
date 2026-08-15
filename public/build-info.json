@@ -1,5 +1,5 @@
 {
-  "release": "layout-correction-v2-20260816",
+  "release": "neo11-mobile-interaction-v3-20260816",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -13,5 +13,6 @@
   "acceptedSearchNormalizationCommit": "787f3602aa8223f8a3ab960cf451006fb89fc82c",
   "acceptanceHarnessCommit": "be13aaca6d8575a4c4cedb544a65c1c8088f04ee",
   "verificationMode": "exhaustive-live-mobile-and-desktop-browser-acceptance",
-  "searchNormalization": "nfkc-hiragana-katakana-unified"
+  "searchNormalization": "nfkc-hiragana-katakana-unified",
+  "rollbackBeforeNeo11V3": "rollback/pre-neo11-mobile-v3-20260816"
 }

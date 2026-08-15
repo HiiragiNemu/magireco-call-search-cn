@@ -70,7 +70,7 @@ async function testMobile(browser) {
   page.on('console', (message) => {
     if (message.type() === 'error') runtimeErrors.push(message.text());
   });
-  await page.goto(`${BASE_URL}/?acceptance=neo11-v3-${Date.now()}`, { waitUntil: 'networkidle0', timeout: 60000 });
+  await page.goto(`${BASE_URL}/?acceptance=neo11-v3-${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await waitForSite(page);
 
   const release = await page.evaluate(() => document.body.dataset.build);
@@ -150,7 +150,7 @@ async function testMobile(browser) {
     const rect = document.querySelector('.relationship-table-viewport').getBoundingClientRect();
     return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
   });
-  const relationY = Math.max(200, Math.min(innerHeight - 120, relationRect.top + 120));
+  const relationY = Math.max(200, Math.min(724, relationRect.top + 120));
   await swipe(client, Math.min(350, relationRect.right - 25), relationY, Math.max(35, relationRect.left + 25), relationY + 3);
   const relationScrollLeft = await page.evaluate(() => document.querySelector('.relationship-table-viewport').scrollLeft);
   assert(relationScrollLeft > 25, 'horizontal swipe still pans the relationship table', relationScrollLeft);
@@ -164,6 +164,11 @@ async function testMobile(browser) {
   }));
   assert(stableDelta < 0.75, 'relationship character nodes remain still before interaction', stableDelta);
 
+  await page.evaluate(() => {
+    const host = document.getElementById('mynetwork');
+    if (host) host.scrollIntoView({ block: 'center', inline: 'center' });
+  });
+  await sleep(350);
   const dragData = await page.evaluate(() => {
     const ids = Object.keys(window.network.getPositions()).filter((id) => id !== '__second_person__');
     const id = ids[0];
@@ -284,7 +289,7 @@ async function testDesktop(browser) {
   await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${BASE_URL}/?acceptance=neo11-v3-desktop-${Date.now()}`, { waitUntil: 'networkidle0', timeout: 60000 });
+  await page.goto(`${BASE_URL}/?acceptance=neo11-v3-desktop-${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await waitForSite(page);
   await selectFirst(page, 10);
   await page.evaluate(() => window.drawNet_Table());

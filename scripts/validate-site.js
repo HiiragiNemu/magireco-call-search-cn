@@ -179,7 +179,7 @@ if (isV3) {
     for (const marker of [
         'node.physics = false',
         'network.stopSimulation()',
-        'selectedEdges',
+        'selectConnectedEdges: true',
         'page-y-inner-x'
     ]) if (!v3Network.includes(marker)) fail(`V3 network marker missing: ${marker}`);
     for (const marker of [
