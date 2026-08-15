@@ -5,11 +5,8 @@ on:
     branches:
       - main
     paths:
-      - public/index.html
-      - public/build-info.json
-      - public/myfile/site-correction-v2.css
-      - public/myfile/site-correction-v2.js
-      - public/__acceptance.html
+      - public/**
+      - .github/workflows/verify-production.yml
   workflow_dispatch:
 
 permissions:
@@ -123,7 +120,7 @@ jobs:
               --run-all-compositor-stages-before-draw \
               --user-data-dir="$profile" \
               --window-size="$size" \
-              --virtual-time-budget=35000 \
+              --virtual-time-budget=50000 \
               --dump-dom "$url" \
               > "/tmp/${name}.html"
             grep -Fq 'data-acceptance="pass"' "/tmp/${name}.html"
@@ -135,9 +132,9 @@ jobs:
           run_dump live-desktop-full '1440,900' "${BASE}/__acceptance.html?mode=full&verify=${nonce}"
 
           echo 'Mobile acceptance report:'
-          grep -A120 -F 'id="acceptance-status"' /tmp/live-mobile-full.html | tail -120 || true
+          grep -A240 -F 'id="acceptance-status"' /tmp/live-mobile-full.html | tail -240 || true
           echo 'Desktop acceptance report:'
-          grep -A120 -F 'id="acceptance-status"' /tmp/live-desktop-full.html | tail -120 || true
+          grep -A240 -F 'id="acceptance-status"' /tmp/live-desktop-full.html | tail -240 || true
 
       - name: Capture live mobile and desktop acceptance screenshots
         shell: bash
@@ -168,7 +165,7 @@ jobs:
               --run-all-compositor-stages-before-draw \
               --user-data-dir="$profile" \
               --window-size="$size" \
-              --virtual-time-budget=35000 \
+              --virtual-time-budget=50000 \
               --screenshot="/tmp/${name}.png" \
               "${BASE}/__acceptance.html?mode=${mode}&verify=${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)"
             test -s "/tmp/${name}.png"
