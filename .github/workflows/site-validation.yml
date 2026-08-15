@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - fix/neo11-mobile-v3-20260816
+      - fix/height-guide-v4-20260816
   pull_request:
 
 permissions:
@@ -40,6 +41,12 @@ jobs:
               public/myfile/site-correction-v3-network.js
               public/myfile/site-correction-v3-height.js
               scripts/smoke-neo11-v3.mjs
+            )
+          fi
+          if [ -f public/myfile/site-correction-v4.js ]; then
+            files+=(
+              public/myfile/site-correction-v4.js
+              scripts/smoke-height-guide-v4.mjs
             )
           fi
           for file in "${files[@]}"; do
