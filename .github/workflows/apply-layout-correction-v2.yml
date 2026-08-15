@@ -19,10 +19,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Assemble the V2 correction bundle
+      - name: Assemble and patch the accepted production release
         shell: bash
         run: |
           set -euo pipefail
+
           cat \
             .automation/layout-correction-v2/js-part-01.b64 \
             .automation/layout-correction-v2/js-part-02.b64 \
@@ -31,305 +32,151 @@ jobs:
             | tr -d '\r\n ' | base64 -d | gzip -d \
             > public/myfile/site-correction-v2.js
 
-          test -s public/myfile/site-correction-v2.js
-          grep -Fq 'relationship-table-viewport' public/myfile/site-correction-v2.js
-          grep -Fq 'height-chart-viewport-v2' public/myfile/site-correction-v2.js
-          node --check public/myfile/site-correction-v2.js
-
-      - name: Patch the production entry, release metadata and validator
-        shell: bash
-        run: |
-          set -euo pipefail
           python3 <<'PY'
           from pathlib import Path
           import json
           import re
 
           release = 'layout-correction-v2-20260816'
+
           index_path = Path('public/index.html')
           index = index_path.read_text(encoding='utf-8')
-
           css_anchor = '\t<link rel="stylesheet" href="./myfile/site-overhaul.css">'
           css_ref = '\t<link rel="stylesheet" href="./myfile/site-correction-v2.css">'
           js_anchor = '<script src="./myfile/site-overhaul.js"></script>'
           js_ref = '<script src="./myfile/site-correction-v2.js"></script>'
 
-          def require_once(text: str, value: str, label: str) -> None:
-              count = text.count(value)
-              if count != 1:
-                  raise SystemExit(f'{label} must occur exactly once; found {count}.')
-
-          require_once(index, css_anchor, 'site-overhaul.css anchor')
-          require_once(index, js_anchor, 'site-overhaul.js anchor')
-
-          if index.count(css_ref) == 0:
+          for value, label in [(css_anchor, 'CSS anchor'), (js_anchor, 'JavaScript anchor')]:
+              if index.count(value) != 1:
+                  raise SystemExit(f'{label} must occur exactly once.')
+          if css_ref not in index:
               index = index.replace(css_anchor, css_anchor + '\n' + css_ref, 1)
-          elif index.count(css_ref) != 1:
-              raise SystemExit('site-correction-v2.css reference is duplicated.')
-
-          if index.count(js_ref) == 0:
+          if js_ref not in index:
               index = index.replace(js_anchor, js_anchor + '\n' + js_ref, 1)
-          elif index.count(js_ref) != 1:
-              raise SystemExit('site-correction-v2.js reference is duplicated.')
-
-          index, replaced = re.subn(
-              r'data-build="[^"]*"',
-              f'data-build="{release}"',
-              index,
-              count=1
-          )
-          if replaced != 1:
-              raise SystemExit('Production build marker could not be replaced safely.')
-
-          require_once(index, css_ref, 'site-correction-v2.css reference')
-          require_once(index, js_ref, 'site-correction-v2.js reference')
+          if index.count(css_ref) != 1 or index.count(js_ref) != 1:
+              raise SystemExit('V2 production references are missing or duplicated.')
+          index, changed = re.subn(r'data-build="[^"]*"', f'data-build="{release}"', index, count=1)
+          if changed != 1:
+              raise SystemExit('Production build marker could not be replaced.')
           index_path.write_text(index, encoding='utf-8')
 
           info_path = Path('public/build-info.json')
           info = json.loads(info_path.read_text(encoding='utf-8'))
-          info['release'] = release
-          info['productionEntry'] = 'public/index.html'
-          info['deploymentTarget'] = 'magireco-call-search-cn.pages.dev'
-          info['acceptancePage'] = 'public/__acceptance.html'
-          info['rollbackBeforeLayoutCorrectionV2'] = 'rollback/pre-layout-correction-v2-20260816'
-          info['rollbackRejectedMobileOverhaul'] = 'rollback/rejected-mobile-overhaul-20260816'
+          info.update({
+              'release': release,
+              'productionEntry': 'public/index.html',
+              'deploymentTarget': 'magireco-call-search-cn.pages.dev',
+              'acceptancePage': 'public/__acceptance.html',
+              'rollbackBeforeLayoutCorrectionV2': 'rollback/pre-layout-correction-v2-20260816',
+              'rollbackRejectedMobileOverhaul': 'rollback/rejected-mobile-overhaul-20260816'
+          })
           info_path.write_text(json.dumps(info, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
-          acceptance_path = Path('public/__acceptance.html')
-          acceptance = acceptance_path.read_text(encoding='utf-8')
-          old = '''          assert(Boolean(relationshipControls), 'V2 关系表控制条已渲染');
-          assert(Boolean(relationshipStage && relationshipSurface), 'V2 关系表缩放舞台已渲染');
-          assert(table.querySelectorAll('thead th').length >= 9, '关系表表头完整', table.querySelectorAll('thead th').length);
-          assert(relationshipViewport.scrollWidth > relationshipViewport.clientWidth, '关系表可以横向滚动', {
-            scrollWidth: relationshipViewport.scrollWidth,
-            clientWidth: relationshipViewport.clientWidth
-          });
-          relationshipViewport.scrollLeft = Math.max(1, relationshipViewport.scrollWidth - relationshipViewport.clientWidth);
-          relationshipViewport.scrollTop = Math.max(1, relationshipViewport.scrollHeight - relationshipViewport.clientHeight);
-          assert(relationshipViewport.scrollLeft > 0, '关系表横向滚动实际生效', relationshipViewport.scrollLeft);
-          '''
-          new = '''          assert(Boolean(relationshipControls), 'V2 关系表控制条已渲染');
-          assert(Boolean(relationshipStage && relationshipSurface), 'V2 关系表缩放舞台已渲染');
-          assert(table.querySelectorAll('thead th').length >= 9, '关系表表头完整', table.querySelectorAll('thead th').length);
+          overhaul_path = Path('public/myfile/site-overhaul.js')
+          overhaul = overhaul_path.read_text(encoding='utf-8')
+          marker = 'const selectionOrderTracker = {'
+          if marker not in overhaul:
+              anchor = """    function getSelectedEntries() {
+                  const keyIndex = U.buildCallTableKeyIndex();
+                  return U.getCharacterCheckboxes()
+                      .filter((checkbox) => checkbox.checked)
+              """
+              replacement = """    const selectionOrderTracker = {
+                  order: [],
+                  bound: false,
+                  key(checkbox) {
+                      return checkbox.id || checkbox.value;
+                  },
+                  bind() {
+                      if (this.bound) return;
+                      this.bound = true;
+                      document.addEventListener('change', (event) => {
+                          const checkbox = event.target;
+                          if (!checkbox || typeof checkbox.matches !== 'function'
+                              || !checkbox.matches('input.MagicalChk[name=\"chara\"]')) return;
+                          const key = this.key(checkbox);
+                          const existing = this.order.indexOf(key);
+                          if (existing !== -1) this.order.splice(existing, 1);
+                          if (checkbox.checked) this.order.push(key);
+                      }, true);
+                  },
+                  orderedChecked() {
+                      const checked = U.getCharacterCheckboxes().filter((checkbox) => checkbox.checked);
+                      const active = new Set(checked.map((checkbox) => this.key(checkbox)));
+                      this.order = this.order.filter((key) => active.has(key));
+                      for (const checkbox of checked) {
+                          const key = this.key(checkbox);
+                          if (!this.order.includes(key)) this.order.push(key);
+                      }
+                      const rank = new Map(this.order.map((key, index) => [key, index]));
+                      return checked
+                          .map((checkbox, domIndex) => ({
+                              checkbox,
+                              domIndex,
+                              rank: rank.get(this.key(checkbox)) ?? Number.MAX_SAFE_INTEGER
+                          }))
+                          .sort((left, right) => left.rank - right.rank || left.domIndex - right.domIndex)
+                          .map((entry) => entry.checkbox);
+                  }
+              };
+              selectionOrderTracker.bind();
 
-          const normalizeOrderText = (value) => String(value || '').replace(/\\s+/g, ' ').trim();
-          const expectedOrder = characterBoxes.slice(0, 8).map((box) => normalizeOrderText(box.value));
-          const headerOrder = [...table.querySelectorAll('thead th')]
-            .slice(-8)
-            .map((cell) => normalizeOrderText(cell.textContent));
-          const rowOrder = [...table.querySelectorAll('tbody tr')]
-            .slice(0, 8)
-            .map((row) => normalizeOrderText(row.querySelector('th, td')?.textContent));
-          assert(expectedOrder.every((value, index) => headerOrder[index] === value), '关系表列顺序保持用户选择顺序', {
-            expectedOrder,
-            headerOrder
-          });
-          assert(expectedOrder.every((value, index) => rowOrder[index] === value), '关系表行顺序保持用户选择顺序', {
-            expectedOrder,
-            rowOrder
-          });
-
-          const relationshipOverflow = relationshipViewport.scrollWidth - relationshipViewport.clientWidth;
-          if (relationshipOverflow > 1) {
-            relationshipViewport.scrollLeft = relationshipOverflow;
-            assert(relationshipViewport.scrollLeft > 0, '窄屏关系表横向滚动实际生效', {
-              overflow: relationshipOverflow,
-              scrollLeft: relationshipViewport.scrollLeft
-            });
-          } else {
-            record('宽屏关系表完整适配，无需横向滚动', {
-              scrollWidth: relationshipViewport.scrollWidth,
-              clientWidth: relationshipViewport.clientWidth
-            });
-          }
-          relationshipViewport.scrollTop = Math.max(1, relationshipViewport.scrollHeight - relationshipViewport.clientHeight);
-          '''
-          if acceptance.count(old) != 1:
-              raise SystemExit('Acceptance relationship-table assertions could not be patched safely.')
-          acceptance_path.write_text(acceptance.replace(old, new, 1), encoding='utf-8')
+              function getSelectedEntries() {
+                  selectionOrderTracker.bind();
+                  const keyIndex = U.buildCallTableKeyIndex();
+                  return selectionOrderTracker.orderedChecked()
+              """
+              if overhaul.count(anchor) != 1:
+                  raise SystemExit('getSelectedEntries patch anchor is not unique.')
+              overhaul = overhaul.replace(anchor, replacement, 1)
+          if overhaul.count(marker) != 1:
+              raise SystemExit('Selection-order tracker was not installed exactly once.')
+          overhaul_path.write_text(overhaul, encoding='utf-8')
           PY
 
-          cat > scripts/validate-site.js <<'JS'
-          'use strict';
+          test -s public/myfile/site-correction-v2.js
+          grep -Fq 'relationship-table-viewport' public/myfile/site-correction-v2.js
+          grep -Fq 'height-chart-viewport-v2' public/myfile/site-correction-v2.js
+          grep -Fq 'const selectionOrderTracker = {' public/myfile/site-overhaul.js
 
-          const fs = require('fs');
-          const path = require('path');
-
-          const release = 'layout-correction-v2-20260816';
-          let failed = false;
-
-          function fail(message) {
-              failed = true;
-              console.error(`VALIDATION ERROR: ${message}`);
-          }
-
-          const htmlPath = path.join('public', 'index.html');
-          const html = fs.readFileSync(htmlPath, 'utf8');
-
-          function count(pattern) {
-              return (html.match(pattern) || []).length;
-          }
-
-          const expectedCounts = [
-              [/<!DOCTYPE html>/gi, 1, 'doctype'],
-              [/<html\b[^>]*>/gi, 1, 'opening html'],
-              [/<\/html\s*>/gi, 1, 'closing html'],
-              [/<head\b[^>]*>/gi, 1, 'opening head'],
-              [/<\/head\s*>/gi, 1, 'closing head'],
-              [/<body\b[^>]*>/gi, 1, 'opening body'],
-              [/<\/body\s*>/gi, 1, 'closing body']
-          ];
-          for (const [pattern, expected, label] of expectedCounts) {
-              const actual = count(pattern);
-              if (actual !== expected) fail(`${label}: expected ${expected}, found ${actual}`);
-          }
-
-          const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map((match) => match[1]);
-          const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
-          if (duplicateIds.length) fail(`duplicate ids: ${duplicateIds.join(', ')}`);
-
-          const characterCount = (html.match(/class=["'][^"']*\bMagicalChk\b[^"']*["'][^>]*name=["']chara["']/g) || []).length;
-          if (characterCount < 180) fail(`expected at least 180 character selectors, found ${characterCount}`);
-
-          const requiredText = [
-              'id="callFilterForm"',
-              'id="callResultSection"',
-              `data-build="${release}"`,
-              './myfile/site-overhaul.css',
-              './myfile/site-overhaul.js',
-              './myfile/site-correction-v2.css',
-              './myfile/site-correction-v2.js',
-              './myfile/gradeOverrides.js',
-              './myfile/grade-classification.js',
-              './myfile/jquery-3.6.0.min.js',
-              './myfile/vis-network.min.js',
-              './myfile/html2canvas.min.js',
-              'value="まどドラ">Magia Exedra'
-          ];
-          for (const value of requiredText) {
-              if (!html.includes(value)) fail(`missing required production marker/reference: ${value}`);
-          }
-
-          const forbiddenText = [
-              'id="callcate"',
-              'attr.includes("学院")',
-              'ajax.googleapis.com/ajax/libs/jquery/1.7.1',
-              'visjs.github.io/vis-network',
-              './css/style.css',
-              './css/table.css',
-              './css/button.css',
-              './img/webp/ファビコン.webp',
-              './img/webp/apple_fabicon.webp',
-              'value="まどドラ">小圆前辈',
-              'data-kana="さおとめ せんせい"'
-          ];
-          for (const value of forbiddenText) {
-              if (html.includes(value)) fail(`obsolete production text remains: ${value}`);
-          }
-
-          if (count(/jquery-3\.6\.0\.min\.js/gi) !== 1) fail('jQuery must be loaded exactly once.');
-          if (count(/vis-network\.min\.js/gi) !== 1) fail('vis-network must be loaded exactly once.');
-          if (count(/site-overhaul\.js/gi) !== 1) fail('site-overhaul.js must be loaded exactly once.');
-          if (count(/site-correction-v2\.js/gi) !== 1) fail('site-correction-v2.js must be loaded exactly once.');
-          if (count(/site-correction-v2\.css/gi) !== 1) fail('site-correction-v2.css must be loaded exactly once.');
-
-          const localRefs = [...html.matchAll(/(?:src|href)=["'](\.\/[^"'#?]+)["']/g)]
-              .map((match) => match[1])
-              .filter((reference) => !reference.includes('${'));
-
-          for (const reference of [...new Set(localRefs)]) {
-              const target = path.join('public', reference.replace(/^\.\//, ''));
-              if (!fs.existsSync(target)) fail(`missing local resource: ${reference}`);
-          }
-
-          const names = fs.readFileSync('public/myfile/NAMELIST.txt', 'utf8');
-          if (names.includes('早乙女老师')) fail('NAMELIST still exposes the obsolete Saotome translation.');
-
-          const requiredFiles = [
-              'public/myfile/myCommon.js',
-              'public/myfile/mgirlNarrow.js',
-              'public/myfile/mgirlCallNarrow.js',
-              'public/myfile/mgirlAtSearch.js',
-              'public/myfile/gradeOverrides.js',
-              'public/myfile/grade-classification.js',
-              'public/myfile/site-overhaul.css',
-              'public/myfile/site-overhaul.js',
-              'public/myfile/site-correction-v2.css',
-              'public/myfile/site-correction-v2.js',
-              'public/myfile/jquery-3.6.0.min.js',
-              'public/myfile/vis-network.min.js',
-              'public/myfile/html2canvas.min.js',
-              'public/build-info.json',
-              'public/__acceptance.html'
-          ];
-          for (const file of requiredFiles) {
-              if (!fs.existsSync(file)) fail(`required production file missing: ${file}`);
-          }
-
-          const buildInfo = JSON.parse(fs.readFileSync('public/build-info.json', 'utf8'));
-          if (buildInfo.release !== release) fail(`build-info release mismatch: ${buildInfo.release}`);
-          if (buildInfo.deploymentTarget !== 'magireco-call-search-cn.pages.dev') fail('unexpected deployment target');
-
-          const correctionJs = fs.readFileSync('public/myfile/site-correction-v2.js', 'utf8');
-          const correctionCss = fs.readFileSync('public/myfile/site-correction-v2.css', 'utf8');
-          const acceptance = fs.readFileSync('public/__acceptance.html', 'utf8');
-          for (const marker of ['relationship-table-viewport', 'height-chart-viewport-v2', 'height-chart-stage-v2']) {
-              if (!correctionJs.includes(marker) && !correctionCss.includes(marker)) {
-                  fail(`V2 correction marker missing: ${marker}`);
-              }
-          }
-          if (!acceptance.includes(`const EXPECTED_RELEASE = '${release}';`)) fail('acceptance harness release mismatch');
-          if (!acceptance.includes('data-acceptance="pending"')) fail('acceptance harness state marker missing');
-
-          if (failed) process.exit(1);
-          console.log(`Static validation passed: ${ids.length} unique IDs, ${characterCount} characters, ${localRefs.length} local references.`);
-          JS
-
-      - name: Validate all production files before browser acceptance
+      - name: Validate syntax and static production invariants
         shell: bash
         run: |
           set -euo pipefail
           node scripts/validate-site.js
+          node --check public/myfile/site-overhaul.js
           node --check public/myfile/site-correction-v2.js
 
           python3 <<'PY'
           from pathlib import Path
           import re
-
           html = Path('public/__acceptance.html').read_text(encoding='utf-8')
-          matches = re.findall(r'<script>([\s\S]*?)</script>', html, flags=re.IGNORECASE)
-          if len(matches) != 1:
-              raise SystemExit(f'Expected exactly one inline acceptance script, found {len(matches)}.')
-          Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
+          scripts = re.findall(r'<script>([\s\S]*?)</script>', html, flags=re.IGNORECASE)
+          if len(scripts) != 1:
+              raise SystemExit(f'Expected one inline acceptance script, found {len(scripts)}.')
+          Path('/tmp/acceptance-inline.js').write_text(scripts[0], encoding='utf-8')
           PY
           node --check /tmp/acceptance-inline.js
 
-      - name: Run local mobile and desktop acceptance before publishing
+      - name: Run fail-closed mobile and desktop browser acceptance
         shell: bash
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
-          if [ -z "$CHROME" ]; then
-            echo 'No Chromium-compatible browser found on the runner.' >&2
-            exit 1
-          fi
+          test -n "$CHROME"
           echo "Using browser: $CHROME"
 
           python3 -m http.server 8000 --directory public >/tmp/magireco-http.log 2>&1 &
           server_pid=$!
           trap 'kill $server_pid 2>/dev/null || true' EXIT
           for attempt in $(seq 1 60); do
-            if curl --fail --silent http://127.0.0.1:8000/ >/dev/null; then
-              break
-            fi
+            curl --fail --silent http://127.0.0.1:8000/ >/dev/null && break
             sleep 0.25
           done
           curl --fail --silent http://127.0.0.1:8000/ >/dev/null
 
-          run_dump() {
-            local name="$1"
-            local size="$2"
-            local mode="$3"
+          run_browser() {
+            local operation="$1" name="$2" size="$3" mode="$4"
             local profile
             profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
             "$CHROME" \
@@ -349,55 +196,28 @@ jobs:
               --user-data-dir="$profile" \
               --window-size="$size" \
               --virtual-time-budget=35000 \
-              --dump-dom "http://127.0.0.1:8000/__acceptance.html?mode=${mode}&verify=${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)" \
-              > "/tmp/${name}.html"
-          }
-
-          capture() {
-            local name="$1"
-            local size="$2"
-            local mode="$3"
-            local profile
-            profile="$(mktemp -d "/tmp/${name}-profile-XXXXXX")"
-            "$CHROME" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --disable-dev-shm-usage \
-              --disable-background-networking \
-              --disable-component-update \
-              --disable-default-apps \
-              --disable-extensions \
-              --disable-sync \
-              --metrics-recording-only \
-              --mute-audio \
-              --no-first-run \
-              --run-all-compositor-stages-before-draw \
-              --user-data-dir="$profile" \
-              --window-size="$size" \
-              --virtual-time-budget=35000 \
-              --screenshot="/tmp/${name}.png" \
+              "$operation" \
               "http://127.0.0.1:8000/__acceptance.html?mode=${mode}&verify=${GITHUB_SHA}-${GITHUB_RUN_ID}-$(date +%s%N)"
-            test -s "/tmp/${name}.png"
           }
 
-          run_dump local-mobile-full '390,844' full
-          run_dump local-desktop-full '1440,900' full
+          run_browser --dump-dom local-mobile-full '390,844' full > /tmp/local-mobile-full.html
+          run_browser --dump-dom local-desktop-full '1440,900' full > /tmp/local-desktop-full.html
+          run_browser --screenshot=/tmp/local-mobile-relationship.png local-mobile-relationship '390,844' relationship
+          run_browser --screenshot=/tmp/local-mobile-height.png local-mobile-height '390,844' height
+          run_browser --screenshot=/tmp/local-desktop-relationship.png local-desktop-relationship '1440,900' relationship
+          run_browser --screenshot=/tmp/local-desktop-height.png local-desktop-height '1440,900' height
 
-          capture local-mobile-relationship '390,844' relationship
-          capture local-mobile-height '390,844' height
-          capture local-desktop-relationship '1440,900' relationship
-          capture local-desktop-height '1440,900' height
+          for report in /tmp/local-mobile-full.html /tmp/local-desktop-full.html; do
+            grep -Fq 'data-acceptance="pass"' "$report"
+            grep -Fq '"state": "pass"' "$report"
+            grep -Fq '关系表行顺序保持实际点击顺序' "$report"
+            grep -Fq '关系表列顺序保持实际点击顺序' "$report"
+          done
 
-          grep -Fq 'data-acceptance="pass"' /tmp/local-mobile-full.html
-          grep -Fq '"state": "pass"' /tmp/local-mobile-full.html
-          grep -Fq 'data-acceptance="pass"' /tmp/local-desktop-full.html
-          grep -Fq '"state": "pass"' /tmp/local-desktop-full.html
-
-          echo 'Local mobile acceptance report:'
-          grep -A120 -F 'id="acceptance-status"' /tmp/local-mobile-full.html | tail -120 || true
-          echo 'Local desktop acceptance report:'
-          grep -A120 -F 'id="acceptance-status"' /tmp/local-desktop-full.html | tail -120 || true
+          echo 'Mobile acceptance report:'
+          grep -A160 -F 'id="acceptance-status"' /tmp/local-mobile-full.html | tail -160 || true
+          echo 'Desktop acceptance report:'
+          grep -A160 -F 'id="acceptance-status"' /tmp/local-desktop-full.html | tail -160 || true
 
       - name: Upload pre-publication acceptance evidence
         if: always()
@@ -412,10 +232,12 @@ jobs:
             /tmp/local-mobile-height.png
             /tmp/local-desktop-relationship.png
             /tmp/local-desktop-height.png
+            public/myfile/site-overhaul.js
+            public/myfile/site-correction-v2.js
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Commit only the accepted production release
+      - name: Commit and publish only the accepted production release
         shell: bash
         run: |
           set -euo pipefail
@@ -430,10 +252,9 @@ jobs:
           git add \
             public/index.html \
             public/build-info.json \
+            public/myfile/site-overhaul.js \
             public/myfile/site-correction-v2.css \
-            public/myfile/site-correction-v2.js \
-            public/__acceptance.html \
-            scripts/validate-site.js
+            public/myfile/site-correction-v2.js
 
           if git diff --cached --quiet; then
             echo 'Accepted production files are already current.'
