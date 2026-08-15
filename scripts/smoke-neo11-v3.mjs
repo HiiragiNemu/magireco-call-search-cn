@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core';
 
 const BASE_URL = process.env.BASE_URL || process.env.TEST_URL || 'http://127.0.0.1:8000';
 const CHROME_PATH = process.env.CHROME_PATH || process.env.CHROME || '/usr/bin/google-chrome';
-const EXPECTED_RELEASE = 'neo11-mobile-interaction-v3-20260816';
+const EXPECTED_RELEASE = 'neo11-height-guide-v4-20260816';
 
 function assert(condition, message, details = undefined) {
   if (!condition) {
