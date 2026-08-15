@@ -62,16 +62,13 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
 
 
 def school_checkbox(japanese: str, chinese: str) -> str:
-    return (
-        '\n\t\t\t\t<label class="at">\n'
-        '\t\t\t\t\t<input type="checkbox" class="at_attribute" name="at_attribute"\n'
-        '\t\t\t\t\t\t   onchange="magicalGirlAttributeSearch(\'call\'); '
-        "if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') "
-        "{ displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }"'
-'
-        f'\t\t\t\t\t\t   value="{japanese}">{chinese}\n'
-        '\t\t\t\t</label>\n'
-    )
+    return f"""
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') {{ displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }}"
+						   value="{japanese}">{chinese}
+				</label>
+"""
 
 
 def add_missing_school_filters(text: str) -> str:
@@ -202,7 +199,7 @@ def update_audit_source() -> None:
     text = path.read_text(encoding="utf-8")
     mapping = "EXPECTED_ATTRIBUTE_LABELS: dict[str, str] = " + json.dumps(
         EXPECTED_ATTRIBUTE_LABELS, ensure_ascii=False, indent=4
-    ).replace("true", "True").replace("false", "False").replace("null", "None")
+    )
     start = text.find("EXPECTED_ATTRIBUTE_LABELS: dict[str, str] = {")
     end = text.find("\n\nIMAGE_ALIASES", start)
     if start < 0 or end < 0:
