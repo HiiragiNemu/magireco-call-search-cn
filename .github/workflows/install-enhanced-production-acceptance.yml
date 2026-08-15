@@ -1,0 +1,147 @@
+name: Install enhanced production acceptance
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/install-enhanced-production-acceptance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decode and validate enhanced acceptance harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat <<'B64' | tr -d '\r\n ' | base64 -d | gzip -d > public/__acceptance.html
+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
+B64
+          test "$(sha256sum public/__acceptance.html | awk '{print $1}')" = '1b61d6e225f1baf6e76306c41c5e943fb1566f60ece73e7aae27a28f4ed857c3'
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('public/__acceptance.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script>([\s\S]*?)</script>', html, flags=re.IGNORECASE)
+          if len(scripts) != 1:
+              raise SystemExit(f'Expected one inline script, found {len(scripts)}.')
+          Path('/tmp/enhanced-acceptance.js').write_text(scripts[0], encoding='utf-8')
+          PY
+          node --check /tmp/enhanced-acceptance.js
+          grep -Fq '片假名搜索与平假名统一' public/__acceptance.html
+          grep -Fq '五种双击筛选模式完整' public/__acceptance.html
+          grep -Fq '右侧底部浮动按钮可以滚动到页面下方' public/__acceptance.html
+
+      - name: Commit the enhanced acceptance harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'HiiragiNemu'
+          git config user.email '128921071+HiiragiNemu@users.noreply.github.com'
+          git add public/__acceptance.html
+          if git diff --cached --quiet; then
+            echo 'Enhanced acceptance harness is already current.'
+            exit 0
+          fi
+          git commit -m 'Expand production acceptance coverage'
+          git push origin HEAD:main
