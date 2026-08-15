@@ -1,0 +1,65 @@
+name: Repair height-guide V4 edge visibility
+
+on:
+  push:
+    branches:
+      - fix/height-guide-v4-20260816
+    paths:
+      - .github/workflows/repair-height-guide-v4-visibility.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-guide-v4-20260816
+          fetch-depth: 0
+
+      - name: Treat only point centres between the rulers as visible
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          js_path = Path('public/myfile/site-correction-v4.js')
+          js = js_path.read_text(encoding='utf-8')
+          old = """      const intersectsVisiblePlot = pointRect.right > geometry.leftScreen + 1
+        && pointRect.left < geometry.rightScreen - 1;"""
+          new = """      const intersectsVisiblePlot = pointCenterScreen >= geometry.leftScreen + 1
+        && pointCenterScreen <= geometry.rightScreen - 1;"""
+          if old not in js:
+              raise SystemExit('V4 visibility source pattern not found.')
+          js = js.replace(old, new, 1)
+          js_path.write_text(js, encoding='utf-8')
+
+          test_path = Path('scripts/smoke-height-guide-v4.mjs')
+          test = test_path.read_text(encoding='utf-8')
+          old_test = """      const visible = pointRect.right > leftBoundary + 1 && pointRect.left < rightBoundary - 1;
+      if (!visible) {"""
+          new_test = """      const pointCenter = pointRect.left + pointRect.width / 2;
+      const visible = pointCenter >= leftBoundary + 1 && pointCenter <= rightBoundary - 1;
+      if (!visible) {"""
+          if old_test not in test:
+              raise SystemExit('V4 visibility test pattern not found.')
+          test = test.replace(old_test, new_test, 1)
+          test_path.write_text(test, encoding='utf-8')
+          PY
+          node --check public/myfile/site-correction-v4.js
+          node --check scripts/smoke-height-guide-v4.mjs
+
+      - name: Commit visibility correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/site-correction-v4.js scripts/smoke-height-guide-v4.mjs
+          git commit -m 'Use point centres for viewport height-guide visibility'
+          git push origin HEAD:fix/height-guide-v4-20260816
