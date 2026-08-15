@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="按话数统计魔法纪录角色之间共同出场次数。">
+  <title>魔法纪录共同出场次数排行</title>
+  <link rel="stylesheet" href="./myfile/tools-suite.css">
+</head>
+<body class="suite-page" data-build="integrated-tools-v5-20260816" data-suite-tool="attendance">
+  <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
+  <main class="suite-shell" data-suite-nav-anchor>
+    <header class="suite-hero">
+      <span class="suite-badge">魔法纪录 · 中文整合工具</span>
+      <h1>共同出场次数排行</h1>
+      <p>选择一名角色，按故事话数统计与她共同出场的角色。界面统一使用本站中文角色名，查询仍使用原始日文角色键，避免中文化破坏数据匹配。</p>
+    </header>
+
+    <section class="suite-panel" aria-labelledby="attendance-character-title">
+      <h2 id="attendance-character-title">选择基准角色</h2>
+      <div class="suite-grid two">
+        <label class="suite-field" for="attendanceFilter">
+          <span>角色名筛选</span>
+          <input class="suite-input" id="attendanceFilter" type="search" spellcheck="false" placeholder="中文、日文、假名或罗马音；空格表示 OR">
+        </label>
+        <div class="suite-field">
+          <span>当前选择</span>
+          <div id="attendanceSelected" class="suite-selected-summary">尚未选择角色</div>
+          <button type="button" id="attendanceClear" class="suite-button secondary">清除选择和排行</button>
+        </div>
+      </div>
+      <p id="attendanceCharacterCount" class="suite-status">正在加载角色目录…</p>
+      <div id="attendanceGrid" class="suite-character-grid" aria-label="角色列表"></div>
+      <div id="attendanceStatus" class="suite-status" role="status" aria-live="polite">点击任意角色即可生成排行。</div>
+    </section>
+
+    <section id="attendanceResults" class="suite-panel suite-results" aria-labelledby="attendance-results-title">
+      <h2 id="attendance-results-title">排行结果</h2>
+      <div id="attendanceResultsBody" class="suite-notice">尚未选择角色。</div>
+    </section>
+
+    <footer class="suite-footer">次数表示原数据中的共同出场话数，不代表人物关系强度。</footer>
+  </main>
+  <script src="./myfile/tools-suite.js"></script>
+  <script src="./myfile/attendance-app.js"></script>
+</body>
+</html>
