@@ -1,0 +1,845 @@
+name: Apply mobile overhaul to production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-mobile-overhaul.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.repository == 'HiiragiNemu/magireco-call-search-cn'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify staged payload and configure Git
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d .automation/mobile-overhaul
+          test -f .automation/mobile-overhaul/site-overhaul.js
+          test -f public/index.html
+          git config user.name "HiiragiNemu"
+          git config user.email "128921071+HiiragiNemu@users.noreply.github.com"
+
+      - name: Stage 1 - install canonical-name, search and grade fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cp .automation/mobile-overhaul/myCommon.js public/myfile/myCommon.js
+          cp .automation/mobile-overhaul/mgirlNarrow.js public/myfile/mgirlNarrow.js
+          cp .automation/mobile-overhaul/mgirlCallNarrow.js public/myfile/mgirlCallNarrow.js
+          cp .automation/mobile-overhaul/mgirlAtSearch.js public/myfile/mgirlAtSearch.js
+          cp .automation/mobile-overhaul/gradeOverrides.js public/myfile/gradeOverrides.js
+
+          cat > public/myfile/grade-classification.js <<'JS'
+          // Exact grade classification. School names are never used to infer a grade.
+          (function (global) {
+              'use strict';
+
+              const U = global.MagirecoNameUtils;
+              if (!U || typeof callTable === 'undefined' || typeof charaAttribute === 'undefined') return;
+
+              const exact = new Map([
+                  ['初一', ['中1', '中学生']],
+                  ['初二', ['中2', '中学生']],
+                  ['初三', ['中3', '中学生']],
+                  ['中1', ['中1', '中学生']],
+                  ['中2', ['中2', '中学生']],
+                  ['中3', ['中3', '中学生']],
+                  ['高一', ['高1', '高校生']],
+                  ['高二', ['高2', '高校生']],
+                  ['高三', ['高3', '高校生']],
+                  ['高1', ['高1', '高校生']],
+                  ['高2', ['高2', '高校生']],
+                  ['高3', ['高3', '高校生']]
+              ]);
+
+              function classify(rawValue) {
+                  const raw = String(rawValue || '').trim();
+                  const result = new Set();
+
+                  if (exact.has(raw)) {
+                      exact.get(raw).forEach((value) => result.add(value));
+                      return result;
+                  }
+
+                  if (/^小/u.test(raw)) {
+                      result.add('小学生');
+                  } else if (/^(?:初|中)[一1]/u.test(raw)) {
+                      result.add('中1');
+                      result.add('中学生');
+                  } else if (/^(?:初|中)[二2]/u.test(raw)) {
+                      result.add('中2');
+                      result.add('中学生');
+                  } else if (/^(?:初|中)[三3]/u.test(raw)) {
+                      result.add('中3');
+                      result.add('中学生');
+                  } else if (/^高[一1]/u.test(raw)) {
+                      result.add('高1');
+                      result.add('高校生');
+                  } else if (/^高[二2]/u.test(raw)) {
+                      result.add('高2');
+                      result.add('高校生');
+                  } else if (/^高[三3]/u.test(raw)) {
+                      result.add('高3');
+                      result.add('高校生');
+                  } else if (['大1', '浪人生', '专门生', '成人?'].includes(raw)) {
+                      result.add('その他');
+                  }
+
+                  if (result.size === 0) result.add('学年不明');
+                  return result;
+              }
+
+              function addAttributes(japaneseName, attributes) {
+                  for (const [versionedName, target] of charaAttribute) {
+                      if (!U.variantBelongsTo(versionedName, japaneseName)) continue;
+                      attributes.forEach((attribute) => target.add(attribute));
+                  }
+              }
+
+              for (const [longKey, details] of callTable) {
+                  const japaneseName = U.getJapaneseNameFromValue(longKey);
+                  if (!japaneseName || !(details instanceof Map)) continue;
+
+                  const attributes = classify(details.get('学年'));
+                  const override = global.EXPLICIT_GRADE_ATTRIBUTES instanceof Map
+                      ? global.EXPLICIT_GRADE_ATTRIBUTES.get(japaneseName)
+                      : null;
+
+                  if (override) {
+                      attributes.delete('学年不明');
+                      override.forEach((attribute) => attributes.add(attribute));
+                  }
+
+                  addAttributes(japaneseName, attributes);
+              }
+          })(window);
+          JS
+
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('public/index.html')
+          text = path.read_text(encoding='utf-8')
+
+          if text.count('<form id="callcate">') != 1:
+              raise SystemExit('Expected exactly one legacy call filter form.')
+          text = text.replace('<form id="callcate">', '<form id="callFilterForm">', 1)
+
+          if text.count('data-kana="さおとめ せんせい"') != 1:
+              raise SystemExit('Expected the legacy Saotome kana alias exactly once.')
+          text = text.replace('data-kana="さおとめ せんせい"', 'data-kana="さおとめ かずこ"', 1)
+
+          needle = '<script src="./myfile/charaAt.js"></script>'
+          if text.count(needle) != 1:
+              raise SystemExit('Expected one charaAt script reference.')
+          grade_scripts = (
+              needle
+              + '\n\t\t\t<script src="./myfile/gradeOverrides.js"></script>'
+              + '\n\t\t\t<script src="./myfile/grade-classification.js"></script>'
+          )
+          text = text.replace(needle, grade_scripts, 1)
+
+          old_grade_block = re.compile(
+              r'// 1\. 创建一个映射表.*?(?=\s*//通过函数调用用电子表格创建的称呼哈希文件。)',
+              re.S
+          )
+          text, count = old_grade_block.subn(
+              '// 年级分类由 grade-classification.js 按明确数据和人工核验表处理。\n',
+              text,
+              count=1
+          )
+          if count != 1:
+              raise SystemExit('Could not remove the legacy school-name grade inference block.')
+
+          path.write_text(text, encoding='utf-8')
+
+          names = Path('public/myfile/NAMELIST.txt')
+          if names.exists():
+              content = names.read_text(encoding='utf-8')
+              content = content.replace('早乙女老师', '早乙女和子')
+              names.write_text(content, encoding='utf-8')
+          PY
+
+          node --check public/myfile/myCommon.js
+          node --check public/myfile/mgirlNarrow.js
+          node --check public/myfile/mgirlCallNarrow.js
+          node --check public/myfile/mgirlAtSearch.js
+          node --check public/myfile/gradeOverrides.js
+          node --check public/myfile/grade-classification.js
+
+          grep -q 'id="callFilterForm"' public/index.html
+          grep -q 'data-kana="さおとめ かずこ"' public/index.html
+          if grep -q 'attr.includes("学院")' public/index.html; then
+            echo "Legacy academy-to-high-school inference remains." >&2
+            exit 1
+          fi
+
+          git add public/index.html public/myfile
+          git commit -m "Fix character filters and exact grade classification"
+
+          git branch -f rollback/core-fixes-only-20260815 HEAD
+          git push --force origin HEAD:refs/heads/rollback/core-fixes-only-20260815
+
+      - name: Stage 2 - install responsive relationship and height renderers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cp .automation/mobile-overhaul/site-overhaul.css public/myfile/site-overhaul.css
+          cp .automation/mobile-overhaul/site-overhaul.js public/myfile/site-overhaul.js
+
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('public/index.html')
+          text = path.read_text(encoding='utf-8')
+
+          css_needle = '\t<link rel="stylesheet" href="./myfile/hamburgerMenu.css">'
+          css_insert = css_needle + '\n\t<link rel="stylesheet" href="./myfile/site-overhaul.css">'
+          if text.count(css_needle) != 1:
+              raise SystemExit('Expected one hamburger stylesheet reference.')
+          text = text.replace(css_needle, css_insert, 1)
+
+          canvas_needle = '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>'
+          canvas_insert = canvas_needle + '\n<script src="./myfile/site-overhaul.js"></script>'
+          if text.count(canvas_needle) != 1:
+              raise SystemExit('Expected one html2canvas reference.')
+          text = text.replace(canvas_needle, canvas_insert, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          node --check public/myfile/site-overhaul.js
+          grep -q './myfile/site-overhaul.css' public/index.html
+          grep -q './myfile/site-overhaul.js' public/index.html
+
+          git add public/index.html public/myfile/site-overhaul.css public/myfile/site-overhaul.js
+          git commit -m "Add mobile relationship scrolling and scalable height charts"
+
+          git branch -f rollback/pre-html-normalization-20260815 HEAD
+          git push --force origin HEAD:refs/heads/rollback/pre-html-normalization-20260815
+
+      - name: Stage 3 - normalize production HTML and vendor runtime dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cp NEW/vis-network.min.js public/myfile/vis-network.min.js
+
+          curl --fail --location --retry 3 \
+            https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js \
+            -o public/myfile/jquery-3.6.0.min.js \
+            || curl --fail --location --retry 3 \
+              https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js \
+              -o public/myfile/jquery-3.6.0.min.js
+
+          curl --fail --location --retry 3 \
+            https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js \
+            -o public/myfile/html2canvas.min.js \
+            || curl --fail --location --retry 3 \
+              https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js \
+              -o public/myfile/html2canvas.min.js
+
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('public/index.html')
+          text = path.read_text(encoding='utf-8')
+
+          text = re.sub(r'^\s*<link rel="icon"[^>]*>\s*\n?', '', text, flags=re.M)
+          text = re.sub(r'^\s*<link rel="apple-touch-icon"[^>]*>\s*\n?', '', text, flags=re.M)
+
+          top_runtime = re.compile(
+              r'\s*<script src="https://ajax\.googleapis\.com/ajax/libs/jquery/1\.7\.1/jquery\.min\.js"></script>'
+              r'\s*<!-- 读取魔法少女筛选的javascript方法-->'
+              r'\s*<script src="\./myfile/mgirlNarrow\.js"></script>',
+              re.S
+          )
+          text, count = top_runtime.subn('', text, count=1)
+          if count != 1:
+              raise SystemExit('Could not remove the early duplicate jQuery/filter scripts.')
+
+          nested_document = re.compile(
+              r'\s*<!DOCTYPE html>\s*<html>\s*<head>.*?</head>\s*<body>\s*<div id="callcate">',
+              re.S | re.I
+          )
+          replacement = (
+              '\n\t\t<script src="./myfile/jquery-3.6.0.min.js"></script>'
+              '\n\t\t<script src="./myfile/vis-network.min.js"></script>'
+              '\n\t\t<section id="callResultSection">'
+          )
+          text, count = nested_document.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('Could not replace the nested HTML document.')
+
+          marker = '<!-- 显示表格 -->'
+          marker_index = text.find(marker)
+          if marker_index < 0:
+              raise SystemExit('Could not find the relationship table marker.')
+          close_index = text.rfind('</div>', 0, marker_index)
+          if close_index < 0:
+              raise SystemExit('Could not find the result-section closing div.')
+          text = text[:close_index] + '</section>' + text[close_index + len('</div>'):]
+
+          text = re.sub(
+              r'\s*<script src="https://visjs\.github\.io/vis-network/standalone/umd/vis-network\.min\.js"></script>',
+              '',
+              text
+          )
+          text = text.replace(
+              '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>',
+              '<script src="./myfile/html2canvas.min.js"></script>'
+          )
+
+          legacy_height = re.compile(
+              r'<script>\s*let isHeightView = false;.*?</script>\s*'
+              r'(?=<script src="\./myfile/html2canvas\.min\.js"></script>)',
+              re.S
+          )
+          text, count = legacy_height.subn(
+              '<script>window.isHeightView = false;</script>\n',
+              text,
+              count=1
+          )
+          if count != 1:
+              raise SystemExit('Could not remove the obsolete height renderer.')
+
+          text = text.replace('scrollTop: $("#callcate").offset().top', 'scrollTop: 0')
+          text = re.sub(r'\s*<div id="chart-tooltip" class="chart-tooltip"></div>\s*', '\n', text)
+
+          def retain_first(source, pattern):
+              matches = list(re.finditer(pattern, source, re.I))
+              for match in reversed(matches[1:]):
+                  source = source[:match.start()] + source[match.end():]
+              return source
+
+          def retain_last(source, pattern):
+              matches = list(re.finditer(pattern, source, re.I))
+              for match in reversed(matches[:-1]):
+                  source = source[:match.start()] + source[match.end():]
+              return source
+
+          text = retain_first(text, r'<!DOCTYPE html>')
+          text = retain_first(text, r'<html\b[^>]*>')
+          text = retain_first(text, r'<head\b[^>]*>')
+          text = retain_first(text, r'</head\s*>')
+          text = retain_first(text, r'<body\b[^>]*>')
+          text = retain_last(text, r'</body\s*>')
+          text = retain_last(text, r'</html\s*>')
+
+          text, count = re.subn(
+              r'<body\b[^>]*>',
+              '<body data-build="mobile-overhaul-20260816">',
+              text,
+              count=1,
+              flags=re.I
+          )
+          if count != 1:
+              raise SystemExit('Could not add the production build marker.')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          mkdir -p scripts
+
+          cat > scripts/validate-site.js <<'JS'
+          'use strict';
+
+          const fs = require('fs');
+          const path = require('path');
+
+          function fail(message) {
+              console.error(`VALIDATION ERROR: ${message}`);
+              process.exitCode = 1;
+          }
+
+          const htmlPath = path.join('public', 'index.html');
+          const html = fs.readFileSync(htmlPath, 'utf8');
+
+          function count(pattern) {
+              return (html.match(pattern) || []).length;
+          }
+
+          const expectedCounts = [
+              [/<!DOCTYPE html>/gi, 1, 'doctype'],
+              [/<html\b[^>]*>/gi, 1, 'opening html'],
+              [/<\/html\s*>/gi, 1, 'closing html'],
+              [/<head\b[^>]*>/gi, 1, 'opening head'],
+              [/<\/head\s*>/gi, 1, 'closing head'],
+              [/<body\b[^>]*>/gi, 1, 'opening body'],
+              [/<\/body\s*>/gi, 1, 'closing body']
+          ];
+          for (const [pattern, expected, label] of expectedCounts) {
+              const actual = count(pattern);
+              if (actual !== expected) fail(`${label}: expected ${expected}, found ${actual}`);
+          }
+
+          const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map((match) => match[1]);
+          const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+          if (duplicateIds.length) fail(`duplicate ids: ${duplicateIds.join(', ')}`);
+
+          const requiredText = [
+              'id="callFilterForm"',
+              'id="callResultSection"',
+              'data-build="mobile-overhaul-20260816"',
+              './myfile/site-overhaul.css',
+              './myfile/site-overhaul.js',
+              './myfile/gradeOverrides.js',
+              './myfile/grade-classification.js',
+              './myfile/jquery-3.6.0.min.js',
+              './myfile/vis-network.min.js',
+              './myfile/html2canvas.min.js',
+              'value="まどドラ">Magia Exedra'
+          ];
+          for (const value of requiredText) {
+              if (!html.includes(value)) fail(`missing required production marker/reference: ${value}`);
+          }
+
+          const forbiddenText = [
+              'id="callcate"',
+              'attr.includes("学院")',
+              'ajax.googleapis.com/ajax/libs/jquery/1.7.1',
+              'visjs.github.io/vis-network',
+              './css/style.css',
+              './css/table.css',
+              './css/button.css',
+              './img/webp/ファビコン.webp',
+              './img/webp/apple_fabicon.webp',
+              'value="まどドラ">小圆前辈',
+              'data-kana="さおとめ せんせい"'
+          ];
+          for (const value of forbiddenText) {
+              if (html.includes(value)) fail(`obsolete production text remains: ${value}`);
+          }
+
+          if (count(/jquery-3\.6\.0\.min\.js/gi) !== 1) fail('jQuery must be loaded exactly once.');
+          if (count(/vis-network\.min\.js/gi) !== 1) fail('vis-network must be loaded exactly once.');
+          if (count(/site-overhaul\.js/gi) !== 1) fail('site-overhaul.js must be loaded exactly once.');
+
+          const localRefs = [...html.matchAll(/(?:src|href)=["'](\.\/[^"'#?]+)["']/g)]
+              .map((match) => match[1])
+              .filter((reference) => !reference.includes('${'));
+
+          for (const reference of [...new Set(localRefs)]) {
+              const target = path.join('public', reference.replace(/^\.\//, ''));
+              if (!fs.existsSync(target)) fail(`missing local resource: ${reference}`);
+          }
+
+          const names = fs.readFileSync('public/myfile/NAMELIST.txt', 'utf8');
+          if (names.includes('早乙女老师')) fail('NAMELIST still exposes the obsolete Saotome translation.');
+
+          const requiredFiles = [
+              'public/myfile/myCommon.js',
+              'public/myfile/mgirlNarrow.js',
+              'public/myfile/mgirlCallNarrow.js',
+              'public/myfile/mgirlAtSearch.js',
+              'public/myfile/gradeOverrides.js',
+              'public/myfile/grade-classification.js',
+              'public/myfile/site-overhaul.css',
+              'public/myfile/site-overhaul.js',
+              'public/myfile/jquery-3.6.0.min.js',
+              'public/myfile/vis-network.min.js',
+              'public/myfile/html2canvas.min.js',
+              'public/build-info.json'
+          ];
+          for (const file of requiredFiles) {
+              if (!fs.existsSync(file)) fail(`required production file missing: ${file}`);
+          }
+
+          if (!process.exitCode) {
+              console.log(`Static validation passed: ${ids.length} unique IDs, ${localRefs.length} local references.`);
+          }
+          JS
+
+          cat > scripts/smoke-site.mjs <<'JS'
+          import fs from 'node:fs';
+          import { spawn, execFileSync } from 'node:child_process';
+
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+          function assert(condition, message) {
+              if (!condition) throw new Error(message);
+          }
+
+          function findChrome() {
+              for (const command of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']) {
+                  try {
+                      return execFileSync('which', [command], { encoding: 'utf8' }).trim();
+                  } catch {
+                      // Try the next executable.
+                  }
+              }
+              throw new Error('No Chromium-compatible browser found on the runner.');
+          }
+
+          const chromePath = findChrome();
+          const chrome = spawn(chromePath, [
+              '--headless=new',
+              '--no-sandbox',
+              '--disable-gpu',
+              '--disable-dev-shm-usage',
+              '--remote-debugging-port=9222',
+              '--user-data-dir=/tmp/magireco-smoke-profile',
+              '--window-size=390,844',
+              'about:blank'
+          ], { stdio: ['ignore', 'ignore', 'pipe'] });
+
+          let chromeErrors = '';
+          chrome.stderr.on('data', (chunk) => {
+              chromeErrors += String(chunk);
+          });
+
+          async function getDebuggerPage() {
+              for (let attempt = 0; attempt < 80; attempt++) {
+                  try {
+                      const pages = await fetch('http://127.0.0.1:9222/json/list').then((response) => response.json());
+                      const page = pages.find((candidate) => candidate.type === 'page');
+                      if (page && page.webSocketDebuggerUrl) return page;
+                  } catch {
+                      // Chrome is still starting.
+                  }
+                  await sleep(125);
+              }
+              throw new Error('Chrome remote debugging endpoint did not become ready.');
+          }
+
+          const page = await getDebuggerPage();
+          const socket = new WebSocket(page.webSocketDebuggerUrl);
+          await new Promise((resolve, reject) => {
+              socket.addEventListener('open', resolve, { once: true });
+              socket.addEventListener('error', reject, { once: true });
+          });
+
+          let nextId = 1;
+          const pending = new Map();
+          const runtimeExceptions = [];
+
+          socket.addEventListener('message', (event) => {
+              const message = JSON.parse(String(event.data));
+              if (message.id && pending.has(message.id)) {
+                  const { resolve, reject } = pending.get(message.id);
+                  pending.delete(message.id);
+                  if (message.error) reject(new Error(JSON.stringify(message.error)));
+                  else resolve(message.result);
+                  return;
+              }
+              if (message.method === 'Runtime.exceptionThrown') {
+                  runtimeExceptions.push(message.params.exceptionDetails.text || 'Unknown runtime exception');
+              }
+          });
+
+          function send(method, params = {}) {
+              return new Promise((resolve, reject) => {
+                  const id = nextId++;
+                  pending.set(id, { resolve, reject });
+                  socket.send(JSON.stringify({ id, method, params }));
+              });
+          }
+
+          async function evaluate(expression) {
+              const result = await send('Runtime.evaluate', {
+                  expression,
+                  awaitPromise: true,
+                  returnByValue: true
+              });
+              if (result.exceptionDetails) {
+                  throw new Error(result.exceptionDetails.text || `Evaluation failed: ${expression}`);
+              }
+              return result.result.value;
+          }
+
+          try {
+              await send('Runtime.enable');
+              await send('Page.enable');
+              await send('Emulation.setDeviceMetricsOverride', {
+                  width: 390,
+                  height: 844,
+                  deviceScaleFactor: 1,
+                  mobile: true
+              });
+              await send('Page.navigate', { url: 'http://127.0.0.1:8000/' });
+
+              for (let attempt = 0; attempt < 100; attempt++) {
+                  const ready = await evaluate('document.readyState');
+                  if (ready === 'complete') break;
+                  await sleep(100);
+              }
+              await sleep(1000);
+
+              const initial = await evaluate(`(() => ({
+                  characters: document.querySelectorAll('input.MagicalChk[name="chara"]').length,
+                  duplicateIds: (() => {
+                      const ids = [...document.querySelectorAll('[id]')].map((element) => element.id);
+                      return [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+                  })(),
+                  build: document.body.dataset.build,
+                  hasUtils: !!window.MagirecoNameUtils,
+                  hasResponsiveRenderer: typeof window.drawNet_Table === 'function'
+              }))()`);
+              assert(initial.characters >= 180, `Expected at least 180 character selectors, got ${initial.characters}.`);
+              assert(initial.duplicateIds.length === 0, `Duplicate IDs at runtime: ${initial.duplicateIds.join(', ')}`);
+              assert(initial.build === 'mobile-overhaul-20260816', `Unexpected build marker: ${initial.build}`);
+              assert(initial.hasUtils && initial.hasResponsiveRenderer, 'Production utilities were not loaded.');
+
+              const search = await evaluate(`(() => {
+                  const input = document.getElementById('ndownword1');
+                  input.value = 'かずこ';
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                  const teacher = document.getElementById('早乙女和子');
+                  const teacherVisible = teacher && getComputedStyle(teacher.closest('label.girlbox')).display !== 'none';
+                  const visibleCount = [...document.querySelectorAll('label.girlbox')]
+                      .filter((label) => getComputedStyle(label).display !== 'none').length;
+                  return { teacherVisible, visibleCount };
+              })()`);
+              assert(search.teacherVisible, 'Searching かずこ did not find 早乙女和子.');
+              assert(search.visibleCount > 0 && search.visibleCount < initial.characters, 'Text search did not narrow the selector.');
+
+              const doubleFilter = await evaluate(`(() => {
+                  ndownReset('call');
+                  const first = document.querySelector('input.MagicalChk[name="chara"]');
+                  mgirlCallNarrow(first);
+                  return [...document.querySelectorAll('label.girlbox')]
+                      .filter((label) => getComputedStyle(label).display !== 'none').length;
+              })()`);
+              assert(doubleFilter >= 1, 'Double-click relationship filtering hid every character.');
+
+              await evaluate(`(() => {
+                  ndownReset('call');
+                  const boxes = [...document.querySelectorAll('input.MagicalChk[name="chara"]')];
+                  boxes.forEach((box) => { box.checked = false; });
+                  boxes.slice(0, 8).forEach((box) => { box.checked = true; });
+                  drawAndJump();
+                  return true;
+              })()`);
+              await sleep(700);
+
+              const relationship = await evaluate(`(() => {
+                  const host = document.getElementById('mytable');
+                  const table = document.getElementById('girltable');
+                  const before = host.scrollLeft;
+                  host.scrollLeft = host.scrollWidth;
+                  return {
+                      rows: table ? table.querySelectorAll('tbody tr').length : 0,
+                      headers: table ? table.querySelectorAll('thead th').length : 0,
+                      scrollWidth: host.scrollWidth,
+                      clientWidth: host.clientWidth,
+                      scrollLeft: host.scrollLeft,
+                      before,
+                      overflowX: getComputedStyle(host).overflowX,
+                      hint: !!host.querySelector('.relationship-scroll-hint'),
+                      networkScale: window.network && typeof window.network.getScale === 'function'
+                          ? window.network.getScale()
+                          : null
+                  };
+              })()`);
+              assert(relationship.rows === 8, `Expected 8 relationship rows, got ${relationship.rows}.`);
+              assert(relationship.headers === 11, `Expected 11 relationship headers, got ${relationship.headers}.`);
+              assert(relationship.scrollWidth > relationship.clientWidth, 'Mobile relationship table is not horizontally scrollable.');
+              assert(relationship.scrollLeft > 0, 'Horizontal scrolling could not move the relationship table.');
+              assert(['auto', 'scroll'].includes(relationship.overflowX), `Unexpected overflow-x: ${relationship.overflowX}`);
+              assert(relationship.hint, 'Mobile horizontal-scroll hint is missing.');
+              assert(Number.isFinite(relationship.networkScale), 'Relationship network did not initialize.');
+
+              const relationshipShot = await send('Page.captureScreenshot', {
+                  format: 'png',
+                  captureBeyondViewport: false
+              });
+              fs.writeFileSync('/tmp/mobile-relationship.png', Buffer.from(relationshipShot.data, 'base64'));
+
+              const grades = await evaluate(`(() => {
+                  const attrsFor = (name) => {
+                      const result = new Set();
+                      for (const [key, attrs] of charaAttribute) {
+                          if (MagirecoNameUtils.variantBelongsTo(key, name)) {
+                              attrs.forEach((value) => result.add(value));
+                          }
+                      }
+                      return [...result];
+                  };
+                  return {
+                      sena: attrsFor('瀬奈みこと'),
+                      koito: attrsFor('浅古小糸'),
+                      akira: attrsFor('行方晶')
+                  };
+              })()`);
+              assert(grades.sena.includes('中2') && grades.sena.includes('中学生'), '瀬奈みこと exact grade override failed.');
+              assert(!grades.sena.includes('高校生'), '瀬奈みこと was incorrectly inferred as a high-school student.');
+              assert(grades.koito.includes('中学生') && !grades.koito.includes('高校生'), '浅古小糸 grade override failed.');
+              assert(grades.akira.includes('中3') && grades.akira.includes('中学生'), '行方晶 exact grade override failed.');
+              assert(!grades.akira.includes('高校生'), '行方晶 was incorrectly inferred as a high-school student.');
+
+              await evaluate(`displayHeightChart('global', 'age')`);
+              await sleep(700);
+              const height = await evaluate(`(() => {
+                  const viewport = document.querySelector('.height-chart-viewport');
+                  const surface = document.querySelector('.height-chart-surface');
+                  const range = document.querySelector('[data-height-zoom-range]');
+                  if (range) {
+                      range.value = '45';
+                      range.dispatchEvent(new Event('input', { bubbles: true }));
+                  }
+                  return {
+                      viewport: !!viewport,
+                      controls: !!document.querySelector('.height-zoom-controls'),
+                      points: document.querySelectorAll('.height-point').length,
+                      zoom: surface ? surface.style.zoom : '',
+                      scrollable: viewport ? viewport.scrollWidth >= viewport.clientWidth : false
+                  };
+              })()`);
+              assert(height.viewport && height.controls, 'Responsive height chart controls were not rendered.');
+              assert(height.points > 0, 'Global height chart contains no character points.');
+              assert(height.zoom === '0.45', `Height chart zoom control failed, got ${height.zoom}.`);
+              assert(height.scrollable, 'Height chart viewport is not scrollable/adaptive.');
+
+              const heightShot = await send('Page.captureScreenshot', {
+                  format: 'png',
+                  captureBeyondViewport: false
+              });
+              fs.writeFileSync('/tmp/mobile-height.png', Buffer.from(heightShot.data, 'base64'));
+
+              assert(runtimeExceptions.length === 0, `Runtime exceptions: ${runtimeExceptions.join(' | ')}`);
+              console.log('Browser smoke test passed for 390x844 mobile viewport.');
+          } finally {
+              socket.close();
+              chrome.kill('SIGTERM');
+              await sleep(250);
+              if (runtimeExceptions.length || chrome.exitCode > 0) {
+                  console.error(chromeErrors.slice(-5000));
+              }
+          }
+          JS
+
+          cat > .github/workflows/site-validation.yml <<'YML'
+          name: Validate static site
+
+          on:
+            push:
+              branches:
+                - main
+            pull_request:
+
+          permissions:
+            contents: read
+
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Validate HTML, resources and JavaScript syntax
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    node scripts/validate-site.js
+                    for file in \
+                      public/myfile/myCommon.js \
+                      public/myfile/mgirlNarrow.js \
+                      public/myfile/mgirlCallNarrow.js \
+                      public/myfile/mgirlAtSearch.js \
+                      public/myfile/gradeOverrides.js \
+                      public/myfile/grade-classification.js \
+                      public/myfile/site-overhaul.js; do
+                      node --check "$file"
+                    done
+          YML
+
+          cat > public/build-info.json <<'JSON'
+          {
+            "release": "mobile-overhaul-20260816",
+            "productionEntry": "public/index.html",
+            "deploymentTarget": "magireco-call-search-cn.pages.dev",
+            "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
+            "rollbackCore": "rollback/core-fixes-only-20260815",
+            "rollbackBeforeHtmlNormalization": "rollback/pre-html-normalization-20260815",
+            "upstreamUpdateMode": "manual-static-only"
+          }
+          JSON
+
+          cat > .gitignore <<'EOF'
+          .vercel
+          __pycache__/
+          *.py[cod]
+          .DS_Store
+          Thumbs.db
+          .vscode/
+          .idea/
+          output.txt
+          *.tmp
+          *.bak
+          EOF
+
+          cat >> README.md <<'EOF'
+
+          ## 当前生产维护方式
+
+          - 正式入口：`public/index.html`
+          - 正式站点：`https://magireco-call-search-cn.pages.dev/`
+          - 数据更新：仅人工静态更新；不再从已停止维护的上游自动同步。
+          - 本地一致性检查：`node scripts/validate-site.js`
+          - GitHub Actions：`.github/workflows/site-validation.yml`
+          - 完整回滚：`rollback/pre-mobile-overhaul-20260815`
+          - 仅保留核心筛选与年级修复：`rollback/core-fixes-only-20260815`
+          - 保留移动端修复但撤销 HTML 结构整理：`rollback/pre-html-normalization-20260815`
+          EOF
+
+          rm -rf .automation
+          rm -f .github/workflows/temporary-grade-audit.yml
+          rm -f .github/workflows/apply-mobile-overhaul.yml
+          find . -maxdepth 1 -type f -name 'play filters*' -print -delete
+
+          node scripts/validate-site.js
+          for file in \
+            public/myfile/myCommon.js \
+            public/myfile/mgirlNarrow.js \
+            public/myfile/mgirlCallNarrow.js \
+            public/myfile/mgirlAtSearch.js \
+            public/myfile/gradeOverrides.js \
+            public/myfile/grade-classification.js \
+            public/myfile/site-overhaul.js; do
+            node --check "$file"
+          done
+
+      - name: Run mobile browser smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8000 --directory public >/tmp/magireco-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          node scripts/smoke-site.mjs
+
+      - name: Commit and push final production version
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A
+          git commit -m "Complete responsive production overhaul and validation"
+          git push origin HEAD:main
+          echo "FINAL_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Upload mobile smoke-test screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-overhaul-smoke-${{ env.FINAL_SHA }}
+          path: |
+            /tmp/mobile-relationship.png
+            /tmp/mobile-height.png
+          if-no-files-found: error
+          retention-days: 14
