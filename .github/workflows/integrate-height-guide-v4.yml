@@ -1,0 +1,172 @@
+name: Integrate height-guide V4
+
+on:
+  push:
+    branches:
+      - fix/height-guide-v4-20260816
+    paths:
+      - public/myfile/site-correction-v4.css
+      - public/myfile/site-correction-v4.js
+      - scripts/smoke-height-guide-v4.mjs
+      - .github/workflows/integrate-height-guide-v4.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: integrate-height-guide-v4
+  cancel-in-progress: false
+
+jobs:
+  integrate-test-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out V4 fix branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/height-guide-v4-20260816
+          fetch-depth: 0
+
+      - name: Integrate V4 into the production entry and release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+
+          release = 'neo11-height-guide-v4-20260816'
+
+          index_path = Path('public/index.html')
+          index = index_path.read_text(encoding='utf-8')
+          css_anchor = '\t<link rel="stylesheet" href="./myfile/site-correction-v3.css">'
+          css_ref = '\t<link rel="stylesheet" href="./myfile/site-correction-v4.css">'
+          js_anchor = '<script src="./myfile/site-correction-v3-height.js"></script>'
+          js_ref = '<script src="./myfile/site-correction-v4.js"></script>'
+          if index.count(css_anchor) != 1:
+              raise SystemExit(f'Expected one V3 CSS anchor, found {index.count(css_anchor)}')
+          if index.count(js_anchor) != 1:
+              raise SystemExit(f'Expected one V3 height anchor, found {index.count(js_anchor)}')
+          if css_ref not in index:
+              index = index.replace(css_anchor, css_anchor + '\n' + css_ref, 1)
+          if js_ref not in index:
+              index = index.replace(js_anchor, js_anchor + '\n' + js_ref, 1)
+          for old in ['neo11-mobile-interaction-v3-20260816', 'layout-correction-v2-20260816']:
+              index = index.replace(f'data-build="{old}"', f'data-build="{release}"')
+          if index.count(f'data-build="{release}"') != 1:
+              raise SystemExit('Production build marker was not updated exactly once.')
+          for marker in [css_ref.strip(), js_ref]:
+              if index.count(marker.split('href="')[-1].split('src="')[-1].split('"')[0]) != 1:
+                  raise SystemExit(f'Expected one production reference for {marker}')
+          index_path.write_text(index, encoding='utf-8')
+
+          info_path = Path('public/build-info.json')
+          info = json.loads(info_path.read_text(encoding='utf-8'))
+          info['release'] = release
+          info['rollbackBeforeHeightGuideV4'] = 'rollback/pre-height-guide-v4-20260816'
+          info['heightGuideDefaultMode'] = 'visible-nearest-ruler'
+          info['heightGuideOptionalModes'] = ['all-left', 'all-right']
+          info['resultJumpMode'] = 'stable-post-render-scroll'
+          info_path.write_text(json.dumps(info, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          acceptance_path = Path('public/__acceptance.html')
+          acceptance = acceptance_path.read_text(encoding='utf-8')
+          acceptance = acceptance.replace(
+              "const EXPECTED_RELEASE = 'neo11-mobile-interaction-v3-20260816';",
+              f"const EXPECTED_RELEASE = '{release}';"
+          )
+          acceptance = acceptance.replace(
+              "const EXPECTED_RELEASE = 'layout-correction-v2-20260816';",
+              f"const EXPECTED_RELEASE = '{release}';"
+          )
+          if acceptance.count(f"const EXPECTED_RELEASE = '{release}';") != 1:
+              raise SystemExit('Acceptance release marker was not updated exactly once.')
+          acceptance_path.write_text(acceptance, encoding='utf-8')
+
+          smoke_v3_path = Path('scripts/smoke-neo11-v3.mjs')
+          smoke_v3 = smoke_v3_path.read_text(encoding='utf-8')
+          smoke_v3 = smoke_v3.replace(
+              "const EXPECTED_RELEASE = 'neo11-mobile-interaction-v3-20260816';",
+              f"const EXPECTED_RELEASE = '{release}';"
+          )
+          if smoke_v3.count(f"const EXPECTED_RELEASE = '{release}';") != 1:
+              raise SystemExit('Neo11 regression release marker was not updated exactly once.')
+          smoke_v3_path.write_text(smoke_v3, encoding='utf-8')
+          PY
+
+      - name: Validate static files and JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-site.js
+          node --check public/myfile/site-correction-v4.js
+          node --check scripts/smoke-neo11-v3.mjs
+          node --check scripts/smoke-height-guide-v4.mjs
+
+      - name: Install browser driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Run complete local mobile and desktop acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME" ]; then
+            echo 'No Chromium-compatible browser found.' >&2
+            exit 1
+          fi
+          python3 -m http.server 8000 --directory public >/tmp/height-guide-v4-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 40); do
+            curl --fail --silent http://127.0.0.1:8000/ >/dev/null && break
+            sleep .25
+          done
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-neo11-v3.mjs | tee /tmp/neo11-v3-regression.txt
+          grep -Fq '"state": "pass"' /tmp/neo11-v3-regression.txt
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-height-guide-v4.mjs | tee /tmp/height-guide-v4-local-report.txt
+          grep -Fq '"state": "pass"' /tmp/height-guide-v4-local-report.txt
+
+      - name: Commit only the fully tested V4 integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            public/index.html \
+            public/build-info.json \
+            public/__acceptance.html \
+            scripts/smoke-neo11-v3.mjs
+          if git diff --cached --quiet; then
+            echo 'Height-guide V4 is already integrated and tested.'
+          else
+            git commit -m 'Integrate and validate viewport-aware height guides V4'
+            git push origin HEAD:fix/height-guide-v4-20260816
+          fi
+
+      - name: Upload pre-publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: height-guide-v4-prepublication-${{ github.sha }}
+          path: |
+            /tmp/neo11-v3-regression.txt
+            /tmp/height-guide-v4-local-report.txt
+            /tmp/neo11-v3-mobile.png
+            /tmp/neo11-v3-desktop.png
+            /tmp/height-guide-v4-mobile.png
+            /tmp/height-guide-v4-desktop.png
+            /tmp/height-guide-v4-http.log
+          if-no-files-found: warn
+          retention-days: 30
