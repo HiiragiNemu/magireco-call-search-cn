@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix/neo11-mobile-v3-20260816
   pull_request:
 
 permissions:
@@ -33,6 +34,13 @@ jobs:
           )
           if [ -f public/myfile/site-correction-v2.js ]; then
             files+=(public/myfile/site-correction-v2.js)
+          fi
+          if [ -f public/myfile/site-correction-v3-network.js ]; then
+            files+=(
+              public/myfile/site-correction-v3-network.js
+              public/myfile/site-correction-v3-height.js
+              scripts/smoke-neo11-v3.mjs
+            )
           fi
           for file in "${files[@]}"; do
             node --check "$file"
