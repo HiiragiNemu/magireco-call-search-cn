@@ -12,20 +12,40 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+
       - name: Validate HTML, resources and JavaScript syntax
         shell: bash
         run: |
           set -euo pipefail
           node scripts/validate-site.js
-          for file in \
-            public/myfile/myCommon.js \
-            public/myfile/mgirlNarrow.js \
-            public/myfile/mgirlCallNarrow.js \
-            public/myfile/mgirlAtSearch.js \
-            public/myfile/gradeOverrides.js \
-            public/myfile/grade-classification.js \
-            public/myfile/site-overhaul.js; do
+
+          files=(
+            public/myfile/myCommon.js
+            public/myfile/mgirlNarrow.js
+            public/myfile/mgirlCallNarrow.js
+            public/myfile/mgirlAtSearch.js
+            public/myfile/gradeOverrides.js
+            public/myfile/grade-classification.js
+            public/myfile/site-overhaul.js
+          )
+          if [ -f public/myfile/site-correction-v2.js ]; then
+            files+=(public/myfile/site-correction-v2.js)
+          fi
+          for file in "${files[@]}"; do
             node --check "$file"
           done
+
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('public/__acceptance.html').read_text(encoding='utf-8')
+          matches = re.findall(r'<script>([\s\S]*?)</script>', html, flags=re.IGNORECASE)
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one inline acceptance script, found {len(matches)}.')
+          Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
+          PY
+          node --check /tmp/acceptance-inline.js
