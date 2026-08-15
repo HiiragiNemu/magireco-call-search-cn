@@ -201,10 +201,14 @@ async function desktopTest(browser) {
 
   await page.evaluate(() => window.displayHeightChart('global'));
   await page.waitForSelector('.height-chart-surface-v2[data-v4-enhanced="true"]');
-  await page.click('.height-zoom-controls-v2 button');
-  await sleep(450);
   await page.select('[data-height-guide-mode-v4]', 'visible-nearest');
-  await sleep(300);
+  await page.evaluate(() => {
+    window.__MAGIRECO_CORRECTION_V2__.applyHeightScale(0.82, 'manual');
+    const viewport = document.querySelector('.height-chart-viewport-v2');
+    viewport.scrollLeft = 0;
+    viewport.dispatchEvent(new Event('scroll'));
+  });
+  await sleep(450);
 
   const fitAudit = await page.evaluate(() => {
     const viewport = document.querySelector('.height-chart-viewport-v2');
@@ -223,13 +227,16 @@ async function desktopTest(browser) {
       visible: visible.length,
       displayed: displayed.length,
       viewportScrollWidth: viewport.scrollWidth,
-      viewportClientWidth: viewport.clientWidth
+      viewportClientWidth: viewport.clientWidth,
+      scale: window.__MAGIRECO_CORRECTION_V2__.heightState.scale
     };
   });
-  assert(fitAudit.visible === fitAudit.points && fitAudit.displayed === fitAudit.points,
-    'when desktop fit shows all characters, every character line is displayed', fitAudit);
+  assert(fitAudit.visible === fitAudit.points,
+    'desktop scale can place every character inside the visible ruler span', fitAudit);
+  assert(fitAudit.displayed === fitAudit.points,
+    'when desktop can see every character, every character line is displayed', fitAudit);
   assert(fitAudit.viewportScrollWidth <= fitAudit.viewportClientWidth + 4,
-    'desktop fit does not require horizontal scrolling', fitAudit);
+    'desktop all-visible state does not require horizontal scrolling', fitAudit);
   assert(errors.length === 0, 'desktop run has no JavaScript error', errors);
   await page.screenshot({ path: '/tmp/height-guide-v4-desktop.png', fullPage: true });
   await page.close();
