@@ -26,8 +26,8 @@
       right: .45rem;
       bottom: .45rem;
       z-index: 2147483647;
-      max-width: min(32rem, calc(100vw - .9rem));
-      max-height: 32vh;
+      max-width: min(34rem, calc(100vw - .9rem));
+      max-height: 34vh;
       margin: 0;
       padding: .42rem .55rem;
       overflow: auto;
@@ -72,8 +72,8 @@
       };
 
       let finished = false;
-
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const normalizeText = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 
       function record(name, details = true) {
         report.checks.push({ name, details });
@@ -106,7 +106,9 @@
       function visible(element, win) {
         if (!element) return false;
         const style = win.getComputedStyle(element);
-        return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity || 1) !== 0;
+        return style.display !== 'none'
+          && style.visibility !== 'hidden'
+          && Number(style.opacity || 1) !== 0;
       }
 
       function setRange(input, preferredValue, win) {
@@ -118,6 +120,29 @@
         input.dispatchEvent(new win.Event('input', { bubbles: true }));
         input.dispatchEvent(new win.Event('change', { bubbles: true }));
         return value;
+      }
+
+      function dataSetCount(value) {
+        if (!value) return 0;
+        if (typeof value.getIds === 'function') return value.getIds().length;
+        if (typeof value.length === 'number') return value.length;
+        return 0;
+      }
+
+      function canonicalFromCheckbox(checkbox, win) {
+        const utils = win.MagirecoNameUtils;
+        if (utils && typeof utils.canonicalFromCheckbox === 'function') {
+          return utils.canonicalFromCheckbox(checkbox);
+        }
+        return checkbox ? (checkbox.id || checkbox.value || '') : '';
+      }
+
+      function setEquals(left, right) {
+        return left.size === right.size && [...left].every((value) => right.has(value));
+      }
+
+      function sortedSet(value) {
+        return [...value].sort((left, right) => String(left).localeCompare(String(right), 'zh-Hans-CN'));
       }
 
       function finish(state, payload) {
@@ -148,17 +173,71 @@
           () => doc.readyState === 'complete'
             && typeof win.drawAndJump === 'function'
             && typeof win.displayHeightChart === 'function'
-            && typeof win.ndownReset === 'function',
+            && typeof win.ndownReset === 'function'
+            && typeof win.mgirlCallNarrow === 'function'
+            && typeof win.mgirlNarrow === 'function',
           '生产页面或核心函数未能完成加载'
         );
-        await sleep(900);
+        await sleep(1000);
 
         const characterBoxes = [...doc.querySelectorAll('input.MagicalChk[name="chara"]')];
+        const girlLabels = [...doc.querySelectorAll('label.girlbox')];
         const allIds = [...doc.querySelectorAll('[id]')].map((element) => element.id);
         const duplicateIds = [...new Set(allIds.filter((id, index) => allIds.indexOf(id) !== index))];
         const exedraInput = doc.querySelector('input[value="まどドラ"]');
         const exedraLabel = exedraInput ? exedraInput.closest('label') : null;
-        const exedraText = exedraLabel ? exedraLabel.textContent.replace(/\s+/g, ' ').trim() : '';
+        const exedraText = exedraLabel ? normalizeText(exedraLabel.textContent) : '';
+
+        function clearSelections() {
+          for (const checkbox of characterBoxes) {
+            if (!checkbox.checked) continue;
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new win.Event('change', { bubbles: true }));
+          }
+        }
+
+        function filterVisibleCanonicalSet() {
+          return new Set(characterBoxes
+            .filter((checkbox) => {
+              const label = checkbox.closest('label.girlbox');
+              return label && label.style.display !== 'none';
+            })
+            .map((checkbox) => canonicalFromCheckbox(checkbox, win))
+            .filter(Boolean));
+        }
+
+        async function resetFilterAndSelection() {
+          clearSelections();
+          win.ndownReset('call');
+          await sleep(120);
+        }
+
+        async function runCharacterSearch(inputId, query, expectedIds, message) {
+          const input = doc.getElementById(inputId);
+          assert(Boolean(input), `搜索输入框 ${inputId} 存在`);
+          input.value = query;
+          input.dispatchEvent(new win.Event('input', { bubbles: true }));
+          await sleep(220);
+          const expectedStates = expectedIds.map((id) => {
+            const checkbox = doc.getElementById(id);
+            const label = checkbox ? checkbox.closest('label.girlbox') : null;
+            return { id, visible: visible(label, win) };
+          });
+          const visibleCount = girlLabels.filter((label) => visible(label, win)).length;
+          assert(expectedStates.every((entry) => entry.visible), message, {
+            inputId,
+            query,
+            expectedStates,
+            visibleCount
+          });
+          assert(visibleCount > 0 && visibleCount < characterBoxes.length, '文本搜索能够缩小角色范围', {
+            inputId,
+            query,
+            visibleCount
+          });
+          win.ndownReset('call');
+          await sleep(120);
+        }
 
         assert(doc.body.dataset.build === EXPECTED_RELEASE, '生产版本标记正确', doc.body.dataset.build || null);
         assert(characterBoxes.length >= 180, '角色选择器数量完整', characterBoxes.length);
@@ -168,42 +247,134 @@
         assert(exedraText.includes('Magia Exedra'), '“まどドラ”正确显示为 Magia Exedra', exedraText);
         assert(!doc.body.textContent.includes('小圆前辈'), '页面不再出现错误标签“小圆前辈”');
 
-        const searchInput = doc.getElementById('ndownword1');
-        assert(Boolean(searchInput), '角色文本筛选输入框存在');
-        searchInput.value = 'かずこ';
-        searchInput.dispatchEvent(new win.Event('input', { bubbles: true }));
-        await sleep(250);
-        const teacher = doc.getElementById('早乙女和子');
-        const teacherLabel = teacher ? teacher.closest('label.girlbox') : null;
-        const visibleAfterSearch = [...doc.querySelectorAll('label.girlbox')]
-          .filter((label) => visible(label, win)).length;
-        assert(visible(teacherLabel, win), '假名搜索可以找到早乙女和子', visibleAfterSearch);
-        assert(visibleAfterSearch > 0 && visibleAfterSearch < characterBoxes.length, '文本搜索能够缩小角色范围', visibleAfterSearch);
-        win.ndownReset('call');
-        await sleep(150);
+        const floatingControls = {
+          top: doc.getElementById('pagetop'),
+          middle: doc.getElementById('pagemdl'),
+          bottom: doc.getElementById('pagebtm')
+        };
+        assert(Object.values(floatingControls).every(Boolean), '右侧顶部、关系图、底部浮动按钮均存在');
+        assert(Object.values(floatingControls).every((element) => visible(element, win)), '右侧浮动按钮均已显示');
+
+        const resetButtons = [doc.getElementById('mgreset'), doc.getElementById('mgreset2')];
+        assert(resetButtons.every(Boolean), '上下两组取消选择按钮均存在');
+        const canvasImgLink = doc.getElementById('canvasImgLink');
+        const saveHeightChartBtn = doc.getElementById('saveHeightChartBtn');
+        assert(Boolean(canvasImgLink && saveHeightChartBtn), '关系图和身高图图片保存控件均存在');
+
+        const displaySwitches = {
+          japanese: doc.getElementById('callShowJapanese'),
+          romaji: doc.getElementById('callShowRomaji'),
+          chinese: doc.getElementById('callShowChinese')
+        };
+        assert(Object.values(displaySwitches).every(Boolean), '日文、罗马音、中文显示开关均存在');
+
+        await runCharacterSearch('ndownword1', 'かずこ', ['早乙女和子'], '平假名搜索可以找到早乙女和子');
+        await runCharacterSearch('ndownword1', 'カズコ', ['早乙女和子'], '片假名搜索与平假名统一，可以找到早乙女和子');
+        await runCharacterSearch('ndownword1', '早乙女和子', ['早乙女和子'], '汉字姓名搜索可以找到早乙女和子');
+        await runCharacterSearch('ndownword1', 'かずこ とうか', ['早乙女和子', '里見灯花'], '空格分隔搜索按 OR 同时显示多个角色');
+        await runCharacterSearch('ndownword2', 'トウカ', ['里見灯花'], '第二组搜索框同样支持片假名归一化');
+
+        const expectedModeLabels = new Map([
+          ['call', '称呼'],
+          ['called', '被称呼'],
+          ['OR', '双方'],
+          ['mutual', '仅“互相称呼”'],
+          ['oneWay', '仅单向']
+        ]);
+        const modeRadios = new Map([...doc.querySelectorAll('input[name="vector"]')]
+          .map((radio) => [radio.value, radio]));
+        assert(modeRadios.size === expectedModeLabels.size, '五种双击筛选模式完整', [...modeRadios.keys()]);
+        for (const [value, labelText] of expectedModeLabels) {
+          const radio = modeRadios.get(value);
+          const actualLabel = radio ? normalizeText(radio.closest('label')?.textContent) : '';
+          assert(Boolean(radio) && actualLabel.includes(labelText), `双击筛选模式“${labelText}”存在且标签正确`, {
+            value,
+            actualLabel
+          });
+        }
+
+        const relationTarget = doc.getElementById('環いろは');
+        const relationTargetCanonical = canonicalFromCheckbox(relationTarget, win);
+        assert(Boolean(relationTarget), '双击筛选目标“环彩羽”存在');
+        assert(normalizeText(relationTarget.getAttribute('ondblclick')).includes('mgirlCallNarrow'), '角色图标仍保留双击筛选入口');
+
+        const modeSets = new Map();
+        for (const [value, labelText] of expectedModeLabels) {
+          await resetFilterAndSelection();
+          const radio = modeRadios.get(value);
+          radio.checked = true;
+          radio.dispatchEvent(new win.Event('change', { bubbles: true }));
+          relationTarget.dispatchEvent(new win.MouseEvent('dblclick', {
+            bubbles: true,
+            cancelable: true,
+            view: win
+          }));
+          await sleep(180);
+          const resultSet = filterVisibleCanonicalSet();
+          modeSets.set(value, resultSet);
+          assert(resultSet.has(relationTargetCanonical), `双击筛选“${labelText}”模式保留目标角色`, {
+            value,
+            count: resultSet.size
+          });
+          const minimumResultCount = ['call', 'called', 'OR'].includes(value) ? 2 : 1;
+          assert(resultSet.size >= minimumResultCount, `双击筛选“${labelText}”模式返回有效关系角色`, {
+            value,
+            count: resultSet.size,
+            minimumResultCount
+          });
+        }
+
+        const callSet = modeSets.get('call');
+        const calledSet = modeSets.get('called');
+        const orExpected = new Set([...callSet, ...calledSet]);
+        const mutualExpected = new Set([...callSet].filter((value) => calledSet.has(value)));
+        const oneWayExpected = new Set([
+          ...[...callSet].filter((value) => !calledSet.has(value)),
+          ...[...calledSet].filter((value) => !callSet.has(value))
+        ]);
+        oneWayExpected.add(relationTargetCanonical);
+        assert(setEquals(modeSets.get('OR'), orExpected), '“双方”模式等于“称呼”与“被称呼”的并集', {
+          actual: sortedSet(modeSets.get('OR')),
+          expected: sortedSet(orExpected)
+        });
+        assert(setEquals(modeSets.get('mutual'), mutualExpected), '“仅互相称呼”模式等于双向关系交集', {
+          actual: sortedSet(modeSets.get('mutual')),
+          expected: sortedSet(mutualExpected)
+        });
+        assert(setEquals(modeSets.get('oneWay'), oneWayExpected), '“仅单向”模式等于双向关系的对称差', {
+          actual: sortedSet(modeSets.get('oneWay')),
+          expected: sortedSet(oneWayExpected)
+        });
+        assert(!setEquals(callSet, calledSet), '称呼与被称呼方向没有被错误合并', {
+          callCount: callSet.size,
+          calledCount: calledSet.size
+        });
+        modeRadios.get('OR').checked = true;
+        await resetFilterAndSelection();
 
         if (mode === 'full' || mode === 'relationship') {
-          characterBoxes.forEach((box) => {
-            if (!box.checked) return;
-            box.checked = false;
-            box.dispatchEvent(new win.Event('change', { bubbles: true }));
-          });
-          const selectedBoxes = [
-            characterBoxes[7],
-            characterBoxes[1],
-            characterBoxes[6],
-            characterBoxes[2],
-            characterBoxes[5],
-            characterBoxes[0],
-            characterBoxes[4],
-            characterBoxes[3]
-          ].filter(Boolean);
-          for (const box of selectedBoxes) {
-            box.checked = true;
-            box.dispatchEvent(new win.Event('change', { bubbles: true }));
-            await sleep(20);
+          const selectedIds = [
+            '柊ねむ',
+            '七海やちよ',
+            '里見灯花',
+            '由比鶴乃',
+            '環うい',
+            '環いろは',
+            '深月フェリシア',
+            '二葉さな'
+          ];
+          const selectedBoxes = selectedIds.map((id) => doc.getElementById(id)).filter(Boolean);
+          assert(selectedBoxes.length === selectedIds.length, '关系图验收角色全部存在', selectedIds);
+
+          for (const checkbox of selectedBoxes) {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new win.Event('change', { bubbles: true }));
+            await sleep(25);
           }
-          win.drawAndJump();
+
+          win.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          await sleep(100);
+          floatingControls.middle.click();
 
           const relationshipViewport = await waitFor(
             () => doc.querySelector('.relationship-table-viewport'),
@@ -212,32 +383,34 @@
           const relationshipControls = doc.querySelector('.relationship-table-controls');
           const relationshipStage = doc.querySelector('.relationship-table-stage');
           const relationshipSurface = doc.querySelector('.relationship-table-surface');
-          const table = doc.getElementById('girltable');
+          let table = doc.getElementById('girltable');
           await waitFor(
-            () => table && table.querySelectorAll('tbody tr').length === 8,
-            '关系表未生成 8 个选中角色的数据行'
+            () => table && table.querySelectorAll('tbody tr').length === selectedBoxes.length,
+            '关系表未生成全部选中角色的数据行'
           );
-          await sleep(250);
+          await sleep(700);
 
+          assert(win.scrollY > 0, '右侧关系图浮动按钮可以生成结果并跳转', win.scrollY);
           assert(Boolean(relationshipControls), 'V2 关系表控制条已渲染');
           assert(Boolean(relationshipStage && relationshipSurface), 'V2 关系表缩放舞台已渲染');
           assert(table.querySelectorAll('thead th').length >= selectedBoxes.length + 3, '关系表表头完整', table.querySelectorAll('thead th').length);
 
-          const normalizeOrderText = (value) => String(value || '').replace(/\s+/g, ' ').trim();
           const displayOptions = typeof win.getCallDisplayOptions === 'function'
             ? win.getCallDisplayOptions()
             : { japanese: true, romaji: true, chinese: true };
-          const expectedOrder = selectedBoxes.map((box) => normalizeOrderText(
+          const expectedOrder = selectedBoxes.map((checkbox) => normalizeText(
             typeof win.formatNameText === 'function'
-              ? (win.formatNameText(box.value, displayOptions) || box.value)
-              : box.value
+              ? (win.formatNameText(checkbox.value, displayOptions) || checkbox.value)
+              : checkbox.value
           ));
-          const headerOrder = [...table.querySelectorAll('thead th')]
+          const readHeaderOrder = () => [...doc.getElementById('girltable').querySelectorAll('thead th')]
             .slice(-selectedBoxes.length)
-            .map((cell) => normalizeOrderText(cell.textContent));
-          const rowOrder = [...table.querySelectorAll('tbody tr')]
+            .map((cell) => normalizeText(cell.textContent));
+          const readRowOrder = () => [...doc.getElementById('girltable').querySelectorAll('tbody tr')]
             .slice(0, selectedBoxes.length)
-            .map((row) => normalizeOrderText(row.querySelector('th, td')?.textContent));
+            .map((row) => normalizeText(row.querySelector('th, td')?.textContent));
+          const headerOrder = readHeaderOrder();
+          const rowOrder = readRowOrder();
           assert(expectedOrder.every((value, index) => headerOrder[index] === value), '关系表列顺序保持实际点击顺序', {
             expectedOrder,
             headerOrder
@@ -246,6 +419,36 @@
             expectedOrder,
             rowOrder
           });
+
+          const networkNodeCount = dataSetCount(win.network?.body?.data?.nodes) || dataSetCount(win.nodes);
+          const networkEdgeCount = dataSetCount(win.network?.body?.data?.edges) || dataSetCount(win.edges);
+          assert(networkNodeCount >= selectedBoxes.length, '关系图节点完整生成', networkNodeCount);
+          assert(networkEdgeCount > 0, '关系图连线完整生成', networkEdgeCount);
+
+          await waitFor(
+            () => String(canvasImgLink.getAttribute('href') || '').startsWith('data:image/'),
+            '关系图图片导出链接未生成',
+            8000
+          );
+          assert(Boolean(canvasImgLink.getAttribute('download')), '关系图图片导出文件名已生成', canvasImgLink.getAttribute('download'));
+
+          const canvasWidth = doc.getElementById('canvasWidth');
+          const widthUnit = doc.getElementById('widthUnit');
+          const canvasHeight = doc.getElementById('canvasHeight');
+          const networkHost = doc.getElementById('mynetwork');
+          assert(Boolean(canvasWidth && widthUnit && canvasHeight && networkHost), '关系图画布尺寸控件完整');
+          canvasWidth.value = '82';
+          widthUnit.value = '%';
+          canvasHeight.value = '520';
+          win.canvasSet();
+          await sleep(120);
+          assert(networkHost.style.width === '82%' && networkHost.style.height === '520px', '关系图画布宽高设置实际生效', {
+            width: networkHost.style.width,
+            height: networkHost.style.height
+          });
+          canvasWidth.value = '90';
+          canvasHeight.value = '400';
+          win.canvasSet();
 
           const relationshipOverflow = relationshipViewport.scrollWidth - relationshipViewport.clientWidth;
           if (relationshipOverflow > 1) {
@@ -280,6 +483,47 @@
             actual: relationshipViewport.clientHeight
           });
 
+          const firstChinese = '柊音梦';
+          const firstJapanese = '柊ねむ';
+          const firstRomaji = 'Hiiragi Nemu';
+          const firstHeaderText = () => normalizeText(readHeaderOrder()[0]);
+          assert(firstHeaderText().includes(firstChinese)
+            && firstHeaderText().includes(firstJapanese)
+            && firstHeaderText().includes(firstRomaji), '默认关系表同时显示中文、日文和罗马音', firstHeaderText());
+
+          displaySwitches.chinese.checked = false;
+          displaySwitches.chinese.dispatchEvent(new win.Event('change', { bubbles: true }));
+          await waitFor(() => {
+            const text = firstHeaderText();
+            return !text.includes(firstChinese) && text.includes(firstJapanese) && text.includes(firstRomaji);
+          }, '关闭中文开关后关系表没有正确刷新');
+          record('中文显示开关实际生效', firstHeaderText());
+
+          displaySwitches.chinese.checked = true;
+          displaySwitches.chinese.dispatchEvent(new win.Event('change', { bubbles: true }));
+          displaySwitches.romaji.checked = false;
+          displaySwitches.romaji.dispatchEvent(new win.Event('change', { bubbles: true }));
+          await waitFor(() => {
+            const text = firstHeaderText();
+            return text.includes(firstChinese) && text.includes(firstJapanese) && !text.includes(firstRomaji);
+          }, '关闭罗马音开关后关系表没有正确刷新');
+          record('罗马音显示开关实际生效', firstHeaderText());
+
+          displaySwitches.romaji.checked = true;
+          displaySwitches.romaji.dispatchEvent(new win.Event('change', { bubbles: true }));
+          displaySwitches.japanese.checked = false;
+          displaySwitches.japanese.dispatchEvent(new win.Event('change', { bubbles: true }));
+          await waitFor(() => {
+            const text = firstHeaderText();
+            return text.includes(firstChinese) && !text.includes(firstJapanese) && text.includes(firstRomaji);
+          }, '关闭日文开关后关系表没有正确刷新');
+          record('日文显示开关实际生效', firstHeaderText());
+
+          displaySwitches.japanese.checked = true;
+          displaySwitches.japanese.dispatchEvent(new win.Event('change', { bubbles: true }));
+          await waitFor(() => expectedOrder.every((value, index) => readHeaderOrder()[index] === value), '恢复全部名称显示后关系表未恢复');
+          assert(expectedOrder.every((value, index) => readRowOrder()[index] === value), '名称开关刷新后仍保持点击顺序', readRowOrder());
+
           if (mode === 'relationship') {
             const targetNode = doc.getElementById('callResultSection') || doc.getElementById('mytable');
             if (targetNode) {
@@ -312,6 +556,7 @@
             scrollWidth: heightViewport.scrollWidth,
             clientWidth: heightViewport.clientWidth
           });
+          assert(visible(saveHeightChartBtn, win), '身高图显示后图片保存按钮可用');
 
           const heightZoomRange = heightControls.querySelector('input[type="range"]');
           const heightTransformBefore = heightSurface.style.transform;
@@ -333,7 +578,26 @@
           }
         }
 
+        const documentHeight = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+        assert(documentHeight > win.innerHeight, '页面内容高度足以验证上下浮动按钮', {
+          documentHeight,
+          viewportHeight: win.innerHeight
+        });
+        win.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        await sleep(100);
+        floatingControls.bottom.click();
+        await sleep(850);
+        assert(win.scrollY > 0, '右侧底部浮动按钮可以滚动到页面下方', win.scrollY);
+        floatingControls.top.click();
+        await sleep(850);
+        assert(win.scrollY <= 5, '右侧顶部浮动按钮可以返回页面顶部', win.scrollY);
+
+        resetButtons[1].click();
         await sleep(250);
+        assert(characterBoxes.every((checkbox) => !checkbox.checked), '取消选择按钮能够清空全部角色选择');
+        assert(!doc.querySelector('#mytable table'), '取消选择按钮能够清空关系表');
+        assert(resetButtons.every((button) => button.disabled), '清空选择后上下两组重置按钮均恢复禁用状态');
+
         const horizontalOverflow = Math.max(
           doc.documentElement.scrollWidth,
           doc.body ? doc.body.scrollWidth : 0
@@ -363,9 +627,9 @@
 
       setTimeout(() => {
         if (!finished) {
-          finish('fail', { message: '验收脚本在 30 秒内未完成。' });
+          finish('fail', { message: '验收脚本在 45 秒内未完成。' });
         }
-      }, 30000);
+      }, 45000);
     })();
   </script>
 </body>
