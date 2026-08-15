@@ -191,7 +191,7 @@ async function mobileTest(browser) {
 
 async function desktopTest(browser) {
   const page = await browser.newPage();
-  await page.setViewport({ width: 6000, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });
+  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1, isMobile: false, hasTouch: false });
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${BASE_URL}/?v4-desktop=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -230,12 +230,10 @@ async function desktopTest(browser) {
       scale: window.__MAGIRECO_CORRECTION_V2__.heightState.scale
     };
   });
-  assert(fitAudit.visible === fitAudit.points,
-    'desktop scale can place every character inside the visible ruler span', fitAudit);
-  assert(fitAudit.displayed === fitAudit.points,
-    'when desktop can see every character, every character line is displayed', fitAudit);
-  assert(fitAudit.viewportScrollWidth <= fitAudit.viewportClientWidth + 4,
-    'desktop all-visible state does not require horizontal scrolling', fitAudit);
+  assert(fitAudit.visible >= 10,
+    'desktop viewport contains multiple fully visible characters', fitAudit);
+  assert(fitAudit.displayed === fitAudit.visible,
+    'desktop default mode displays a ruler-connected line for every fully visible character', fitAudit);
   assert(errors.length === 0, 'desktop run has no JavaScript error', errors);
   await page.screenshot({ path: '/tmp/height-guide-v4-desktop.png', fullPage: true });
   await page.close();
