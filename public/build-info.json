@@ -9,6 +9,9 @@
   "acceptancePage": "public/__acceptance.html",
   "rollbackBeforeLayoutCorrectionV2": "rollback/pre-layout-correction-v2-20260816",
   "rollbackRejectedMobileOverhaul": "rollback/rejected-mobile-overhaul-20260816",
-  "acceptedProductionCommit": "a0eb4a28402a24bdabf3379727c26c93c7df7738",
-  "verificationMode": "live-mobile-and-desktop-browser-acceptance"
+  "acceptedLayoutCommit": "a0eb4a28402a24bdabf3379727c26c93c7df7738",
+  "acceptedSearchNormalizationCommit": "787f3602aa8223f8a3ab960cf451006fb89fc82c",
+  "acceptanceHarnessCommit": "be13aaca6d8575a4c4cedb544a65c1c8088f04ee",
+  "verificationMode": "exhaustive-live-mobile-and-desktop-browser-acceptance",
+  "searchNormalization": "nfkc-hiragana-katakana-unified"
 }
