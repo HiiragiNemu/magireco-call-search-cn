@@ -1,0 +1,29 @@
+name: Diagnose story folders V7
+on:
+  push:
+    branches: [fix/story-ui-translation-ocr-v7-20260816]
+    paths: [.github/workflows/diagnose-story-folder-v7.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --silent --show-error \
+            https://raw.githubusercontent.com/HiiragiNemu/magi-reader/main/website/public/story_index.json \
+            -o /tmp/index.json
+          python3 <<'PY'
+          import json,re
+          data=json.load(open('/tmp/index.json',encoding='utf-8'))
+          folders={item.get('folder','') for item in data if item.get('category')=='event_story'}
+          for pattern in ['恶魔','魔女','悖论','海','温泉','冒险','怨','SPA','水疗','阿莉娜','歼灭']:
+              hits=sorted(folder for folder in folders if pattern.lower() in folder.lower())
+              print('\nPATTERN',pattern,'COUNT',len(hits))
+              for folder in hits[:80]: print(folder)
+          print('\nLATEST IDS')
+          for folder in sorted(folders,reverse=True)[:80]: print(folder)
+          PY
