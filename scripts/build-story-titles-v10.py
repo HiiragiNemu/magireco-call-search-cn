@@ -491,7 +491,9 @@ def main() -> int:
                 titles_by_category[category].add(raw)
 
     final_exact = dict(localization.get("titleExact", {}))
+    title_by_category: dict[str, dict[str, str]] = collections.defaultdict(dict)
     source_by_title: dict[str, dict[str, str]] = {}
+    sources_by_category: dict[str, dict[str, str]] = collections.defaultdict(dict)
     self_translated: list[dict[str, str]] = []
     counts: collections.Counter[str] = collections.Counter()
 
@@ -504,8 +506,13 @@ def main() -> int:
                 chinese = self_translate(category, raw, reader)
                 source = "assistant-self-translation"
                 self_translated.append({"category": category, "original": raw, "translation": chinese})
-            final_exact[raw] = chinese
-            source_by_title[raw] = {"source": source, "category": category}
+            # The same compact source label (for example `1章1話`) appears
+            # in several categories.  Keep an explicit category-aware map so the
+            # main, another and anime stories never overwrite each other.
+            title_by_category[category][raw] = chinese
+            sources_by_category[category][raw] = source
+            final_exact.setdefault(raw, chinese)
+            source_by_title.setdefault(raw, {"source": source, "category": category})
             counts[source] += 1
 
     all_unique = set().union(*titles_by_category.values()) if titles_by_category else set()
@@ -514,11 +521,20 @@ def main() -> int:
         raise SystemExit(f"Missing title translations: {missing[:20]}")
 
     localization["titleExact"] = final_exact
+    localization["titleByCategoryV10"] = {
+        category: dict(sorted(mapping.items()))
+        for category, mapping in sorted(title_by_category.items())
+    }
     localization["titleSourcesV10"] = source_by_title
+    localization["titleSourcesByCategoryV10"] = {
+        category: dict(sorted(mapping.items()))
+        for category, mapping in sorted(sources_by_category.items())
+    }
     localization["titleAuditV10"] = {
         "generatedAt": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "uniqueSourceTitles": len(all_unique),
         "localizedSourceTitles": len(all_unique),
+        "categoryTitlePairs": sum(len(values) for values in titles_by_category.values()),
         "authoritativeEventPairs": len({key for key in event_pairs if key == normalize(key)}),
         "authoritativeMemoriaPairs": len({key for key in memoria_pairs if key == normalize(key)}),
         "selfTranslatedTitles": len(self_translated),

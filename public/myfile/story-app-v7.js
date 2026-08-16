@@ -253,9 +253,10 @@
     return categoryCache.get(key);
   }
 
-  function localizeTitle(raw) {
+  function localizeTitle(storyType, raw) {
     const title = textFromMarkup(raw);
-    const exact = localization.titleExact?.[title];
+    const exact = localization.titleByCategoryV10?.[storyType]?.[title]
+      || localization.titleExact?.[title];
     if (exact) return { display: exact, original: exact === title ? '' : title, translated: exact !== title };
     const prefix = (localization.titlePrefixes || []).find((item) => title === item.jp || title.startsWith(`${item.jp} `));
     if (prefix) {
@@ -320,7 +321,7 @@
       for (const row of rows) {
         if (rendered >= MAX_RENDERED_ROWS) break;
         rendered += 1;
-        const titleInfo = localizeTitle(row?.[0]);
+        const titleInfo = localizeTitle(storyType, row?.[0]);
         const item = document.createElement('article');
         item.className = 'story-row-v7';
         const title = document.createElement('div');
