@@ -1,5 +1,5 @@
 {
-  "release": "story-ocr-layout-v6-20260816",
+  "release": "story-ui-translation-ocr-v7-20260816",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -39,5 +39,15 @@
   "storyBrowserRemoteDependency": false,
   "ocrPipeline": "multi-pass-border-aware-layout-aware-classic-tesseract",
   "characterStarLayout": "top-right-corner",
-  "suiteCharacterCardLayout": "content-height-compact"
+  "suiteCharacterCardLayout": "content-height-compact",
+  "rollbackBeforeStoryUiTranslationOcrV7": "rollback/pre-story-ui-translation-ocr-v7-20260816",
+  "visitorCopyPolicy": "no-internal-project-instructions",
+  "storyCategoryOrder": "original-upstream-order-then-static-extras",
+  "storyCategoryHistoriaLabel": "魔法少女历史篇",
+  "storyResultsLayout": "responsive-title-and-cast-cards",
+  "storyLocalization": "reader-grounded-no-guessed-title-translation",
+  "storyCharacterAttributes": true,
+  "attendanceCharacterAttributes": true,
+  "quickRail": "existing-root-plus-story-and-attendance",
+  "runeOcrV7": "ordered-template-plus-classic-fallback"
 }

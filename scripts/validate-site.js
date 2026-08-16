@@ -25,9 +25,11 @@ const RELEASES = Object.freeze({
   V3: 'neo11-mobile-interaction-v3-20260816',
   V4: 'neo11-height-guide-v4-20260816',
   V5: 'integrated-tools-v5-20260816',
-  V6: 'story-ocr-layout-v6-20260816'
+  V6: 'story-ocr-layout-v6-20260816',
+  V7: 'story-ui-translation-ocr-v7-20260816'
 });
-const isV6 = release === RELEASES.V6;
+const isV7 = release === RELEASES.V7;
+const isV6 = release === RELEASES.V6 || isV7;
 const isV5 = release === RELEASES.V5 || isV6;
 const isV4 = release === RELEASES.V4 || isV5;
 const isV3 = release === RELEASES.V3 || isV4;
@@ -176,8 +178,10 @@ if (isV5) {
     if (count(text, /class=["']suite-nav["']/gi) !== 1) fail(`${file} suite navigation missing or duplicated.`);
     for (const ref of ['./myfile/tools-suite.css', './myfile/tools-suite.js']) if (!text.includes(ref)) fail(`${file} missing ${ref}`);
   }
-  if (!pages[0].text.includes('./myfile/story-app.js')) fail('story.html missing story app.');
-  if (!pages[1].text.includes('./myfile/attendance-app.js')) fail('attendance.html missing attendance app.');
+  if (!isV7 && !pages[0].text.includes('./myfile/story-app.js')) fail('story.html missing story app.');
+  if (!isV7 && !pages[1].text.includes('./myfile/attendance-app.js')) fail('attendance.html missing attendance app.');
+  if (isV7 && !pages[0].text.includes('./myfile/story-app-v7.js')) fail('story.html missing V7 story app.');
+  if (isV7 && !pages[1].text.includes('./myfile/attendance-app-v7.js')) fail('attendance.html missing V7 attendance app.');
   if (!pages[2].text.includes('./myfile/runes-app.js')) fail('runes.html missing OCR app.');
 
   for (const file of [
@@ -221,7 +225,7 @@ if (isV6) {
   const storyPage = read('public/story.html');
   if (!storyPage.includes('./data/story-v6/manifest.json')) fail('story page missing the local manifest marker.');
   if (storyPage.includes('script.google.com/macros/s/')) fail('story page still exposes a remote Google Apps Script endpoint.');
-  const storyApp = read('public/myfile/story-app.js');
+  const storyApp = read(isV7 ? 'public/myfile/story-app-v7.js' : 'public/myfile/story-app.js');
   for (const marker of ['MANIFEST_URL', './data/story-v6/', 'loadCategory', 'rowMatches']) {
     if (!storyApp.includes(marker)) fail(`V6 story marker missing: ${marker}`);
   }
@@ -252,6 +256,52 @@ if (isV6) {
     fail('V6 rollback pointer missing or incorrect.');
   }
   if (buildInfo.storyBrowserRemoteDependency !== false) fail('V6 story browser must be independent of remote APIs.');
+}
+
+
+if (isV7) {
+  for (const file of [
+    'public/myfile/suite-v7.css', 'public/myfile/suite-v7.js',
+    'public/myfile/story-app-v7.js', 'public/myfile/attendance-app-v7.js',
+    'public/myfile/runes-template-v7.js', 'public/data/story-v7/localization.json',
+    'scripts/build-story-localization-v7.py', 'scripts/integrate-story-ui-v7.py',
+    'scripts/smoke-story-ui-v7.mjs', 'scripts/smoke-rune-v7.mjs'
+  ]) requireFile(file);
+  const rootV7 = read('public/index.html');
+  const storyV7 = read('public/story.html');
+  const attendanceV7 = read('public/attendance.html');
+  const runesV7 = read('public/runes.html');
+  for (const [file, page] of [['index', rootV7], ['story', storyV7], ['attendance', attendanceV7], ['runes', runesV7]]) {
+    if (!page.includes('./myfile/suite-v7.css')) fail(`${file} page missing V7 CSS.`);
+  }
+  for (const marker of ['./myfile/suite-v7.js', './myfile/story-app-v7.js', './myfile/charaAt.js']) {
+    if (!storyV7.includes(marker)) fail(`story page missing ${marker}`);
+  }
+  for (const marker of ['./myfile/suite-v7.js', './myfile/attendance-app-v7.js', './myfile/charaAt.js']) {
+    if (!attendanceV7.includes(marker)) fail(`attendance page missing ${marker}`);
+  }
+  if (!rootV7.includes('./myfile/suite-v7.js')) fail('root page missing V7 quick-rail script.');
+  if (!runesV7.includes('./myfile/runes-template-v7.js')) fail('runes page missing V7 template recognizer.');
+  for (const forbidden of ['不修改 magi-reader', '中文整合工具', '查询仍使用原始日文角色键', '不再由手机浏览器直接请求 Google Apps Script']) {
+    for (const [file, page] of [['story', storyV7], ['attendance', attendanceV7], ['runes', runesV7]]) {
+      if (page.includes(forbidden)) fail(`${file} page exposes internal visitor copy: ${forbidden}`);
+    }
+  }
+  const localization = JSON.parse(read('public/data/story-v7/localization.json'));
+  if (localization.categoryLabels?.['ピュエラ・ヒストリア'] !== '魔法少女历史篇') fail('V7 Historia label is incorrect.');
+  if (localization.categoryOrder?.[0] !== 'メイン【第1部】' || localization.categoryOrder?.[9] !== 'スペシャル') fail('V7 category order does not follow the original page.');
+  if (localization.audit?.mappedCastNames !== localization.audit?.castNames || localization.audit?.unresolvedCastNames?.length) fail('V7 cast localization is incomplete.');
+  if (!localization.titleExact?.['神浜スパアドベンチャー ビーチに渦巻く悪魔の怨嗟 3話']) fail('V7 verified SPA title translation missing.');
+  const storyAppV7 = read('public/myfile/story-app-v7.js');
+  for (const marker of ['story-result-list-v7', 'resolveCharacterV7', 'installAttributeFilterV7', 'localizeTitle']) {
+    if (!storyAppV7.includes(marker)) fail(`V7 story marker missing: ${marker}`);
+  }
+  const runeV7 = read('public/myfile/runes-template-v7.js');
+  for (const marker of ['ALPHABET_ROWS', 'removeLongLines', 'chartRecognition', 'row-major-chart', 'borderAwareUsable']) {
+    if (!runeV7.includes(marker)) fail(`V7 rune marker missing: ${marker}`);
+  }
+  if (buildInfo.rollbackBeforeStoryUiTranslationOcrV7 !== 'rollback/pre-story-ui-translation-ocr-v7-20260816') fail('V7 rollback pointer missing.');
+  if (buildInfo.visitorCopyPolicy !== 'no-internal-project-instructions') fail('V7 visitor-copy policy missing.');
 }
 
 if (failed) process.exit(1);

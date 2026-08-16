@@ -8,16 +8,12 @@
   <title>魔法纪录角色故事搜索</title>
   <link rel="stylesheet" href="./myfile/tools-suite.css">
   <link rel="stylesheet" href="./myfile/layout-v6.css">
+  <link rel="stylesheet" href="./myfile/suite-v7.css">
 </head>
-<body class="suite-page" data-build="story-ocr-layout-v6-20260816" data-suite-tool="story">
+<body class="suite-page" data-build="story-ui-translation-ocr-v7-20260816" data-suite-tool="story">
   <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
   <main class="suite-shell" data-suite-nav-anchor>
-    <header class="suite-hero">
-      <span class="suite-badge">魔法纪录 · 中文整合工具</span>
-      <h1>角色故事搜索</h1>
-            <p>选择故事类型、角色和组合逻辑，在本站保存的完整故事快照中本地筛选。不再由手机浏览器直接请求 Google Apps Script，因此不会受跨域、Google 重定向或网络屏蔽影响。</p>
-      <p class="story-source-v6">数据来自原角色故事搜索公开的完整 JSON；本次快照包含 19 类、超过 1.4 万条记录。快照采用手工静态更新，不修改 magi-reader 仓库。</p>
-    </header>
+    <header class="suite-hero"><h1>角色故事搜索</h1></header>
 
     <section class="suite-panel" aria-labelledby="story-options-title">
       <h2 id="story-options-title">搜索条件</h2>
@@ -77,11 +73,10 @@
       <h2 id="story-results-title">搜索结果</h2>
       <div id="storyResultsBody" class="suite-notice">尚未执行搜索。</div>
     </section>
-
-    <footer class="suite-footer">数据采用静态界面整合与原有故事查询服务；本站不自动覆盖人工中文映射。</footer>
   </main>
   <script src="./myfile/tools-suite.js"></script>
-  <script src="./myfile/story-app.js"></script>
-  <!-- V5 integration retrigger with legacy Madoka OCR engine. -->
+  <script src="./myfile/charaAt.js"></script>
+  <script src="./myfile/suite-v7.js"></script>
+  <script src="./myfile/story-app-v7.js"></script>
 </body>
 </html>

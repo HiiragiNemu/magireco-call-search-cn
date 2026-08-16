@@ -7,15 +7,12 @@
   <title>魔女文字解读</title>
   <link rel="stylesheet" href="./myfile/tools-suite.css">
   <link rel="stylesheet" href="./myfile/layout-v6.css">
+  <link rel="stylesheet" href="./myfile/suite-v7.css">
 </head>
-<body class="suite-page" data-build="story-ocr-layout-v6-20260816" data-suite-tool="runes">
+<body class="suite-page" data-build="story-ui-translation-ocr-v7-20260816" data-suite-tool="runes">
   <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
   <main class="suite-shell" data-suite-nav-anchor>
-    <header class="suite-hero">
-      <span class="suite-badge">魔法少女小圆 / 魔法纪录 · 浏览器本地 OCR</span>
-      <h1>魔女文字解读</h1>
-      <p>上传原图即可。V6 会自动判断明暗、移除长边框、裁切文字区域，并按单行、多行或字母表执行多方案识别。图片不会上传至本站服务器。</p>
-    </header>
+    <header class="suite-hero"><h1>魔女文字解读</h1></header>
 
     <section class="suite-panel runes-layout" aria-labelledby="runes-input-title">
       <div>
@@ -89,11 +86,10 @@
       <img class="runes-reference" src="./mdkOCR/madokarunes.jpg" alt="MadokaRunes 魔女文字与拉丁字母对照表">
       <p class="suite-notice">本地模型：<a href="./mdkOCR/mdk.traineddata">MadokaRunes</a>、<a href="./mdkOCR/mdm.traineddata">MadokaMusical</a>。识别引擎由 Tesseract.js 在浏览器中运行。</p>
     </section>
-
-    <footer class="suite-footer">本站仅保存识别模型和页面代码，不保存用户选择的图片。</footer>
   </main>
   <script src="./myfile/tools-suite.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" crossorigin="anonymous"></script>
   <script src="./myfile/runes-app.js"></script>
+  <script src="./myfile/runes-template-v7.js"></script>
 </body>
 </html>
