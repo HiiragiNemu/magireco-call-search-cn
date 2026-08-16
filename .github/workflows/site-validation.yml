@@ -7,6 +7,7 @@ on:
       - fix/neo11-mobile-v3-20260816
       - fix/height-guide-v4-20260816
       - fix/integrated-tools-v5-20260816
+      - fix/story-ocr-layout-v6-20260816
   pull_request:
 
 permissions:
@@ -60,10 +61,20 @@ jobs:
               scripts/smoke-integrated-tools-v5.mjs
             )
           fi
+          if [ -f public/myfile/layout-v6.js ]; then
+            files+=(
+              public/myfile/layout-v6.js
+              scripts/smoke-story-layout-v6.mjs
+              scripts/smoke-ocr-v6.mjs
+            )
+          fi
           for file in "${files[@]}"; do
             node --check "$file"
           done
-          python3 -m py_compile scripts/audit-translations-v5.py
+          python3 -m py_compile \
+            scripts/audit-translations-v5.py \
+            scripts/build-story-snapshot-v6.py \
+            scripts/integrate-story-ocr-layout-v6.py
 
           python3 <<'PY'
           from pathlib import Path
