@@ -8,6 +8,7 @@ on:
       - fix/height-guide-v4-20260816
       - fix/integrated-tools-v5-20260816
       - fix/story-ocr-layout-v6-20260816
+      - fix/story-ui-translation-ocr-v7-20260816
   pull_request:
 
 permissions:
@@ -16,11 +17,11 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate HTML, resources and JavaScript syntax
+      - name: Validate HTML, resources, data and program syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -68,16 +69,30 @@ jobs:
               scripts/smoke-ocr-v6.mjs
             )
           fi
+          if [ -f public/myfile/suite-v7.js ]; then
+            files+=(
+              public/myfile/suite-v7.js
+              public/myfile/story-app-v7.js
+              public/myfile/attendance-app-v7.js
+              public/myfile/runes-template-v7.js
+              scripts/smoke-story-ui-v7.mjs
+              scripts/smoke-rune-v7.mjs
+            )
+          fi
           for file in "${files[@]}"; do
             node --check "$file"
           done
+
           python3 -m py_compile \
             scripts/audit-translations-v5.py \
             scripts/build-story-snapshot-v6.py \
-            scripts/integrate-story-ocr-layout-v6.py
+            scripts/integrate-story-ocr-layout-v6.py \
+            scripts/build-story-localization-v7.py \
+            scripts/integrate-story-ui-v7.py
 
           python3 <<'PY'
           from pathlib import Path
+          import json
           import re
 
           html = Path('public/__acceptance.html').read_text(encoding='utf-8')
@@ -85,5 +100,18 @@ jobs:
           if len(matches) != 1:
               raise SystemExit(f'Expected exactly one inline acceptance script, found {len(matches)}.')
           Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
+
+          build = json.loads(Path('public/build-info.json').read_text(encoding='utf-8'))
+          if build.get('release') == 'story-ui-translation-ocr-v7-20260816':
+              localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
+              audit = localization['audit']
+              assert audit['mappedCastNames'] == audit['castNames']
+              assert audit['unresolvedCastNames'] == []
+              assert localization['categoryLabels']['ピュエラ・ヒストリア'] == '魔法少女历史篇'
+              assert localization['categoryOrder'][:15] == [
+                  'メイン【第1部】','メイン【第2部】','アナザー【第1部】','アナザー【第2部】',
+                  '魔法少女','衣装','ミラーズ','イベント','バトルミュージアム','スペシャル',
+                  '第1部EDムービー','第2部EDムービー','アニメ【1st】','アニメ【2nd】','アニメ【Final】'
+              ]
           PY
           node --check /tmp/acceptance-inline.js
