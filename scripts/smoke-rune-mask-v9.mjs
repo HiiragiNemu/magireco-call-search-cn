@@ -154,6 +154,8 @@ async function desktopTest(browser) {
 
   await installSyntheticComplexLine(page);
   await page.click('#runesMaskEnabled');
+  await page.$eval('#runesMaskStage', (stage) => stage.scrollIntoView({ block: 'center', inline: 'nearest' }));
+  await sleep(180);
 
   const overlayRect = await page.$eval('#runesMaskCanvas', (canvas) => {
     const rect = canvas.getBoundingClientRect();
