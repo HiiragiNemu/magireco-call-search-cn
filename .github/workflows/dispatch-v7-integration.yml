@@ -1,5 +1,5 @@
 name: Dispatch corrected V7 integration
-# Cast localization and swipe-safe quick-rail repair applied.
+# Cast mapping, swipe-safe rail, and border-aware OCR candidate repair applied.
 
 on:
   push:
