@@ -1,0 +1,238 @@
+/* V8: collapsible panels, full-height character lists and balanced desktop workspaces. */
+:root {
+  --v8-pink: #f34da7;
+  --v8-pink-dark: #6d2146;
+  --v8-border: #dfc9d5;
+  --v8-soft: #fff7fb;
+  --v8-shadow: 0 4px 16px rgba(79, 24, 53, .07);
+}
+
+/* Navigation is text-only in V8. */
+.suite-nav a > span[aria-hidden="true"] { display: none !important; }
+.suite-nav a { gap: 0 !important; }
+
+/* Visitor-facing duplicate page titles are removed; the active nav item already names the mode. */
+.suite-page .suite-hero { display: none !important; }
+
+/* Details wrappers preserve the existing section nodes used by the applications. */
+.suite-panel-details-v8,
+.call-panel-v8,
+.character-grid-details-v8 {
+  margin: 10px 0;
+  border: 1px solid var(--v8-border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--v8-shadow);
+  overflow: clip;
+}
+
+.suite-panel-details-v8 > summary,
+.call-panel-v8 > summary,
+.character-grid-details-v8 > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 14px;
+  color: var(--v8-pink-dark);
+  background: linear-gradient(90deg, #fff, var(--v8-soft));
+  cursor: pointer;
+  font-weight: 850;
+  user-select: none;
+  list-style: none;
+}
+
+.suite-panel-details-v8 > summary::-webkit-details-marker,
+.call-panel-v8 > summary::-webkit-details-marker,
+.character-grid-details-v8 > summary::-webkit-details-marker { display: none; }
+
+.suite-panel-details-v8 > summary::after,
+.call-panel-v8 > summary::after,
+.character-grid-details-v8 > summary::after {
+  content: "收起";
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border: 1px solid #d6afc3;
+  border-radius: 999px;
+  color: #7a2d54;
+  background: #fff;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.suite-panel-details-v8:not([open]) > summary::after,
+.call-panel-v8:not([open]) > summary::after,
+.character-grid-details-v8:not([open]) > summary::after { content: "展开"; }
+
+.suite-panel-details-v8[open] > summary,
+.call-panel-v8[open] > summary,
+.character-grid-details-v8[open] > summary { border-bottom: 1px solid var(--v8-border); }
+
+.suite-panel-details-v8 > .suite-panel,
+.suite-panel-details-v8 > .suite-results {
+  margin: 0 !important;
+  padding: 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.suite-panel-details-v8 > .suite-panel > h2:first-child,
+.suite-panel-details-v8 > .suite-results > h2:first-child { display: none !important; }
+
+/* All avatar directories and result bodies participate in normal document flow. */
+.suite-character-grid,
+#storyCharacterGrid,
+#attendanceGrid {
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  overscroll-behavior: auto !important;
+}
+
+.character-grid-details-v8 {
+  margin: 10px 0 0;
+  box-shadow: none;
+}
+
+.character-grid-details-v8 > summary {
+  min-height: 42px;
+  padding: 7px 10px;
+  background: #fff4f9;
+}
+
+.character-grid-count-v8 {
+  min-width: 0;
+  color: #6a2448;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.character-grid-details-v8 > .suite-character-grid {
+  margin: 0;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 5px !important;
+}
+
+.v8-count-source { display: none !important; }
+
+.suite-results,
+.suite-result-group,
+#storyResultsBody,
+#attendanceResultsBody {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* The attribute selector remains an independent collapsible panel. */
+.suite-attribute-v7 {
+  grid-column: 1 / -1;
+  margin: 9px 0 !important;
+  box-shadow: none;
+}
+
+/* Story search uses compact controls while keeping all data in page flow. */
+.story-controls-v8 { align-items: start; }
+.story-character-panel-v8 .suite-actions { position: static; }
+
+/* Attendance: selection and ranking share the desktop canvas equally. */
+.attendance-workspace-v8 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.attendance-workspace-v8 > .suite-panel-details-v8 { margin: 0; min-width: 0; }
+.attendance-control-stack-v8 {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 9px !important;
+}
+.attendance-control-stack-v8 > .suite-field[data-v8-current-selection="true"] { order: -1; }
+
+/* The chart is intentionally compact inside the right half instead of spanning the page. */
+.attendance-row {
+  grid-template-columns: minmax(115px, 165px) minmax(70px, .55fr) 48px !important;
+  gap: 7px !important;
+  padding: 7px !important;
+}
+.attendance-person img,
+.attendance-person .story-cast-fallback-v7 {
+  width: 40px !important;
+  height: 40px !important;
+  flex-basis: 40px !important;
+}
+.attendance-track { height: 18px !important; }
+.attendance-value { font-size: .86rem; white-space: nowrap; }
+
+/* Established call/height page panels. */
+body:not(.suite-page) .call-panel-v8 {
+  width: calc(100% - 12px);
+  margin: 8px auto;
+  box-sizing: border-box;
+}
+body:not(.suite-page) .call-panel-body-v8 { padding: 9px 10px 11px; }
+body:not(.suite-page) .call-panel-body-v8 > :first-child { margin-top: 0; }
+body:not(.suite-page) .call-actions-v8 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0;
+}
+body:not(.suite-page) .call-actions-v8 input { margin: 0 !important; }
+body:not(.suite-page) .call-search-filter-v8 {
+  display: grid;
+  gap: 7px;
+}
+body:not(.suite-page) .call-search-filter-v8 .ndownword { width: 100% !important; box-sizing: border-box; }
+body:not(.suite-page) .call-attribute-fieldset-v8 {
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+body:not(.suite-page) .call-attribute-fieldset-v8 > legend { display: none !important; }
+body:not(.suite-page) .magicalgirl {
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+body:not(.suite-page) .call-avatar-details-v8 { margin: 9px 0 0; }
+body:not(.suite-page) .call-avatar-details-v8 > .magicalgirl { border-top: 0; }
+body:not(.suite-page) .call-result-details-v8 { margin-top: 10px; }
+body:not(.suite-page) .call-result-details-v8 > #callResultSection { margin: 0; }
+
+@media (max-width: 900px) {
+  .attendance-workspace-v8 { grid-template-columns: minmax(0, 1fr); }
+  .attendance-row { grid-template-columns: minmax(105px, 145px) minmax(60px, 1fr) 44px !important; }
+}
+
+@media (max-width: 720px) {
+  .suite-panel-details-v8,
+  .call-panel-v8,
+  .character-grid-details-v8 { border-radius: 9px; }
+
+  .suite-panel-details-v8 > summary,
+  .call-panel-v8 > summary { min-height: 43px; padding: 8px 10px; }
+
+  .suite-panel-details-v8 > .suite-panel,
+  .suite-panel-details-v8 > .suite-results { padding: 8px !important; }
+
+  .attendance-row {
+    grid-template-columns: minmax(98px, 132px) minmax(48px, 1fr) 40px !important;
+    gap: 5px !important;
+  }
+  .attendance-person img,
+  .attendance-person .story-cast-fallback-v7 {
+    width: 34px !important;
+    height: 34px !important;
+    flex-basis: 34px !important;
+  }
+  .attendance-track { height: 15px !important; }
+
+  body:not(.suite-page) .call-panel-v8 { width: calc(100% - 6px); }
+  body:not(.suite-page) .call-panel-body-v8 { padding: 7px; }
+}
