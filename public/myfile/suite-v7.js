@@ -281,6 +281,7 @@
   function installQuickRailV7() {
     if (document.body?.dataset.suiteTool === 'runes' || document.querySelector('.suite-quick-rail-v7')) return;
     const tool = document.body?.dataset.suiteTool || 'call';
+    if (tool === 'call' && ['pagetop', 'pagemdl', 'pagebtm'].every((id) => document.getElementById(id))) return;
     const definitions = tool === 'story'
       ? [
           ['↑','顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
