@@ -53,6 +53,12 @@ def patch_pages() -> None:
         '  <script src="./myfile/runes-v10.js"></script>',
         "runes V10 script",
     )
+    text = insert_after(
+        text,
+        '  <script src="./myfile/runes-v10.js"></script>',
+        '  <script src="./myfile/runes-line-v10.js"></script>',
+        "paint-guided line recognizer",
+    )
     runes_path.write_text(text, encoding="utf-8")
 
 
@@ -71,10 +77,11 @@ def patch_build_info() -> None:
         "heightExport": "full-unscaled-dual-outer-rulers-high-dpi-png",
         "storyTitleLocalization": "complete-reader-wiki-structural-self-audited",
         "storyTitleAudit": "docs/story-title-self-translations-v10.md",
-        "runeOcrV10": "auto-grid-rule-network-smart-selection-classic-fallback",
+        "runeOcrV10": "auto-grid-painted-dp-rule-network-classic-fallback",
         "runeMaskMeaning": "expanded-selection-region-not-exact-pixel-clipping",
         "runeAlphabetOrder": "top-to-bottom-left-to-right-A-Z",
         "runeComplexGuidance": True,
+        "runePaintedLineDecoder": "template-dynamic-programming-with-noise-skips",
     })
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -107,6 +114,7 @@ def patch_release_constants() -> None:
 def validate() -> None:
     required = [
         "public/myfile/runes-v10.js",
+        "public/myfile/runes-line-v10.js",
         "public/myfile/runes-v10.css",
         "public/myfile/call-ui-v10.js",
         "public/myfile/height-export-v10.js",
@@ -119,8 +127,9 @@ def validate() -> None:
         raise SystemExit(f"Missing final V10 artifacts: {missing}")
 
     runes = Path("public/runes.html").read_text(encoding="utf-8")
-    if './myfile/runes-v10.js' not in runes or './myfile/runes-v10.css' not in runes:
-        raise SystemExit("Runes page is not wired to V10")
+    for marker in ('./myfile/runes-v10.js', './myfile/runes-line-v10.js', './myfile/runes-v10.css'):
+        if marker not in runes:
+            raise SystemExit(f"Runes page is not wired to {marker}")
     index = Path("public/index.html").read_text(encoding="utf-8")
     for marker in ("site-correction-v10.css", "call-ui-v10.js", "height-export-v10.js"):
         if marker not in index:
