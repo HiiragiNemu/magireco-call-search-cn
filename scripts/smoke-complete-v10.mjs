@@ -265,7 +265,7 @@ async function callHeightTest(browser) {
       window.displayHeightChart('global', mode);
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       output[mode] = {
-        labels: [...document.querySelectorAll('.height-x-axis-label-v2')].map((node) => node.textContent.trim()),
+        labels: [...document.querySelectorAll('.height-x-label-v2')].map((node) => node.textContent.trim()),
         categories: [...document.querySelectorAll('.height-point-v2')].map((node) => node.dataset.category),
         pointCount: document.querySelectorAll('.height-point-v2').length
       };
