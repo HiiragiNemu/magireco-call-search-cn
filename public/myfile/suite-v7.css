@@ -238,6 +238,7 @@
 /* Fixed quick rail on every tool except OCR. */
 .suite-quick-rail-v7 {
   position: fixed;
+  pointer-events: none;
   right: max(3px, env(safe-area-inset-right));
   bottom: max(8px, env(safe-area-inset-bottom));
   z-index: 1600;
@@ -246,6 +247,7 @@
 }
 .suite-quick-rail-v7 button {
   display: grid;
+  pointer-events: auto;
   place-items: center;
   width: 44px;
   height: 44px;
@@ -279,8 +281,8 @@
   .story-cast-v7 { padding: 4px 8px 7px; }
   .story-summary-v7 { padding: 6px 8px; }
   .story-cast-chip-v7 { max-width: calc(50% - 2px); }
-  .suite-quick-rail-v7 { right: 1px; gap: 3px; }
-  .suite-quick-rail-v7 button { width: 39px; height: 39px; border-radius: 10px; font-size: 1rem; opacity: .86; }
+  .suite-quick-rail-v7 { right: 1px; gap: 2px; }
+  .suite-quick-rail-v7 button { width: 32px; height: 32px; border-radius: 9px; font-size: .86rem; opacity: .82; }
 }
 
 @media (max-width: 390px) {
