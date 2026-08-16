@@ -185,7 +185,7 @@ async function mobileTest(browser) {
   assert(pageWidth.scrollWidth <= pageWidth.innerWidth + 3, 'mobile page has no document-level horizontal overflow', pageWidth);
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'mobile run has no fatal JavaScript error', errors);
-  await page.screenshot({ path: '/tmp/height-guide-v4-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/height-guide-v4-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -235,11 +235,12 @@ async function desktopTest(browser) {
   assert(fitAudit.displayed === fitAudit.visible,
     'desktop default mode displays a ruler-connected line for every fully visible character', fitAudit);
   assert(errors.length === 0, 'desktop run has no JavaScript error', errors);
-  await page.screenshot({ path: '/tmp/height-guide-v4-desktop.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/height-guide-v4-desktop.png', fullPage: false });
   await page.close();
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--no-first-run']

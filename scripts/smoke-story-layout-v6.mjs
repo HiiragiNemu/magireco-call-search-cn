@@ -84,7 +84,7 @@ async function testStory(browser) {
   assert(/快照|本站/u.test(result.status + result.summary), 'story UI reports local snapshot usage', result);
   assert(blocked.length === 0, 'story search makes no remote Google data request', blocked);
   assert(fatal(errors).length === 0, 'story page has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/story-v6-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/story-v6-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -133,6 +133,7 @@ async function testStarsAndAttendance(browser) {
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--no-first-run']

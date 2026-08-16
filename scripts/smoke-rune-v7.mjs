@@ -78,6 +78,7 @@ async function decoratedLineBlob() {
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--no-first-run']
@@ -127,7 +128,7 @@ try {
 
   const fatal = errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text));
   assert(fatal.length === 0, 'rune V7 has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/rune-v7-desktop.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/rune-v7-desktop.png', fullPage: false });
   console.log(JSON.stringify({ state: 'pass', release: EXPECTED_RELEASE, alphabet, bordered }, null, 2));
   await page.close();
 } catch (error) {

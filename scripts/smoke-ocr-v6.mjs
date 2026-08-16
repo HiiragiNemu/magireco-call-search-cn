@@ -78,6 +78,7 @@ async function selectGeneratedBorderSample(page) {
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--no-first-run']
@@ -119,7 +120,7 @@ try {
     'OCR diagnostics identify a smart border-aware path', bordered);
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'OCR run has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/ocr-v6-desktop.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/ocr-v6-desktop.png', fullPage: false });
   console.log(JSON.stringify({ state: 'pass', release: EXPECTED_RELEASE, chart, bordered }, null, 2));
   await page.close();
 } catch (error) {

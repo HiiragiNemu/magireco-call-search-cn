@@ -280,7 +280,7 @@ async function testMobile(browser) {
   assert(pageOverflow.width <= pageOverflow.viewport + 3, 'mobile document has no page-level horizontal overflow', pageOverflow);
   assert(runtimeErrors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/i.test(text)).length === 0,
     'mobile run has no fatal JavaScript errors', runtimeErrors);
-  await page.screenshot({ path: '/tmp/neo11-v3-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/neo11-v3-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -319,11 +319,12 @@ async function testDesktop(browser) {
   assert(delta < 0.75, 'desktop relationship nodes remain stable while idle', delta);
   assert(desktop.pageWidth <= desktop.viewportWidth + 3, 'desktop document has no page-level horizontal overflow', desktop);
   assert(errors.length === 0, 'desktop run has no JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/neo11-v3-desktop.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/neo11-v3-desktop.png', fullPage: false });
   await page.close();
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: [

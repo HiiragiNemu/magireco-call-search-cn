@@ -143,7 +143,7 @@ async function testStory(browser) {
     'story cast is deduplicated and never shows a broken image icon', result);
   assert(result.japaneseChipCount === 0, 'known story cast names are localized to Chinese', result);
   assert(fatal(errors).length === 0, 'story V7 has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/story-ui-v7-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/story-ui-v7-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -220,6 +220,7 @@ async function testRootAndRunes(browser) {
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: ['--no-sandbox','--disable-setuid-sandbox','--disable-gpu','--disable-dev-shm-usage','--no-first-run']

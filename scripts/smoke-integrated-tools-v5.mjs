@@ -75,7 +75,7 @@ async function testRootAndTripleTap(browser) {
 
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'root/triple-tap run has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/integrated-v5-root-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/integrated-v5-root-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -113,7 +113,7 @@ async function testStory(browser) {
   assert(result.kind === 'success' && result.groups === 1, 'local story snapshot returns a renderable result', result);
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'story run has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/integrated-v5-story-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/integrated-v5-story-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -138,7 +138,7 @@ async function testAttendance(browser) {
     'co-appearance service returns a Chinese ranking', result);
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'attendance run has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/integrated-v5-attendance-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/integrated-v5-attendance-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -193,7 +193,7 @@ async function testRunes(browser) {
     'browser-local witch-rune OCR initializes and returns text', { ...result, output: result.output.slice(0, 100) });
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'OCR run has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/integrated-v5-runes-desktop.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/integrated-v5-runes-desktop.png', fullPage: false });
   await page.close();
 }
 
@@ -216,6 +216,7 @@ async function testDesktopNav(browser) {
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: [

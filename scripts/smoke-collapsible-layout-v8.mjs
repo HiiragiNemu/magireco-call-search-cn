@@ -94,7 +94,7 @@ async function storyTest(browser) {
     'story navigation is text-only and uses 共同出场次数排行', nav);
   assert(nav.documentWidth <= nav.viewportWidth + 3, 'story page has no document-level horizontal overflow', nav);
   assert(fatal(errors).length === 0, 'story V8 has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/collapsible-v8-story-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/collapsible-v8-story-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -157,7 +157,7 @@ async function attendanceTest(browser) {
     'attendance navigation is text-only and fully renamed', nav);
   assert(nav.documentWidth <= nav.viewportWidth + 3, 'attendance page has no document-level horizontal overflow', nav);
   assert(fatal(errors).length === 0, 'attendance V8 has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/collapsible-v8-attendance-desktop.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/collapsible-v8-attendance-desktop.png', fullPage: false });
   await page.close();
 }
 
@@ -214,7 +214,7 @@ async function callTest(browser) {
     'call navigation is text-only and fully renamed', nav);
   assert(audit.documentWidth <= audit.viewportWidth + 3, 'call page remains horizontally contained', audit);
   assert(fatal(errors).length === 0, 'call V8 has no fatal JavaScript errors', errors);
-  await page.screenshot({ path: '/tmp/collapsible-v8-call-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/collapsible-v8-call-mobile.png', fullPage: false });
   await page.close();
 }
 
@@ -231,6 +231,7 @@ async function runesNavTest(browser) {
 }
 
 const browser = await puppeteer.launch({
+  protocolTimeout: 600000,
   executablePath: CHROME_PATH,
   headless: true,
   args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--no-first-run']
