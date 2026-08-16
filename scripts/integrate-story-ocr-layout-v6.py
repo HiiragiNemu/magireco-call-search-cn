@@ -200,12 +200,13 @@ if (isV6) {
   if (!storyPage.includes('./data/story-v6/manifest.json')) fail('story page missing the local manifest marker.');
   if (storyPage.includes('script.google.com/macros/s/')) fail('story page still exposes a remote Google Apps Script endpoint.');
   const storyApp = read('public/myfile/story-app.js');
-  for (const marker of ['MANIFEST_URL', 'manual-static-snapshot', 'loadCategory', 'rowMatches']) {
+  for (const marker of ['MANIFEST_URL', './data/story-v6/', 'loadCategory', 'rowMatches']) {
     if (!storyApp.includes(marker)) fail(`V6 story marker missing: ${marker}`);
   }
   if (storyApp.includes('script.google.com/macros/s/')) fail('V6 story app still performs remote GAS searches.');
   const manifest = JSON.parse(read('public/data/story-v6/manifest.json'));
   if (manifest.totalRows < 14000 || manifest.categories.length !== 19) fail('V6 story snapshot is incomplete.');
+  if (manifest.source?.mode !== 'manual-static-snapshot') fail('V6 story snapshot mode is not manual-static-snapshot.');
   let countedRows = 0;
   for (const category of manifest.categories) {
     const file = `public/data/story-v6/${category.file}`;
