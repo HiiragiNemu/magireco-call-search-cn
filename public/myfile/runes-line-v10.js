@@ -379,11 +379,11 @@
     for (let index = count - 1; index >= 0; index -= 1) {
       const atom = atoms[index];
       const speckle = atom.height < lineHeight * .22 && atom.area < lineHeight * lineHeight * .028;
-      const skipCost = (speckle ? 13 : 43) + bestCost[index + 1];
+      const skipCost = (speckle ? 18 : 110) + bestCost[index + 1];
       bestCost[index] = skipCost;
       choices[index] = { type: 'skip', next: index + 1 };
 
-      for (let end = index; end < Math.min(count, index + 9); end += 1) {
+      for (let end = index; end < Math.min(count, index + 13); end += 1) {
         const right = atoms[end].right;
         const regionWidth = right - atom.left + 1;
         if (regionWidth > lineHeight * 1.48) break;
@@ -400,7 +400,7 @@
         const heightRatio = actualHeight / lineHeight;
         if (heightRatio < .13) continue;
         const match = matchGlyph(normalized.mask, bank);
-        let cost = match.distance * 112 + 5.5;
+        let cost = match.distance * 86 + 3.5;
         if (widthRatio < .17) cost += (.17 - widthRatio) * 125;
         if (widthRatio > 1.22) cost += (widthRatio - 1.22) * 80;
         if (heightRatio < .32) cost += (.32 - heightRatio) * 68;
@@ -449,7 +449,7 @@
     const coverage = glyphs.reduce((sum, glyph) => sum + glyph.right - glyph.left + 1, 0)
       / Math.max(1, bounds.right - bounds.left + 1);
     let score = (1 - meanDistance) * 128 + Math.min(32, compact.length * 2.1)
-      + Math.min(14, unique * 1.2) + coverage * 15 - skipped * 2.6;
+      + Math.min(14, unique * 1.2) + coverage * 20 - skipped * 7.5;
     if (longestRun >= 4) score -= (longestRun - 3) * 8;
     if (compact.length < 3) score -= 70;
     return {
