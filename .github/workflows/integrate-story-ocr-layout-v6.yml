@@ -1,4 +1,5 @@
 name: Integrate story OCR layout V6
+# Validation repair applied: rerun the full gated integration.
 
 on:
   push:
@@ -61,20 +62,6 @@ jobs:
             --page-html /tmp/story-v6-source/original-index.html \
             --output public/data/story-v6
           python3 scripts/integrate-story-ocr-layout-v6.py
-
-          python3 - <<'PY'
-          from pathlib import Path
-          story=Path('public/story.html')
-          text=story.read_text(encoding='utf-8')
-          marker='<meta name="story-data-manifest" content="./data/story-v6/manifest.json">'
-          if marker not in text:
-              anchor='  <meta name="description" content="中文角色故事搜索：按故事类型、角色组合和概要关键词筛选魔法纪录故事。">'
-              if anchor not in text:
-                  raise SystemExit('Story description meta anchor missing.')
-              text=text.replace(anchor,anchor+'\n  '+marker,1)
-          story.write_text(text,encoding='utf-8')
-          PY
-
           git diff --check
 
       - name: Static, syntax and data-integrity validation
@@ -107,6 +94,7 @@ jobs:
               total+=len(value['rows'])
           assert total==manifest['totalRows']==14466
           assert len(manifest['categories'])==19
+          assert manifest['source']['mode']=='manual-static-snapshot'
           print({'validatedRows':total,'files':len(manifest['categories'])})
           PY
 
