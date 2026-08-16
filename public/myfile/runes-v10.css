@@ -1,0 +1,51 @@
+/* V10: rule-network OCR guidance and smart selection feedback. */
+.runes-guidance-v10 {
+  align-self: stretch;
+  margin: 0;
+  padding: .72rem .8rem;
+  border: 1px solid #e3c7d6;
+  border-left: 5px solid #ef4da7;
+  border-radius: .65rem;
+  background: linear-gradient(135deg, #fff8fc, #fff);
+  color: #6c294d;
+  font-size: .9rem;
+  line-height: 1.55;
+}
+.runes-guidance-v10 strong { color: #8d1f5d; }
+
+#runesMaskControlsV9 > legend {
+  max-width: 100%;
+  white-space: normal;
+}
+
+#runesMaskStatus[data-kind="success"] {
+  border-left-color: #268f60;
+  color: #155b3d;
+  background: #effbf5;
+}
+
+html[data-rune-v10] #runesDiagnostics {
+  max-height: 18rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+html[data-rune-v10] .runes-processed-card-v9 #runesCanvas {
+  image-rendering: auto;
+}
+
+@media (min-width: 860px) {
+  .runes-guidance-v10 {
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .runes-guidance-v10 {
+    grid-column: 1 / -1;
+    padding: .62rem .7rem;
+    font-size: .84rem;
+  }
+}
