@@ -564,7 +564,7 @@ def main() -> int:
     compact_json(args.localization, localization)
 
     audit_json = {
-        "release": "height-export-title-call-v10-20260817",
+        "release": "height-export-title-call-rune-v10-20260817",
         "summary": localization["titleAuditV10"],
         "selfTranslations": self_translated,
     }

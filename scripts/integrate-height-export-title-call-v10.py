@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import re
 
-RELEASE = "height-export-title-call-v10-20260817"
+RELEASE = "height-export-title-call-rune-v10-20260817"
 
 
 def replace_once(text: str, old: str, new: str, label: str) -> str:
@@ -207,7 +207,7 @@ def patch_build_info() -> None:
     value = json.loads(path.read_text(encoding="utf-8"))
     value.update({
         "release": RELEASE,
-        "rollbackBeforeHeightExportTitleCallV10": "rollback/pre-height-export-title-call-v10-20260817",
+        "rollbackBeforeHeightExportTitleCallV10": "rollback/pre-height-export-title-call-rune-v10-20260817",
         "callRelationshipTableFold": True,
         "callHelpLayout": "desktop-right-column-independent-fold",
         "callQuickRail": "nine-Chinese-actions",

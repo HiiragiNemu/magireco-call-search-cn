@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-core';
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:8000';
 const CHROME_PATH = process.env.CHROME_PATH || '/usr/bin/google-chrome';
 const REPO_ROOT = process.env.REPO_ROOT || process.cwd();
-const EXPECTED_RELEASE = 'rune-mask-v9-20260816';
+const EXPECTED_RELEASE = 'height-export-title-call-rune-v10-20260817';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function assert(condition, message, details) {

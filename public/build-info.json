@@ -1,5 +1,5 @@
 {
-  "release": "rune-mask-v9-20260816",
+  "release": "height-export-title-call-rune-v10-20260817",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -67,5 +67,25 @@
   ],
   "runePreviewLayout": "side-by-side-desktop-stacked-mobile",
   "runeReferenceLayout": "collapsed-size-capped",
-  "runeVisitorGuidance": "concise-mask-guidance"
+  "runeVisitorGuidance": "concise-mask-guidance",
+  "rollbackBeforeHeightExportTitleCallV10": "rollback/pre-height-export-title-call-v10-20260817",
+  "callRelationshipTableFold": true,
+  "callHelpLayout": "desktop-right-column-independent-fold",
+  "callQuickRail": "nine-Chinese-actions",
+  "heightScaleBaseline": "display-100-equals-legacy-50",
+  "heightScaleDisplayedRange": "50-250-percent",
+  "heightUnknownCategories": [
+    "无年龄信息",
+    "无学校信息",
+    "无从属组织信息"
+  ],
+  "heightExport": "full-unscaled-dual-outer-rulers-high-dpi-png",
+  "storyTitleLocalization": "complete-reader-wiki-structural-self-audited",
+  "storyTitleAudit": "docs/story-title-self-translations-v10.md",
+  "rollbackBeforeHeightExportTitleCallRuneV10": "rollback/pre-height-export-title-call-v10-20260817",
+  "runeOcrV10": "auto-grid-painted-dp-rule-network-classic-fallback",
+  "runeMaskMeaning": "expanded-selection-region-not-exact-pixel-clipping",
+  "runeAlphabetOrder": "top-to-bottom-left-to-right-A-Z",
+  "runeComplexGuidance": true,
+  "runePaintedLineDecoder": "template-dynamic-programming-with-noise-skips"
 }

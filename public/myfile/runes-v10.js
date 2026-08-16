@@ -911,7 +911,7 @@
     if (!canvas) return;
     const bitmap = await decodeFile(file);
     canvas.width = bitmap.width || bitmap.naturalWidth;
-    canvas.height = bitmap.ght || bitmap.naturalHeight;
+    canvas.height = bitmap.height || bitmap.naturalHeight;
     const context = canvas.getContext('2d');
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvas.width, canvas.height);

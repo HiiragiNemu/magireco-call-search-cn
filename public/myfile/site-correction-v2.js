@@ -37,7 +37,8 @@
     ['あすなろ市立南部中学校', '翌桧市立南部中学'],
     ['茜ヶ咲中学校', '茜咲中学'],
     ['聖乙女学園', '圣乙女学园'],
-    ['その他学校', '其他学校']
+    ['その他学校', '其他学校'],
+    ['__NO_SCHOOL__', '无学校信息']
   ];
 
   const ORGANIZATION_DEFINITIONS = [
@@ -47,7 +48,8 @@
     ['ネオマギウス', 'Neo-Magius'],
     ['フォークロア', 'Folklore of 0'],
     ['ピュエラケア', 'Puella Care'],
-    ['ヒストリア', '历史篇']
+    ['ヒストリア', '历史篇'],
+    ['__NO_ORGANIZATION__', '无从属组织信息']
   ];
 
   const GRADE_DEFINITIONS = [
@@ -89,7 +91,7 @@
     dataSource: 'global',
     xMode: 'age',
     viewMode: 'scatter',
-    scale: global.matchMedia(MOBILE_QUERY).matches ? 0.68 : 1,
+    scale: 0.5,
     mode: 'manual'
   };
 
@@ -655,7 +657,7 @@
       return Array.from({ length: 11 }, (_, index) => {
         const age = String(index + 10);
         return [age, `${age}岁`];
-      }).concat([['其他', '其他']]);
+      }).concat([['其他', '其他年龄'], ['__NO_AGE__', '无年龄信息']]);
     }
     if (mode === 'grade') return GRADE_DEFINITIONS.slice();
     if (mode === 'school') return SCHOOL_DEFINITIONS.slice();
@@ -666,8 +668,12 @@
   function matchingCategories(entry, details, attributes, mode, categoryKeys) {
     const result = new Set();
     if (mode === 'age') {
-      const age = parseNumber(details instanceof Map ? details.get('年龄') || details.get('年齢') : '');
-      const key = Number.isFinite(age) && age >= 10 && age <= 20 && Number.isInteger(age) ? String(age) : '其他';
+      const rawAge = details instanceof Map ? String(details.get('年龄') || details.get('年齢') || '').trim() : '';
+      const age = parseNumber(rawAge);
+      const missing = !rawAge || rawAge === '-' || rawAge === '?' || /不详|不明|未知/u.test(rawAge);
+      const key = missing
+        ? '__NO_AGE__'
+        : (Number.isFinite(age) && age >= 10 && age <= 20 && Number.isInteger(age) ? String(age) : '其他');
       if (categoryKeys.has(key)) result.add(key);
       return result;
     }
@@ -676,10 +682,19 @@
       return result;
     }
     if (mode === 'school') {
-      for (const [key] of SCHOOL_DEFINITIONS) {
-        if (key !== 'その他学校' && attributes.has(key) && categoryKeys.has(key)) result.add(key);
+      const known = new Set(SCHOOL_DEFINITIONS.map(([key]) => key).filter((key) => !['その他学校', '__NO_SCHOOL__'].includes(key)));
+      for (const key of known) if (attributes.has(key) && categoryKeys.has(key)) result.add(key);
+      if (!result.size) {
+        const schoolLike = [...attributes].some((value) => /学園|学院|学校|中学|高校|高等|学舎|アカデミー/u.test(String(value)));
+        const fallback = schoolLike ? 'その他学校' : '__NO_SCHOOL__';
+        if (categoryKeys.has(fallback)) result.add(fallback);
       }
-      if (!result.size && categoryKeys.has('その他学校')) result.add('その他学校');
+      return result;
+    }
+    if (mode === 'organization') {
+      const known = ORGANIZATION_DEFINITIONS.map(([key]) => key).filter((key) => key !== '__NO_ORGANIZATION__');
+      for (const key of known) if (attributes.has(key) && categoryKeys.has(key)) result.add(key);
+      if (!result.size && categoryKeys.has('__NO_ORGANIZATION__')) result.add('__NO_ORGANIZATION__');
       return result;
     }
     for (const key of categoryKeys) if (attributes.has(key)) result.add(key);
@@ -738,14 +753,20 @@
   }
 
   function refreshHeightScaleReadout() {
+    const displayPercent = Math.round(heightState.scale * 200);
     const readout = document.querySelector('[data-height-scale-readout-v2]');
-    if (readout) readout.textContent = `${Math.round(heightState.scale * 100)}%`;
+    if (readout) {
+      readout.textContent = `${displayPercent}%`;
+      readout.classList.add('height-scale-readout-v10');
+    }
     const range = document.querySelector('[data-height-scale-range-v2]');
-    if (range) range.value = String(Math.round(heightState.scale * 100));
+    if (range) range.value = String(displayPercent);
+    const controls = document.querySelector('.height-zoom-controls-v2');
+    if (controls) controls.dataset.v10Scale = 'true';
   }
 
   function applyHeightScale(scale, mode) {
-    heightState.scale = clamp(scale, 0.25, 1.6);
+    heightState.scale = clamp(scale, 0.25, 1.25);
     if (mode) heightState.mode = mode;
     const stage = document.querySelector('.height-chart-stage-v2');
     const surface = document.querySelector('.height-chart-surface-v2');
@@ -758,7 +779,7 @@
     const surface = document.querySelector('.height-chart-surface-v2');
     if (!viewport || !surface) return;
     const natural = measureNatural(surface);
-    const scale = clamp((viewport.clientWidth - 4) / natural.width, 0.25, 1);
+    const scale = clamp((viewport.clientWidth - 4) / natural.width, 0.25, 1.25);
     applyHeightScale(scale, 'fit');
     viewport.scrollLeft = 0;
   }
@@ -767,21 +788,21 @@
     const controls = document.createElement('div');
     controls.className = 'height-zoom-controls-v2';
     controls.appendChild(makeButton('适应屏幕', '将完整身高图适配到当前显示框宽度', fitHeightChart));
-    controls.appendChild(makeButton('−', '缩小身高图', () => applyHeightScale(heightState.scale - 0.08, 'manual')));
+    controls.appendChild(makeButton('−', '缩小身高图', () => applyHeightScale(heightState.scale - 0.05, 'manual')));
 
     const range = document.createElement('input');
     range.type = 'range';
-    range.min = '25';
-    range.max = '160';
-    range.step = '5';
-    range.value = String(Math.round(heightState.scale * 100));
+    range.min = '50';
+    range.max = '250';
+    range.step = '10';
+    range.value = String(Math.round(heightState.scale * 200));
     range.dataset.heightScaleRangeV2 = '';
-    range.setAttribute('aria-label', '身高图缩放比例');
-    range.addEventListener('input', () => applyHeightScale(Number(range.value) / 100, 'manual'));
+    range.setAttribute('aria-label', '身高图缩放比例；100%等于旧版50%基准');
+    range.addEventListener('input', () => applyHeightScale(Number(range.value) / 200, 'manual'));
     controls.appendChild(range);
 
-    controls.appendChild(makeButton('＋', '放大身高图', () => applyHeightScale(heightState.scale + 0.08, 'manual')));
-    controls.appendChild(makeButton('100%', '恢复身高图原始大小', () => applyHeightScale(1, 'manual')));
+    controls.appendChild(makeButton('＋', '放大身高图', () => applyHeightScale(heightState.scale + 0.05, 'manual')));
+    controls.appendChild(makeButton('100%', '恢复身高图紧凑基准大小', () => applyHeightScale(0.5, 'manual')));
     const readout = document.createElement('span');
     readout.dataset.heightScaleReadoutV2 = '';
     controls.appendChild(readout);
@@ -892,6 +913,7 @@
         const average = heights.reduce((sum, value) => sum + value, 0) / heights.length;
         const bar = document.createElement('div');
         bar.className = 'height-bar-v2';
+        bar.dataset.category = layout.category[0];
         bar.style.left = `${layout.x + layout.width / 2}px`;
         bar.style.width = `${Math.min(90, layout.width * 0.64)}px`;
         bar.style.height = `${Math.max(0, Math.min(100, ((average - minHeight) / (maxHeight - minHeight)) * 100))}%`;
@@ -912,6 +934,7 @@
         guide.style.top = `${y}px`;
         guide.style.width = `${x}px`;
         guide.dataset.character = item.entry.canonical;
+        guide.dataset.category = layout.category[0];
         plot.appendChild(guide);
 
         const point = document.createElement('button');
@@ -920,6 +943,7 @@
         point.style.left = `${x}px`;
         point.style.top = `${y}px`;
         point.dataset.character = item.entry.canonical;
+        point.dataset.category = layout.category[0];
         point.dataset.height = String(item.height);
         const image = document.createElement('img');
         image.src = `./img/png/${item.entry.imageName}.png`;
@@ -963,6 +987,7 @@
       label.className = 'height-x-label-v2';
       label.style.flexBasis = `${layout.width}px`;
       label.style.width = `${layout.width}px`;
+      label.dataset.category = layout.category[0];
       label.textContent = layout.category[1];
       xAxis.appendChild(label);
     });
@@ -1054,7 +1079,7 @@
       validHeightCount++;
       const attributes = attributesForEntry(entry);
       const matches = matchingCategories(entry, details, attributes, heightState.xMode, categoryKeys);
-      const schoolKey = SCHOOL_DEFINITIONS.find(([key]) => key !== 'その他学校' && attributes.has(key));
+      const schoolKey = SCHOOL_DEFINITIONS.find(([key]) => !['その他学校', '__NO_SCHOOL__'].includes(key) && attributes.has(key));
       const item = {
         entry,
         height,
