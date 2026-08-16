@@ -1,5 +1,5 @@
-name: Dispatch corrected V7 integration
-# Cast mapping, swipe-safe rail, and border-aware OCR candidate repair applied.
+name: Dispatch final V7 publication
+# Category order, cast mapping, swipe-safe rail, and border-aware OCR repairs applied.
 
 on:
   push:
@@ -17,11 +17,11 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Dispatch the gated integration workflow
+      - name: Dispatch the final source-only publication gate
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh workflow run integrate-story-ui-v7.yml \
+          gh workflow run publish-v7-final.yml \
             --repo "$GITHUB_REPOSITORY" \
             --ref fix/story-ui-translation-ocr-v7-20260816
