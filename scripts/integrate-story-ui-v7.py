@@ -42,7 +42,8 @@ def patch_root() -> None:
             break
     else:
         raise SystemExit("root layout-v6 CSS anchor missing")
-    text = insert_after(text, '<script src="./myfile/layout-v6.js"></script>', '<script src="./myfile/suite-v7.js"></script>', "root V7 JS")
+    # The original call/height page already has its proven pink top/search/bottom
+    # controls. Do not add the suite rail a second time.
     path.write_text(text, encoding="utf-8")
 
 
@@ -94,7 +95,7 @@ def patch_build_info() -> None:
         "storyLocalization": "reader-grounded-no-guessed-title-translation",
         "storyCharacterAttributes": True,
         "attendanceCharacterAttributes": True,
-        "quickRail": "all-tools-except-ocr",
+        "quickRail": "existing-root-plus-story-and-attendance",
         "runeOcrV7": "ordered-template-plus-classic-fallback",
     })
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
