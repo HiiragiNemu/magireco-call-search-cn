@@ -1,0 +1,120 @@
+name: Prefer border-cleaned V7 OCR candidates
+
+on:
+  push:
+    branches:
+      - fix/story-ui-translation-ocr-v7-20260816
+    paths:
+      - .github/workflows/repair-v7-ocr-border-path.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/story-ui-translation-ocr-v7-20260816
+          fetch-depth: 0
+
+      - name: Prefer usable border-cleaned template candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('public/myfile/runes-template-v7.js')
+          text = path.read_text(encoding='utf-8')
+
+          old_candidate = '''      const borderBonus = binary.removedRows + binary.removedColumns > 0 ? .04 : 0;
+              result.score = result.confidence + Math.min(.18, letterCount / 150) + Math.min(.08, unique / 150) + borderBonus;
+              result.binary = binary;
+              result.removedRows = binary.removedRows;
+              result.removedColumns = binary.removedColumns;
+              candidates.push(result);
+            }
+            candidates.sort((a, b) => b.score - a.score);
+            return { best: candidates[0], candidates };'''
+          new_candidate = '''      const removedLines = binary.removedRows + binary.removedColumns;
+              const borderBonus = removedLines > 0 ? .11 : 0;
+              result.letterCount = letterCount;
+              result.uniqueCount = unique;
+              result.removedLines = removedLines;
+              result.score = result.confidence
+                + Math.min(.18, letterCount / 150)
+                + Math.min(.08, unique / 150)
+                + borderBonus;
+              result.binary = binary;
+              result.removedRows = binary.removedRows;
+              result.removedColumns = binary.removedColumns;
+              candidates.push(result);
+            }
+            candidates.sort((a, b) => b.score - a.score);
+            let best = candidates[0];
+            if (layout !== 'chart') {
+              const borderCandidates = candidates
+                .filter((candidate) => candidate.removedLines > 0
+                  && candidate.letterCount >= 3
+                  && candidate.uniqueCount >= 3)
+                .sort((a, b) => b.score - a.score);
+              const borderBest = borderCandidates[0];
+              if (borderBest && (borderBest.score >= best.score - .28
+                || best.letterCount < 5
+                || best.uniqueCount < 3)) {
+                best = borderBest;
+              }
+            }
+            return { best, candidates };'''
+          if old_candidate not in text:
+              raise SystemExit('recognizeTemplate candidate-selection block not found.')
+          text = text.replace(old_candidate, new_candidate, 1)
+
+          old_fallback = '''        const letters = best.text.replace(/[^A-Za-z]/g, '');
+              const minimum = effective === 'chart' ? 18 : 3;
+              if (letters.length < minimum || best.confidence < .18) {
+                // The classic model remains useful for irregular screenshots; use it only
+                // when ordered template segmentation is demonstrably weak.
+                oldButton.hidden = false;
+                oldButton.click();
+                oldButton.hidden = true;
+                Tools.setStatus(status, '模板分割置信度不足，已切换到经典模型。');
+                return;
+              }'''
+          new_fallback = '''        const letters = best.text.replace(/[^A-Za-z]/g, '');
+              const uniqueLetters = new Set(letters.toLowerCase()).size;
+              const minimum = effective === 'chart' ? 18 : 3;
+              const borderAwareUsable = effective !== 'chart'
+                && best.removedLines > 0
+                && letters.length >= minimum
+                && uniqueLetters >= 3;
+              if (letters.length < minimum || (best.confidence < .18 && !borderAwareUsable)) {
+                // The classic model remains useful for irregular screenshots; use it only
+                // when the ordered template result is both weak and not demonstrably
+                // improved by removing detected frame lines.
+                oldButton.hidden = false;
+                oldButton.click();
+                oldButton.hidden = true;
+                Tools.setStatus(status, '模板分割置信度不足，已切换到经典模型。');
+                return;
+              }'''
+          if old_fallback not in text:
+              raise SystemExit('template fallback block not found.')
+          text = text.replace(old_fallback, new_fallback, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+          node --check public/myfile/runes-template-v7.js
+
+      - name: Commit source repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/runes-template-v7.js
+          git commit -m 'Prefer usable border-cleaned template OCR before fallback'
+          git push origin HEAD:fix/story-ui-translation-ocr-v7-20260816
