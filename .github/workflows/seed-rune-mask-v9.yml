@@ -1,0 +1,73 @@
+name: Seed rune mask V9 source
+
+on:
+  push:
+    branches:
+      - fix/rune-mask-v9-20260816
+    paths:
+      - .github/workflows/seed-rune-mask-v9.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/rune-mask-v9-20260816
+          fetch-depth: 0
+
+      - name: Materialize the V9 mask UI and bridge both OCR engines
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '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' | base64 -d | gzip -d > public/myfile/runes-mask-v9.js
+          echo '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' | base64 -d | gzip -d > public/myfile/runes-mask-v9.css
+
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('public/myfile/runes-template-v7.js')
+          text = path.read_text(encoding='utf-8')
+          old = "      const file = fileInput.files?.[0];"
+          new = "      const file = global.__RUNE_INPUT_OVERRIDE_V9__ || fileInput.files?.[0];"
+          if old not in text:
+              raise SystemExit('V7 file-input anchor missing.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          path = Path('public/myfile/runes-app.js')
+          text = path.read_text(encoding='utf-8')
+          old = "  async function recognize() {\n    if (!file) return;"
+          new = "  async function recognize() {\n    const recognitionFile = global.__RUNE_INPUT_OVERRIDE_V9__ || file;\n    if (!recognitionFile) return;"
+          if old not in text:
+              raise SystemExit('V6 recognize anchor missing.')
+          text = text.replace(old, new, 1)
+          old = "      const result = await runEnsemble(\n        file,"
+          new = "      const result = await runEnsemble(\n        recognitionFile,"
+          if old not in text:
+              raise SystemExit('V6 runEnsemble anchor missing.')
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          node --check public/myfile/runes-mask-v9.js
+          node --check public/myfile/runes-template-v7.js
+          node --check public/myfile/runes-app.js
+
+      - name: Commit V9 source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            public/myfile/runes-mask-v9.js \
+            public/myfile/runes-mask-v9.css \
+            public/myfile/runes-template-v7.js \
+            public/myfile/runes-app.js
+          git commit -m 'Add paint-to-keep rune mask and OCR override bridge V9'
+          git push origin HEAD:fix/rune-mask-v9-20260816
