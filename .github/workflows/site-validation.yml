@@ -11,6 +11,7 @@ on:
       - fix/story-ui-translation-ocr-v7-20260816
       - fix/collapsible-layout-v8-20260816
       - fix/rune-mask-v9-20260816
+      - fix/height-export-title-call-v10-20260817
   pull_request:
 
 permissions:
@@ -19,7 +20,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -93,6 +94,15 @@ jobs:
               scripts/smoke-rune-mask-v9.mjs
             )
           fi
+          if [ -f public/myfile/runes-v10.js ]; then
+            files+=(
+              public/myfile/call-ui-v10.js
+              public/myfile/height-export-v10.js
+              public/myfile/runes-v10.js
+              public/myfile/runes-line-v10.js
+              scripts/smoke-complete-v10.mjs
+            )
+          fi
           for file in "${files[@]}"; do
             node --check "$file"
           done
@@ -104,7 +114,13 @@ jobs:
             scripts/build-story-localization-v7.py \
             scripts/integrate-story-ui-v7.py \
             scripts/integrate-collapsible-layout-v8.py \
-            scripts/integrate-rune-mask-v9.py
+            scripts/integrate-rune-mask-v9.py \
+            scripts/assemble-runes-v10.py \
+            scripts/build-story-titles-v10.py \
+            scripts/integrate-height-export-title-call-v10.py \
+            scripts/finalize-height-v10-source.py \
+            scripts/integrate-complete-v10.py \
+            scripts/extend-validator-v10.py
 
           python3 <<'PY'
           from pathlib import Path
@@ -118,10 +134,12 @@ jobs:
           Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
 
           build = json.loads(Path('public/build-info.json').read_text(encoding='utf-8'))
-          if build.get('release') in {
+          release = build.get('release')
+          if release in {
               'story-ui-translation-ocr-v7-20260816',
               'collapsible-layout-v8-20260816',
               'rune-mask-v9-20260816',
+              'height-export-title-call-rune-v10-20260817',
           }:
               localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
               audit = localization['audit']
@@ -133,11 +151,24 @@ jobs:
                   '魔法少女','衣装','ミラーズ','イベント','バトルミュージアム','スペシャル',
                   '第1部EDムービー','第2部EDムービー','アニメ【1st】','アニメ【2nd】','アニメ【Final】'
               ]
-          if build.get('release') == 'rune-mask-v9-20260816':
+          if release in {'rune-mask-v9-20260816', 'height-export-title-call-rune-v10-20260817'}:
               assert build['runeMaskMode'] == 'paint-to-keep'
               assert build['runePreviewLayout'] == 'side-by-side-desktop-stacked-mobile'
               assert build['runeReferenceLayout'] == 'collapsed-size-capped'
               assert Path('public/myfile/runes-mask-v9.js').stat().st_size > 10000
               assert Path('public/myfile/runes-mask-v9.css').stat().st_size > 3000
+          if release == 'height-export-title-call-rune-v10-20260817':
+              localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
+              title_audit = json.loads(Path('public/data/story-v10/title-audit.json').read_text(encoding='utf-8'))
+              summary = localization['titleAuditV10']
+              assert summary['uniqueSourceTitles'] == 5710
+              assert summary['localizedSourceTitles'] == 5710
+              assert summary['categoryTitlePairs'] == 5826
+              assert summary['selfTranslatedTitles'] == len(title_audit['selfTranslations'])
+              assert sum(len(values) for values in localization['titleByCategoryV10'].values()) == 5826
+              assert Path('docs/story-title-self-translations-v10.md').exists()
+              assert build['callQuickRail'] == 'nine-Chinese-actions'
+              assert build['heightScaleDisplayedRange'] == '50-250-percent'
+              assert build['runePaintedLineDecoder'] == 'template-dynamic-programming-with-noise-skips'
           PY
           node --check /tmp/acceptance-inline.js
