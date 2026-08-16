@@ -1,0 +1,80 @@
+name: Diagnose complete story dataset V6
+
+on:
+  push:
+    branches:
+      - fix/story-ocr-layout-v6-20260816
+    paths:
+      - .github/workflows/diagnose-story-v6-broad.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe complete-dataset requests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/story-v6-broad
+          PAGE='https://magireco-chara-search.vercel.app/index.html'
+          API='https://script.google.com/macros/s/AKfycbx6Uj0yzItjoJs0FgHVGf0DchsxpOlv24eIQzr-QYm5wCTjBjWcHuJJ9HGM1ilwQJDf/exec'
+          curl -L --fail --silent --show-error "$PAGE?probe=${GITHUB_RUN_ID}" -o /tmp/story-v6-broad/index.html
+          echo '--- Current page search implementation ---'
+          sed -n '1740,1835p' /tmp/story-v6-broad/index.html
+
+          python3 <<'PY'
+          import json, pathlib, subprocess, urllib.parse
+          root=pathlib.Path('/tmp/story-v6-broad')
+          api='https://script.google.com/macros/s/AKfycbx6Uj0yzItjoJs0FgHVGf0DchsxpOlv24eIQzr-QYm5wCTjBjWcHuJJ9HGM1ilwQJDf/exec'
+          types=[
+            'メイン【第1部】','メイン【第2部】','アナザー【第1部】','アナザー【第2部】',
+            '魔法少女','衣装','ミラーズ','イベント','バトルミュージアム','スペシャル','EDムービー',
+            'アニメ【1st】','アニメ【2nd】','アニメ【Final】'
+          ]
+          tests={
+            'empty-all': dict(and_or='OR',story_csv=','.join(types),netabare='true',chara_csv='',star='true',keywordtext=''),
+            'empty-main1': dict(and_or='OR',story_csv=types[0],netabare='true',chara_csv='',star='true',keywordtext=''),
+            'iroha-all': dict(and_or='OR',story_csv=','.join(types),netabare='true',chara_csv='環いろは',star='true',keywordtext=''),
+            'keyword-a-all': dict(and_or='OR',story_csv=','.join(types),netabare='true',chara_csv='',star='true',keywordtext='あ'),
+          }
+          for name, params in tests.items():
+              url=api+'?'+urllib.parse.urlencode(params)
+              path=root/f'{name}.json'
+              completed=subprocess.run(['curl','-L','--silent','--show-error','--max-time','180',url,'-o',str(path)],capture_output=True,text=True)
+              print(name,'exit',completed.returncode,'bytes',path.stat().st_size if path.exists() else 0,'stderr',completed.stderr[:120])
+              if not path.exists(): continue
+              try:
+                  data=json.loads(path.read_text(encoding='utf-8'))
+                  if isinstance(data,dict):
+                      print(name,'keys',list(data),'counts',{key:len(value) if isinstance(value,list) else type(value).__name__ for key,value in data.items()})
+                  else: print(name,'type',type(data).__name__,'len',len(data) if hasattr(data,'__len__') else None)
+              except Exception as exc:
+                  print(name,'INVALID',exc,path.read_text(errors='replace')[:300])
+          PY
+
+          for URL in \
+            'https://drive.google.com/uc?export=download&id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q' \
+            'https://drive.usercontent.google.com/download?id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q&export=download&confirm=t'; do
+            NAME="drive-$(echo "$URL" | sha256sum | cut -c1-8)"
+            set +e
+            curl -L --silent --show-error --max-time 180 -D "/tmp/story-v6-broad/${NAME}.headers" "$URL" -o "/tmp/story-v6-broad/${NAME}.body"
+            EXIT=$?
+            set -e
+            echo "$NAME exit=$EXIT bytes=$(wc -c </tmp/story-v6-broad/${NAME}.body) type=$(grep -i '^content-type:' /tmp/story-v6-broad/${NAME}.headers | tail -1)"
+            head -c 160 "/tmp/story-v6-broad/${NAME}.body" | tr '\n' ' '; echo
+          done
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-v6-broad-${{ github.sha }}
+          path: /tmp/story-v6-broad
+          retention-days: 14
