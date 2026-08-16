@@ -198,7 +198,9 @@
 
   function wrapCallResults() {
     const section = document.getElementById('callResultSection');
-    if (!section || section.parentElement?.matches('details.call-result-details-v8')) return section?.parentElement || null;
+    if (!section) return null;
+    const existing = section.closest('details.call-result-details-v8');
+    if (existing) return existing;
     const { details, body } = createCallPanel('搜索结果', 'call-result-details-v8', true);
     section.parentNode.insertBefore(details, section);
     body.appendChild(section);
@@ -271,15 +273,25 @@
     }
 
     let resultDetails = wrapCallResults();
+    let resultFrame = 0;
     const resultObserver = typeof MutationObserver === 'function'
-      ? new MutationObserver(() => { resultDetails = wrapCallResults() || resultDetails; })
+      ? new MutationObserver(() => {
+        if (resultFrame) return;
+        resultFrame = global.requestAnimationFrame(() => {
+          resultFrame = 0;
+          resultDetails = wrapCallResults() || resultDetails;
+        });
+      })
       : null;
     resultObserver?.observe(wrapper, { childList: true, subtree: true });
 
     wrapper.querySelector('input[name="call_search"]')?.addEventListener('click', () => {
       selection.details.open = true;
       if (resultDetails) resultDetails.open = true;
-      global.setTimeout(() => { resultDetails = wrapCallResults() || resultDetails; if (resultDetails) resultDetails.open = true; }, 80);
+      global.setTimeout(() => {
+        resultDetails = wrapCallResults() || resultDetails;
+        if (resultDetails) resultDetails.open = true;
+      }, 80);
     }, true);
   }
 
