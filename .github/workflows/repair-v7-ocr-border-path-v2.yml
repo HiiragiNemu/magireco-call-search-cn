@@ -1,0 +1,117 @@
+name: Apply robust border-aware V7 OCR preference
+
+on:
+  push:
+    branches:
+      - fix/story-ui-translation-ocr-v7-20260816
+    paths:
+      - .github/workflows/repair-v7-ocr-border-path-v2.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/story-ui-translation-ocr-v7-20260816
+          fetch-depth: 0
+
+      - name: Patch V7 candidate scoring and fallback with regex anchors
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('public/myfile/runes-template-v7.js')
+          text = path.read_text(encoding='utf-8')
+
+          candidate_pattern = re.compile(
+              r"      const borderBonus = binary\.removedRows \+ binary\.removedColumns > 0 \? \.04 : 0;\n"
+              r"[\s\S]*?"
+              r"    candidates\.sort\(\(a, b\) => b\.score - a\.score\);\n"
+              r"    return \{ best: candidates\[0\], candidates \};"
+          )
+          candidate_replacement = '''      const removedLines = binary.removedRows + binary.removedColumns;
+              const borderBonus = removedLines > 0 ? .11 : 0;
+              result.letterCount = letterCount;
+              result.uniqueCount = unique;
+              result.removedLines = removedLines;
+              result.score = result.confidence
+                + Math.min(.18, letterCount / 150)
+                + Math.min(.08, unique / 150)
+                + borderBonus;
+              result.binary = binary;
+              result.removedRows = binary.removedRows;
+              result.removedColumns = binary.removedColumns;
+              candidates.push(result);
+            }
+            candidates.sort((a, b) => b.score - a.score);
+            let best = candidates[0];
+            if (layout !== 'chart') {
+              const borderCandidates = candidates
+                .filter((candidate) => candidate.removedLines > 0
+                  && candidate.letterCount >= 3
+                  && candidate.uniqueCount >= 3)
+                .sort((a, b) => b.score - a.score);
+              const borderBest = borderCandidates[0];
+              if (borderBest && (borderBest.score >= best.score - .28
+                || best.letterCount < 5
+                || best.uniqueCount < 3)) {
+                best = borderBest;
+              }
+            }
+            return { best, candidates };'''
+          text, count = candidate_pattern.subn(candidate_replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('Candidate selection regex did not match exactly once.')
+
+          fallback_pattern = re.compile(
+              r"        const letters = best\.text\.replace\(/\[\^A-Za-z\]/g, ''\);\n"
+              r"        const minimum = effective === 'chart' \? 18 : 3;\n"
+              r"        if \(letters\.length < minimum \|\| best\.confidence < \.18\) \{\n"
+              r"[\s\S]*?"
+              r"          return;\n"
+              r"        \}"
+          )
+          fallback_replacement = '''        const letters = best.text.replace(/[^A-Za-z]/g, '');
+              const uniqueLetters = new Set(letters.toLowerCase()).size;
+              const minimum = effective === 'chart' ? 18 : 3;
+              const borderAwareUsable = effective !== 'chart'
+                && best.removedLines > 0
+                && letters.length >= minimum
+                && uniqueLetters >= 3;
+              if (letters.length < minimum || (best.confidence < .18 && !borderAwareUsable)) {
+                // Fall back only when the ordered template result is weak and did
+                // not become usable after detected frame lines were removed.
+                oldButton.hidden = false;
+                oldButton.click();
+                oldButton.hidden = true;
+                Tools.setStatus(status, '模板分割置信度不足，已切换到经典模型。');
+                return;
+              }'''
+          text, count = fallback_pattern.subn(fallback_replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('Fallback regex did not match exactly once.')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+          node --check public/myfile/runes-template-v7.js
+          grep -Fq 'borderAwareUsable' public/myfile/runes-template-v7.js
+          grep -Fq 'removedLines > 0' public/myfile/runes-template-v7.js
+
+      - name: Commit robust OCR source repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/runes-template-v7.js
+          git commit -m 'Prefer detected border-cleaned V7 OCR candidates'
+          git push origin HEAD:fix/story-ui-translation-ocr-v7-20260816
