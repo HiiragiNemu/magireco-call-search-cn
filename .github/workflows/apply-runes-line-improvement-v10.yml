@@ -1,0 +1,49 @@
+name: Apply V10 painted-line improvements
+
+on:
+  push:
+    branches:
+      - fix/height-export-title-call-v10-20260817
+    paths:
+      - .github/workflows/apply-runes-line-improvement-v10.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-export-title-call-v10-20260817
+          fetch-depth: 0
+      - name: Remove padding components and combine V10/V7 glyph templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/improve-runes-line-v10.py
+          node --check public/myfile/runes-line-v10.js
+          grep -Fq 'removeBorderComponents' public/myfile/runes-line-v10.js
+          grep -Fq 'buildCombinedBank' public/myfile/runes-line-v10.js
+      - name: Commit source improvement
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/runes-line-v10.js
+          if ! git diff --cached --quiet; then
+            git commit -m 'Remove painted-crop border components and combine glyph templates'
+            git push origin HEAD:fix/height-export-title-call-v10-20260817
+          fi
+      - name: Dispatch corrected complete V10 gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run publish-complete-v10.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref fix/height-export-title-call-v10-20260817
