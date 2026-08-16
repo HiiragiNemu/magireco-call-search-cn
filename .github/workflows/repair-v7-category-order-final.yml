@@ -1,0 +1,53 @@
+name: Finalize V7 original category order
+
+on:
+  push:
+    branches:
+      - fix/story-ui-translation-ocr-v7-20260816
+    paths:
+      - .github/workflows/repair-v7-category-order-final.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/story-ui-translation-ocr-v7-20260816
+          fetch-depth: 0
+      - name: Persist the upstream category order
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+          path=Path('scripts/build-story-localization-v7.py')
+          text=path.read_text(encoding='utf-8')
+          pattern=re.compile(r'CATEGORY_ORDER = \[[\s\S]*?\n\]',re.M)
+          replacement='''CATEGORY_ORDER = [
+              "メイン【第1部】", "メイン【第2部】", "アナザー【第1部】", "アナザー【第2部】",
+              "魔法少女", "衣装", "ミラーズ", "イベント", "バトルミュージアム",
+              "スペシャル", "第1部EDムービー", "第2部EDムービー", "アニメ【1st】",
+              "アニメ【2nd】", "アニメ【Final】", "ピュエラ・ヒストリア", "scene0",
+              "メモリア", "シール図鑑",
+          ]'''
+          text,count=pattern.subn(replacement,text,count=1)
+          if count!=1: raise SystemExit('CATEGORY_ORDER replacement failed')
+          path.write_text(text,encoding='utf-8')
+          PY
+          python3 -m py_compile scripts/build-story-localization-v7.py
+      - name: Commit the persistent order
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/build-story-localization-v7.py
+          git commit -m 'Persist original story category order in V7 localization'
+          git push origin HEAD:fix/story-ui-translation-ocr-v7-20260816
