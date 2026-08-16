@@ -128,9 +128,12 @@ def extract_pairs_from_rows(rows: Iterable[list[str]], source: str) -> tuple[dic
     mapping: dict[str, str] = {}
     sources: dict[str, str] = {}
     for row in rows:
-        cleaned = [normalize(cell) for cell in row if normalize(cell)]
-        # Lines in one cell, as used by the event list.
-        for cell in cleaned:
+        raw_cells = [cell for cell in row if normalize(cell)]
+        cleaned = [normalize(cell) for cell in raw_cells]
+        # Preserve the explicit line break between Japanese and Chinese names in
+        # the Wiki event/memoria tables. Normalizing the whole cell first would
+        # collapse that authoritative bilingual pair into one unparseable line.
+        for cell in raw_cells:
             lines = [normalize(line) for line in re.split(r"[\n\r]+", cell) if normalize(line)]
             for index, line in enumerate(lines):
                 if not has_kana(line):
@@ -306,16 +309,34 @@ def parse_reader(localization: dict[str, Any], index: list[dict[str, Any]], titl
 def longest_source_prefix(title: str, mapping: dict[str, str]) -> tuple[str, str] | None:
     normalized_title = key_normalize(title)
     candidates: list[tuple[int, str, str]] = []
+    seen: set[tuple[str, str]] = set()
     for japanese, chinese in mapping.items():
-        if japanese != normalize(japanese):
-            continue
         key = key_normalize(japanese)
+        signature = (key, chinese)
+        if not key or signature in seen:
+            continue
+        seen.add(signature)
         if normalized_title.startswith(key):
             candidates.append((len(key), japanese, chinese))
     if not candidates:
         return None
     _, japanese, chinese = max(candidates)
     return japanese, chinese
+
+
+def suffix_after_normalized_prefix(title: str, prefix: str) -> str:
+    if title.startswith(prefix):
+        return title[len(prefix):].strip(" 　-—～~")
+    target = key_normalize(prefix)
+    if not target:
+        return ""
+    for index in range(1, len(title) + 1):
+        consumed = key_normalize(title[:index])
+        if consumed == target:
+            return title[index:].strip(" 　-—～~")
+        if len(consumed) >= len(target) and not target.startswith(consumed):
+            break
+    return ""
 
 
 def structural_title(
@@ -396,8 +417,7 @@ def structural_title(
     prefix = longest_source_prefix(title, authoritative)
     if prefix:
         japanese, chinese = prefix
-        # Slice approximately from original title using normalized punctuation.
-        suffix = title[len(japanese):].strip(" 　-—～~") if title.startswith(japanese) else ""
+        suffix = suffix_after_normalized_prefix(title, japanese)
         translated_suffix = translate_common(suffix, character_exact, character_normalized)
         return chinese + (" " + translated_suffix if translated_suffix else ""), "authoritative-prefix"
 
