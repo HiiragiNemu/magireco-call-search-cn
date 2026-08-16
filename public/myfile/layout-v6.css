@@ -1,0 +1,91 @@
+/* V6 card compaction and consistent top-right base-character stars. */
+.suite-character-grid {
+  align-items: start;
+  grid-auto-rows: max-content;
+}
+
+.suite-character-card {
+  grid-template-rows: auto auto auto !important;
+  align-content: start;
+  min-height: 0 !important;
+  height: auto !important;
+  gap: 2px !important;
+  padding: 4px !important;
+}
+
+.suite-character-card[aria-pressed="true"] {
+  padding: 2px !important;
+}
+
+.suite-character-card img {
+  width: 60px;
+  height: 60px;
+}
+
+.suite-character-card strong,
+.suite-character-card small {
+  margin: 0;
+  min-height: 0;
+}
+
+.suite-character-card .suite-star {
+  top: 2px !important;
+  right: 4px !important;
+  z-index: 3;
+  padding: 0 1px;
+  color: #b87308;
+  font-size: 1rem !important;
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 #fff) drop-shadow(0 0 2px #fff);
+}
+
+/* Established call/height character cards use the same star placement. */
+label.girlbox {
+  position: relative !important;
+}
+
+.main-card-star-v6 {
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  z-index: 8;
+  display: block;
+  color: #b87308;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff, 0 0 3px #fff;
+}
+
+@media (max-width: 720px) {
+  .suite-character-card {
+    grid-template-rows: auto auto !important;
+    min-height: 0 !important;
+    padding: 3px 1px !important;
+  }
+
+  .suite-character-card[aria-pressed="true"] {
+    padding: 1px 0 !important;
+  }
+
+  .suite-character-card img {
+    width: 52px;
+    height: 52px;
+  }
+
+  .suite-character-card strong {
+    font-size: .75rem;
+    line-height: 1.12;
+  }
+
+  .suite-character-card small {
+    display: none;
+  }
+
+  .suite-character-card .suite-star {
+    top: 1px !important;
+    right: 3px !important;
+    font-size: .88rem !important;
+  }
+}
