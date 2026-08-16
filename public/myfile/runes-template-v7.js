@@ -434,7 +434,7 @@
     oldButton.after(button);
 
     button.addEventListener('click', async () => {
-      const file = fileInput.files?.[0];
+      const file = global.__RUNE_INPUT_OVERRIDE_V9__ || fileInput.files?.[0];
       if (!file) return Tools.setStatus(status, '请先选择图片。', 'error');
       const mode = layout.value || 'auto';
       button.disabled = true;

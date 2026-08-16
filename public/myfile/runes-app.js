@@ -623,7 +623,8 @@
   }
 
   async function recognize() {
-    if (!file) return;
+    const recognitionFile = global.__RUNE_INPUT_OVERRIDE_V9__ || file;
+    if (!recognitionFile) return;
     const serial = ++recognizeSerial;
     nodes.runesRecognize.disabled = true;
     nodes.runesClear.disabled = true;
@@ -636,7 +637,7 @@
       loggerBase = 0;
       loggerSpan = .15;
       const result = await runEnsemble(
-        file,
+        recognitionFile,
         nodes.runesModel.value,
         nodes.runesPreprocess.value,
         nodes.runesLayout?.value || 'auto',
