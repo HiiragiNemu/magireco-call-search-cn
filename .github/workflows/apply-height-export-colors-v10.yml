@@ -1,0 +1,47 @@
+name: Apply V10 height-export color compatibility
+
+on:
+  push:
+    branches:
+      - fix/height-export-title-call-v10-20260817
+    paths:
+      - .github/workflows/apply-height-export-colors-v10.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-export-title-call-v10-20260817
+          fetch-depth: 0
+      - name: Sanitize CSS Color 4 values before html2canvas parses the export clone
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/fix-height-export-colors-v10.py
+          node --check public/myfile/height-export-v10.js
+          grep -Fq 'sanitizeCloneColors' public/myfile/height-export-v10.js
+          grep -Fq 'onclone(cloneDocument)' public/myfile/height-export-v10.js
+      - name: Commit the export compatibility repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/height-export-v10.js
+          git commit -m 'Sanitize modern colors before high-DPI height export'
+          git push origin HEAD:fix/height-export-title-call-v10-20260817
+      - name: Dispatch the complete V10 gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run publish-complete-v10.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref fix/height-export-title-call-v10-20260817
