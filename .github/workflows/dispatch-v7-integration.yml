@@ -1,5 +1,5 @@
 name: Dispatch final V7 publication
-# Category order, cast mapping, swipe-safe rail, and border-aware OCR repairs applied.
+# Category order, cast mapping, swipe-safe rail, root quick rail, and border-aware OCR repairs applied.
 
 on:
   push:
