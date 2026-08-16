@@ -32,11 +32,9 @@ jobs:
               -o "/tmp/v10/meta/$file"
           done
           curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 180 \
-            'https://magireco.moe/api.php?action=parse&page=%E6%97%A5%E6%9C%8D%E6%B4%BB%E5%8A%A8%E5%88%97%E8%A1%A8&prop=wikitext&format=json&formatversion=2' \
-            -o /tmp/v10/wiki-events-wikitext.json
-          curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 180 \
-            'https://magireco.moe/api.php?action=parse&page=%E6%97%A5%E6%9C%8D%E6%B4%BB%E5%8A%A8%E5%88%97%E8%A1%A8&prop=text&format=json&formatversion=2' \
-            -o /tmp/v10/wiki-events-html.json
+            -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/151 Safari/537.36' \
+            'https://magireco.moe/wiki/%E6%97%A5%E6%9C%8D%E6%B4%BB%E5%8A%A8%E5%88%97%E8%A1%A8' \
+            -o /tmp/v10/wiki-events-page.html
 
       - name: Analyze unique titles and source coverage
         shell: bash
@@ -74,30 +72,29 @@ jobs:
           index=json.loads(pathlib.Path('/tmp/v10/meta/website/public/story_index.json').read_text(encoding='utf-8'))
           print('READER_TITLES',len(reader_titles),'READER_INDEX',len(index))
 
-          wiki_wiki=json.loads(pathlib.Path('/tmp/v10/wiki-events-wikitext.json').read_text(encoding='utf-8'))
-          wikitext=wiki_wiki.get('parse',{}).get('wikitext','')
-          print('WIKI_WIKITEXT_BYTES',len(wikitext),'FIRST',repr(wikitext[:500]))
-          print('WIKI_TABLE_ROWS',wikitext.count('|-'))
-          wiki_html=json.loads(pathlib.Path('/tmp/v10/wiki-events-html.json').read_text(encoding='utf-8'))
-          page_html=wiki_html.get('parse',{}).get('text','')
+          page_html=pathlib.Path('/tmp/v10/wiki-events-page.html').read_text(encoding='utf-8',errors='replace')
           print('WIKI_HTML_BYTES',len(page_html),'TABLES',page_html.count('<table'))
-          # Print compact text from first rows to confirm parse structure.
           rows=re.findall(r'<tr[^>]*>([\s\S]*?)</tr>',page_html,re.I)
-          for row in rows[:8]:
+          parsed=[]
+          for row in rows:
               cells=re.findall(r'<t[dh][^>]*>([\s\S]*?)</t[dh]>',row,re.I)
               cleaned=[]
               for cell in cells:
-                  text=re.sub(r'<[^>]+>',' ',cell)
-                  text=html.unescape(re.sub(r'\s+',' ',text)).strip()
-                  cleaned.append(text)
-              if cleaned: print('WIKI_ROW',cleaned)
+                  value=re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>',' ',cell,flags=re.I)
+                  value=re.sub(r'<br\s*/?>','\n',value,flags=re.I)
+                  value=re.sub(r'<[^>]+>',' ',value)
+                  value=html.unescape(value)
+                  value='\n'.join(re.sub(r'[ \t]+',' ',part).strip() for part in value.splitlines() if part.strip())
+                  cleaned.append(value)
+              if cleaned: parsed.append(cleaned)
+          for row in parsed[:10]: print('WIKI_ROW',row)
+          print('WIKI_PARSED_ROWS',len(parsed))
 
-          # Show representative unmatched titles per category for designing rules.
           for key,values in by_category.items():
               unmatched=[t for t in sorted(values) if not current_match(t)]
               if unmatched:
                   print('\nUNMATCHED_SAMPLE',repr(key),len(unmatched))
-                  for title in unmatched[:25]: print(' ',title)
+                  for title in unmatched[:35]: print(' ',title)
           PY
 
       - name: Upload diagnostic source files
