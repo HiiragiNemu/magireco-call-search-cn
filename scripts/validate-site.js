@@ -26,9 +26,11 @@ const RELEASES = Object.freeze({
   V4: 'neo11-height-guide-v4-20260816',
   V5: 'integrated-tools-v5-20260816',
   V6: 'story-ocr-layout-v6-20260816',
-  V7: 'story-ui-translation-ocr-v7-20260816'
+  V7: 'story-ui-translation-ocr-v7-20260816',
+  V8: 'collapsible-layout-v8-20260816'
 });
-const isV7 = release === RELEASES.V7;
+const isV8 = release === RELEASES.V8;
+const isV7 = release === RELEASES.V7 || isV8;
 const isV6 = release === RELEASES.V6 || isV7;
 const isV5 = release === RELEASES.V5 || isV6;
 const isV4 = release === RELEASES.V4 || isV5;
@@ -302,6 +304,42 @@ if (isV7) {
   }
   if (buildInfo.rollbackBeforeStoryUiTranslationOcrV7 !== 'rollback/pre-story-ui-translation-ocr-v7-20260816') fail('V7 rollback pointer missing.');
   if (buildInfo.visitorCopyPolicy !== 'no-internal-project-instructions') fail('V7 visitor-copy policy missing.');
+}
+
+
+if (isV8) {
+  for (const file of [
+    'public/myfile/layout-v8.css', 'public/myfile/layout-v8.js',
+    'scripts/integrate-collapsible-layout-v8.py', 'scripts/smoke-collapsible-layout-v8.mjs'
+  ]) requireFile(file);
+  for (const page of ['public/index.html', 'public/story.html', 'public/attendance.html', 'public/runes.html']) {
+    const pageText = read(page);
+    if (!pageText.includes('./myfile/layout-v8.css')) fail(`${page} missing V8 layout CSS.`);
+    if (!pageText.includes('./myfile/layout-v8.js')) fail(`${page} missing V8 layout JavaScript.`);
+  }
+  const layoutV8 = read('public/myfile/layout-v8.js');
+  for (const marker of [
+    'prepareStoryPage', 'prepareAttendancePage', 'prepareCallPage',
+    'installCharacterGridDetails', 'wrapCallResults', '共同出场次数排行'
+  ]) {
+    if (!layoutV8.includes(marker)) fail(`V8 layout marker missing: ${marker}`);
+  }
+  const cssV8 = read('public/myfile/layout-v8.css');
+  for (const marker of [
+    'attendance-workspace-v8', 'character-grid-details-v8',
+    'max-height: none !important', 'overflow: visible !important'
+  ]) {
+    if (!cssV8.includes(marker)) fail(`V8 CSS marker missing: ${marker}`);
+  }
+  if (buildInfo.rollbackBeforeCollapsibleLayoutV8 !== 'rollback/pre-collapsible-layout-v8-20260816') {
+    fail('V8 rollback pointer missing or incorrect.');
+  }
+  if (buildInfo.characterGridScrollMode !== 'document-flow-no-internal-scrollbar') {
+    fail('V8 character-grid scroll policy is incorrect.');
+  }
+  if (buildInfo.attendanceDisplayName !== '共同出场次数排行') {
+    fail('V8 attendance display name is incorrect.');
+  }
 }
 
 if (failed) process.exit(1);

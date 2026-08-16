@@ -1,5 +1,5 @@
 {
-  "release": "story-ui-translation-ocr-v7-20260816",
+  "release": "collapsible-layout-v8-20260816",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -49,5 +49,13 @@
   "storyCharacterAttributes": true,
   "attendanceCharacterAttributes": true,
   "quickRail": "existing-root-plus-story-and-attendance",
-  "runeOcrV7": "ordered-template-plus-classic-fallback"
+  "runeOcrV7": "ordered-template-plus-classic-fallback",
+  "rollbackBeforeCollapsibleLayoutV8": "rollback/pre-collapsible-layout-v8-20260816",
+  "panelLayout": "collapsible-search-selection-attributes-results",
+  "characterGridScrollMode": "document-flow-no-internal-scrollbar",
+  "attendanceDesktopLayout": "balanced-selection-and-ranking-halves",
+  "attendanceDisplayName": "共同出场次数排行",
+  "suiteNavigationIcons": false,
+  "callCharacterCount": "visible-total-selected-live",
+  "ocrStage": "unchanged-from-v7-pending-mask-v9"
 }

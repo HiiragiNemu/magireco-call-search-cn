@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core';
 
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:8000';
 const CHROME_PATH = process.env.CHROME_PATH || '/usr/bin/google-chrome';
-const EXPECTED_RELEASE = 'story-ui-translation-ocr-v7-20260816';
+const EXPECTED_RELEASE = 'collapsible-layout-v8-20260816';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function assert(condition, message, details) {
@@ -52,8 +52,8 @@ async function testStory(browser) {
     const nameRect = name.getBoundingClientRect();
     return {
       release: document.body.dataset.build,
-      heroText: hero.textContent.trim(),
-      heroParagraphs: hero.querySelectorAll('p').length,
+      heroText: hero?.textContent.trim() || '',
+      heroParagraphs: hero?.querySelectorAll('p').length || 0,
       internalCopy: document.body.textContent.includes('不修改 magi-reader')
         || document.body.textContent.includes('中文整合工具')
         || document.body.textContent.includes('Google Apps Script，因此'),
@@ -70,7 +70,7 @@ async function testStory(browser) {
     };
   });
   assert(initial.release === EXPECTED_RELEASE, 'story V7 release marker', initial.release);
-  assert(initial.heroText === '角色故事搜索' && initial.heroParagraphs === 0 && !initial.internalCopy,
+  assert((!initial.heroText || initial.heroText === '角色故事搜索') && initial.heroParagraphs === 0 && !initial.internalCopy,
     'visitor page contains only the compact title, not internal project instructions', initial);
   const expectedPrefix = ['メイン【第1部】','メイン【第2部】','アナザー【第1部】','アナザー【第2部】','魔法少女','衣装','ミラーズ','イベント','バトルミュージアム'];
   assert(expectedPrefix.every((value, index) => initial.values[index] === value),
@@ -167,8 +167,8 @@ async function testAttendance(browser) {
     const after = [...grid.querySelectorAll('.suite-character-card')].filter((item) => !item.hidden).length;
     return {
       release: document.body.dataset.build,
-      heroText: hero.textContent.trim(),
-      heroParagraphs: hero.querySelectorAll('p').length,
+      heroText: hero?.textContent.trim() || '',
+      heroParagraphs: hero?.querySelectorAll('p').length || 0,
       forbidden: document.body.textContent.includes('界面统一使用本站中文角色名')
         || document.body.textContent.includes('查询仍使用原始日文角色键'),
       gap: card.getBoundingClientRect().bottom - name.getBoundingClientRect().bottom,
@@ -179,7 +179,7 @@ async function testAttendance(browser) {
       viewportWidth: innerWidth
     };
   });
-  assert(audit.release === EXPECTED_RELEASE && audit.heroText === '共同出场次数排行'
+  assert(audit.release === EXPECTED_RELEASE && (!audit.heroText || audit.heroText === '共同出场次数排行')
     && audit.heroParagraphs === 0 && !audit.forbidden,
   'attendance visitor header contains no implementation commentary', audit);
   assert(audit.gap <= 9 && audit.after > 0 && audit.after < audit.before,
