@@ -122,12 +122,26 @@ def patch_height_source() -> None:
   function applyHeightScale(scale, mode) {
     heightState.scale = clamp(scale, 0.25, 1.25);"""
     text = replace_once(text, old_refresh, new_refresh, "height scale readout and clamp")
-    text = replace_once(
-        text,
-        "    const scale = clamp((viewport.clientWidth - 4) / natural.width, 0.25, 1);",
-        "    const scale = clamp((viewport.clientWidth - 4) / natural.width, 0.25, 1.25);",
-        "height fit clamp",
-    )
+
+    old_fit = """  function fitHeightChart() {
+    const viewport = document.querySelector('.height-chart-viewport-v2');
+    const surface = document.querySelector('.height-chart-surface-v2');
+    if (!viewport || !surface) return;
+    const natural = measureNatural(surface);
+    const scale = clamp((viewport.clientWidth - 4) / natural.width, 0.25, 1);
+    applyHeightScale(scale, 'fit');
+    viewport.scrollLeft = 0;
+  }"""
+    new_fit = """  function fitHeightChart() {
+    const viewport = document.querySelector('.height-chart-viewport-v2');
+    const surface = document.querySelector('.height-chart-surface-v2');
+    if (!viewport || !surface) return;
+    const natural = measureNatural(surface);
+    const scale = clamp((viewport.clientWidth - 4) / natural.width, 0.25, 1.25);
+    applyHeightScale(scale, 'fit');
+    viewport.scrollLeft = 0;
+  }"""
+    text = replace_once(text, old_fit, new_fit, "height fit clamp")
 
     old_controls = """    controls.appendChild(makeButton('适应屏幕', '将完整身高图适配到当前显示框宽度', fitHeightChart));
     controls.appendChild(makeButton('−', '缩小身高图', () => applyHeightScale(heightState.scale - 0.08, 'manual')));
