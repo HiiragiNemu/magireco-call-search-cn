@@ -6,6 +6,8 @@ on:
       - fix/story-ocr-layout-v6-20260816
     paths:
       - .github/workflows/integrate-story-ocr-layout-v6.yml
+      - scripts/build-story-snapshot-v6.py
+      - scripts/integrate-story-ocr-layout-v6.py
   workflow_dispatch:
 
 permissions:
@@ -118,7 +120,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m http.server 8000 --directory public >/tmp/v6-http.log 2>&1 &
+          nohup python3 -m http.server 8000 --directory public >/tmp/v6-http.log 2>&1 &
           echo $! >/tmp/v6-http.pid
           for attempt in $(seq 1 60); do
             curl --fail --silent http://127.0.0.1:8000/build-info.json >/dev/null && exit 0
