@@ -11,12 +11,17 @@
   ];
 
   function updateNavigation() {
+    let changed = false;
     for (const link of document.querySelectorAll('.suite-nav a')) {
       const href = link.getAttribute('href') || '';
       const label = NAV_LABELS.find(([path]) => href.includes(path))?.[1]
         || (href === './' || href === '/' ? '称呼与身高' : link.textContent.trim());
+      if (link.textContent.trim() === label && link.childNodes.length === 1
+        && link.firstChild?.nodeType === Node.TEXT_NODE) continue;
       link.replaceChildren(document.createTextNode(label));
+      changed = true;
     }
+    return changed;
   }
 
   function panelSummary(title) {
@@ -45,11 +50,12 @@
   function mirrorText(source, target) {
     const update = () => {
       const text = source?.textContent?.replace(/\s+/g, ' ').trim();
-      target.textContent = text || '角色目录';
+      const next = text || '角色目录';
+      if (target.textContent !== next) target.textContent = next;
     };
     update();
     if (source && typeof MutationObserver === 'function') {
-      new MutationObserver(update).observe(source, { childList: true, subtree: true, characterData: true, attributes: true });
+      new MutationObserver(update).observe(source, { childList: true, subtree: true, characterData: true });
     }
     return update;
   }
@@ -162,18 +168,25 @@
 
   function callCountUpdater(grid, target) {
     const labels = [...grid.querySelectorAll('label.girlbox')];
+    let frame = 0;
     const update = () => {
+      frame = 0;
       const visible = labels.filter((label) => {
         const style = global.getComputedStyle(label);
         return !label.hidden && style.display !== 'none' && style.visibility !== 'hidden';
       }).length;
       const selected = labels.filter((label) => label.querySelector('input.MagicalChk')?.checked).length;
-      target.textContent = `显示 ${visible}/${labels.length} 名；已选 ${selected} 名。`;
+      const next = `显示 ${visible}/${labels.length} 名；已选 ${selected} 名。`;
+      if (target.textContent !== next) target.textContent = next;
     };
-    grid.addEventListener('change', update);
-    document.getElementById('ndownword1')?.addEventListener('input', () => global.requestAnimationFrame(update));
+    const schedule = () => {
+      if (frame) return;
+      frame = global.requestAnimationFrame(update);
+    };
+    grid.addEventListener('change', schedule);
+    document.getElementById('ndownword1')?.addEventListener('input', schedule);
     if (typeof MutationObserver === 'function') {
-      new MutationObserver(() => global.requestAnimationFrame(update)).observe(grid, {
+      new MutationObserver(schedule).observe(grid, {
         subtree: true,
         attributes: true,
         attributeFilter: ['style', 'class', 'hidden']
@@ -273,7 +286,7 @@
   function init() {
     updateNavigation();
     const navObserver = typeof MutationObserver === 'function'
-      ? new MutationObserver(updateNavigation)
+      ? new MutationObserver(() => updateNavigation())
       : null;
     for (const nav of document.querySelectorAll('.suite-nav')) navObserver?.observe(nav, { childList: true, subtree: true });
 
