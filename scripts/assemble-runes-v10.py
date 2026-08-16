@@ -34,6 +34,13 @@ def main() -> int:
     except Exception as error:
         raise SystemExit(f"Unable to decode assembled V10 rune source as UTF-8: {error}") from error
 
+    # The staged V10.1 source contained a harmless shorthand typo that could make
+    # the processed-image canvas zero-height on browsers returning ImageBitmap.
+    decoded = decoded.replace(
+        "canvas.height = bitmap.ght || bitmap.naturalHeight;",
+        "canvas.height = bitmap.height || bitmap.naturalHeight;",
+    )
+
     if len(decoded.encode("utf-8")) < 32000:
         raise SystemExit(f"Decoded V10 rune source is unexpectedly short: {len(decoded)} characters")
     missing = [marker for marker in MARKERS if marker not in decoded]
