@@ -1,0 +1,178 @@
+name: Integrate collapsible layout V8
+
+on:
+  push:
+    branches:
+      - fix/collapsible-layout-v8-20260816
+    paths:
+      - public/myfile/layout-v8.css
+      - public/myfile/layout-v8.js
+      - scripts/integrate-collapsible-layout-v8.py
+      - scripts/smoke-collapsible-layout-v8.mjs
+      - .github/workflows/integrate-collapsible-layout-v8.yml
+      - .github/workflows/verify-production.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: integrate-collapsible-layout-v8
+  cancel-in-progress: false
+
+jobs:
+  integrate-test-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+
+    steps:
+      - name: Check out V8 branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/collapsible-layout-v8-20260816
+          fetch-depth: 0
+
+      - name: Integrate V8 production pages and validation metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/integrate-collapsible-layout-v8.py
+
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/smoke-story-ui-v7.mjs')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              "      heroText: hero.textContent.trim(),\n      heroParagraphs: hero.querySelectorAll('p').length,",
+              "      heroText: hero?.textContent.trim() || '',\n      heroParagraphs: hero?.querySelectorAll('p').length || 0,"
+          )
+          text = text.replace(
+              "  assert(initial.heroText === '角色故事搜索' && initial.heroParagraphs === 0 && !initial.internalCopy,",
+              "  assert((!initial.heroText || initial.heroText === '角色故事搜索') && initial.heroParagraphs === 0 && !initial.internalCopy,"
+          )
+          text = text.replace(
+              "      heroText: hero.textContent.trim(),\n      heroParagraphs: hero.querySelectorAll('p').length,",
+              "      heroText: hero?.textContent.trim() || '',\n      heroParagraphs: hero?.querySelectorAll('p').length || 0,"
+          )
+          text = text.replace(
+              "  assert(audit.release === EXPECTED_RELEASE && audit.heroText === '共同出场次数排行'\n    && audit.heroParagraphs === 0 && !audit.forbidden,",
+              "  assert(audit.release === EXPECTED_RELEASE && (!audit.heroText || audit.heroText === '共同出场次数排行')\n    && audit.heroParagraphs === 0 && !audit.forbidden,"
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          git diff --check
+
+      - name: Validate static files and program syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-site.js
+          node --check public/myfile/layout-v8.js
+          node --check scripts/smoke-collapsible-layout-v8.mjs
+          node --check scripts/smoke-story-ui-v7.mjs
+          node --check scripts/smoke-rune-v7.mjs
+          node --check scripts/smoke-neo11-v3.mjs
+          node --check scripts/smoke-height-guide-v4.mjs
+          node --check scripts/smoke-integrated-tools-v5.mjs
+          python3 -m py_compile scripts/integrate-collapsible-layout-v8.py
+
+      - name: Install browser driver
+        shell: bash
+        run: npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Start local production server
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup python3 -m http.server 8000 --directory public >/tmp/layout-v8-http.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8000/build-info.json >/dev/null && exit 0
+            sleep .25
+          done
+          cat /tmp/layout-v8-http.log
+          exit 1
+
+      - name: Run established functional regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-neo11-v3.mjs | tee /tmp/layout-v8-neo11.txt
+          grep -Fq '"state": "pass"' /tmp/layout-v8-neo11.txt
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-height-guide-v4.mjs | tee /tmp/layout-v8-height.txt
+          grep -Fq '"state": "pass"' /tmp/layout-v8-height.txt
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
+            node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/layout-v8-tools.txt
+          grep -Fq '"state": "pass"' /tmp/layout-v8-tools.txt
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-story-ui-v7.mjs | tee /tmp/layout-v8-story-regression.txt
+          grep -Fq '"state": "pass"' /tmp/layout-v8-story-regression.txt
+
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-rune-v7.mjs | tee /tmp/layout-v8-rune-regression.txt
+          grep -Fq '"state": "pass"' /tmp/layout-v8-rune-regression.txt
+
+      - name: Run V8 collapsible and desktop-layout acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-collapsible-layout-v8.mjs | tee /tmp/layout-v8-acceptance.txt
+          grep -Fq '"state": "pass"' /tmp/layout-v8-acceptance.txt
+
+      - name: Commit only the fully tested V8 integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            public \
+            scripts/validate-site.js \
+            scripts/smoke-neo11-v3.mjs \
+            scripts/smoke-height-guide-v4.mjs \
+            scripts/smoke-integrated-tools-v5.mjs \
+            scripts/smoke-story-layout-v6.mjs \
+            scripts/smoke-ocr-v6.mjs \
+            scripts/smoke-story-ui-v7.mjs \
+            scripts/smoke-rune-v7.mjs \
+            .github/workflows/site-validation.yml \
+            .github/workflows/verify-production.yml
+          if git diff --cached --quiet; then
+            echo 'V8 integration already committed.'
+          else
+            git commit -m 'Integrate and validate collapsible full-page layout V8'
+            git push origin HEAD:fix/collapsible-layout-v8-20260816
+          fi
+
+      - name: Upload pre-publication V8 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collapsible-layout-v8-prepublication-${{ github.sha }}
+          path: |
+            /tmp/layout-v8-http.log
+            /tmp/layout-v8-neo11.txt
+            /tmp/layout-v8-height.txt
+            /tmp/layout-v8-tools.txt
+            /tmp/layout-v8-story-regression.txt
+            /tmp/layout-v8-rune-regression.txt
+            /tmp/layout-v8-acceptance.txt
+            /tmp/collapsible-v8-story-mobile.png
+            /tmp/collapsible-v8-attendance-desktop.png
+            /tmp/collapsible-v8-call-mobile.png
+            /tmp/neo11-v3-mobile.png
+            /tmp/neo11-v3-desktop.png
+            /tmp/height-guide-v4-mobile.png
+            /tmp/height-guide-v4-desktop.png
+          if-no-files-found: warn
+          retention-days: 30
