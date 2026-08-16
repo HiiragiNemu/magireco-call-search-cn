@@ -1,0 +1,40 @@
+name: Inspect complete story JSON V6
+
+on:
+  push:
+    branches:
+      - fix/story-ocr-layout-v6-20260816
+    paths:
+      - .github/workflows/inspect-story-v6-drive.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect current complete JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --silent --show-error --max-time 180 \
+            'https://drive.google.com/uc?export=download&id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q' \
+            -o /tmp/story-all.json
+          python3 <<'PY'
+          import json, pathlib, collections
+          path=pathlib.Path('/tmp/story-all.json')
+          data=json.loads(path.read_text(encoding='utf-8'))
+          print('bytes',path.stat().st_size,'type',type(data).__name__,'keys',len(data))
+          total=0
+          for key,rows in data.items():
+              total += len(rows) if isinstance(rows,list) else 0
+              cast=collections.Counter()
+              for row in rows if isinstance(rows,list) else []:
+                  if isinstance(row,list) and len(row)>1 and isinstance(row[1],list): cast.update(row[1])
+              print(repr(key),'rows',len(rows) if isinstance(rows,list) else type(rows).__name__,'cast_unique',len(cast),'sample',repr(rows[0] if rows else None)[:400])
+          print('TOTAL_ROWS',total)
+          PY
