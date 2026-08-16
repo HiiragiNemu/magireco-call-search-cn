@@ -19,13 +19,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: fix/height-export-title-call-v10-20260817
-      - name: Decode all staged chunks and inspect syntax
+      - name: Decode all staged chunks and verify syntax
         shell: bash
         run: |
-          set -u
+          set -euo pipefail
           cat .automation/v10-final/runes-v10.js.b64.* | base64 -d > /tmp/runes-v10.js
           echo "decoded-bytes=$(wc -c < /tmp/runes-v10.js)"
-          echo '--- lines 520-780 ---'
-          nl -ba /tmp/runes-v10.js | sed -n '520,780p'
-          echo '--- node syntax ---'
-          node --check /tmp/runes-v10.js || true
+          tail -n 35 /tmp/runes-v10.js
+          node --check /tmp/runes-v10.js
