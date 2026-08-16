@@ -385,15 +385,36 @@
       const result = layout === 'chart' ? chartRecognition(binary, templates) : bandRecognition(binary, templates, layout);
       const letterCount = result.text.replace(/[^A-Za-z]/g, '').length;
       const unique = new Set(result.text.replace(/[^A-Za-z]/g, '').toLowerCase()).size;
-      const borderBonus = binary.removedRows + binary.removedColumns > 0 ? .04 : 0;
-      result.score = result.confidence + Math.min(.18, letterCount / 150) + Math.min(.08, unique / 150) + borderBonus;
-      result.binary = binary;
-      result.removedRows = binary.removedRows;
-      result.removedColumns = binary.removedColumns;
-      candidates.push(result);
+      const removedLines = binary.removedRows + binary.removedColumns;
+    const borderBonus = removedLines > 0 ? .11 : 0;
+    result.letterCount = letterCount;
+    result.uniqueCount = unique;
+    result.removedLines = removedLines;
+    result.score = result.confidence
+      + Math.min(.18, letterCount / 150)
+      + Math.min(.08, unique / 150)
+      + borderBonus;
+    result.binary = binary;
+    result.removedRows = binary.removedRows;
+    result.removedColumns = binary.removedColumns;
+    candidates.push(result);
+  }
+  candidates.sort((a, b) => b.score - a.score);
+  let best = candidates[0];
+  if (layout !== 'chart') {
+    const borderCandidates = candidates
+      .filter((candidate) => candidate.removedLines > 0
+        && candidate.letterCount >= 3
+        && candidate.uniqueCount >= 3)
+      .sort((a, b) => b.score - a.score);
+    const borderBest = borderCandidates[0];
+    if (borderBest && (borderBest.score >= best.score - .28
+      || best.letterCount < 5
+      || best.uniqueCount < 3)) {
+      best = borderBest;
     }
-    candidates.sort((a, b) => b.score - a.score);
-    return { best: candidates[0], candidates };
+  }
+  return { best, candidates };
   }
 
   function install() {
@@ -430,16 +451,21 @@
         const result = await recognizeTemplate(file, effective);
         const best = result.best;
         const letters = best.text.replace(/[^A-Za-z]/g, '');
-        const minimum = effective === 'chart' ? 18 : 3;
-        if (letters.length < minimum || best.confidence < .18) {
-          // The classic model remains useful for irregular screenshots; use it only
-          // when ordered template segmentation is demonstrably weak.
-          oldButton.hidden = false;
-          oldButton.click();
-          oldButton.hidden = true;
-          Tools.setStatus(status, '模板分割置信度不足，已切换到经典模型。');
-          return;
-        }
+    const uniqueLetters = new Set(letters.toLowerCase()).size;
+    const minimum = effective === 'chart' ? 18 : 3;
+    const borderAwareUsable = effective !== 'chart'
+      && best.removedLines > 0
+      && letters.length >= minimum
+      && uniqueLetters >= 3;
+    if (letters.length < minimum || (best.confidence < .18 && !borderAwareUsable)) {
+      // Fall back only when the ordered template result is weak and did
+      // not become usable after detected frame lines were removed.
+      oldButton.hidden = false;
+      oldButton.click();
+      oldButton.hidden = true;
+      Tools.setStatus(status, '模板分割置信度不足，已切换到经典模型。');
+      return;
+    }
         output.value = effective === 'line' ? best.text.toUpperCase() : best.text;
         renderBinary(best.binary);
         if (progress) progress.value = 1;
