@@ -1,21 +1,19 @@
-/* Chinese, responsive frontend for the existing Magia Record story-search data service. */
+/* Local, CORS-free story search backed by the original public complete JSON snapshot. */
 (function (global) {
   'use strict';
 
-  const API_URL = 'https://script.google.com/macros/s/AKfycbz7rqYmZAcY-Cu0QG_XfcqH1JfRrgZXLkk7XRhU2Df7VYNNbOMBwwqrKdcqQQmokndm/exec';
-  const STORY_TYPES = [
-    'メイン【第1部】', 'メイン【第2部】',
-    'アナザー【第1部】', 'アナザー【第2部】',
-    '魔法少女', '衣装', 'ミラーズ', 'イベント',
-    'バトルミュージアム', 'スペシャル', 'EDムービー',
-    'アニメ【1st】', 'アニメ【2nd】', 'アニメ【Final】'
-  ];
-  const STORAGE_KEY = 'magireco-story-search-v5';
+  const MANIFEST_URL = './data/story-v6/manifest.json';
+  const VARIANT_URL = './data/story-v6/variant-map.json';
+  const STORAGE_KEY = 'magireco-story-search-v6';
+  const MAX_RENDERED_ROWS = 1800;
   const Tools = global.MagiTools;
   if (!Tools) return;
 
   const nodes = {};
+  const categoryCache = new Map();
   let catalog = [];
+  let manifest = null;
+  let variantFamilies = new Map();
   let searchSerial = 0;
 
   function cacheNodes() {
@@ -27,16 +25,25 @@
     ]) nodes[id] = document.getElementById(id);
   }
 
+  function categoryMeta(key) {
+    return manifest?.categories?.find((entry) => entry.key === key) || null;
+  }
+
+  function categoryLabel(key) {
+    return categoryMeta(key)?.label || Tools.storyLabel(key);
+  }
+
   function renderStoryTypes() {
     nodes.storyTypeOptions.innerHTML = '';
-    for (const value of STORY_TYPES) {
+    for (const entry of manifest.categories) {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'checkbox';
       input.name = 'storyType';
-      input.value = value;
+      input.value = entry.key;
       input.checked = true;
-      label.append(input, document.createTextNode(Tools.storyLabel(value)));
+      label.title = `${entry.key} · ${entry.count.toLocaleString()} 条`;
+      label.append(input, document.createTextNode(`${entry.label}（${entry.count.toLocaleString()}）`));
       nodes.storyTypeOptions.appendChild(label);
     }
   }
@@ -88,7 +95,7 @@
   }
 
   function saveState() {
-    if (!catalog.length) return;
+    if (!catalog.length || !manifest) return;
     const state = {
       types: selectedTypes(),
       logic: selectedLogic(),
@@ -105,7 +112,8 @@
     let state = null;
     try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch { state = null; }
     if (!state || typeof state !== 'object') return;
-    const types = new Set(Array.isArray(state.types) ? state.types : STORY_TYPES);
+    const allTypes = manifest.categories.map((entry) => entry.key);
+    const types = new Set(Array.isArray(state.types) ? state.types : allTypes);
     for (const input of nodes.storyTypeOptions.querySelectorAll('input[name="storyType"]')) input.checked = types.has(input.value);
     const logic = document.querySelector(`input[name="storyLogic"][value="${CSS.escape(state.logic || 'AND')}"]`);
     if (logic) logic.checked = true;
@@ -144,6 +152,72 @@
     return (temp.textContent || '').replace(/\n+/g, ' ').trim();
   }
 
+  function normalized(value) {
+    return String(value || '').normalize('NFKC').toLocaleLowerCase('ja-JP').replace(/\s+/g, ' ').trim();
+  }
+
+  function genericBaseName(value) {
+    return String(value || '')
+      .normalize('NFKC')
+      .replace(/[（(][^）)]*(?:ver|Ver|VER|衣装|水着|晴着|浴衣|クリスマス|ハロウィン|scene0|アニメ)[^）)]*[）)]$/u, '')
+      .replace(/\s+/g, '')
+      .trim();
+  }
+
+  function buildFamilies(selected, includeVariants) {
+    const catalogNames = catalog.map((entry) => entry.jp);
+    return selected.map((entry) => {
+      const names = new Set([entry.jp]);
+      if (includeVariants) {
+        for (const variant of variantFamilies.get(entry.jp) || []) names.add(variant);
+        const base = genericBaseName(entry.jp);
+        for (const candidate of catalogNames) {
+          if (genericBaseName(candidate) === base || candidate.startsWith(`${entry.jp}(`) || candidate.startsWith(`${entry.jp}（`)) names.add(candidate);
+        }
+      }
+      return { entry, names, base: genericBaseName(entry.jp) };
+    });
+  }
+
+  function familyMatchesName(family, castName, includeVariants) {
+    const raw = String(castName || '').normalize('NFKC').trim();
+    if (family.names.has(raw)) return true;
+    if (!includeVariants) return false;
+    if (raw.startsWith(`${family.entry.jp}(`) || raw.startsWith(`${family.entry.jp}（`)) return true;
+    return genericBaseName(raw) === family.base;
+  }
+
+  function rowMatches(row, families, logic, includeVariants, keywordTerms) {
+    const cast = Array.isArray(row?.[1]) ? row[1] : [];
+    const familyHits = families.map((family) => cast.some((name) => familyMatchesName(family, name, includeVariants)));
+    let characterMatch = true;
+    if (families.length) {
+      if (logic === 'OR') characterMatch = familyHits.some(Boolean);
+      else if (logic === 'EXCLUSIVE') characterMatch = familyHits.filter(Boolean).length === 1;
+      else if (logic === 'ONLY') {
+        characterMatch = familyHits.every(Boolean)
+          && cast.every((name) => families.some((family) => familyMatchesName(family, name, includeVariants)));
+      } else characterMatch = familyHits.every(Boolean);
+    }
+    if (!characterMatch) return false;
+    if (!keywordTerms.length) return true;
+    const haystack = normalized(`${textFromMarkup(row?.[0])} ${textFromMarkup(row?.[2])}`);
+    return keywordTerms.every((term) => haystack.includes(term));
+  }
+
+  async function loadCategory(key) {
+    if (!categoryCache.has(key)) {
+      const meta = categoryMeta(key);
+      if (!meta) throw new Error(`故事分类不存在：${key}`);
+      categoryCache.set(key, Tools.fetchJson(`./data/story-v6/${meta.file}`, { cache: 'force-cache' }, 45000)
+        .then((data) => {
+          if (!data || data.key !== key || !Array.isArray(data.rows)) throw new Error(`${key} 的本地故事数据格式无效。`);
+          return data.rows;
+        }));
+    }
+    return categoryCache.get(key);
+  }
+
   async function castItem(name) {
     const raw = String(name || '').trim();
     const entry = await Tools.resolveCharacter(raw);
@@ -161,17 +235,27 @@
     return span;
   }
 
-  async function renderResults(outdata, types, showSpoiler) {
+  function storyLink(storyType, row, title) {
+    const source = String(row?.[3] || '').trim();
+    if (/^https?:\/\//i.test(source)) return source;
+    if (/^[A-Za-z0-9_-]{11}(?:[?&].*)?$/.test(source)) return `https://www.youtube.com/watch?v=${source}`;
+    if (source.startsWith('/')) return `https://wiki.puella-magi.net${source}`;
+    const searchTitle = /イベント|スペシャル|魔法少女|衣装|メモリア|シール/u.test(storyType)
+      ? title
+      : `${categoryLabel(storyType)} ${title}`;
+    return `https://www.google.com/search?q=${encodeURIComponent(`魔法纪录 ${searchTitle}`)}`;
+  }
+
+  async function renderResults(grouped, types, showSpoiler, totalMatches) {
     const wrapper = document.createElement('div');
-    let total = 0;
+    let rendered = 0;
 
     for (const storyType of types) {
-      const rows = Array.isArray(outdata?.[storyType]) ? outdata[storyType] : [];
-      total += rows.length;
+      const rows = grouped.get(storyType) || [];
       const group = document.createElement('section');
       group.className = 'suite-result-group';
       const heading = document.createElement('h3');
-      heading.textContent = `${Tools.storyLabel(storyType)}（${rows.length} 条）`;
+      heading.textContent = `${categoryLabel(storyType)}（${rows.length.toLocaleString()} 条）`;
       group.appendChild(heading);
 
       if (!rows.length) {
@@ -194,15 +278,14 @@
         const body = document.createElement('tbody');
 
         for (const row of rows) {
+          if (rendered >= MAX_RENDERED_ROWS) break;
+          rendered += 1;
           const tr = document.createElement('tr');
           const storyCell = document.createElement('td');
           storyCell.className = 'resultStory';
           const titleRaw = textFromMarkup(row?.[0] ?? '');
-          const searchTitle = /イベント|スペシャル|魔法少女|衣装/.test(storyType)
-            ? titleRaw
-            : `${Tools.storyLabel(storyType)} ${titleRaw}`;
           const link = document.createElement('a');
-          link.href = `https://www.google.com/search?q=${encodeURIComponent(`魔法纪录 故事 ${searchTitle}`)}&tbm=vid`;
+          link.href = storyLink(storyType, row, titleRaw);
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
           link.textContent = titleRaw || '未命名故事';
@@ -234,7 +317,9 @@
     const summary = document.createElement('div');
     summary.className = 'suite-status';
     summary.dataset.kind = 'success';
-    summary.textContent = `共找到 ${total} 条故事记录。点击故事名可打开视频搜索。`;
+    summary.textContent = totalMatches > MAX_RENDERED_ROWS
+      ? `共找到 ${totalMatches.toLocaleString()} 条记录；为保证手机性能，当前显示前 ${MAX_RENDERED_ROWS.toLocaleString()} 条。`
+      : `共找到 ${totalMatches.toLocaleString()} 条故事记录。数据来自本站保存的完整静态快照，不再请求 Google Apps Script。`;
     nodes.storyResultsBody.prepend(summary);
   }
 
@@ -256,30 +341,38 @@
     if (keyword) nodes.storySpoiler.checked = true;
     saveState();
     nodes.storySearchButton.disabled = true;
-    Tools.setStatus(nodes.storyStatus, Tools.loadingMarkup('正在查询故事数据…'));
-    nodes.storyResultsBody.innerHTML = `<div class="suite-notice">${Tools.loadingMarkup('正在加载结果…')}</div>`;
+    Tools.setStatus(nodes.storyStatus, Tools.loadingMarkup('正在读取本站故事快照并筛选…'));
+    nodes.storyResultsBody.innerHTML = `<div class="suite-notice">${Tools.loadingMarkup('正在加载本地故事数据…')}</div>`;
     Tools.smoothScrollTo(nodes.storyResults);
 
-    const params = new URLSearchParams({
-      and_or: selectedLogic(),
-      story_csv: types.join(','),
-      netabare: String(showSpoiler),
-      chara_csv: selected.map((entry) => entry.jp).join(','),
-      star: String(nodes.storyVariants.checked),
-      keywordtext: keyword
-    });
+    const includeVariants = nodes.storyVariants.checked;
+    const families = buildFamilies(selected, includeVariants);
+    const keywordTerms = keyword.split(' ').filter(Boolean).map(normalized);
+    const logic = selectedLogic();
 
     try {
-      const data = await Tools.fetchJson(`${API_URL}?${params.toString()}`, { cache: 'no-store' }, 45000);
+      const datasets = await Promise.all(types.map(async (key) => [key, await loadCategory(key)]));
       if (serial !== searchSerial) return;
-      await renderResults(data, types, showSpoiler);
-      Tools.setStatus(nodes.storyStatus, `查询完成：${selected.length ? `已选 ${selected.length} 名角色` : '仅按关键词'}。`, 'success');
+      const grouped = new Map();
+      let total = 0;
+      for (const [key, rows] of datasets) {
+        const matches = rows.filter((row) => rowMatches(row, families, logic, includeVariants, keywordTerms));
+        grouped.set(key, matches);
+        total += matches.length;
+      }
+      await renderResults(grouped, types, showSpoiler, total);
+      if (serial !== searchSerial) return;
+      Tools.setStatus(
+        nodes.storyStatus,
+        `筛选完成：${total.toLocaleString()} 条；快照共 ${manifest.totalRows.toLocaleString()} 条，生成于 ${manifest.generatedAt}。`,
+        'success'
+      );
       Tools.smoothScrollTo(nodes.storyResults);
     } catch (error) {
       if (serial !== searchSerial) return;
       console.error(error);
-      Tools.setStatus(nodes.storyStatus, `故事数据获取失败：${Tools.escapeHtml(error.message || error)}。请稍后重试。`, 'error');
-      nodes.storyResultsBody.innerHTML = '<div class="suite-notice">未能取得远程故事数据；角色选择和中文映射没有丢失。</div>';
+      Tools.setStatus(nodes.storyStatus, `本站故事快照读取失败：${Tools.escapeHtml(error.message || error)}。`, 'error');
+      nodes.storyResultsBody.innerHTML = '<div class="suite-notice">本地数据文件未能载入。此版本不会退回到容易受跨域和网络限制影响的远程浏览器请求。</div>';
     } finally {
       if (serial === searchSerial) nodes.storySearchButton.disabled = false;
     }
@@ -316,16 +409,29 @@
   async function init() {
     cacheNodes();
     Tools.renderNav('story');
-    renderStoryTypes();
     bindEvents();
     try {
-      catalog = await Tools.loadCatalog();
+      [catalog, manifest] = await Promise.all([
+        Tools.loadCatalog(),
+        Tools.fetchJson(MANIFEST_URL, { cache: 'no-cache' }, 30000)
+      ]);
+      if (!manifest || !Array.isArray(manifest.categories) || manifest.totalRows < 10000) {
+        throw new Error('故事快照清单无效或不完整。');
+      }
+      const variantData = await Tools.fetchJson(VARIANT_URL, { cache: 'no-cache' }, 30000);
+      variantFamilies = new Map(Object.entries(variantData?.families || {}));
+      renderStoryTypes();
       renderCharacters();
       restoreState();
-      Tools.setStatus(nodes.storyStatus, '角色目录已就绪。请选择角色和故事类型。', 'success');
+      Tools.setStatus(
+        nodes.storyStatus,
+        `本地完整故事快照已就绪：${manifest.totalRows.toLocaleString()} 条、${manifest.categories.length} 类。`,
+        'success'
+      );
     } catch (error) {
       console.error(error);
       Tools.setStatus(nodes.storyStatus, Tools.escapeHtml(error.message || error), 'error');
+      nodes.storySearchButton.disabled = true;
     }
   }
 
