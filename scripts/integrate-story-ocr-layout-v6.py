@@ -17,11 +17,14 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
 
 
 def add_css(text: str) -> str:
-    ref = '  <link rel="stylesheet" href="./myfile/layout-v6.css">'
-    if ref in text:
+    if './myfile/layout-v6.css' in text:
         return text
-    anchor = '  <link rel="stylesheet" href="./myfile/tools-suite.css">'
-    return replace_once(text, anchor, anchor + "\n" + ref, "tools-suite CSS anchor")
+    for indent in ("  ", "\t"):
+        anchor = f'{indent}<link rel="stylesheet" href="./myfile/tools-suite.css">'
+        if anchor in text:
+            ref = f'{indent}<link rel="stylesheet" href="./myfile/layout-v6.css">'
+            return text.replace(anchor, anchor + "\n" + ref, 1)
+    raise SystemExit("tools-suite CSS anchor: no supported indentation found")
 
 
 def update_release(text: str) -> str:
@@ -44,6 +47,12 @@ def patch_index() -> None:
 def patch_story() -> None:
     path = Path("public/story.html")
     text = update_release(add_css(path.read_text(encoding="utf-8")))
+    manifest_meta = '<meta name="story-data-manifest" content="./data/story-v6/manifest.json">'
+    if manifest_meta not in text:
+        description = '  <meta name="description" content="中文角色故事搜索：按故事类型、角色组合和概要关键词筛选魔法纪录故事。">'
+        if description not in text:
+            raise SystemExit("story description meta anchor missing")
+        text = text.replace(description, description + "\n  " + manifest_meta, 1)
     old = (
         "      <p>选择故事类型、角色和组合逻辑，查询角色在哪些故事中共同出现。"
         "角色名、筛选说明和结果界面均以中文显示。</p>"
@@ -185,6 +194,7 @@ if (isV6) {
   }
   if (!read('public/index.html').includes('./myfile/layout-v6.js')) fail('root page missing V6 star layout script.');
   const storyPage = read('public/story.html');
+  if (!storyPage.includes('./data/story-v6/manifest.json')) fail('story page missing the local manifest marker.');
   if (storyPage.includes('script.google.com/macros/s/')) fail('story page still exposes a remote Google Apps Script endpoint.');
   const storyApp = read('public/myfile/story-app.js');
   for (const marker of ['MANIFEST_URL', 'manual-static-snapshot', 'loadCategory', 'rowMatches']) {
