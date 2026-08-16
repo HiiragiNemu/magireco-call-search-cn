@@ -1,5 +1,5 @@
 name: Dispatch repaired complete V10 gate
-# Full-height painted-selection expansion is now included in the staged recognizer.
+# Full-height mask expansion and independently padded source-chunk assembly are included.
 
 on:
   push:
