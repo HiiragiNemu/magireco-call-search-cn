@@ -74,7 +74,7 @@ if (isV10) {
     if (!runesV10.includes(marker)) fail(`V10 rune marker missing: ${marker}`);
   }
   const runesLineV10 = read('public/myfile/runes-line-v10.js');
-  for (const marker of ['recognizePaintedLine', 'painted-line-dp', 'paint-guided line segmentation', 'noise-skips']) {
+  for (const marker of ['recognizePaintedLine', 'painted-line-dp', 'paint-guided line segmentation', 'skipCost']) {
     if (!runesLineV10.includes(marker)) fail(`V10 painted-line marker missing: ${marker}`);
   }
 
