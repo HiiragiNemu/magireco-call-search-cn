@@ -1,5 +1,5 @@
 {
-  "release": "collapsible-layout-v8-20260816",
+  "release": "rune-mask-v9-20260816",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -57,5 +57,15 @@
   "attendanceDisplayName": "共同出场次数排行",
   "suiteNavigationIcons": false,
   "callCharacterCount": "visible-total-selected-live",
-  "ocrStage": "unchanged-from-v7-pending-mask-v9"
+  "ocrStage": "unchanged-from-v7-pending-mask-v9",
+  "rollbackBeforeRuneMaskV9": "rollback/pre-rune-mask-v9-20260816",
+  "runeMaskMode": "paint-to-keep",
+  "runeMaskPipeline": "masked-crop-binary-normalization",
+  "runeMaskEngines": [
+    "ordered-template",
+    "classic-tesseract-fallback"
+  ],
+  "runePreviewLayout": "side-by-side-desktop-stacked-mobile",
+  "runeReferenceLayout": "collapsed-size-capped",
+  "runeVisitorGuidance": "concise-mask-guidance"
 }

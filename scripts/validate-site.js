@@ -27,9 +27,11 @@ const RELEASES = Object.freeze({
   V5: 'integrated-tools-v5-20260816',
   V6: 'story-ocr-layout-v6-20260816',
   V7: 'story-ui-translation-ocr-v7-20260816',
-  V8: 'collapsible-layout-v8-20260816'
+  V8: 'collapsible-layout-v8-20260816',
+  V9: 'rune-mask-v9-20260816'
 });
-const isV8 = release === RELEASES.V8;
+const isV9 = release === RELEASES.V9;
+const isV8 = release === RELEASES.V8 || isV9;
 const isV7 = release === RELEASES.V7 || isV8;
 const isV6 = release === RELEASES.V6 || isV7;
 const isV5 = release === RELEASES.V5 || isV6;
@@ -340,6 +342,34 @@ if (isV8) {
   if (buildInfo.attendanceDisplayName !== '共同出场次数排行') {
     fail('V8 attendance display name is incorrect.');
   }
+}
+
+
+if (isV9) {
+  for (const file of [
+    'public/myfile/runes-mask-v9.css', 'public/myfile/runes-mask-v9.js',
+    'scripts/integrate-rune-mask-v9.py', 'scripts/smoke-rune-mask-v9.mjs'
+  ]) requireFile(file);
+  const runes = read('public/runes.html');
+  for (const marker of ['./myfile/runes-mask-v9.css', './myfile/runes-mask-v9.js']) {
+    if (!runes.includes(marker)) fail(`V9 runes page missing ${marker}`);
+  }
+  const mask = read('public/myfile/runes-mask-v9.js');
+  for (const marker of [
+    'runesMaskEnabled', 'runesMaskCanvas', 'buildMaskedFile', 'maskMetrics',
+    '__RUNE_INPUT_OVERRIDE_V9__', 'runes-preview-pair-v9', 'runesReferenceDetailsV9'
+  ]) if (!mask.includes(marker)) fail(`V9 mask marker missing: ${marker}`);
+  const maskCss = read('public/myfile/runes-mask-v9.css');
+  for (const marker of ['grid-template-columns: repeat(2', 'touch-action: none', 'max-width: min(100%, 860px)', '@media (max-width: 720px)']) {
+    if (!maskCss.includes(marker)) fail(`V9 mask CSS marker missing: ${marker}`);
+  }
+  const template = read('public/myfile/runes-template-v7.js');
+  const classic = read('public/myfile/runes-app.js');
+  if (!template.includes('global.__RUNE_INPUT_OVERRIDE_V9__ || fileInput.files?.[0]')) fail('V9 template OCR bridge missing.');
+  if (!classic.includes('const recognitionFile = global.__RUNE_INPUT_OVERRIDE_V9__ || file;')) fail('V9 classic OCR bridge missing.');
+  if (buildInfo.rollbackBeforeRuneMaskV9 !== 'rollback/pre-rune-mask-v9-20260816') fail('V9 rollback pointer missing.');
+  if (buildInfo.runeMaskMode !== 'paint-to-keep') fail('V9 paint-to-keep mode missing.');
+  if (buildInfo.runeReferenceLayout !== 'collapsed-size-capped') fail('V9 reference layout marker missing.');
 }
 
 if (failed) process.exit(1);
