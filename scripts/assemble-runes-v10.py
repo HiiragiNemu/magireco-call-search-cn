@@ -22,11 +22,17 @@ def main() -> int:
     parts = sorted(args.chunks.glob("runes-v10.js.b64.*"))
     if len(parts) < 4:
         raise SystemExit(f"Expected at least four V10 chunks, found {len(parts)}")
-    encoded = "".join(path.read_text(encoding="utf-8").strip() for path in parts)
+    decoded_parts: list[bytes] = []
+    for path in parts:
+        encoded = "".join(path.read_text(encoding="utf-8").split())
+        try:
+            decoded_parts.append(base64.b64decode(encoded, validate=True))
+        except Exception as error:
+            raise SystemExit(f"Unable to decode V10 rune source chunk {path.name}: {error}") from error
     try:
-        decoded = base64.b64decode(encoded, validate=True).decode("utf-8")
+        decoded = b"".join(decoded_parts).decode("utf-8")
     except Exception as error:
-        raise SystemExit(f"Unable to decode V10 rune source: {error}") from error
+        raise SystemExit(f"Unable to decode assembled V10 rune source as UTF-8: {error}") from error
 
     if len(decoded.encode("utf-8")) < 32000:
         raise SystemExit(f"Decoded V10 rune source is unexpectedly short: {len(decoded)} characters")
