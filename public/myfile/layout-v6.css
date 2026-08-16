@@ -58,6 +58,51 @@ label.girlbox {
   text-shadow: 0 1px 0 #fff, 0 0 3px #fff;
 }
 
+.runes-processed-wrap-v6 {
+  margin-top: 1rem;
+}
+
+#runesCanvas.runes-preview {
+  display: block;
+  max-width: 100%;
+  max-height: 32rem;
+  margin: .5rem auto 0;
+  border: 1px solid #ad8b9d;
+  border-radius: .6rem;
+  background: #fff;
+  image-rendering: auto;
+}
+
+#runesCanvas.runes-preview[hidden] {
+  display: none;
+}
+
+.runes-diagnostics-v6 {
+  min-height: 0;
+  max-height: 12rem;
+  margin: .75rem 0 0;
+  padding: .7rem .8rem;
+  overflow: auto;
+  border: 1px solid rgba(157, 104, 132, .35);
+  border-radius: .55rem;
+  background: #fff9fc;
+  color: #5c3449;
+  font: .82rem/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.runes-diagnostics-v6:empty {
+  display: none;
+}
+
+.story-source-v6 {
+  margin-top: .6rem;
+  color: #6e3956;
+  font-size: .88rem;
+  line-height: 1.45;
+}
+
 @media (max-width: 720px) {
   .suite-character-card {
     grid-template-rows: auto auto !important;
@@ -87,5 +132,9 @@ label.girlbox {
     top: 1px !important;
     right: 3px !important;
     font-size: .88rem !important;
+  }
+
+  #runesCanvas.runes-preview {
+    max-height: 24rem;
   }
 }
