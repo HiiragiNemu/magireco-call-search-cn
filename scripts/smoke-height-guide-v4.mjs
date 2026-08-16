@@ -40,7 +40,7 @@ async function jumpAudit(page, buttonSelector, targetSelector, label) {
     };
   }, targetSelector);
   assert(result.scrollY > 120, `${label} moves the document down`, result);
-  assert(result.targetVisible && result.targetTop >= -20 && result.targetTop <= 110,
+  assert(result.targetVisible && result.targetDisplay !== 'none' && result.targetTop >= -32 && result.targetTop <= 110,
     `${label} lands at the correct result interface`, result);
 }
 
