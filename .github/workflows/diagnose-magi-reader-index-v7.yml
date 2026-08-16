@@ -1,0 +1,50 @@
+name: Diagnose MagiReader story index V7
+
+on:
+  push:
+    branches:
+      - fix/story-ui-translation-ocr-v7-20260816
+    paths:
+      - .github/workflows/diagnose-magi-reader-index-v7.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Clone MagiReader read-only
+        run: git clone --depth=1 https://github.com/HiiragiNemu/magi-reader.git /tmp/magi-reader
+      - name: Inspect index structures and title sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          import json, pathlib, collections, re
+          root=pathlib.Path('/tmp/magi-reader')
+          index=json.loads((root/'website/public/story_index.json').read_text(encoding='utf-8'))
+          print('INDEX_TYPE',type(index).__name__,'LEN',len(index))
+          if isinstance(index,dict):
+              print('INDEX_KEYS',list(index)[:30])
+              items=list(index.items())[:3]
+              for key,value in items: print('ITEM',repr(key),repr(value)[:1800])
+          else:
+              for item in index[:5]: print('ITEM',repr(item)[:2400])
+          target_terms=['神浜スパアドベンチャー','アリナのアトリエ','殲滅戦 魔女たちのパラドクス','現代神浜編']
+          text=(root/'website/public/story_index.json').read_text(encoding='utf-8')
+          for term in target_terms:
+              print('TERM',term,'COUNT',text.count(term))
+              pos=text.find(term)
+              if pos>=0: print(text[max(0,pos-600):pos+1200])
+          print('EVENT_DIR_SAMPLES')
+          for path in sorted((root/'website/public/data/event_story').iterdir())[:30]: print(path.name)
+          print('TITLE_VALUE_SAMPLES')
+          titles=json.loads((root/'titles.json').read_text(encoding='utf-8'))
+          for key,value in list(titles.items())[:5]: print(key,repr(value))
+          for term in target_terms:
+              hits=[(key,value) for key,value in titles.items() if term in value]
+              print('TITLE_HITS',term,len(hits),hits[:8])
+          PY
