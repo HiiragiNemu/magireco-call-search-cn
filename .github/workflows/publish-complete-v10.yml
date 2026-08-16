@@ -33,9 +33,11 @@ jobs:
           set -euo pipefail
           python3 scripts/assemble-runes-v10.py
           node --check public/myfile/runes-v10.js
+          node --check public/myfile/runes-line-v10.js
           grep -Fq 'buildSmartMaskedFile' public/myfile/runes-v10.js
           grep -Fq 'detectAlphabetGrid' public/myfile/runes-v10.js
           grep -Fq '__RUNE_V10__' public/myfile/runes-v10.js
+          grep -Fq 'recognizePaintedLine' public/myfile/runes-line-v10.js
 
       - name: Download MagiReader and Chinese Wiki metadata read-only
         shell: bash
@@ -85,8 +87,10 @@ jobs:
           print(json.dumps(summary,ensure_ascii=False,indent=2))
           assert summary['uniqueSourceTitles']==5710
           assert summary['localizedSourceTitles']==5710
+          assert summary['categoryTitlePairs']==5826
           assert summary['selfTranslatedTitles']==len(audit['selfTranslations'])
           assert len(localization['titleExact'])>=5710
+          assert sum(len(value) for value in localization['titleByCategoryV10'].values())==5826
           assert localization['titleExact']['神浜スパアドベンチャー ビーチに渦巻く悪魔の怨嗟 3話'].startswith('神滨SPA大冒险')
           document=Path('docs/story-title-self-translations-v10.md').read_text(encoding='utf-8')
           assert '## 助手自译清单' in document
@@ -112,6 +116,7 @@ jobs:
             public/myfile/call-ui-v10.js \
             public/myfile/height-export-v10.js \
             public/myfile/runes-v10.js \
+            public/myfile/runes-line-v10.js \
             public/myfile/site-correction-v2.js \
             public/myfile/site-correction-v3-height.js \
             public/myfile/story-app-v7.js \
