@@ -1,0 +1,45 @@
+name: Apply coverage-first V10 rune tuning
+
+on:
+  push:
+    branches:
+      - fix/height-export-title-call-v10-20260817
+    paths:
+      - .github/workflows/apply-runes-line-tuning-v10.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-export-title-call-v10-20260817
+          fetch-depth: 0
+      - name: Prefer full glyph-line coverage over skipping difficult runes
+        run: |
+          set -euo pipefail
+          python3 scripts/tune-runes-line-v10.py
+          node --check public/myfile/runes-line-v10.js
+          grep -Fq 'speckle ? 18 : 110' public/myfile/runes-line-v10.js
+          grep -Fq 'skipped * 7.5' public/myfile/runes-line-v10.js
+      - name: Commit tuning
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/myfile/runes-line-v10.js
+          git commit -m 'Prefer complete glyph coverage in painted rune lines'
+          git push origin HEAD:fix/height-export-title-call-v10-20260817
+      - name: Dispatch corrected complete V10 gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run publish-complete-v10.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref fix/height-export-title-call-v10-20260817
