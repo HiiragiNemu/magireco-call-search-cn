@@ -42,8 +42,12 @@ def patch_root() -> None:
             break
     else:
         raise SystemExit("root layout-v6 CSS anchor missing")
-    # The original call/height page already has its proven pink top/search/bottom
-    # controls. Do not add the suite rail a second time.
+    text = insert_after(
+    text,
+    '<script src="./myfile/layout-v6.js"></script>',
+    '<script src="./myfile/suite-v7.js"></script>',
+    "root V7 JS",
+)
     path.write_text(text, encoding="utf-8")
 
 
