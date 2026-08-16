@@ -1,0 +1,110 @@
+name: Diagnose story-title localization coverage V10
+
+on:
+  push:
+    branches:
+      - fix/height-export-title-call-v10-20260817
+    paths:
+      - .github/workflows/diagnose-title-coverage-v10.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-export-title-call-v10-20260817
+
+      - name: Download MagiReader and Chinese Wiki metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v10/meta
+          for file in website/public/story_index.json titles.json website/app/config/dictionary.ts; do
+            mkdir -p "/tmp/v10/meta/$(dirname "$file")"
+            curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 180 \
+              "https://raw.githubusercontent.com/HiiragiNemu/magi-reader/main/$file" \
+              -o "/tmp/v10/meta/$file"
+          done
+          curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 180 \
+            'https://magireco.moe/api.php?action=parse&page=%E6%97%A5%E6%9C%8D%E6%B4%BB%E5%8A%A8%E5%88%97%E8%A1%A8&prop=wikitext&format=json&formatversion=2' \
+            -o /tmp/v10/wiki-events-wikitext.json
+          curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 180 \
+            'https://magireco.moe/api.php?action=parse&page=%E6%97%A5%E6%9C%8D%E6%B4%BB%E5%8A%A8%E5%88%97%E8%A1%A8&prop=text&format=json&formatversion=2' \
+            -o /tmp/v10/wiki-events-html.json
+
+      - name: Analyze unique titles and source coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          import json, pathlib, re, html, collections
+          root=pathlib.Path('.')
+          titles=[]
+          by_category=collections.defaultdict(set)
+          for path in sorted((root/'public/data/story-v6').glob('*.json')):
+              if path.name in {'manifest.json','variant-map.json'}: continue
+              data=json.loads(path.read_text(encoding='utf-8'))
+              key=data['key']
+              for row in data.get('rows',[]):
+                  title=str(row[0] if row else '').strip()
+                  if title:
+                      titles.append(title); by_category[key].add(title)
+          unique=sorted(set(titles))
+          current=json.loads((root/'public/data/story-v7/localization.json').read_text(encoding='utf-8'))
+          exact=current.get('titleExact',{})
+          prefixes=current.get('titlePrefixes',[])
+          def current_match(title):
+              if title in exact: return 'exact'
+              for item in prefixes:
+                  if title==item['jp'] or title.startswith(item['jp']+' '): return 'prefix'
+              return ''
+          print('TOTAL_ROWS',len(titles),'UNIQUE_TITLES',len(unique))
+          print('CURRENT_EXACT',len(exact),'CURRENT_PREFIXES',len(prefixes),'CURRENT_MATCHED_UNIQUE',sum(bool(current_match(t)) for t in unique))
+          for key,values in by_category.items():
+              matched=sum(bool(current_match(t)) for t in values)
+              print('CATEGORY',repr(key),'UNIQUE',len(values),'MATCHED',matched,'UNMATCHED',len(values)-matched)
+
+          reader_titles=json.loads(pathlib.Path('/tmp/v10/meta/titles.json').read_text(encoding='utf-8'))
+          index=json.loads(pathlib.Path('/tmp/v10/meta/website/public/story_index.json').read_text(encoding='utf-8'))
+          print('READER_TITLES',len(reader_titles),'READER_INDEX',len(index))
+
+          wiki_wiki=json.loads(pathlib.Path('/tmp/v10/wiki-events-wikitext.json').read_text(encoding='utf-8'))
+          wikitext=wiki_wiki.get('parse',{}).get('wikitext','')
+          print('WIKI_WIKITEXT_BYTES',len(wikitext),'FIRST',repr(wikitext[:500]))
+          print('WIKI_TABLE_ROWS',wikitext.count('|-'))
+          wiki_html=json.loads(pathlib.Path('/tmp/v10/wiki-events-html.json').read_text(encoding='utf-8'))
+          page_html=wiki_html.get('parse',{}).get('text','')
+          print('WIKI_HTML_BYTES',len(page_html),'TABLES',page_html.count('<table'))
+          # Print compact text from first rows to confirm parse structure.
+          rows=re.findall(r'<tr[^>]*>([\s\S]*?)</tr>',page_html,re.I)
+          for row in rows[:8]:
+              cells=re.findall(r'<t[dh][^>]*>([\s\S]*?)</t[dh]>',row,re.I)
+              cleaned=[]
+              for cell in cells:
+                  text=re.sub(r'<[^>]+>',' ',cell)
+                  text=html.unescape(re.sub(r'\s+',' ',text)).strip()
+                  cleaned.append(text)
+              if cleaned: print('WIKI_ROW',cleaned)
+
+          # Show representative unmatched titles per category for designing rules.
+          for key,values in by_category.items():
+              unmatched=[t for t in sorted(values) if not current_match(t)]
+              if unmatched:
+                  print('\nUNMATCHED_SAMPLE',repr(key),len(unmatched))
+                  for title in unmatched[:25]: print(' ',title)
+          PY
+
+      - name: Upload diagnostic source files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: title-coverage-v10-${{ github.sha }}
+          path: /tmp/v10
+          if-no-files-found: warn
+          retention-days: 14
