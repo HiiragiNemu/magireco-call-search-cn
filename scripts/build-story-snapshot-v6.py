@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the local story-search snapshot from the original complete JSON export.
 
-This script is intentionally manual/static.  It never mutates magi-reader and it
+This script is intentionally manual/static. It never mutates magi-reader and it
 keeps the browser-side tool independent from Google Apps Script/CORS availability.
 """
 from __future__ import annotations
@@ -53,21 +53,23 @@ def compact_json(path: Path, value: Any) -> None:
 def normalize_row(category: str, index: int, value: Any) -> list[Any]:
     if not isinstance(value, list) or len(value) < 2:
         raise ValueError(f"{category}[{index}] is not a story row")
-    title = value[0]
+    raw_title = value[0]
     cast = value[1]
-    summary = value[2] if len(value) > 2 else ""
-    link = value[3] if len(value) > 3 else ""
-    if not isinstance(title, str) or not title.strip():
-        raise ValueError(f"{category}[{index}] has an invalid title")
+    raw_summary = value[2] if len(value) > 2 else ""
+    raw_link = value[3] if len(value) > 3 else ""
+
+    # The public export contains a small number of deliberately blank title cells.
+    # Dropping them would make the local snapshot incomplete, so preserve the row
+    # with a deterministic Chinese placeholder rather than rejecting it.
+    title = "" if raw_title is None else str(raw_title).strip()
+    if not title:
+        title = f"未命名记录 {index + 1}"
+
     if not isinstance(cast, list) or any(not isinstance(item, str) for item in cast):
         raise ValueError(f"{category}[{index}] has an invalid cast")
-    if summary is None:
-        summary = ""
-    if link is None:
-        link = ""
-    if not isinstance(summary, str) or not isinstance(link, str):
-        raise ValueError(f"{category}[{index}] has invalid optional fields")
-    return [title.strip(), [item.strip() for item in cast if item.strip()], summary, link]
+    summary = "" if raw_summary is None else str(raw_summary)
+    link = "" if raw_link is None else str(raw_link)
+    return [title, [item.strip() for item in cast if item.strip()], summary, link]
 
 
 def extract_variant_map(page_html: str) -> dict[str, list[str]]:
