@@ -40,7 +40,8 @@ if (isV10) {
   for (const file of [
     'public/myfile/call-ui-v10.js', 'public/myfile/site-correction-v10.css',
     'public/myfile/height-export-v10.js', 'public/myfile/runes-v10.js',
-    'public/myfile/runes-v10.css', 'public/data/story-v10/title-audit.json',
+    'public/myfile/runes-line-v10.js', 'public/myfile/runes-v10.css',
+    'public/data/story-v10/title-audit.json',
     'docs/story-title-self-translations-v10.md', 'scripts/build-story-titles-v10.py',
     'scripts/assemble-runes-v10.py', 'scripts/integrate-height-export-title-call-v10.py',
     'scripts/integrate-complete-v10.py', 'scripts/finalize-height-v10-source.py',
@@ -65,12 +66,16 @@ if (isV10) {
   }
 
   const runesV10Page = read('public/runes.html');
-  for (const marker of ['./myfile/runes-v10.css', './myfile/runes-v10.js']) {
+  for (const marker of ['./myfile/runes-v10.css', './myfile/runes-v10.js', './myfile/runes-line-v10.js']) {
     if (!runesV10Page.includes(marker)) fail(`V10 runes page missing ${marker}`);
   }
   const runesV10 = read('public/myfile/runes-v10.js');
   for (const marker of ['detectAlphabetGrid', 'recognizeAlphabet', 'buildSmartMaskedFile', 'expanded-rectangular-selection', '__RUNE_V10__', '较慢但更准确']) {
     if (!runesV10.includes(marker)) fail(`V10 rune marker missing: ${marker}`);
+  }
+  const runesLineV10 = read('public/myfile/runes-line-v10.js');
+  for (const marker of ['recognizePaintedLine', 'painted-line-dp', 'dynamic', 'template-dynamic-programming']) {
+    if (!runesLineV10.includes(marker)) fail(`V10 painted-line marker missing: ${marker}`);
   }
 
   const localizationV10 = JSON.parse(read('public/data/story-v7/localization.json'));
@@ -95,6 +100,7 @@ if (isV10) {
   if (buildInfo.callQuickRail !== 'nine-Chinese-actions') fail('V10 call quick rail marker is incorrect.');
   if (buildInfo.heightScaleDisplayedRange !== '50-250-percent') fail('V10 height scale marker is incorrect.');
   if (buildInfo.runeMaskMeaning !== 'expanded-selection-region-not-exact-pixel-clipping') fail('V10 mask semantics marker is incorrect.');
+  if (buildInfo.runePaintedLineDecoder !== 'template-dynamic-programming-with-noise-skips') fail('V10 painted-line decoder marker is incorrect.');
 }
 '''
         text = replace_once(text, marker, block + marker, "V10 validation block")
