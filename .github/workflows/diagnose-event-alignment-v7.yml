@@ -1,0 +1,46 @@
+name: Diagnose event alignment V7
+on:
+  push:
+    branches: [fix/story-ui-translation-ocr-v7-20260816]
+    paths: [.github/workflows/diagnose-event-alignment-v7.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --silent --show-error https://raw.githubusercontent.com/HiiragiNemu/magireco-call-search-cn/main/public/data/story-v6/event.json -o /tmp/event.json
+          curl -L --fail --silent --show-error https://raw.githubusercontent.com/HiiragiNemu/magi-reader/main/website/public/story_index.json -o /tmp/index.json
+          python3 <<'PY'
+          import json,re,collections
+          event=json.load(open('/tmp/event.json',encoding='utf-8'))['rows']
+          index=json.load(open('/tmp/index.json',encoding='utf-8'))
+          folders=[]
+          seen=set()
+          for item in sorted((x for x in index if x.get('category')=='event_story'), key=lambda x:int(re.match(r'\d+',x['folder']).group()), reverse=True):
+              folder=item['folder']
+              if folder not in seen:
+                  seen.add(folder); folders.append(folder)
+          def base(title):
+              title=str(title).strip()
+              title=re.sub(r'\s+\((?:\d+回目)\)\s*',' ',title)
+              title=re.sub(r'\s+(?:序|エンディング|第?\d+話|\d+|[A-Za-z0-9_.・ーぁ-んァ-ヶ一-龠々]+)$','',title)
+              return title.strip()
+          groups=[]
+          for row in event:
+              title=row[0]
+              b=base(title)
+              if not b: continue
+              if not groups or groups[-1][0]!=b: groups.append([b,1,title])
+              else: groups[-1][1]+=1
+          print('SOURCE_GROUPS',len(groups),'READER_FOLDERS',len(folders))
+          print('--- SOURCE ORDER ---')
+          for i,(b,c,first) in enumerate(groups): print(f'S{i:03d}\t{c:3d}\t{b}\tFIRST={first}')
+          print('--- READER ORDER ---')
+          for i,folder in enumerate(folders): print(f'R{i:03d}\t{folder}')
+          PY
