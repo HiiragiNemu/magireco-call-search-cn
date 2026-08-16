@@ -1,0 +1,210 @@
+name: Integrate story OCR layout V6
+
+on:
+  push:
+    branches:
+      - fix/story-ocr-layout-v6-20260816
+    paths:
+      - .github/workflows/integrate-story-ocr-layout-v6.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: integrate-story-ocr-layout-v6
+  cancel-in-progress: false
+
+jobs:
+  build-test-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out V6 branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/story-ocr-layout-v6-20260816
+          fetch-depth: 0
+
+      - name: Download and validate the complete public story dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/story-v6-source
+          curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 240 \
+            'https://drive.google.com/uc?export=download&id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q' \
+            -o /tmp/story-v6-source/story-all.json
+          curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 120 \
+            'https://magireco-chara-search.vercel.app/index.html' \
+            -o /tmp/story-v6-source/original-index.html
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('/tmp/story-v6-source/story-all.json')
+          data=json.loads(path.read_text(encoding='utf-8'))
+          assert isinstance(data,dict) and len(data)==19, (type(data),len(data))
+          assert sum(len(rows) for rows in data.values())==14466
+          assert len(data['イベント'])==5537
+          assert len(data['魔法少女'])==2809
+          print({'bytes':path.stat().st_size,'categories':len(data),'rows':sum(map(len,data.values()))})
+          PY
+
+      - name: Build the local static snapshot and integrate V6 pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/build-story-snapshot-v6.py \
+            --input /tmp/story-v6-source/story-all.json \
+            --page-html /tmp/story-v6-source/original-index.html \
+            --output public/data/story-v6
+          python3 scripts/integrate-story-ocr-layout-v6.py
+
+          python3 - <<'PY'
+          from pathlib import Path
+          story=Path('public/story.html')
+          text=story.read_text(encoding='utf-8')
+          marker='<meta name="story-data-manifest" content="./data/story-v6/manifest.json">'
+          if marker not in text:
+              anchor='  <meta name="description" content="中文角色故事搜索：按故事类型、角色组合和概要关键词筛选魔法纪录故事。">'
+              if anchor not in text:
+                  raise SystemExit('Story description meta anchor missing.')
+              text=text.replace(anchor,anchor+'\n  '+marker,1)
+          story.write_text(text,encoding='utf-8')
+          PY
+
+          git diff --check
+
+      - name: Static, syntax and data-integrity validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-site.js
+          node --check public/myfile/story-app.js
+          node --check public/myfile/runes-app.js
+          node --check public/myfile/layout-v6.js
+          node --check scripts/smoke-neo11-v3.mjs
+          node --check scripts/smoke-height-guide-v4.mjs
+          node --check scripts/smoke-integrated-tools-v5.mjs
+          node --check scripts/smoke-story-layout-v6.mjs
+          node --check scripts/smoke-ocr-v6.mjs
+          python3 -m py_compile \
+            scripts/build-story-snapshot-v6.py \
+            scripts/integrate-story-ocr-layout-v6.py \
+            scripts/audit-translations-v5.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('public/data/story-v6')
+          manifest=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          total=0
+          for category in manifest['categories']:
+              value=json.loads((root/category['file']).read_text(encoding='utf-8'))
+              assert value['key']==category['key']
+              assert len(value['rows'])==category['count']
+              total+=len(value['rows'])
+          assert total==manifest['totalRows']==14466
+          assert len(manifest['categories'])==19
+          print({'validatedRows':total,'files':len(manifest['categories'])})
+          PY
+
+      - name: Install browser driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Start local production server
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8000 --directory public >/tmp/v6-http.log 2>&1 &
+          echo $! >/tmp/v6-http.pid
+          for attempt in $(seq 1 60); do
+            curl --fail --silent http://127.0.0.1:8000/build-info.json >/dev/null && exit 0
+            sleep .25
+          done
+          cat /tmp/v6-http.log
+          exit 1
+
+      - name: Run established relationship and height regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME"
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-neo11-v3.mjs | tee /tmp/v6-neo11-regression.txt
+          grep -Fq '"state": "pass"' /tmp/v6-neo11-regression.txt
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-height-guide-v4.mjs | tee /tmp/v6-height-regression.txt
+          grep -Fq '"state": "pass"' /tmp/v6-height-regression.txt
+
+      - name: Run integrated tool-suite and local story/card acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME"
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
+            node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/v6-tools-regression.txt
+          grep -Fq '"state": "pass"' /tmp/v6-tools-regression.txt
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
+            node scripts/smoke-story-layout-v6.mjs | tee /tmp/v6-story-layout.txt
+          grep -Fq '"state": "pass"' /tmp/v6-story-layout.txt
+
+      - name: Run border-aware and alphabet OCR acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME"
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
+            node scripts/smoke-ocr-v6.mjs | tee /tmp/v6-ocr.txt
+          grep -Fq '"state": "pass"' /tmp/v6-ocr.txt
+
+      - name: Commit only the fully tested V6 production tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            public \
+            scripts/validate-site.js \
+            scripts/smoke-neo11-v3.mjs \
+            scripts/smoke-height-guide-v4.mjs \
+            scripts/smoke-integrated-tools-v5.mjs \
+            .github/workflows/site-validation.yml \
+            .github/workflows/verify-production.yml
+          if git diff --cached --quiet; then
+            echo 'V6 production tree is already integrated.'
+          else
+            git commit -m 'Integrate and validate local story data, OCR and compact cards V6'
+            git push origin HEAD:fix/story-ocr-layout-v6-20260816
+          fi
+
+      - name: Upload pre-publication V6 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-ocr-layout-v6-prepublication-${{ github.sha }}
+          path: |
+            /tmp/v6-http.log
+            /tmp/v6-neo11-regression.txt
+            /tmp/v6-height-regression.txt
+            /tmp/v6-tools-regression.txt
+            /tmp/v6-story-layout.txt
+            /tmp/v6-ocr.txt
+            /tmp/neo11-v3-mobile.png
+            /tmp/neo11-v3-desktop.png
+            /tmp/height-guide-v4-mobile.png
+            /tmp/height-guide-v4-desktop.png
+            /tmp/integrated-v5-root-mobile.png
+            /tmp/integrated-v5-story-mobile.png
+            /tmp/integrated-v5-attendance-mobile.png
+            /tmp/integrated-v5-runes-desktop.png
+            /tmp/story-v6-mobile.png
+            /tmp/ocr-v6-desktop.png
+          if-no-files-found: warn
+          retention-days: 30
