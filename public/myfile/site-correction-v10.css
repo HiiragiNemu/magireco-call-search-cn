@@ -1,0 +1,184 @@
+/* V10 call layout and height/export refinements. */
+.call-search-panel-v8 > .call-panel-body-v8[data-v10-search-layout="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(19rem, .8fr);
+  gap: .75rem;
+  align-items: start;
+}
+
+.call-search-fields-v10 {
+  min-width: 0;
+}
+
+.call-help-details-v10,
+.call-table-details-v10 {
+  min-width: 0;
+  border: 1px solid #ddc7d3;
+  border-radius: .65rem;
+  background: #fffafd;
+  overflow: clip;
+}
+
+.call-help-details-v10 > summary,
+.call-table-details-v10 > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  padding: .65rem .8rem;
+  color: #642043;
+  font-weight: 800;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.call-help-details-v10 > summary::-webkit-details-marker,
+.call-table-details-v10 > summary::-webkit-details-marker {
+  display: none;
+}
+
+.call-details-state-v10::before {
+  content: "展开";
+  display: inline-block;
+  padding: .16rem .45rem;
+  border: 1px solid #ddb6ca;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+  background: #fff;
+}
+
+.call-help-details-v10[open] .call-details-state-v10::before,
+.call-table-details-v10[open] .call-details-state-v10::before {
+  content: "收起";
+}
+
+.call-details-body-v10 {
+  min-width: 0;
+  padding: .7rem .8rem .8rem;
+  border-top: 1px solid #ead8e1;
+}
+
+.call-help-details-v10 p {
+  margin: .2rem 0 .5rem;
+  color: #5f3550;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+.call-help-details-v10 p:last-child {
+  margin-bottom: 0;
+}
+
+.call-help-toggle-v10 {
+  margin-inline-start: .4rem;
+  border: 2px solid #f96ab2;
+  border-radius: .45rem;
+  background: #fff7fb;
+  color: #521a38;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.call-table-details-v10 {
+  margin-top: .75rem;
+}
+
+.call-table-details-v10 #mytable {
+  margin: 0;
+}
+
+.call-quick-rail-v10 {
+  position: fixed;
+  right: max(3px, env(safe-area-inset-right));
+  top: 50%;
+  z-index: 1800;
+  display: grid;
+  gap: 3px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.call-quick-rail-v10 button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 11px;
+  background: rgba(243, 77, 167, .94);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(74, 18, 49, .24);
+  font: 800 .95rem/1 sans-serif;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.call-quick-rail-v10 button:hover,
+.call-quick-rail-v10 button:focus-visible {
+  background: #d92f8b;
+  outline: 3px solid rgba(243, 77, 167, .24);
+}
+
+/* V10 height percentage is relative to the compact 50%-of-old baseline. */
+.height-zoom-controls-v2[data-v10-scale="true"] .height-scale-readout-v10 {
+  min-width: 3.5rem;
+  color: #351526;
+  font-weight: 800;
+}
+
+.height-export-status-v10 {
+  flex: 1 1 100%;
+  color: #7d2854;
+  font-size: .82rem;
+  line-height: 1.35;
+}
+
+.height-export-host-v10 {
+  position: fixed;
+  left: -100000px;
+  top: 0;
+  z-index: -1000;
+  overflow: visible;
+  background: #fff;
+  pointer-events: none;
+}
+
+.height-export-host-v10 .height-chart-surface-v2 {
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+@media (max-width: 760px) {
+  .call-search-panel-v8 > .call-panel-body-v8[data-v10-search-layout="true"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .call-help-details-v10 {
+    order: 2;
+  }
+
+  .call-help-toggle-v10 {
+    margin-inline-start: .25rem;
+    padding-inline: .5rem;
+    font-size: .86rem;
+  }
+
+  .call-quick-rail-v10 {
+    right: 1px;
+    gap: 2px;
+  }
+
+  .call-quick-rail-v10 button {
+    width: 31px;
+    height: 31px;
+    border-radius: 8px;
+    font-size: .76rem;
+    opacity: .84;
+  }
+}
