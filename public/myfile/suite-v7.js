@@ -325,7 +325,8 @@
     document.documentElement.style.setProperty('--suite-nav-height-v7', `${Math.ceil(nav?.getBoundingClientRect().height || 0) + 6}px`);
   }
 
-  Object.assign(Tools, {
+  global.MagiToolsV7 = Object.freeze({
+    ...Tools,
     loadLocalizationV7: loadLocalization,
     resolveCharacterV7,
     createCastChipV7,

@@ -2,7 +2,7 @@
 (function (global) {
   'use strict';
 
-  const Tools = global.MagiTools;
+  const Tools = global.MagiToolsV7;
   if (!Tools?.loadLocalizationV7) return;
 
   const MANIFEST_URL = './data/story-v6/manifest.json';

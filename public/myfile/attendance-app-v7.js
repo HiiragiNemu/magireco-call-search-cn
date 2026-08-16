@@ -2,7 +2,7 @@
 (function (global) {
   'use strict';
   const API_URL = 'https://script.google.com/macros/s/AKfycbyXrQPl-k-SPUxM4MFHkdlFgHQp3kUp7p3iZgaTIc4Hbu8_lghESfjjLOjFPJXTDGbd/exec';
-  const Tools = global.MagiTools;
+  const Tools = global.MagiToolsV7;
   if (!Tools?.resolveCharacterV7) return;
 
   const nodes = {};

@@ -36,7 +36,7 @@ function fatal(errors) {
 
 async function testStory(browser) {
   const { page, errors } = await open(browser, '/story.html');
-  await page.waitForFunction(() => window.MagiTools?.resolveCharacterV7
+  await page.waitForFunction(() => window.MagiToolsV7?.resolveCharacterV7
     && document.querySelectorAll('#storyTypeOptions input').length === 19
     && document.querySelectorAll('#storyCharacterGrid .suite-character-card').length >= 180
     && document.querySelector('#storyAttributeFilterV7 .suite-attribute-v7'),
@@ -149,7 +149,7 @@ async function testStory(browser) {
 
 async function testAttendance(browser) {
   const { page, errors } = await open(browser, '/attendance.html');
-  await page.waitForFunction(() => window.MagiTools?.resolveCharacterV7
+  await page.waitForFunction(() => window.MagiToolsV7?.resolveCharacterV7
     && document.querySelectorAll('#attendanceGrid .suite-character-card').length >= 180
     && document.querySelector('#attendanceAttributeFilterV7 .suite-attribute-v7'),
   { timeout: 40000 });

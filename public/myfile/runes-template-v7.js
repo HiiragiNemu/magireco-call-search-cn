@@ -2,7 +2,7 @@
 (function (global) {
   'use strict';
 
-  const Tools = global.MagiTools;
+  const Tools = global.MagiToolsV7 || global.MagiTools;
   if (!Tools) return;
   const ALPHABET_ROWS = ['abcdefg', 'hijklmn', 'opqrstu', 'vwxyz'];
   const TEMPLATE_SIZE = 64;
