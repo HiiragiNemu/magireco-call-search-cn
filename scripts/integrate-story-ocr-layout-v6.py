@@ -49,24 +49,27 @@ def patch_story() -> None:
     text = update_release(add_css(path.read_text(encoding="utf-8")))
     manifest_meta = '<meta name="story-data-manifest" content="./data/story-v6/manifest.json">'
     if manifest_meta not in text:
-        description = '  <meta name="description" content="中文角色故事搜索：按故事类型、角色组合和概要关键词筛选魔法纪录故事。">'
-        if description not in text:
+        match = re.search(r'(?m)^(?P<indent>[ \t]*)<meta name="description"[^>]*>$', text)
+        if not match:
             raise SystemExit("story description meta anchor missing")
-        text = text.replace(description, description + "\n  " + manifest_meta, 1)
-    old = (
-        "      <p>选择故事类型、角色和组合逻辑，查询角色在哪些故事中共同出现。"
-        "角色名、筛选说明和结果界面均以中文显示。</p>"
-    )
-    new = (
+        insertion = match.group(0) + "\n" + match.group("indent") + manifest_meta
+        text = text[:match.start()] + insertion + text[match.end():]
+
+    replacement_intro = (
         "      <p>选择故事类型、角色和组合逻辑，在本站保存的完整故事快照中本地筛选。"
-        "不再由手机浏览器直接请求 Google Apps Script，因此不会受跨域、Google 重定向或网络屏蔽影响。</p>\n"
+        "不再由手机浏览器直接请求 Google Apps Script，因此不会受跨域、Google 重定向或网络屏蔽影响。</p>"
+    )
+    intro_pattern = re.compile(r'(?s)(<h1>角色故事搜索</h1>\s*)<p>.*?</p>')
+    text, count = intro_pattern.subn(r'\1' + replacement_intro, text, count=1)
+    if count != 1:
+        raise SystemExit("story hero introduction anchor missing")
+
+    source_note = (
         "      <p class=\"story-source-v6\">数据来自原角色故事搜索公开的完整 JSON；本次快照包含 19 类、超过 1.4 万条记录。"
         "快照采用手工静态更新，不修改 magi-reader 仓库。</p>"
     )
-    if old in text:
-        text = text.replace(old, new, 1)
-    elif "story-source-v6" not in text:
-        text = text.replace("    </header>", new + "\n    </header>", 1)
+    if "story-source-v6" not in text:
+        text = text.replace(replacement_intro, replacement_intro + "\n" + source_note, 1)
     path.write_text(text, encoding="utf-8")
 
 
