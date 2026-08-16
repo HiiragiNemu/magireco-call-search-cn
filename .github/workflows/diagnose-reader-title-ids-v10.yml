@@ -1,0 +1,39 @@
+name: Inspect MagiReader title IDs V10
+on:
+  push:
+    branches: [fix/height-export-title-call-v10-20260817]
+    paths: [.github/workflows/diagnose-reader-title-ids-v10.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - shell: bash
+        run: |
+          set -euo pipefail
+          curl -LfsS https://raw.githubusercontent.com/HiiragiNemu/magi-reader/main/titles.json -o /tmp/titles.json
+          curl -LfsS https://raw.githubusercontent.com/HiiragiNemu/magi-reader/main/website/public/story_index.json -o /tmp/index.json
+          python3 <<'PY'
+          import json,collections,re
+          titles=json.load(open('/tmp/titles.json',encoding='utf-8'))
+          index=json.load(open('/tmp/index.json',encoding='utf-8'))
+          print('INDEX_TYPE',type(index).__name__,'COUNT',len(index))
+          for item in index[:12]: print('INDEX_ITEM',json.dumps(item,ensure_ascii=False)[:1200])
+          cats=collections.Counter(item.get('category','') for item in index)
+          print('CATEGORIES',cats)
+          for cat in cats:
+              print('\nCATEGORY_SAMPLE',cat)
+              for item in [x for x in index if x.get('category')==cat][:5]: print(json.dumps(item,ensure_ascii=False)[:1200])
+          print('\nTITLE_PREFIXES')
+          prefixes=collections.Counter(re.match(r'\d+',key).group()[:3] if re.match(r'\d+',key) else key[:3] for key in titles)
+          print(prefixes.most_common(40))
+          for prefix in ['101','102','201','202','301','302','401','501','502','503','504','505','509']:
+              print('\nPREFIX',prefix)
+              count=0
+              for key,value in titles.items():
+                  if key.startswith(prefix): print(key,repr(value)); count+=1
+                  if count>=8: break
+          PY
