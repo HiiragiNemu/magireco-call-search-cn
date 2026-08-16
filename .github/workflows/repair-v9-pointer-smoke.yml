@@ -1,0 +1,48 @@
+name: Repair V9 pointer acceptance
+
+on:
+  push:
+    branches:
+      - fix/rune-mask-v9-20260816
+    paths:
+      - .github/workflows/repair-v9-pointer-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/rune-mask-v9-20260816
+          fetch-depth: 0
+
+      - name: Keep the paint surface inside the browser viewport during pointer input
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('scripts/smoke-rune-mask-v9.mjs')
+          text = path.read_text(encoding='utf-8')
+          anchor = "  await page.click('#runesMaskEnabled');\n\n  const overlayRect = await page.$eval('#runesMaskCanvas', (canvas) => {"
+          replacement = "  await page.click('#runesMaskEnabled');\n  await page.$eval('#runesMaskStage', (stage) => stage.scrollIntoView({ block: 'center', inline: 'nearest' }));\n  await sleep(180);\n\n  const overlayRect = await page.$eval('#runesMaskCanvas', (canvas) => {"
+          if anchor not in text:
+              raise SystemExit('V9 desktop pointer anchor missing.')
+          path.write_text(text.replace(anchor, replacement, 1), encoding='utf-8')
+          PY
+          node --check scripts/smoke-rune-mask-v9.mjs
+
+      - name: Commit the pointer acceptance repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/smoke-rune-mask-v9.mjs
+          git commit -m 'Scroll V9 paint canvas into view before pointer testing'
+          git push origin HEAD:fix/rune-mask-v9-20260816
