@@ -1,0 +1,228 @@
+name: Publish V7 final source-only gate
+
+on:
+  push:
+    branches:
+      - fix/story-ui-translation-ocr-v7-20260816
+    paths:
+      - .github/workflows/publish-v7-final.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-v7-final-source-only
+  cancel-in-progress: false
+
+jobs:
+  build-test-publish-branch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out the V7 branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/story-ui-translation-ocr-v7-20260816
+          fetch-depth: 0
+
+      - name: Build the reader-grounded localization read-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/magi-reader-v7/website/public /tmp/magi-reader-v7/website/app/config
+          for file in website/public/story_index.json titles.json website/app/config/dictionary.ts; do
+            mkdir -p "/tmp/magi-reader-v7/$(dirname "$file")"
+            curl -L --fail --silent --show-error --retry 4 --retry-all-errors --max-time 180 \
+              "https://raw.githubusercontent.com/HiiragiNemu/magi-reader/main/$file" \
+              -o "/tmp/magi-reader-v7/$file"
+          done
+          python3 scripts/build-story-localization-v7.py \
+            --catalog public/data/character-catalog.json \
+            --story-dir public/data/story-v6 \
+            --reader-index /tmp/magi-reader-v7/website/public/story_index.json \
+            --reader-titles /tmp/magi-reader-v7/titles.json \
+            --reader-dictionary /tmp/magi-reader-v7/website/app/config/dictionary.ts \
+            --output public/data/story-v7/localization.json \
+            | tee /tmp/v7-localization-audit.json
+          python3 <<'PY'
+          import json
+          value=json.load(open('public/data/story-v7/localization.json',encoding='utf-8'))
+          audit=value['audit']
+          print(json.dumps(audit,ensure_ascii=False,indent=2))
+          assert audit['castNames'] >= 279
+          assert audit['mappedCastNames'] == audit['castNames']
+          assert audit['unresolvedCastNames'] == []
+          assert len(value['categoryOrder']) == 19
+          assert value['categoryOrder'][:15] == [
+            'メイン【第1部】','メイン【第2部】','アナザー【第1部】','アナザー【第2部】',
+            '魔法少女','衣装','ミラーズ','イベント','バトルミュージアム','スペシャル',
+            '第1部EDムービー','第2部EDムービー','アニメ【1st】','アニメ【2nd】','アニメ【Final】'
+          ]
+          assert value['categoryLabels']['ピュエラ・ヒストリア']=='魔法少女历史篇'
+          assert value['titleExact']['神浜スパアドベンチャー ビーチに渦巻く悪魔の怨嗟 3話'].startswith('神滨SPA大冒险')
+          PY
+
+      - name: Integrate V7 into production pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/integrate-story-ui-v7.py
+          git diff --check
+
+      - name: Upgrade the static validator to V7
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          path=Path('scripts/validate-site.js')
+          text=path.read_text(encoding='utf-8')
+          if "V7: 'story-ui-translation-ocr-v7-20260816'" not in text:
+            text=text.replace(
+              "  V6: 'story-ocr-layout-v6-20260816'\n});",
+              "  V6: 'story-ocr-layout-v6-20260816',\n  V7: 'story-ui-translation-ocr-v7-20260816'\n});",
+              1)
+          if 'const isV7 = release === RELEASES.V7;' not in text:
+            text=text.replace(
+              'const isV6 = release === RELEASES.V6;',
+              'const isV7 = release === RELEASES.V7;\nconst isV6 = release === RELEASES.V6 || isV7;',
+              1)
+          text=text.replace(
+            "  if (!pages[0].text.includes('./myfile/story-app.js')) fail('story.html missing story app.');\n  if (!pages[1].text.includes('./myfile/attendance-app.js')) fail('attendance.html missing attendance app.');",
+            "  if (!isV7 && !pages[0].text.includes('./myfile/story-app.js')) fail('story.html missing story app.');\n  if (!isV7 && !pages[1].text.includes('./myfile/attendance-app.js')) fail('attendance.html missing attendance app.');\n  if (isV7 && !pages[0].text.includes('./myfile/story-app-v7.js')) fail('story.html missing V7 story app.');\n  if (isV7 && !pages[1].text.includes('./myfile/attendance-app-v7.js')) fail('attendance.html missing V7 attendance app.');",
+            1)
+          text=text.replace(
+            "  const storyApp = read('public/myfile/story-app.js');",
+            "  const storyApp = read(isV7 ? 'public/myfile/story-app-v7.js' : 'public/myfile/story-app.js');",
+            1)
+          block=r'''
+          if (isV7) {
+            for (const file of [
+              'public/myfile/suite-v7.css', 'public/myfile/suite-v7.js',
+              'public/myfile/story-app-v7.js', 'public/myfile/attendance-app-v7.js',
+              'public/myfile/runes-template-v7.js', 'public/data/story-v7/localization.json',
+              'scripts/build-story-localization-v7.py', 'scripts/integrate-story-ui-v7.py',
+              'scripts/smoke-story-ui-v7.mjs', 'scripts/smoke-rune-v7.mjs'
+            ]) requireFile(file);
+            const rootV7 = read('public/index.html');
+            const storyV7 = read('public/story.html');
+            const attendanceV7 = read('public/attendance.html');
+            const runesV7 = read('public/runes.html');
+            for (const [file, page] of [['index', rootV7], ['story', storyV7], ['attendance', attendanceV7], ['runes', runesV7]]) {
+              if (!page.includes('./myfile/suite-v7.css')) fail(`${file} page missing V7 CSS.`);
+            }
+            for (const marker of ['./myfile/suite-v7.js', './myfile/story-app-v7.js', './myfile/charaAt.js']) {
+              if (!storyV7.includes(marker)) fail(`story page missing ${marker}`);
+            }
+            for (const marker of ['./myfile/suite-v7.js', './myfile/attendance-app-v7.js', './myfile/charaAt.js']) {
+              if (!attendanceV7.includes(marker)) fail(`attendance page missing ${marker}`);
+            }
+            if (!rootV7.includes('./myfile/suite-v7.js')) fail('root page missing V7 quick-rail script.');
+            if (!runesV7.includes('./myfile/runes-template-v7.js')) fail('runes page missing V7 template recognizer.');
+            for (const forbidden of ['不修改 magi-reader', '中文整合工具', '查询仍使用原始日文角色键', '不再由手机浏览器直接请求 Google Apps Script']) {
+              for (const [file, page] of [['story', storyV7], ['attendance', attendanceV7], ['runes', runesV7]]) {
+                if (page.includes(forbidden)) fail(`${file} page exposes internal visitor copy: ${forbidden}`);
+              }
+            }
+            const localization = JSON.parse(read('public/data/story-v7/localization.json'));
+            if (localization.categoryLabels?.['ピュエラ・ヒストリア'] !== '魔法少女历史篇') fail('V7 Historia label is incorrect.');
+            if (localization.categoryOrder?.[0] !== 'メイン【第1部】' || localization.categoryOrder?.[9] !== 'スペシャル') fail('V7 category order does not follow the original page.');
+            if (localization.audit?.mappedCastNames !== localization.audit?.castNames || localization.audit?.unresolvedCastNames?.length) fail('V7 cast localization is incomplete.');
+            if (!localization.titleExact?.['神浜スパアドベンチャー ビーチに渦巻く悪魔の怨嗟 3話']) fail('V7 verified SPA title translation missing.');
+            const storyAppV7 = read('public/myfile/story-app-v7.js');
+            for (const marker of ['story-result-list-v7', 'resolveCharacterV7', 'installAttributeFilterV7', 'localizeTitle']) {
+              if (!storyAppV7.includes(marker)) fail(`V7 story marker missing: ${marker}`);
+            }
+            const runeV7 = read('public/myfile/runes-template-v7.js');
+            for (const marker of ['ALPHABET_ROWS', 'removeLongLines', 'chartRecognition', 'row-major-chart', 'borderAwareUsable']) {
+              if (!runeV7.includes(marker)) fail(`V7 rune marker missing: ${marker}`);
+            }
+            if (buildInfo.rollbackBeforeStoryUiTranslationOcrV7 !== 'rollback/pre-story-ui-translation-ocr-v7-20260816') fail('V7 rollback pointer missing.');
+            if (buildInfo.visitorCopyPolicy !== 'no-internal-project-instructions') fail('V7 visitor-copy policy missing.');
+          }
+          '''
+          anchor='\nif (failed) process.exit(1);'
+          if 'if (isV7) {' not in text:
+            if anchor not in text: raise SystemExit('validator final anchor missing')
+            text=text.replace(anchor,'\n'+block+anchor,1)
+          path.write_text(text,encoding='utf-8')
+          PY
+          node scripts/validate-site.js
+          node --check public/myfile/suite-v7.js
+          node --check public/myfile/story-app-v7.js
+          node --check public/myfile/attendance-app-v7.js
+          node --check public/myfile/runes-template-v7.js
+          node --check scripts/smoke-story-ui-v7.mjs
+          node --check scripts/smoke-rune-v7.mjs
+          python3 -m py_compile scripts/build-story-localization-v7.py scripts/integrate-story-ui-v7.py
+
+      - name: Install Chromium driver
+        shell: bash
+        run: npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Start the local production server
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup python3 -m http.server 8000 --directory public >/tmp/v7-final-http.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8000/build-info.json >/dev/null && exit 0
+            sleep .25
+          done
+          cat /tmp/v7-final-http.log
+          exit 1
+
+      - name: Run every established regression and V7 acceptance suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" node scripts/smoke-neo11-v3.mjs | tee /tmp/v7-final-neo11.txt
+          grep -Fq '"state": "pass"' /tmp/v7-final-neo11.txt
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" node scripts/smoke-height-guide-v4.mjs | tee /tmp/v7-final-height.txt
+          grep -Fq '"state": "pass"' /tmp/v7-final-height.txt
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/v7-final-tools.txt
+          grep -Fq '"state": "pass"' /tmp/v7-final-tools.txt
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" node scripts/smoke-story-ui-v7.mjs | tee /tmp/v7-final-story.txt
+          grep -Fq '"state": "pass"' /tmp/v7-final-story.txt
+          BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" node scripts/smoke-rune-v7.mjs | tee /tmp/v7-final-rune.txt
+          grep -Fq '"state": "pass"' /tmp/v7-final-rune.txt
+
+      - name: Commit only source and production assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public scripts
+          if git diff --cached --quiet; then
+            echo 'V7 production source already committed.'
+          else
+            git commit -m 'Publish responsive localized story UI and ordered OCR V7'
+            git push origin HEAD:fix/story-ui-translation-ocr-v7-20260816
+          fi
+
+      - name: Upload pre-publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v7-final-prepublication-${{ github.sha }}
+          path: |
+            /tmp/v7-localization-audit.json
+            /tmp/v7-final-http.log
+            /tmp/v7-final-neo11.txt
+            /tmp/v7-final-height.txt
+            /tmp/v7-final-tools.txt
+            /tmp/v7-final-story.txt
+            /tmp/v7-final-rune.txt
+            /tmp/story-ui-v7-mobile.png
+            /tmp/rune-v7-desktop.png
+            /tmp/neo11-v3-mobile.png
+            /tmp/neo11-v3-desktop.png
+            /tmp/height-guide-v4-mobile.png
+            /tmp/height-guide-v4-desktop.png
+          if-no-files-found: warn
+          retention-days: 30
