@@ -1,0 +1,50 @@
+name: Apply category-aware V10 story title map
+
+on:
+  push:
+    branches:
+      - fix/height-export-title-call-v10-20260817
+    paths:
+      - .github/workflows/apply-category-title-map-v10.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/height-export-title-call-v10-20260817
+          fetch-depth: 0
+      - name: Apply category-aware title source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/apply-category-title-map-v10.py
+          python3 -m py_compile scripts/build-story-titles-v10.py
+          node --check public/myfile/story-app-v7.js
+          grep -Fq 'titleByCategoryV10' scripts/build-story-titles-v10.py
+          grep -Fq 'titleByCategoryV10' public/myfile/story-app-v7.js
+      - name: Commit the source correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/build-story-titles-v10.py public/myfile/story-app-v7.js
+          if ! git diff --cached --quiet; then
+            git commit -m 'Keep V10 story titles category-aware'
+            git push origin HEAD:fix/height-export-title-call-v10-20260817
+          fi
+      - name: Dispatch a corrected complete V10 gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run publish-complete-v10.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref fix/height-export-title-call-v10-20260817
