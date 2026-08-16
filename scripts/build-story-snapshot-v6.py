@@ -3,6 +3,7 @@
 
 This script is intentionally manual/static. It never mutates magi-reader and it
 keeps the browser-side tool independent from Google Apps Script/CORS availability.
+The production build is regenerated only by an explicit, fully tested integration.
 """
 from __future__ import annotations
 
