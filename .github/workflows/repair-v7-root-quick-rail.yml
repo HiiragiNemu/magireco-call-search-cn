@@ -1,0 +1,56 @@
+name: Persist V7 root quick rail integration
+
+on:
+  push:
+    branches:
+      - fix/story-ui-translation-ocr-v7-20260816
+    paths:
+      - .github/workflows/repair-v7-root-quick-rail.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/story-ui-translation-ocr-v7-20260816
+          fetch-depth: 0
+
+      - name: Add the shared V7 rail script to the root integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          path=Path('scripts/integrate-story-ui-v7.py')
+          text=path.read_text(encoding='utf-8')
+          old='''    # The original call/height page already has its proven pink top/search/bottom
+              # controls. Do not add the suite rail a second time.
+              path.write_text(text, encoding="utf-8")'''
+          new='''    text = insert_after(
+              text,
+              '<script src="./myfile/layout-v6.js"></script>',
+              '<script src="./myfile/suite-v7.js"></script>',
+              "root V7 JS",
+          )
+              path.write_text(text, encoding="utf-8")'''
+          if old not in text:
+              raise SystemExit('Root integration block not found.')
+          path.write_text(text.replace(old,new,1),encoding='utf-8')
+          PY
+          python3 -m py_compile scripts/integrate-story-ui-v7.py
+
+      - name: Commit the root integration source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/integrate-story-ui-v7.py
+          git commit -m 'Load the shared V7 quick rail on the root page'
+          git push origin HEAD:fix/story-ui-translation-ocr-v7-20260816
