@@ -10,6 +10,7 @@ on:
       - fix/story-ocr-layout-v6-20260816
       - fix/story-ui-translation-ocr-v7-20260816
       - fix/collapsible-layout-v8-20260816
+      - fix/rune-mask-v9-20260816
   pull_request:
 
 permissions:
@@ -86,6 +87,12 @@ jobs:
               scripts/smoke-collapsible-layout-v8.mjs
             )
           fi
+          if [ -f public/myfile/runes-mask-v9.js ]; then
+            files+=(
+              public/myfile/runes-mask-v9.js
+              scripts/smoke-rune-mask-v9.mjs
+            )
+          fi
           for file in "${files[@]}"; do
             node --check "$file"
           done
@@ -96,7 +103,8 @@ jobs:
             scripts/integrate-story-ocr-layout-v6.py \
             scripts/build-story-localization-v7.py \
             scripts/integrate-story-ui-v7.py \
-            scripts/integrate-collapsible-layout-v8.py
+            scripts/integrate-collapsible-layout-v8.py \
+            scripts/integrate-rune-mask-v9.py
 
           python3 <<'PY'
           from pathlib import Path
@@ -110,7 +118,11 @@ jobs:
           Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
 
           build = json.loads(Path('public/build-info.json').read_text(encoding='utf-8'))
-          if build.get('release') in {'story-ui-translation-ocr-v7-20260816', 'collapsible-layout-v8-20260816'}:
+          if build.get('release') in {
+              'story-ui-translation-ocr-v7-20260816',
+              'collapsible-layout-v8-20260816',
+              'rune-mask-v9-20260816',
+          }:
               localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
               audit = localization['audit']
               assert audit['mappedCastNames'] == audit['castNames']
@@ -121,5 +133,11 @@ jobs:
                   '魔法少女','衣装','ミラーズ','イベント','バトルミュージアム','スペシャル',
                   '第1部EDムービー','第2部EDムービー','アニメ【1st】','アニメ【2nd】','アニメ【Final】'
               ]
+          if build.get('release') == 'rune-mask-v9-20260816':
+              assert build['runeMaskMode'] == 'paint-to-keep'
+              assert build['runePreviewLayout'] == 'side-by-side-desktop-stacked-mobile'
+              assert build['runeReferenceLayout'] == 'collapsed-size-capped'
+              assert Path('public/myfile/runes-mask-v9.js').stat().st_size > 10000
+              assert Path('public/myfile/runes-mask-v9.css').stat().st_size > 3000
           PY
           node --check /tmp/acceptance-inline.js
