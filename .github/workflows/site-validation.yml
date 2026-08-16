@@ -9,6 +9,7 @@ on:
       - fix/integrated-tools-v5-20260816
       - fix/story-ocr-layout-v6-20260816
       - fix/story-ui-translation-ocr-v7-20260816
+      - fix/collapsible-layout-v8-20260816
   pull_request:
 
 permissions:
@@ -79,6 +80,12 @@ jobs:
               scripts/smoke-rune-v7.mjs
             )
           fi
+          if [ -f public/myfile/layout-v8.js ]; then
+            files+=(
+              public/myfile/layout-v8.js
+              scripts/smoke-collapsible-layout-v8.mjs
+            )
+          fi
           for file in "${files[@]}"; do
             node --check "$file"
           done
@@ -88,7 +95,8 @@ jobs:
             scripts/build-story-snapshot-v6.py \
             scripts/integrate-story-ocr-layout-v6.py \
             scripts/build-story-localization-v7.py \
-            scripts/integrate-story-ui-v7.py
+            scripts/integrate-story-ui-v7.py \
+            scripts/integrate-collapsible-layout-v8.py
 
           python3 <<'PY'
           from pathlib import Path
@@ -102,7 +110,7 @@ jobs:
           Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
 
           build = json.loads(Path('public/build-info.json').read_text(encoding='utf-8'))
-          if build.get('release') == 'story-ui-translation-ocr-v7-20260816':
+          if build.get('release') in {'story-ui-translation-ocr-v7-20260816', 'collapsible-layout-v8-20260816'}:
               localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
               audit = localization['audit']
               assert audit['mappedCastNames'] == audit['castNames']
