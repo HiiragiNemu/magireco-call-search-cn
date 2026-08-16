@@ -1,0 +1,26 @@
+name: Dispatch rune mask V9 integration
+
+on:
+  push:
+    branches:
+      - fix/rune-mask-v9-20260816
+    paths:
+      - .github/workflows/dispatch-rune-mask-v9.yml
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch the gated V9 integration workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run integrate-rune-mask-v9.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref fix/rune-mask-v9-20260816
