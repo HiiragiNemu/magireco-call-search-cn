@@ -24,9 +24,11 @@ const RELEASES = Object.freeze({
   V2: 'layout-correction-v2-20260816',
   V3: 'neo11-mobile-interaction-v3-20260816',
   V4: 'neo11-height-guide-v4-20260816',
-  V5: 'integrated-tools-v5-20260816'
+  V5: 'integrated-tools-v5-20260816',
+  V6: 'story-ocr-layout-v6-20260816'
 });
-const isV5 = release === RELEASES.V5;
+const isV6 = release === RELEASES.V6;
+const isV5 = release === RELEASES.V5 || isV6;
 const isV4 = release === RELEASES.V4 || isV5;
 const isV3 = release === RELEASES.V3 || isV4;
 const isV2Family = release === RELEASES.V2 || isV3;
@@ -202,6 +204,54 @@ if (isV5) {
   if (buildInfo.rollbackBeforeIntegratedToolsV5 !== 'rollback/pre-integrated-tools-v5-20260816') fail('V5 rollback pointer missing or incorrect.');
   if (buildInfo.updateMode !== 'manual-static-only') fail('V5 update mode must remain manual-static-only.');
   if (!Array.isArray(buildInfo.integratedTools) || buildInfo.integratedTools.length !== 4) fail('V5 integrated tool manifest is incomplete.');
+}
+
+if (isV6) {
+  for (const file of [
+    'public/myfile/layout-v6.css', 'public/myfile/layout-v6.js',
+    'public/data/story-v6/manifest.json', 'public/data/story-v6/variant-map.json',
+    'scripts/build-story-snapshot-v6.py', 'scripts/integrate-story-ocr-layout-v6.py',
+    'scripts/smoke-story-layout-v6.mjs', 'scripts/smoke-ocr-v6.mjs'
+  ]) requireFile(file);
+  for (const page of ['public/index.html', 'public/story.html', 'public/attendance.html', 'public/runes.html']) {
+    const pageText = read(page);
+    if (!pageText.includes('./myfile/layout-v6.css')) fail(`${page} missing V6 layout CSS.`);
+  }
+  if (!read('public/index.html').includes('./myfile/layout-v6.js')) fail('root page missing V6 star layout script.');
+  const storyPage = read('public/story.html');
+  if (!storyPage.includes('./data/story-v6/manifest.json')) fail('story page missing the local manifest marker.');
+  if (storyPage.includes('script.google.com/macros/s/')) fail('story page still exposes a remote Google Apps Script endpoint.');
+  const storyApp = read('public/myfile/story-app.js');
+  for (const marker of ['MANIFEST_URL', './data/story-v6/', 'loadCategory', 'rowMatches']) {
+    if (!storyApp.includes(marker)) fail(`V6 story marker missing: ${marker}`);
+  }
+  if (storyApp.includes('script.google.com/macros/s/')) fail('V6 story app still performs remote GAS searches.');
+  const manifest = JSON.parse(read('public/data/story-v6/manifest.json'));
+  if (manifest.totalRows < 14000 || manifest.categories.length !== 19) fail('V6 story snapshot is incomplete.');
+  if (manifest.source?.mode !== 'manual-static-snapshot') fail('V6 story snapshot mode is not manual-static-snapshot.');
+  let countedRows = 0;
+  for (const category of manifest.categories) {
+    const file = `public/data/story-v6/${category.file}`;
+    requireFile(file);
+    const data = JSON.parse(read(file));
+    if (data.key !== category.key || !Array.isArray(data.rows) || data.rows.length !== category.count) {
+      fail(`V6 story category invalid: ${category.key}`);
+    }
+    countedRows += data.rows.length;
+  }
+  if (countedRows !== manifest.totalRows) fail(`V6 story row count mismatch: ${countedRows}/${manifest.totalRows}`);
+  const runesPage = read('public/runes.html');
+  for (const marker of ['id="runesLayout"', 'value="border"', 'id="runesDiagnostics"', '处理后图像']) {
+    if (!runesPage.includes(marker)) fail(`V6 OCR UI marker missing: ${marker}`);
+  }
+  const runesApp = read('public/myfile/runes-app.js');
+  for (const marker of ['otsuThreshold', 'clearLongBorders', 'segmentedRecognition', 'SINGLE_BLOCK', '__RUNE_OCR_V6__']) {
+    if (!runesApp.includes(marker)) fail(`V6 OCR marker missing: ${marker}`);
+  }
+  if (buildInfo.rollbackBeforeStoryOcrLayoutV6 !== 'rollback/pre-story-ocr-layout-v6-20260816') {
+    fail('V6 rollback pointer missing or incorrect.');
+  }
+  if (buildInfo.storyBrowserRemoteDependency !== false) fail('V6 story browser must be independent of remote APIs.');
 }
 
 if (failed) process.exit(1);

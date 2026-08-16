@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-core';
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:8000';
 const CHROME_PATH = process.env.CHROME_PATH || '/usr/bin/google-chrome';
 const REPO_ROOT = process.env.REPO_ROOT || process.cwd();
-const EXPECTED_RELEASE = 'integrated-tools-v5-20260816';
+const EXPECTED_RELEASE = 'story-ocr-layout-v6-20260816';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function assert(condition, message, details) {
@@ -90,7 +90,7 @@ async function testStory(browser) {
     types: document.querySelectorAll('#storyTypeOptions input').length,
     nav: document.querySelectorAll('.suite-nav a').length
   }));
-  assert(initial.release === EXPECTED_RELEASE && initial.cards >= 180 && initial.types === 14 && initial.nav === 4,
+  assert(initial.release === EXPECTED_RELEASE && initial.cards >= 180 && initial.types >= 19 && initial.nav === 4,
     'story page loads Chinese catalog and complete options', initial);
   assert(initial.first && !/^[ぁ-ヿ]+$/u.test(initial.first), 'story cards display Chinese-first names', initial.first);
 
@@ -110,7 +110,7 @@ async function testStory(browser) {
     groups: document.querySelectorAll('#storyResultsBody .suite-result-group').length,
     tableRows: document.querySelectorAll('#storyResultsBody tbody tr').length
   }));
-  assert(result.kind === 'success' && result.groups === 1, 'story data service returns a renderable result', result);
+  assert(result.kind === 'success' && result.groups === 1, 'local story snapshot returns a renderable result', result);
   assert(errors.filter((text) => /TypeError|ReferenceError|SyntaxError|Unhandled/iu.test(text)).length === 0,
     'story run has no fatal JavaScript errors', errors);
   await page.screenshot({ path: '/tmp/integrated-v5-story-mobile.png', fullPage: true });

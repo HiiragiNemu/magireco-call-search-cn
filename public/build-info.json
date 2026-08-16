@@ -1,5 +1,5 @@
 {
-  "release": "integrated-tools-v5-20260816",
+  "release": "story-ocr-layout-v6-20260816",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -32,5 +32,12 @@
   "interactionFilterGesture": "triple-tap-or-triple-click",
   "updateMode": "manual-static-only",
   "ocrDataMode": "local-traineddata-browser-only",
-  "translationAudit": "public/data/translation-audit-v5.json"
+  "translationAudit": "public/data/translation-audit-v5.json",
+  "rollbackBeforeStoryOcrLayoutV6": "rollback/pre-story-ocr-layout-v6-20260816",
+  "storyDataMode": "local-manual-static-snapshot",
+  "storySnapshotManifest": "public/data/story-v6/manifest.json",
+  "storyBrowserRemoteDependency": false,
+  "ocrPipeline": "multi-pass-border-aware-layout-aware-classic-tesseract",
+  "characterStarLayout": "top-right-corner",
+  "suiteCharacterCardLayout": "content-height-compact"
 }

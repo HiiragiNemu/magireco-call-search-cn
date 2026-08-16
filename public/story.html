@@ -4,16 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="在魔法纪录故事数据中按角色、故事类型和关键词检索。">
+  <meta name="story-data-manifest" content="./data/story-v6/manifest.json">
   <title>魔法纪录角色故事搜索</title>
   <link rel="stylesheet" href="./myfile/tools-suite.css">
+  <link rel="stylesheet" href="./myfile/layout-v6.css">
 </head>
-<body class="suite-page" data-build="integrated-tools-v5-20260816" data-suite-tool="story">
+<body class="suite-page" data-build="story-ocr-layout-v6-20260816" data-suite-tool="story">
   <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
   <main class="suite-shell" data-suite-nav-anchor>
     <header class="suite-hero">
       <span class="suite-badge">魔法纪录 · 中文整合工具</span>
       <h1>角色故事搜索</h1>
-      <p>按角色、故事类型、出场组合和剧透关键词检索原有故事数据库。查询仍由原数据服务提供；本页负责中文界面、角色映射和现代化展示。</p>
+            <p>选择故事类型、角色和组合逻辑，在本站保存的完整故事快照中本地筛选。不再由手机浏览器直接请求 Google Apps Script，因此不会受跨域、Google 重定向或网络屏蔽影响。</p>
+      <p class="story-source-v6">数据来自原角色故事搜索公开的完整 JSON；本次快照包含 19 类、超过 1.4 万条记录。快照采用手工静态更新，不修改 magi-reader 仓库。</p>
     </header>
 
     <section class="suite-panel" aria-labelledby="story-options-title">
