@@ -1,0 +1,45 @@
+name: Apply V12 CI verification updates
+
+on:
+  push:
+    branches:
+      - fix/live-fix-v12-20260818
+    paths:
+      - scripts/patch-v12-ci.py
+      - .github/workflows/apply-v12-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch V12 CI workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/patch-v12-ci.py
+          python3 -m py_compile scripts/patch-v12-ci.py
+          grep -Fq 'fix/live-fix-v12-20260818' .github/workflows/site-validation.yml
+          grep -Fq 'live-regression-repair-v12-20260818' .github/workflows/verify-production.yml
+          grep -Fq 'scripts/smoke-live-v12.mjs' .github/workflows/verify-production.yml
+          git diff --check
+      - name: Commit V12 CI workflow updates
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'HiiragiNemu'
+          git config user.email '128921071+HiiragiNemu@users.noreply.github.com'
+          git add .github/workflows/site-validation.yml .github/workflows/verify-production.yml
+          if git diff --cached --quiet; then
+            echo 'V12 CI workflows already patched.'
+          else
+            git commit -m 'Verify V12 static and Cloudflare production state'
+            git push origin HEAD:fix/live-fix-v12-20260818
+          fi
