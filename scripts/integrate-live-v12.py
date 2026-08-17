@@ -53,7 +53,7 @@ build.update({
     'release': RELEASE,
     'deploymentTarget': 'magireco-call-search-cn.pages.dev',
     'rollbackBeforeLiveRegressionRepairV12': 'rollback/pre-live-fix-v12-20260818',
-    'suiteNavigation': 'document-sticky-body-level-call-nav',
+    'suiteNavigation': 'fixed-call-nav-with-measured-spacer',
     'callQuickRail': 'nine-actions-replaces-legacy-three',
     'heightViewport': 'scaled-stage-auto-height-no-reserved-vh',
     'runeRecognitionTechnology': 'rollback-to-first-paint-mask-v9',
