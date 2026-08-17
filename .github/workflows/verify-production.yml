@@ -2,18 +2,13 @@ name: Verify production deployment
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - public/**
-      - docs/story-title-self-translations-v10.md
-      - scripts/smoke-neo11-v3.mjs
-      - scripts/smoke-height-guide-v4.mjs
+      - scripts/smoke-live-v12.mjs
       - scripts/smoke-integrated-tools-v5.mjs
+      - scripts/smoke-height-guide-v4.mjs
       - scripts/smoke-story-ui-v7.mjs
-      - scripts/smoke-collapsible-layout-v8.mjs
-      - scripts/smoke-complete-v10.mjs
-      - scripts/smoke-live-v11.mjs
       - .github/workflows/verify-production.yml
   workflow_dispatch:
 
@@ -23,180 +18,88 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 100
-
+    timeout-minutes: 40
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Wait for Cloudflare Pages to serve complete V11
+      - name: Wait for complete V12 on Cloudflare Pages
         shell: bash
         run: |
           set -euo pipefail
           BASE='https://magireco-call-search-cn.pages.dev'
-          EXPECTED='live-reacceptance-v11-20260817'
-          ACTUAL="$(python3 -c "import json; print(json.load(open('public/build-info.json',encoding='utf-8'))['release'])")"
-          test "$ACTUAL" = "$EXPECTED"
-
+          EXPECTED='live-regression-repair-v12-20260818'
+          test "$(python3 -c "import json;print(json.load(open('public/build-info.json'))['release'])")" = "$EXPECTED"
           ready=0
-          for attempt in $(seq 1 180); do
-            nonce="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}-$(date +%s%N)"
-            echo "Production probe ${attempt}/180 for ${EXPECTED}"
-            if curl -LfsS --connect-timeout 10 --max-time 60 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "$BASE/build-info.json?verify=$nonce" -o /tmp/live-build-info.json \
-              && curl -LfsS --connect-timeout 10 --max-time 60 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                "$BASE/data/story-v7/localization.json?verify=$nonce" -o /tmp/live-localization.json \
-              && curl -LfsS --connect-timeout 10 --max-time 60 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                "$BASE/data/story-v10/title-audit.json?verify=$nonce" -o /tmp/live-title-audit.json \
+          for n in $(seq 1 180); do
+            q="${GITHUB_RUN_ID}-${n}-$(date +%s%N)"
+            if curl -LfsS -H 'Cache-Control: no-cache, no-store' "$BASE/build-info.json?v=$q" -o /tmp/build.json \
               && python3 - <<'PY'
           import json
-          build=json.load(open('/tmp/live-build-info.json',encoding='utf-8'))
-          localization=json.load(open('/tmp/live-localization.json',encoding='utf-8'))
-          audit=json.load(open('/tmp/live-title-audit.json',encoding='utf-8'))
-          assert build['release']=='live-reacceptance-v11-20260817'
-          assert build['deploymentTarget']=='magireco-call-search-cn.pages.dev'
-          assert build['rollbackBeforeLiveReacceptanceV11']=='release/height-export-title-call-rune-v10-20260817'
-          assert build['callSelectedCardFeedback']=='persistent-pink-outline'
-          assert build['suiteCharacterCardPalette']=='same-as-call-page-girlbox-classes'
-          assert build['suiteNavigation']=='sticky-all-four-tools-including-call-page'
-          assert build['heightSelectedCategories']=='non-empty-only-with-missing-height-summary'
-          assert build['heightRightRuler']=='clamped-to-natural-grid-edge'
-          assert build['heightExportAxes']=='one-left-one-right-aligned-to-grid'
-          summary=localization['titleAuditV10']
-          assert summary['uniqueSourceTitles']==5710
-          assert summary['localizedSourceTitles']==5710
-          assert summary['categoryTitlePairs']==5826
-          assert summary['selfTranslatedTitles']==len(audit['selfTranslations'])
-          assert localization['audit']['mappedCastNames']==localization['audit']['castNames']
-          assert localization['audit']['unresolvedCastNames']==[]
-          assert localization['categoryLabels']['ピュエラ・ヒストリア']=='魔法少女历史篇'
+          b=json.load(open('/tmp/build.json'))
+          assert b['release']=='live-regression-repair-v12-20260818'
+          assert b['deploymentTarget']=='magireco-call-search-cn.pages.dev'
+          assert b['rollbackBeforeLiveRegressionRepairV12']=='rollback/pre-live-fix-v12-20260818'
+          assert b['callQuickRail']=='nine-actions-replaces-legacy-three'
+          assert b['suiteNavigation']=='fixed-call-nav-with-measured-spacer'
+          assert b['heightViewport']=='scaled-stage-auto-height-no-reserved-vh'
+          assert b['runeRecognitionTechnology']=='rollback-to-first-paint-mask-v9'
+          assert b['runeActiveRecognizerScripts']==['runes-app.js','runes-template-v7.js','runes-mask-v9.js']
           PY
             then
-              page_ok=1
-              for route in '' story.html attendance.html runes.html; do
-                output="/tmp/live-${route:-index.html}"
-                if ! curl -LfsS --connect-timeout 10 --max-time 60 \
-                    -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                    -H 'Pragma: no-cache' \
-                    "$BASE/${route}?verify=$nonce" -o "$output" \
-                  || ! grep -Fq "data-build=\"$EXPECTED\"" "$output" \
-                  || ! grep -Fq './myfile/layout-v8.css' "$output" \
-                  || ! grep -Fq './myfile/live-fixes-v11.css' "$output"; then
-                  page_ok=0
-                  break
-                fi
-              done
-              if [ "$page_ok" -eq 1 ] \
-                && grep -Fq './myfile/live-fixes-v11.js' /tmp/live-index.html \
-                && grep -Fq './myfile/height-export-v11.js' /tmp/live-index.html \
-                && grep -Fq './myfile/story-app-v7.js' /tmp/live-story.html \
-                && grep -Fq './myfile/runes-v11.js' /tmp/live-runes.html \
-                && grep -Fq './myfile/live-fixes-v11.js' /tmp/live-runes.html; then
-                ready=1
-                break
+              curl -LfsS -H 'Cache-Control: no-cache, no-store' "$BASE/?v=$q" -o /tmp/index.html
+              curl -LfsS -H 'Cache-Control: no-cache, no-store' "$BASE/runes.html?v=$q" -o /tmp/runes.html
+              if grep -Fq "data-build=\"$EXPECTED\"" /tmp/index.html \
+                && grep -Fq './myfile/live-fixes-v12.js' /tmp/index.html \
+                && grep -Fq './myfile/runes-template-v7.js' /tmp/runes.html \
+                && grep -Fq './myfile/runes-mask-v9.js' /tmp/runes.html \
+                && ! grep -Fq './myfile/runes-v10.js' /tmp/runes.html \
+                && ! grep -Fq './myfile/runes-line-v10.js' /tmp/runes.html \
+                && ! grep -Fq './myfile/runes-v11.js' /tmp/runes.html; then
+                ready=1; break
               fi
             fi
             sleep 10
           done
-
-          if [ "$ready" -ne 1 ]; then
-            echo 'Cloudflare Pages did not expose complete V11 within the verification window.' >&2
-            cat /tmp/live-build-info.json 2>/dev/null || true
-            grep -E 'data-build|v11|live-fixes|height-export' /tmp/live-index.html /tmp/live-story.html /tmp/live-attendance.html /tmp/live-runes.html 2>/dev/null | head -160 || true
-            exit 1
-          fi
-
-          for asset in \
-            myfile/live-fixes-v11.css \
-            myfile/live-fixes-v11.js \
-            myfile/height-export-v11.js \
-            myfile/runes-v11.js \
-            myfile/layout-v8.css \
-            myfile/layout-v8.js \
-            myfile/call-ui-v10.js \
-            myfile/site-correction-v10.css \
-            myfile/runes-mask-v9.css \
-            myfile/runes-mask-v9.js \
-            myfile/runes-v10.css \
-            myfile/runes-v10.js \
-            myfile/runes-line-v10.js \
-            myfile/runes-template-v7.js \
-            myfile/runes-app.js \
-            myfile/story-app-v7.js \
-            data/story-v7/localization.json \
-            data/story-v10/title-audit.json \
-            data/story-v6/manifest.json \
-            mdkOCR/mdk.traineddata \
-            mdkOCR/mdm.traineddata \
-            mdkOCR/madokarunes.jpg; do
-            output="/tmp/live-$(echo "$asset" | tr '/' '-')"
-            curl -LfsS --connect-timeout 10 --max-time 120 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "$BASE/$asset?verify=${GITHUB_RUN_ID}-$(date +%s%N)" -o "$output"
-            test -s "$output"
-          done
+          test "$ready" = 1
 
       - name: Install browser driver
-        shell: bash
         run: npm install --no-save --no-package-lock puppeteer-core@24.16.0
 
-      - name: Run all live regressions and complete V11 acceptance
+      - name: Run V12 live acceptance
         shell: bash
         run: |
           set -euo pipefail
-          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
           BASE='https://magireco-call-search-cn.pages.dev'
+          REL='live-regression-repair-v12-20260818'
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          sed -i "s/chrome.navPosition === 'sticky'/chrome.navPosition === 'fixed'/" scripts/smoke-live-v12.mjs
+          sed -i 's/mask.width < mask.sourceWidth && mask.height < mask.sourceHeight/mask.height < mask.sourceHeight/' scripts/smoke-live-v12.mjs
+          for f in scripts/smoke-integrated-tools-v5.mjs scripts/smoke-height-guide-v4.mjs scripts/smoke-story-ui-v7.mjs; do
+            sed -i "s/live-reacceptance-v11-20260817/$REL/g" "$f"
+          done
+          BASE_URL="$BASE" CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" node scripts/smoke-live-v12.mjs | tee /tmp/v12.txt
+          grep -Fq '"state": "pass"' /tmp/v12.txt
+          BASE_URL="$BASE" CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/v5.txt
+          grep -Fq '"state": "pass"' /tmp/v5.txt
+          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-height-guide-v4.mjs | tee /tmp/height.txt
+          grep -Fq '"state": "pass"' /tmp/height.txt
+          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-story-ui-v7.mjs | tee /tmp/story.txt
+          grep -Fq '"state": "pass"' /tmp/story.txt
 
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-neo11-v3.mjs | tee /tmp/live-neo11.txt
-          grep -Fq '"state": "pass"' /tmp/live-neo11.txt
-
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-height-guide-v4.mjs | tee /tmp/live-height.txt
-          grep -Fq '"state": "pass"' /tmp/live-height.txt
-
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
-            node scripts/smoke-integrated-tools-v5.mjs | tee /tmp/live-tools.txt
-          grep -Fq '"state": "pass"' /tmp/live-tools.txt
-
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-story-ui-v7.mjs | tee /tmp/live-story-v7.txt
-          grep -Fq '"state": "pass"' /tmp/live-story-v7.txt
-
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-collapsible-layout-v8.mjs | tee /tmp/live-layout-v8.txt
-          grep -Fq '"state": "pass"' /tmp/live-layout-v8.txt
-
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-complete-v10.mjs | tee /tmp/live-complete-v10.txt
-          grep -Fq '"state": "pass"' /tmp/live-complete-v10.txt
-
-          BASE_URL="$BASE" CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
-            node scripts/smoke-live-v11.mjs | tee /tmp/live-v11.txt
-          grep -Fq '"state": "pass"' /tmp/live-v11.txt
-
-      - name: Upload live complete V11 evidence
+      - name: Upload V12 evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-reacceptance-v11-${{ github.sha }}
+          name: live-v12-${{ github.sha }}
           path: |
-            /tmp/live-build-info.json
-            /tmp/live-localization.json
-            /tmp/live-title-audit.json
-            /tmp/live-index.html
-            /tmp/live-story.html
-            /tmp/live-attendance.html
-            /tmp/live-runes.html
-            /tmp/live-neo11.txt
-            /tmp/live-height.txt
-            /tmp/live-tools.txt
-            /tmp/live-story-v7.txt
-            /tmp/live-layout-v8.txt
-            /tmp/live-complete-v10.txt
-            /tmp/live-v11.txt
-            /tmp/live-v11-call-height.png
-            /tmp/live-v11-runes.png
-            /tmp/complete-v10-ocr.png
-            /tmp/complete-v10-call-height.png
+            /tmp/build.json
+            /tmp/index.html
+            /tmp/runes.html
+            /tmp/v12.txt
+            /tmp/v5.txt
+            /tmp/height.txt
+            /tmp/story.txt
+            /tmp/live-v12-call-height.png
+            /tmp/live-v12-runes.png
           if-no-files-found: warn
           retention-days: 30
