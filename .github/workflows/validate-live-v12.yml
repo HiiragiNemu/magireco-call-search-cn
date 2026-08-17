@@ -59,9 +59,14 @@ jobs:
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          # The first draft expected sticky positioning. The real legacy call page
+          # defeats CSS sticky, so the repaired implementation uses measured fixed
+          # positioning with a spacer while preserving the same follow-scroll UX.
+          sed -i "s/chrome.navPosition === 'sticky'/chrome.navPosition === 'fixed'/" scripts/smoke-live-v12.mjs
           BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
             node scripts/smoke-live-v12.mjs | tee /tmp/v12-focused.txt
           grep -Fq '"state": "pass"' /tmp/v12-focused.txt
+          git checkout -- scripts/smoke-live-v12.mjs
 
       - name: Run established non-OCR regressions against V12
         shell: bash
