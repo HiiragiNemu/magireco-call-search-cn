@@ -130,7 +130,7 @@
     }
 
     const definitions = [
-      ['顶', '页面顶部', () => global.scrollTo({ top: 0, behavior: 'smooth' })],
+      ['↑', '页面顶部', () => global.scrollTo({ top: 0, behavior: 'smooth' })],
       ['角', '选择角色', () => openAndScroll('.call-selection-panel-v8', '.call-selection-panel-v8')],
       ['筛', '搜索条件', () => openAndScroll('.call-search-panel-v8', '.call-search-panel-v8')],
       ['属', '属性筛选', () => openAndScroll('.call-attribute-panel-v8', '.call-attribute-panel-v8')],
@@ -154,7 +154,7 @@
         const selected = Boolean(document.querySelector('input.MagicalChk[name="chara"]:checked'));
         if (typeof global.displayHeightChart === 'function') global.displayHeightChart(selected ? 'selected' : 'global');
       }],
-      ['底', '页面底部', () => global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })]
+      ['↓', '页面底部', () => global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })]
     ];
 
     const rail = document.createElement('aside');

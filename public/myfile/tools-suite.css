@@ -165,7 +165,12 @@ body.suite-page {
 .suite-footer { margin: 22px 0 0; color: var(--suite-muted); text-align: center; font-size: .85rem; }
 
 /* Same suite switch can be injected into the established call/height page. */
-body:not(.suite-page) .suite-nav { position: relative; top: auto; width: calc(100% - 16px); }
+body:not(.suite-page) .suite-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1700;
+  width: calc(100% - 16px);
+}
 
 @media (max-width: 720px) {
   .suite-shell { padding-inline: 8px; }

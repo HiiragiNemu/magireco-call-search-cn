@@ -178,7 +178,25 @@
   }
 
   function detailsForEntry(entry) {
-    return entry.callKey && typeof callTable !== 'undefined' && callTable instanceof Map ? callTable.get(entry.callKey) : null;
+    if (typeof callTable === 'undefined' || !(callTable instanceof Map)) return null;
+    if (entry.callKey && callTable.has(entry.callKey)) return callTable.get(entry.callKey);
+
+    // Selected cards occasionally use a display/variant value that does not have
+    // an exact callTable key. Resolve it through the same canonical index used by
+    // the call search, then fall back to the base character when appropriate.
+    const keyIndex = U.buildCallTableKeyIndex();
+    const directKey = keyIndex.get(entry.canonical);
+    if (directKey && callTable.has(directKey)) return callTable.get(directKey);
+
+    const base = String(entry.canonical || '')
+      .replace(/[-－]眼镜ver\.?$/u, '')
+      .replace(/[（(][^）)]*(?:ver|版本|装束|scene0|水着|泳装|圣诞|万圣|晴着|浴衣)[^）)]*[）)]$/iu, '')
+      .trim();
+    if (base && base !== entry.canonical) {
+      const baseKey = keyIndex.get(base);
+      if (baseKey && callTable.has(baseKey)) return callTable.get(baseKey);
+    }
+    return null;
   }
 
   function canonicalRelations(details) {
@@ -1070,12 +1088,19 @@
     const grouped = new Map(categories.map(([key]) => [key, []]));
     const schoolLabels = new Map(SCHOOL_DEFINITIONS);
     let validHeightCount = 0;
+    const missingHeight = [];
 
     for (const entry of entries) {
       const details = detailsForEntry(entry);
-      if (!(details instanceof Map)) continue;
+      if (!(details instanceof Map)) {
+        missingHeight.push(entry.canonical);
+        continue;
+      }
       const height = parseNumber(details.get('身高'));
-      if (!Number.isFinite(height)) continue;
+      if (!Number.isFinite(height) || String(details.get('身高') || '').trim() === '?') {
+        missingHeight.push(entry.canonical);
+        continue;
+      }
       validHeightCount++;
       const attributes = attributesForEntry(entry);
       const matches = matchingCategories(entry, details, attributes, heightState.xMode, categoryKeys);
@@ -1099,10 +1124,45 @@
       return;
     }
 
+    if (heightState.dataSource === 'selected') {
+      const summary = document.createElement('div');
+      summary.className = 'height-chart-message height-selection-summary-v11';
+      summary.dataset.kind = missingHeight.length ? 'warning' : 'success';
+      const rendered = Array.from(grouped.values()).reduce((sum, list) => sum + list.length, 0);
+      summary.textContent = `已选 ${entries.length} 名；有身高资料 ${validHeightCount} 名；当前分类绘制 ${rendered} 个点。`
+        + (missingHeight.length ? ` 无身高资料：${missingHeight.join('、')}。` : '');
+      shell.appendChild(summary);
+    }
+
+    // For selected-character searches, do not reserve empty category columns.
+    // This keeps the chart compact and prevents the right ruler from floating at
+    // the far side of a mostly empty desktop viewport.
+    let visibleCategories = categories;
+    if (heightState.dataSource === 'selected') {
+      visibleCategories = categories.filter(([key]) => (grouped.get(key) || []).length > 0);
+      if (!visibleCategories.length) visibleCategories = categories.slice(0, 1);
+    }
+
     buildHeightScaleControls(shell);
     const tooltip = buildTooltip(shell);
-    shell.appendChild(createHeightSurface(categories, grouped, heightState.viewMode, tooltip));
+    const heightViewport = createHeightSurface(visibleCategories, grouped, heightState.viewMode, tooltip);
+    if (heightState.dataSource === 'selected') {
+      heightViewport.classList.add('height-selected-viewport-v11');
+      heightViewport.dataset.selectedHeightV11 = 'true';
+    }
+    shell.appendChild(heightViewport);
     container.appendChild(shell);
+    if (heightState.dataSource === 'selected') {
+      requestAnimationFrame(() => {
+        const stage = heightViewport.querySelector('.height-chart-stage-v2');
+        if (!stage) return;
+        const stageWidth = Math.ceil(stage.getBoundingClientRect().width);
+        if (stageWidth > 0) {
+          heightViewport.style.width = `${Math.min(stageWidth + 42, Math.max(320, global.innerWidth - 32))}px`;
+          heightViewport.style.maxWidth = '100%';
+        }
+      });
+    }
   };
 
   global.saveHeightChart = function saveHeightChartCorrected() {

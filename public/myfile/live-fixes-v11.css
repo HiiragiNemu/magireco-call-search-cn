@@ -1,0 +1,119 @@
+/* V11 live reacceptance: compact avatar directories, sticky suite navigation and height geometry. */
+
+/* All four mode buttons follow the viewport, including the established call/height page. */
+.suite-nav,
+body:not(.suite-page) .suite-nav {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1900 !important;
+}
+
+/* Match the original call directory: fixed 68px cards instead of stretching each
+   story/attendance card to consume the whole row. */
+.suite-character-grid,
+#storyCharacterGrid,
+#attendanceGrid {
+  grid-template-columns: repeat(auto-fill, 68px) !important;
+  grid-auto-columns: 68px;
+  justify-content: start !important;
+  align-content: start;
+  gap: 1px !important;
+  padding: 2px !important;
+}
+
+.suite-character-card {
+  width: 68px !important;
+  min-width: 68px !important;
+  max-width: 68px !important;
+  min-height: 0 !important;
+  grid-template-rows: 60px auto !important;
+  gap: 1px !important;
+  padding: 1px !important;
+  border-radius: 2px !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.suite-character-card[aria-pressed="true"] {
+  padding: 1px !important;
+  border: 1px solid #d9c8d1 !important;
+  outline: 3px solid #f34da7 !important;
+  outline-offset: -3px;
+  z-index: 3;
+}
+.suite-character-card img {
+  width: 60px !important;
+  height: 60px !important;
+  margin: 0 auto !important;
+}
+.suite-character-card strong {
+  font-size: 12px !important;
+  line-height: 13px !important;
+  font-weight: 500 !important;
+  min-height: 26px;
+  display: grid !important;
+  place-items: start center;
+  overflow: hidden;
+}
+.suite-character-card small { display: none !important; }
+.suite-character-card .suite-star { top: 1px !important; right: 2px !important; font-size: 17px !important; }
+
+/* Replicate the original call-page color relationships in all suite directories. */
+.suite-character-card.umeColor { background-color: #ffffdb !important; }
+.suite-character-card.hisColor { background-color: #f8a2ea !important; }
+.suite-character-card.umeOtherColor { background-color: #dbdbff !important; }
+.suite-character-card.PMHQColor { background-color: #ffdbed !important; }
+.suite-character-card.PMHQotherColor { background-color: #dbffff !important; }
+.suite-character-card.otherColor { background-color: #ffffdb !important; }
+.suite-character-card.otherColor2 { background-color: #eddbff !important; }
+.suite-character-card.otherotherColor { background-color: #ffeddb !important; }
+.suite-character-card.gaidenColor { background-color: #dbffdb !important; }
+.suite-character-card.collaboColor { background-color: #ffe5ab !important; }
+.suite-character-card.mobColor { background-color: #f8f8f8 !important; }
+.suite-character-card.unimpColor { background-color: #cacaca !important; }
+.suite-character-card.unionColor { background-color: #ffc8d4 !important; }
+.suite-character-card.tokimeColor { background-color: #a7eca7 !important; }
+.suite-character-card.misdColor { background-color: #f59292 !important; }
+
+/* A call-page selection remains visible until the checkbox is actually cleared. */
+label.girlbox:has(input.MagicalChk:checked),
+label.girlbox.is-selected-v11 {
+  outline: 3px solid #f34da7 !important;
+  outline-offset: -3px !important;
+  z-index: 3;
+}
+
+/* A short selected-character chart should end at its own right ruler. Wide charts
+   still use the viewport as a normal horizontal scroller. */
+.height-selected-viewport-v11 {
+  max-width: 100% !important;
+}
+.height-selection-summary-v11 {
+  margin-block: .5rem !important;
+  padding: .55rem .7rem !important;
+  font-size: .86rem;
+  line-height: 1.4;
+}
+.height-selection-summary-v11[data-kind="warning"] { background: #fff9e8; border-color: #e6c773; }
+.height-selection-summary-v11[data-kind="success"] { background: #effcf6; border-color: #62b48d; }
+
+.call-quick-rail-v10 button:first-child,
+.call-quick-rail-v10 button:last-child { font-size: 1.35rem; }
+
+@media (max-width: 720px) {
+  .suite-character-grid,
+  #storyCharacterGrid,
+  #attendanceGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-auto-columns: auto;
+    width: 100%;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+  .suite-character-card {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+  }
+  .suite-character-card img { width: min(60px, 100%) !important; }
+}

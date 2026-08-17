@@ -88,8 +88,13 @@
     if (!viewport || !leftAxis || !rightAxis) return;
     const scale = global.__MAGIRECO_CORRECTION_V2__.heightState.scale || 1;
     leftAxis.style.transform = `translateX(${viewport.scrollLeft/scale-leftAxis.offsetLeft}px)`;
+    if (viewport.dataset.selectedHeightV11 === 'true') {
+      rightAxis.style.transform = 'translateX(0px)';
+      return;
+    }
     const axisWidth = rightAxis.offsetWidth || leftAxis.offsetWidth || 66;
-    const desired = (viewport.scrollLeft + viewport.clientWidth)/scale - axisWidth;
+    const viewportRight = (viewport.scrollLeft + viewport.clientWidth) / scale - axisWidth;
+    const desired = Math.min(rightAxis.offsetLeft, viewportRight);
     rightAxis.style.transform = `translateX(${desired-rightAxis.offsetLeft}px)`;
   }
   const scheduleSync = (viewport,left,right) => global.requestAnimationFrame(()=>syncRulers(viewport,left,right));

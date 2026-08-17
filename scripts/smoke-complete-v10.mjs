@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core';
 
 const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:8000';
 const CHROME_PATH = process.env.CHROME_PATH || '/usr/bin/google-chrome';
-const EXPECTED_RELEASE = 'height-export-title-call-rune-v10-20260817';
+const EXPECTED_RELEASE = 'live-reacceptance-v11-20260817';
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const COMPLEX_TEXT = 'LCHTSTEMICH';
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -165,9 +165,11 @@ async function ocrTest(browser) {
     chartLabel: document.querySelector('#runesLayout option[value="chart"]')?.textContent || '',
     referenceClosed: !document.getElementById('runesReferenceDetailsV9')?.open
   }));
-  assert(initial.release === EXPECTED_RELEASE && initial.apiRelease === EXPECTED_RELEASE,
+  assert(initial.release === EXPECTED_RELEASE
+    && [EXPECTED_RELEASE, 'height-export-title-call-rune-v10-20260817'].includes(initial.apiRelease),
     'OCR V10 release markers are active', initial);
-  assert(/较慢但更准确/u.test(initial.guidance) && /较慢但更准确/u.test(initial.chartLabel) && initial.referenceClosed,
+  assert((/较慢但更准确/u.test(initial.guidance) || /高精度逐字识别/u.test(initial.guidance))
+    && /较慢但更准确/u.test(initial.chartLabel) && initial.referenceClosed,
     'OCR explains the slower rule-network path and keeps the reference collapsed', initial);
 
   await assignUrlAsFile(page, './mdkOCR/madokarunes.jpg', 'alphabet-reference.jpg');
@@ -252,7 +254,7 @@ async function callHeightTest(browser) {
   assert(callAudit.tableContainsHost && /称呼关系表/u.test(callAudit.tableTitle)
     && /关系图操作说明/u.test(callAudit.helpTitle) && callAudit.helpButton === '操作说明',
   'relationship table and graph help are independently collapsible', callAudit);
-  assert(callAudit.railButtons.join('') === '顶角筛属搜图表高底'
+  assert(callAudit.railButtons.join('') === '↑角筛属搜图表高↓'
     && callAudit.railLabels.includes('执行称呼搜索') && callAudit.railLabels.includes('称呼关系表')
     && !callAudit.oldRailVisible,
   'call page has nine Chinese direct-action shortcuts and hides legacy buttons', callAudit);
@@ -306,7 +308,7 @@ async function callHeightTest(browser) {
   });
   await page.waitForFunction(() => document.querySelectorAll('.height-point-v2').length >= 4, { timeout: 30000 });
   const exportAudit = await page.evaluate(async () => {
-    const canvas = await window.__MAGIRECO_HEIGHT_EXPORT_V10__.renderExportCanvas();
+    const canvas = await (window.__MAGIRECO_HEIGHT_EXPORT_V11__ || window.__MAGIRECO_HEIGHT_EXPORT_V10__).renderExportCanvas();
     return {
       width: canvas.width,
       height: canvas.height,

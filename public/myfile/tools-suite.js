@@ -178,7 +178,7 @@
   function createCharacterCard(entry, options = {}) {
     const card = document.createElement(options.tag || 'button');
     if (card.tagName === 'BUTTON') card.type = 'button';
-    card.className = 'suite-character-card';
+    card.className = ['suite-character-card', ...(entry.classes || []).filter((value) => value && value !== 'girlbox')].join(' ');
     card.dataset.jp = entry.jp;
     card.dataset.zh = entry.zh;
     card.dataset.search = normalize([entry.zh, entry.jp, entry.roman, entry.kana, ...(entry.aliases || [])].join(' '));

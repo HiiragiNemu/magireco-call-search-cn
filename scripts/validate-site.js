@@ -29,9 +29,11 @@ const RELEASES = Object.freeze({
   V7: 'story-ui-translation-ocr-v7-20260816',
   V8: 'collapsible-layout-v8-20260816',
   V9: 'rune-mask-v9-20260816',
-  V10: 'height-export-title-call-rune-v10-20260817'
+  V10: 'height-export-title-call-rune-v10-20260817',
+  V11: 'live-reacceptance-v11-20260817'
 });
-const isV10 = release === RELEASES.V10;
+const isV11 = release === RELEASES.V11;
+const isV10 = release === RELEASES.V10 || isV11;
 const isV9 = release === RELEASES.V9 || isV10;
 const isV8 = release === RELEASES.V8 || isV9;
 const isV7 = release === RELEASES.V7 || isV8;
@@ -436,10 +438,58 @@ if (isV10) {
   if (buildInfo.rollbackBeforeHeightExportTitleCallRuneV10 !== 'rollback/pre-height-export-title-call-v10-20260817') {
     fail('V10 rollback pointer is missing or incorrect.');
   }
-  if (buildInfo.callQuickRail !== 'nine-Chinese-actions') fail('V10 call quick rail marker is incorrect.');
+  if (!isV11 && buildInfo.callQuickRail !== 'nine-Chinese-actions') fail('V10 call quick rail marker is incorrect.');
   if (buildInfo.heightScaleDisplayedRange !== '50-250-percent') fail('V10 height scale marker is incorrect.');
   if (buildInfo.runeMaskMeaning !== 'expanded-selection-region-not-exact-pixel-clipping') fail('V10 mask semantics marker is incorrect.');
   if (buildInfo.runePaintedLineDecoder !== 'template-dynamic-programming-with-noise-skips') fail('V10 painted-line decoder marker is incorrect.');
+}
+
+
+if (isV11) {
+  for (const file of [
+    'public/myfile/live-fixes-v11.css', 'public/myfile/live-fixes-v11.js',
+    'public/myfile/height-export-v11.js', 'public/myfile/runes-v11.js',
+    'scripts/smoke-live-v11.mjs'
+  ]) requireFile(file);
+  const rootV11 = read('public/index.html');
+  const storyV11 = read('public/story.html');
+  const attendanceV11 = read('public/attendance.html');
+  const runesPageV11 = read('public/runes.html');
+  for (const page of [rootV11, storyV11, attendanceV11, runesPageV11]) {
+    if (!page.includes('./myfile/live-fixes-v11.css')) fail('V11 page missing shared live fixes CSS.');
+  }
+  for (const marker of ['./myfile/live-fixes-v11.js', './myfile/height-export-v11.js']) {
+    if (!rootV11.includes(marker)) fail(`V11 root page missing ${marker}`);
+  }
+  if (!runesPageV11.includes('./myfile/runes-v11.js')) fail('V11 runes page missing auto-routing wrapper.');
+  const liveJs = read('public/myfile/live-fixes-v11.js');
+  const liveCss = read('public/myfile/live-fixes-v11.css');
+  for (const marker of ['is-selected-v11', 'pagetop', 'character-catalog.json']) {
+    if (!liveJs.includes(marker)) fail(`V11 live-fixes marker missing: ${marker}`);
+  }
+  for (const marker of ['grid-template-columns: repeat(auto-fill, 68px)', '.suite-character-card.umeColor', 'position: sticky', 'label.girlbox.is-selected-v11']) {
+    if (!liveCss.includes(marker)) fail(`V11 CSS marker missing: ${marker}`);
+  }
+  const heightV11 = read('public/myfile/height-export-v11.js');
+  for (const marker of ['renderExportCanvas', 'exportLeftAxes', 'exportRightAxes', 'MAX_PIXELS']) {
+    if (!heightV11.includes(marker)) fail(`V11 height-export marker missing: ${marker}`);
+  }
+  if (heightV11.includes('html2canvas(')) fail('V11 direct export must not call html2canvas.');
+  const heightSourceV11 = read('public/myfile/site-correction-v2.js');
+  for (const marker of ['missingHeight', 'visibleCategories = categories.filter', 'height-selection-summary-v11']) {
+    if (!heightSourceV11.includes(marker)) fail(`V11 selected-height marker missing: ${marker}`);
+  }
+  const rulerV11 = read('public/myfile/site-correction-v3-height.js');
+  if (!rulerV11.includes('Math.min(rightAxis.offsetLeft, viewportRight)')) fail('V11 right-ruler clamp missing.');
+  const toolsV11 = read('public/myfile/tools-suite.js');
+  if (!toolsV11.includes('...(entry.classes || [])')) fail('V11 suite cards do not inherit call-page palette classes.');
+  const runeV11 = read('public/myfile/runes-v11.js');
+  for (const marker of ["aspect <= 1.25 ? 'chart' : 'character'", '横向装饰文字', 'runesRecognizeV10Final']) {
+    if (!runeV11.includes(marker)) fail(`V11 rune routing marker missing: ${marker}`);
+  }
+  if (buildInfo.rollbackBeforeLiveReacceptanceV11 !== 'release/height-export-title-call-rune-v10-20260817') fail('V11 rollback pointer missing or incorrect.');
+  if (buildInfo.heightExport !== 'direct-canvas-high-dpi-no-html2canvas') fail('V11 direct export marker incorrect.');
+  if (buildInfo.suiteNavigation !== 'sticky-all-four-tools-including-call-page') fail('V11 sticky navigation marker incorrect.');
 }
 
 if (failed) process.exit(1);
