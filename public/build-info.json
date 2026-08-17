@@ -92,7 +92,7 @@
   "callSelectedCardFeedback": "persistent-pink-outline",
   "suiteCharacterCardPalette": "same-as-call-page-girlbox-classes",
   "suiteCharacterCardDensity": "fixed-68px-desktop-five-columns-mobile",
-  "suiteNavigation": "document-sticky-body-level-call-nav",
+  "suiteNavigation": "fixed-call-nav-with-measured-spacer",
   "heightSelectedCategories": "non-empty-only-with-missing-height-summary",
   "heightRightRuler": "clamped-to-natural-grid-edge",
   "heightExportAxes": "one-left-one-right-aligned-to-grid",
