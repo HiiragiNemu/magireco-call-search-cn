@@ -37,6 +37,12 @@
     nav.style.setProperty('z-index', '1950', 'important');
   }
 
+  function setImportantIfDifferent(node, property, value) {
+    if (node.style.getPropertyValue(property) === value
+        && node.style.getPropertyPriority(property) === 'important') return;
+    node.style.setProperty(property, value, 'important');
+  }
+
   function fitOneHeightViewport(viewport) {
     const stage = viewport.querySelector('.height-chart-stage-v2');
     if (!stage) return;
@@ -52,10 +58,10 @@
     const current = parseFloat(viewport.style.height) || 0;
 
     viewport.dataset.v12AutoHeight = 'true';
-    viewport.style.setProperty('min-height', '0', 'important');
-    viewport.style.setProperty('max-height', 'none', 'important');
-    viewport.style.setProperty('resize', 'none', 'important');
-    viewport.style.setProperty('overflow-y', 'hidden', 'important');
+    setImportantIfDifferent(viewport, 'min-height', '0px');
+    setImportantIfDifferent(viewport, 'max-height', 'none');
+    setImportantIfDifferent(viewport, 'resize', 'none');
+    setImportantIfDifferent(viewport, 'overflow-y', 'hidden');
     if (Math.abs(current - wanted) > 1) {
       viewport.style.setProperty('height', `${wanted}px`, 'important');
     }
@@ -94,9 +100,7 @@
     if (!host) return;
     new MutationObserver(scheduleHeightFit).observe(host, {
       childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style', 'class']
+      subtree: true
     });
     if ('ResizeObserver' in global) {
       const resize = new ResizeObserver(scheduleHeightFit);
