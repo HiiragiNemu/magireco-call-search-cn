@@ -1,0 +1,58 @@
+/* V12: real-device regression repair for call navigation, quick rail and height viewport. */
+
+/* The nine-button call rail is the only right-side navigation on the call page. */
+body:not(.suite-page) #pagetop,
+body:not(.suite-page) #pagemdl,
+body:not(.suite-page) #pagebtm {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* V12 moves the call-page suite nav to be a direct body child. Keeping sticky on
+   the document scroll container avoids the wrapper/overflow sticky failure seen
+   on the real desktop page. */
+body:not(.suite-page) > .suite-nav {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1950 !important;
+  width: min(100%, 1280px);
+  margin-inline: auto;
+}
+
+/* The stage already carries the exact scaled natural height. Do not reserve a
+   72/76vh resizable viewport below it. This removes the large blank lower half
+   while preserving horizontal access to wide charts. */
+#heightChartContainer,
+.height-chart-shell,
+.height-chart-stage-v2 {
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.height-chart-viewport-v2 {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  resize: none !important;
+  contain: none !important;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
+}
+
+.height-chart-viewport-v2[data-v12-auto-height="true"] {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  body:not(.suite-page) > .suite-nav {
+    width: 100%;
+  }
+
+  .height-chart-viewport-v2 {
+    touch-action: pan-y pinch-zoom !important;
+  }
+}
