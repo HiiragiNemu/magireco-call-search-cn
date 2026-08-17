@@ -13,6 +13,7 @@ on:
       - scripts/smoke-story-ui-v7.mjs
       - scripts/smoke-collapsible-layout-v8.mjs
       - scripts/smoke-complete-v10.mjs
+      - scripts/smoke-live-v11.mjs
       - .github/workflows/verify-production.yml
   workflow_dispatch:
 
@@ -28,12 +29,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Wait for Cloudflare Pages to serve complete V10
+      - name: Wait for Cloudflare Pages to serve complete V11
         shell: bash
         run: |
           set -euo pipefail
           BASE='https://magireco-call-search-cn.pages.dev'
-          EXPECTED='height-export-title-call-rune-v10-20260817'
+          EXPECTED='live-reacceptance-v11-20260817'
           ACTUAL="$(python3 -c "import json; print(json.load(open('public/build-info.json',encoding='utf-8'))['release'])")"
           test "$ACTUAL" = "$EXPECTED"
 
@@ -45,7 +46,6 @@ jobs:
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
                 "$BASE/build-info.json?verify=$nonce" -o /tmp/live-build-info.json \
-              && grep -Fq "\"release\": \"$EXPECTED\"" /tmp/live-build-info.json \
               && curl -LfsS --connect-timeout 10 --max-time 60 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 "$BASE/data/story-v7/localization.json?verify=$nonce" -o /tmp/live-localization.json \
@@ -57,19 +57,23 @@ jobs:
           build=json.load(open('/tmp/live-build-info.json',encoding='utf-8'))
           localization=json.load(open('/tmp/live-localization.json',encoding='utf-8'))
           audit=json.load(open('/tmp/live-title-audit.json',encoding='utf-8'))
-          assert build['release']=='height-export-title-call-rune-v10-20260817'
-          assert build['rollbackBeforeHeightExportTitleCallRuneV10']=='rollback/pre-height-export-title-call-v10-20260817'
-          assert build['callQuickRail']=='nine-Chinese-actions'
-          assert build['heightScaleDisplayedRange']=='50-250-percent'
-          assert build['runeMaskMeaning']=='expanded-selection-region-not-exact-pixel-clipping'
-          assert build['runePaintedLineDecoder']=='template-dynamic-programming-with-noise-skips'
+          assert build['release']=='live-reacceptance-v11-20260817'
+          assert build['deploymentTarget']=='magireco-call-search-cn.pages.dev'
+          assert build['rollbackBeforeLiveReacceptanceV11']=='release/height-export-title-call-rune-v10-20260817'
+          assert build['callSelectedCardFeedback']=='persistent-pink-outline'
+          assert build['suiteCharacterCardPalette']=='same-as-call-page-girlbox-classes'
+          assert build['suiteNavigation']=='sticky-all-four-tools-including-call-page'
+          assert build['heightSelectedCategories']=='non-empty-only-with-missing-height-summary'
+          assert build['heightRightRuler']=='clamped-to-natural-grid-edge'
+          assert build['heightExportAxes']=='one-left-one-right-aligned-to-grid'
           summary=localization['titleAuditV10']
           assert summary['uniqueSourceTitles']==5710
           assert summary['localizedSourceTitles']==5710
           assert summary['categoryTitlePairs']==5826
           assert summary['selfTranslatedTitles']==len(audit['selfTranslations'])
-          assert sum(len(values) for values in localization['titleByCategoryV10'].values())==5826
-          assert localization['titleExact']['神浜スパアドベンチャー ビーチに渦巻く悪魔の怨嗟 3話'].startswith('神滨SPA大冒险')
+          assert localization['audit']['mappedCastNames']==localization['audit']['castNames']
+          assert localization['audit']['unresolvedCastNames']==[]
+          assert localization['categoryLabels']['ピュエラ・ヒストリア']=='魔法少女历史篇'
           PY
             then
               page_ok=1
@@ -81,19 +85,17 @@ jobs:
                     "$BASE/${route}?verify=$nonce" -o "$output" \
                   || ! grep -Fq "data-build=\"$EXPECTED\"" "$output" \
                   || ! grep -Fq './myfile/layout-v8.css' "$output" \
-                  || ! grep -Fq './myfile/layout-v8.js' "$output"; then
+                  || ! grep -Fq './myfile/live-fixes-v11.css' "$output"; then
                   page_ok=0
                   break
                 fi
               done
               if [ "$page_ok" -eq 1 ] \
-                && grep -Fq './myfile/site-correction-v10.css' /tmp/live-index.html \
-                && grep -Fq './myfile/call-ui-v10.js' /tmp/live-index.html \
-                && grep -Fq './myfile/height-export-v10.js' /tmp/live-index.html \
+                && grep -Fq './myfile/live-fixes-v11.js' /tmp/live-index.html \
+                && grep -Fq './myfile/height-export-v11.js' /tmp/live-index.html \
                 && grep -Fq './myfile/story-app-v7.js' /tmp/live-story.html \
-                && grep -Fq './myfile/runes-v10.css' /tmp/live-runes.html \
-                && grep -Fq './myfile/runes-v10.js' /tmp/live-runes.html \
-                && grep -Fq './myfile/runes-line-v10.js' /tmp/live-runes.html; then
+                && grep -Fq './myfile/runes-v11.js' /tmp/live-runes.html \
+                && grep -Fq './myfile/live-fixes-v11.js' /tmp/live-runes.html; then
                 ready=1
                 break
               fi
@@ -102,18 +104,21 @@ jobs:
           done
 
           if [ "$ready" -ne 1 ]; then
-            echo 'Cloudflare Pages did not expose complete V10 within the verification window.' >&2
+            echo 'Cloudflare Pages did not expose complete V11 within the verification window.' >&2
             cat /tmp/live-build-info.json 2>/dev/null || true
-            grep -E 'data-build|v10|runes-line' /tmp/live-index.html /tmp/live-runes.html 2>/dev/null | head -120 || true
+            grep -E 'data-build|v11|live-fixes|height-export' /tmp/live-index.html /tmp/live-story.html /tmp/live-attendance.html /tmp/live-runes.html 2>/dev/null | head -160 || true
             exit 1
           fi
 
           for asset in \
+            myfile/live-fixes-v11.css \
+            myfile/live-fixes-v11.js \
+            myfile/height-export-v11.js \
+            myfile/runes-v11.js \
             myfile/layout-v8.css \
             myfile/layout-v8.js \
             myfile/call-ui-v10.js \
             myfile/site-correction-v10.css \
-            myfile/height-export-v10.js \
             myfile/runes-mask-v9.css \
             myfile/runes-mask-v9.js \
             myfile/runes-v10.css \
@@ -139,7 +144,7 @@ jobs:
         shell: bash
         run: npm install --no-save --no-package-lock puppeteer-core@24.16.0
 
-      - name: Run all live regressions and complete V10 acceptance
+      - name: Run all live regressions and complete V11 acceptance
         shell: bash
         run: |
           set -euo pipefail
@@ -165,11 +170,15 @@ jobs:
           BASE_URL="$BASE" CHROME_PATH="$CHROME" node scripts/smoke-complete-v10.mjs | tee /tmp/live-complete-v10.txt
           grep -Fq '"state": "pass"' /tmp/live-complete-v10.txt
 
-      - name: Upload live complete V10 evidence
+          BASE_URL="$BASE" CHROME_PATH="$CHROME" REPO_ROOT="$GITHUB_WORKSPACE" \
+            node scripts/smoke-live-v11.mjs | tee /tmp/live-v11.txt
+          grep -Fq '"state": "pass"' /tmp/live-v11.txt
+
+      - name: Upload live complete V11 evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: live-height-export-title-call-rune-v10-${{ github.sha }}
+          name: live-reacceptance-v11-${{ github.sha }}
           path: |
             /tmp/live-build-info.json
             /tmp/live-localization.json
@@ -184,14 +193,10 @@ jobs:
             /tmp/live-story-v7.txt
             /tmp/live-layout-v8.txt
             /tmp/live-complete-v10.txt
+            /tmp/live-v11.txt
+            /tmp/live-v11-call-height.png
+            /tmp/live-v11-runes.png
             /tmp/complete-v10-ocr.png
             /tmp/complete-v10-call-height.png
-            /tmp/collapsible-v8-story-mobile.png
-            /tmp/collapsible-v8-attendance-desktop.png
-            /tmp/collapsible-v8-call-mobile.png
-            /tmp/neo11-v3-mobile.png
-            /tmp/neo11-v3-desktop.png
-            /tmp/height-guide-v4-mobile.png
-            /tmp/height-guide-v4-desktop.png
           if-no-files-found: warn
           retention-days: 30
