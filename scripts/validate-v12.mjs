@@ -12,7 +12,7 @@ assert(build.release === RELEASE, `release mismatch: ${build.release}`);
 assert(build.deploymentTarget === 'magireco-call-search-cn.pages.dev', 'wrong deployment target');
 assert(build.rollbackBeforeLiveRegressionRepairV12 === 'rollback/pre-live-fix-v12-20260818', 'V12 rollback pointer missing');
 assert(build.callQuickRail === 'nine-actions-replaces-legacy-three', 'V12 quick rail marker missing');
-assert(build.suiteNavigation === 'document-sticky-body-level-call-nav', 'V12 sticky nav marker missing');
+assert(build.suiteNavigation === 'fixed-call-nav-with-measured-spacer', 'V12 fixed call navigation marker missing');
 assert(build.heightViewport === 'scaled-stage-auto-height-no-reserved-vh', 'V12 height marker missing');
 assert(build.runeRecognitionTechnology === 'rollback-to-first-paint-mask-v9', 'V12 OCR rollback marker missing');
 assert(JSON.stringify(build.runeActiveRecognizerScripts) === JSON.stringify([
@@ -48,11 +48,11 @@ for (const marker of ['./myfile/call-ui-v10.js', './myfile/height-export-v11.js'
 }
 
 const css = read('public/myfile/live-fixes-v12.css');
-for (const marker of ['#pagetop', '#pagemdl', '#pagebtm', 'height: auto !important', 'resize: none !important', 'body:not(.suite-page) > .suite-nav']) {
+for (const marker of ['#pagetop', '#pagemdl', '#pagebtm', 'height: auto !important', 'resize: none !important', 'call-suite-nav-fixed-v12']) {
   assert(css.includes(marker), `V12 CSS marker missing: ${marker}`);
 }
 const js = read('public/myfile/live-fixes-v12.js');
-for (const marker of ['promoteCallSuiteNav', 'hideLegacyCallRail', 'fitHeightViewports', '__MAGIRECO_LIVE_V12__']) {
+for (const marker of ['promoteCallSuiteNav', 'hideLegacyCallRail', 'call-suite-nav-spacer-v12', 'fitHeightViewports', '__MAGIRECO_LIVE_V12__']) {
   assert(js.includes(marker), `V12 JS marker missing: ${marker}`);
 }
 
