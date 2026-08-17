@@ -4,16 +4,9 @@ on:
   push:
     branches:
       - main
-      - fix/neo11-mobile-v3-20260816
-      - fix/height-guide-v4-20260816
-      - fix/integrated-tools-v5-20260816
-      - fix/story-ocr-layout-v6-20260816
-      - fix/story-ui-translation-ocr-v7-20260816
-      - fix/collapsible-layout-v8-20260816
-      - fix/rune-mask-v9-20260816
-      - fix/height-export-title-call-v10-20260817
-      - fix/v11-live-reacceptance-20260817
+      - fix/live-fix-v12-20260818
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,180 +14,56 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate HTML, resources, data and program syntax
+      - name: Validate production tree
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/validate-site.js
+          RELEASE="$(python3 -c "import json; print(json.load(open('public/build-info.json',encoding='utf-8')).get('release',''))")"
+          echo "release=$RELEASE"
+          if [ "$RELEASE" = 'live-regression-repair-v12-20260818' ]; then
+            node scripts/validate-v12.mjs
+          else
+            node scripts/validate-site.js
+          fi
 
-          files=(
-            public/myfile/myCommon.js
-            public/myfile/mgirlNarrow.js
-            public/myfile/mgirlCallNarrow.js
-            public/myfile/mgirlAtSearch.js
-            public/myfile/gradeOverrides.js
-            public/myfile/grade-classification.js
-            public/myfile/site-overhaul.js
-          )
-          if [ -f public/myfile/site-correction-v2.js ]; then
-            files+=(public/myfile/site-correction-v2.js)
-          fi
-          if [ -f public/myfile/site-correction-v3-network.js ]; then
-            files+=(
-              public/myfile/site-correction-v3-network.js
-              public/myfile/site-correction-v3-height.js
-              scripts/smoke-neo11-v3.mjs
-            )
-          fi
-          if [ -f public/myfile/site-correction-v4.js ]; then
-            files+=(
-              public/myfile/site-correction-v4.js
-              scripts/smoke-height-guide-v4.mjs
-            )
-          fi
-          if [ -f public/myfile/tools-suite.js ]; then
-            files+=(
-              public/myfile/tools-suite.js
-              public/myfile/triple-tap-filter.js
-              public/myfile/story-app.js
-              public/myfile/attendance-app.js
-              public/myfile/runes-app.js
-              scripts/smoke-integrated-tools-v5.mjs
-            )
-          fi
-          if [ -f public/myfile/layout-v6.js ]; then
-            files+=(
-              public/myfile/layout-v6.js
-              scripts/smoke-story-layout-v6.mjs
-              scripts/smoke-ocr-v6.mjs
-            )
-          fi
-          if [ -f public/myfile/suite-v7.js ]; then
-            files+=(
-              public/myfile/suite-v7.js
-              public/myfile/story-app-v7.js
-              public/myfile/attendance-app-v7.js
-              public/myfile/runes-template-v7.js
-              scripts/smoke-story-ui-v7.mjs
-              scripts/smoke-rune-v7.mjs
-            )
-          fi
-          if [ -f public/myfile/layout-v8.js ]; then
-            files+=(
-              public/myfile/layout-v8.js
-              scripts/smoke-collapsible-layout-v8.mjs
-            )
-          fi
-          if [ -f public/myfile/runes-mask-v9.js ]; then
-            files+=(
-              public/myfile/runes-mask-v9.js
-              scripts/smoke-rune-mask-v9.mjs
-            )
-          fi
-          if [ -f public/myfile/runes-v10.js ]; then
-            files+=(
-              public/myfile/call-ui-v10.js
-              public/myfile/height-export-v10.js
-              public/myfile/runes-v10.js
-              public/myfile/runes-line-v10.js
-              scripts/smoke-complete-v10.mjs
-            )
-          fi
-          if [ -f public/myfile/runes-v11.js ]; then
-            files+=(
-              public/myfile/live-fixes-v11.js
-              public/myfile/height-export-v11.js
-              public/myfile/runes-v11.js
-              scripts/smoke-live-v11.mjs
-            )
-          fi
-          for file in "${files[@]}"; do
+          for file in \
+            public/myfile/myCommon.js \
+            public/myfile/mgirlNarrow.js \
+            public/myfile/mgirlCallNarrow.js \
+            public/myfile/mgirlAtSearch.js \
+            public/myfile/gradeOverrides.js \
+            public/myfile/grade-classification.js \
+            public/myfile/site-overhaul.js \
+            public/myfile/site-correction-v2.js \
+            public/myfile/site-correction-v3-network.js \
+            public/myfile/site-correction-v3-height.js \
+            public/myfile/site-correction-v4.js \
+            public/myfile/tools-suite.js \
+            public/myfile/triple-tap-filter.js \
+            public/myfile/story-app-v7.js \
+            public/myfile/attendance-app-v7.js \
+            public/myfile/runes-app.js \
+            public/myfile/runes-template-v7.js \
+            public/myfile/runes-mask-v9.js \
+            public/myfile/layout-v8.js \
+            public/myfile/call-ui-v10.js \
+            public/myfile/height-export-v11.js \
+            public/myfile/live-fixes-v11.js \
+            public/myfile/live-fixes-v12.js \
+            scripts/smoke-neo11-v3.mjs \
+            scripts/smoke-height-guide-v4.mjs \
+            scripts/smoke-integrated-tools-v5.mjs \
+            scripts/smoke-story-ui-v7.mjs \
+            scripts/smoke-collapsible-layout-v8.mjs \
+            scripts/smoke-complete-v10.mjs \
+            scripts/smoke-live-v12.mjs; do
+            test -s "$file"
             node --check "$file"
           done
 
-          python3 -m py_compile \
-            scripts/audit-translations-v5.py \
-            scripts/build-story-snapshot-v6.py \
-            scripts/integrate-story-ocr-layout-v6.py \
-            scripts/build-story-localization-v7.py \
-            scripts/integrate-story-ui-v7.py \
-            scripts/integrate-collapsible-layout-v8.py \
-            scripts/integrate-rune-mask-v9.py \
-            scripts/assemble-runes-v10.py \
-            scripts/build-story-titles-v10.py \
-            scripts/integrate-height-export-title-call-v10.py \
-            scripts/finalize-height-v10-source.py \
-            scripts/integrate-complete-v10.py \
-            scripts/extend-validator-v10.py
-
-          python3 <<'PY'
-          from pathlib import Path
-          import json
-          import re
-
-          html = Path('public/__acceptance.html').read_text(encoding='utf-8')
-          matches = re.findall(r'<script>([\s\S]*?)</script>', html, flags=re.IGNORECASE)
-          if len(matches) != 1:
-              raise SystemExit(f'Expected exactly one inline acceptance script, found {len(matches)}.')
-          Path('/tmp/acceptance-inline.js').write_text(matches[0], encoding='utf-8')
-
-          build = json.loads(Path('public/build-info.json').read_text(encoding='utf-8'))
-          release = build.get('release')
-          v11 = release == 'live-reacceptance-v11-20260817'
-          if release in {
-              'story-ui-translation-ocr-v7-20260816',
-              'collapsible-layout-v8-20260816',
-              'rune-mask-v9-20260816',
-              'height-export-title-call-rune-v10-20260817',
-              'live-reacceptance-v11-20260817',
-          }:
-              localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
-              audit = localization['audit']
-              assert audit['mappedCastNames'] == audit['castNames']
-              assert audit['unresolvedCastNames'] == []
-              assert localization['categoryLabels']['ピュエラ・ヒストリア'] == '魔法少女历史篇'
-              assert localization['categoryOrder'][:15] == [
-                  'メイン【第1部】','メイン【第2部】','アナザー【第1部】','アナザー【第2部】',
-                  '魔法少女','衣装','ミラーズ','イベント','バトルミュージアム','スペシャル',
-                  '第1部EDムービー','第2部EDムービー','アニメ【1st】','アニメ【2nd】','アニメ【Final】'
-              ]
-          if release in {'rune-mask-v9-20260816', 'height-export-title-call-rune-v10-20260817', 'live-reacceptance-v11-20260817'}:
-              assert build['runeMaskMode'] == 'paint-to-keep'
-              assert build['runePreviewLayout'] == 'side-by-side-desktop-stacked-mobile'
-              assert build['runeReferenceLayout'] == 'collapsed-size-capped'
-              assert Path('public/myfile/runes-mask-v9.js').stat().st_size > 10000
-              assert Path('public/myfile/runes-mask-v9.css').stat().st_size > 3000
-          if release in {'height-export-title-call-rune-v10-20260817', 'live-reacceptance-v11-20260817'}:
-              localization = json.loads(Path('public/data/story-v7/localization.json').read_text(encoding='utf-8'))
-              title_audit = json.loads(Path('public/data/story-v10/title-audit.json').read_text(encoding='utf-8'))
-              summary = localization['titleAuditV10']
-              assert summary['uniqueSourceTitles'] == 5710
-              assert summary['localizedSourceTitles'] == 5710
-              assert summary['categoryTitlePairs'] == 5826
-              assert summary['selfTranslatedTitles'] == len(title_audit['selfTranslations'])
-              assert sum(len(values) for values in localization['titleByCategoryV10'].values()) == 5826
-              assert Path('docs/story-title-self-translations-v10.md').exists()
-              assert build['heightScaleDisplayedRange'] == '50-250-percent'
-              assert build['runePaintedLineDecoder'] == 'template-dynamic-programming-with-noise-skips'
-              if v11:
-                  assert build['callQuickRail'] == 'nine-actions-with-arrow-top-bottom'
-              else:
-                  assert build['callQuickRail'] == 'nine-Chinese-actions'
-          if v11:
-              assert build['deploymentTarget'] == 'magireco-call-search-cn.pages.dev'
-              assert build['rollbackBeforeLiveReacceptanceV11'] == 'release/height-export-title-call-rune-v10-20260817'
-              assert build['callSelectedCardFeedback'] == 'persistent-pink-outline'
-              assert build['suiteCharacterCardPalette'] == 'same-as-call-page-girlbox-classes'
-              assert build['suiteNavigation'] == 'sticky-all-four-tools-including-call-page'
-              assert build['heightSelectedCategories'] == 'non-empty-only-with-missing-height-summary'
-              assert build['heightRightRuler'] == 'clamped-to-natural-grid-edge'
-              assert build['heightExportAxes'] == 'one-left-one-right-aligned-to-grid'
-              assert Path('public/myfile/live-fixes-v11.js').stat().st_size > 1000
-              assert Path('public/myfile/height-export-v11.js').stat().st_size > 5000
-              assert Path('public/myfile/runes-v11.js').stat().st_size > 20000
-          PY
-          node --check /tmp/acceptance-inline.js
+          python3 -m py_compile scripts/integrate-live-v12.py
+          git diff --check
