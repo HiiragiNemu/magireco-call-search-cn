@@ -27,14 +27,25 @@
     if (!isCallPage()) return;
     const nav = document.querySelector('.suite-nav');
     if (!nav) return;
-    if (nav.parentElement !== document.body) {
-      const wrapper = document.getElementById('wrapper');
-      document.body.insertBefore(nav, wrapper || document.body.firstChild);
+    const wrapper = document.getElementById('wrapper');
+    let spacer = document.querySelector('.call-suite-nav-spacer-v12');
+    if (!spacer) {
+      spacer = document.createElement('div');
+      spacer.className = 'call-suite-nav-spacer-v12';
+      spacer.setAttribute('aria-hidden', 'true');
     }
-    nav.dataset.v12DocumentSticky = 'true';
-    nav.style.setProperty('position', 'sticky', 'important');
+    if (nav.parentElement !== document.body) document.body.insertBefore(nav, wrapper || document.body.firstChild);
+    if (spacer.parentElement !== document.body) document.body.insertBefore(spacer, wrapper || nav.nextSibling);
+    else if (wrapper && spacer.nextSibling !== wrapper) document.body.insertBefore(spacer, wrapper);
+    nav.classList.add('call-suite-nav-fixed-v12');
+    nav.dataset.v12DocumentFixed = 'true';
+    nav.style.setProperty('position', 'fixed', 'important');
     nav.style.setProperty('top', '0', 'important');
+    nav.style.setProperty('left', '50%', 'important');
+    nav.style.setProperty('transform', 'translateX(-50%)', 'important');
     nav.style.setProperty('z-index', '1950', 'important');
+    const height = Math.max(1, Math.ceil(nav.getBoundingClientRect().height || nav.offsetHeight || 0));
+    spacer.style.height = `${height}px`;
   }
 
   function setImportantIfDifferent(node, property, value) {
@@ -46,32 +57,21 @@
   function fitOneHeightViewport(viewport) {
     const stage = viewport.querySelector('.height-chart-stage-v2');
     if (!stage) return;
-
-    // site-correction-v2 already writes the scaled natural dimensions onto the
-    // stage. Use that exact in-flow height instead of the historical 72/76vh box.
-    const stageHeight = Math.max(
-      1,
-      Math.ceil(stage.getBoundingClientRect().height || stage.offsetHeight || parseFloat(stage.style.height) || 0)
-    );
+    const stageHeight = Math.max(1, Math.ceil(stage.getBoundingClientRect().height || stage.offsetHeight || parseFloat(stage.style.height) || 0));
     const borderAndScrollbar = Math.max(2, viewport.offsetHeight - viewport.clientHeight);
     const wanted = Math.ceil(stageHeight + borderAndScrollbar);
     const current = parseFloat(viewport.style.height) || 0;
-
     viewport.dataset.v12AutoHeight = 'true';
     setImportantIfDifferent(viewport, 'min-height', '0px');
     setImportantIfDifferent(viewport, 'max-height', 'none');
     setImportantIfDifferent(viewport, 'resize', 'none');
     setImportantIfDifferent(viewport, 'overflow-y', 'hidden');
-    if (Math.abs(current - wanted) > 1) {
-      viewport.style.setProperty('height', `${wanted}px`, 'important');
-    }
+    if (Math.abs(current - wanted) > 1) viewport.style.setProperty('height', `${wanted}px`, 'important');
   }
 
   function fitHeightViewports() {
     heightFrame = 0;
-    for (const viewport of document.querySelectorAll('.height-chart-viewport-v2')) {
-      fitOneHeightViewport(viewport);
-    }
+    for (const viewport of document.querySelectorAll('.height-chart-viewport-v2')) fitOneHeightViewport(viewport);
   }
 
   function scheduleHeightFit() {
@@ -98,14 +98,8 @@
   function observeHeightChart() {
     const host = document.getElementById('heightChartContainer');
     if (!host) return;
-    new MutationObserver(scheduleHeightFit).observe(host, {
-      childList: true,
-      subtree: true
-    });
-    if ('ResizeObserver' in global) {
-      const resize = new ResizeObserver(scheduleHeightFit);
-      resize.observe(host);
-    }
+    new MutationObserver(scheduleHeightFit).observe(host, { childList: true, subtree: true });
+    if ('ResizeObserver' in global) new ResizeObserver(scheduleHeightFit).observe(host);
   }
 
   function enforceCallChrome() {
@@ -118,25 +112,20 @@
     wrapHeightRenderer();
     observeHeightChart();
     scheduleHeightFit();
-
     new MutationObserver(() => {
       enforceCallChrome();
       scheduleHeightFit();
     }).observe(document.body, { childList: true, subtree: true });
-
-    global.addEventListener('resize', scheduleHeightFit, { passive: true });
+    global.addEventListener('resize', () => {
+      enforceCallChrome();
+      scheduleHeightFit();
+    }, { passive: true });
     global.addEventListener('load', () => {
       enforceCallChrome();
       scheduleHeightFit();
     }, { once: true });
-
     document.documentElement.dataset.liveV12 = RELEASE;
-    global.__MAGIRECO_LIVE_V12__ = Object.freeze({
-      release: RELEASE,
-      promoteCallSuiteNav,
-      hideLegacyCallRail,
-      fitHeightViewports
-    });
+    global.__MAGIRECO_LIVE_V12__ = Object.freeze({ release: RELEASE, promoteCallSuiteNav, hideLegacyCallRail, fitHeightViewports });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
