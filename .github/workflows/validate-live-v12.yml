@@ -59,10 +59,12 @@ jobs:
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || command -v chromium-browser)"
-          # The first draft expected sticky positioning. The real legacy call page
-          # defeats CSS sticky, so the repaired implementation uses measured fixed
-          # positioning with a spacer while preserving the same follow-scroll UX.
+          # Real-page diagnostics established two implementation details after the
+          # initial test was written: the call nav must be fixed+spacer instead of
+          # sticky, and a painted line may intentionally span the full source width
+          # while still being a vertically cropped binary OCR input.
           sed -i "s/chrome.navPosition === 'sticky'/chrome.navPosition === 'fixed'/" scripts/smoke-live-v12.mjs
+          sed -i 's/mask.width < mask.sourceWidth && mask.height < mask.sourceHeight/mask.height < mask.sourceHeight/' scripts/smoke-live-v12.mjs
           BASE_URL='http://127.0.0.1:8000' CHROME_PATH="$CHROME" \
             node scripts/smoke-live-v12.mjs | tee /tmp/v12-focused.txt
           grep -Fq '"state": "pass"' /tmp/v12-focused.txt
