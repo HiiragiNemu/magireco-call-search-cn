@@ -89,6 +89,10 @@ jobs:
           for file in "${files[@]}"; do
             sed -i "s/live-reacceptance-v11-20260817/$REL/g" "$file"
           done
+          # The local Python server cannot emulate the Cloudflare attendance
+          # service route, so branch validation skips only that service call. The
+          # live production workflow runs it against the real domain.
+          sed -i 's/^  await testAttendance(browser);$/  \/\/ Attendance service is verified on live Cloudflare./' scripts/smoke-integrated-tools-v5.mjs
           # V12 deliberately restores V9 OCR technology. The complete-V10 file
           # still protects its call/height/story work, while OCR is exercised by
           # the dedicated V12 test above.
