@@ -2,6 +2,7 @@
   "release": "live-regression-repair-v12-20260818",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
+  "deploymentKick": "final-v12-real-device-repair-20260818",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
   "rollbackCore": "rollback/core-fixes-only-20260815",
   "rollbackBeforeHtmlNormalization": "rollback/pre-html-normalization-20260815",
@@ -17,18 +18,10 @@
   "rollbackBeforeNeo11V3": "rollback/pre-neo11-mobile-v3-20260816",
   "rollbackBeforeHeightGuideV4": "rollback/pre-height-guide-v4-20260816",
   "heightGuideDefaultMode": "visible-nearest-ruler",
-  "heightGuideOptionalModes": [
-    "all-left",
-    "all-right"
-  ],
+  "heightGuideOptionalModes": ["all-left", "all-right"],
   "resultJumpMode": "stable-post-render-scroll",
   "rollbackBeforeIntegratedToolsV5": "rollback/pre-integrated-tools-v5-20260816",
-  "integratedTools": [
-    "calls-height",
-    "story-search",
-    "attendance-ranking",
-    "witch-rune-ocr"
-  ],
+  "integratedTools": ["calls-height", "story-search", "attendance-ranking", "witch-rune-ocr"],
   "interactionFilterGesture": "triple-tap-or-triple-click",
   "updateMode": "manual-static-only",
   "ocrDataMode": "local-traineddata-browser-only",
@@ -61,10 +54,7 @@
   "rollbackBeforeRuneMaskV9": "rollback/pre-rune-mask-v9-20260816",
   "runeMaskMode": "paint-to-keep",
   "runeMaskPipeline": "masked-crop-binary-normalization",
-  "runeMaskEngines": [
-    "ordered-template",
-    "classic-tesseract-fallback"
-  ],
+  "runeMaskEngines": ["ordered-template", "classic-tesseract-fallback"],
   "runePreviewLayout": "side-by-side-desktop-stacked-mobile",
   "runeReferenceLayout": "collapsed-size-capped",
   "runeVisitorGuidance": "concise-mask-guidance",
@@ -74,11 +64,7 @@
   "callQuickRail": "nine-actions-replaces-legacy-three",
   "heightScaleBaseline": "display-100-equals-legacy-50",
   "heightScaleDisplayedRange": "50-250-percent",
-  "heightUnknownCategories": [
-    "无年龄信息",
-    "无学校信息",
-    "无从属组织信息"
-  ],
+  "heightUnknownCategories": ["无年龄信息", "无学校信息", "无从属组织信息"],
   "heightExport": "direct-canvas-high-dpi-no-html2canvas",
   "storyTitleLocalization": "complete-reader-wiki-structural-self-audited",
   "storyTitleAudit": "docs/story-title-self-translations-v10.md",
@@ -101,10 +87,6 @@
   "rollbackBeforeLiveRegressionRepairV12": "rollback/pre-live-fix-v12-20260818",
   "heightViewport": "scaled-stage-auto-height-no-reserved-vh",
   "runeRecognitionTechnology": "rollback-to-first-paint-mask-v9",
-  "runeActiveRecognizerScripts": [
-    "runes-app.js",
-    "runes-template-v7.js",
-    "runes-mask-v9.js"
-  ],
+  "runeActiveRecognizerScripts": ["runes-app.js", "runes-template-v7.js", "runes-mask-v9.js"],
   "realDeviceRegressionRepair": "height-nav-legacy-rail-rune-tech-rollback"
 }
