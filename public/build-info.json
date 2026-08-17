@@ -1,5 +1,5 @@
 {
-  "release": "live-reacceptance-v11-20260817",
+  "release": "live-regression-repair-v12-20260818",
   "productionEntry": "public/index.html",
   "deploymentTarget": "magireco-call-search-cn.pages.dev",
   "rollbackFull": "rollback/pre-mobile-overhaul-20260815",
@@ -71,7 +71,7 @@
   "rollbackBeforeHeightExportTitleCallV10": "rollback/pre-height-export-title-call-v10-20260817",
   "callRelationshipTableFold": true,
   "callHelpLayout": "desktop-right-column-independent-fold",
-  "callQuickRail": "nine-actions-with-arrow-top-bottom",
+  "callQuickRail": "nine-actions-replaces-legacy-three",
   "heightScaleBaseline": "display-100-equals-legacy-50",
   "heightScaleDisplayedRange": "50-250-percent",
   "heightUnknownCategories": [
@@ -84,18 +84,27 @@
   "storyTitleAudit": "docs/story-title-self-translations-v10.md",
   "rollbackBeforeHeightExportTitleCallRuneV10": "rollback/pre-height-export-title-call-v10-20260817",
   "runeOcrV10": "auto-grid-painted-dp-rule-network-classic-fallback",
-  "runeMaskMeaning": "expanded-selection-region-not-exact-pixel-clipping",
+  "runeMaskMeaning": "painted-selection-binary-crop",
   "runeAlphabetOrder": "top-to-bottom-left-to-right-A-Z",
   "runeComplexGuidance": true,
-  "runePaintedLineDecoder": "template-dynamic-programming-with-noise-skips",
+  "runePaintedLineDecoder": "v9-mask-to-v7-template-classic",
   "rollbackBeforeLiveReacceptanceV11": "release/height-export-title-call-rune-v10-20260817",
   "callSelectedCardFeedback": "persistent-pink-outline",
   "suiteCharacterCardPalette": "same-as-call-page-girlbox-classes",
   "suiteCharacterCardDensity": "fixed-68px-desktop-five-columns-mobile",
-  "suiteNavigation": "sticky-all-four-tools-including-call-page",
+  "suiteNavigation": "document-sticky-body-level-call-nav",
   "heightSelectedCategories": "non-empty-only-with-missing-height-summary",
   "heightRightRuler": "clamped-to-natural-grid-edge",
   "heightExportAxes": "one-left-one-right-aligned-to-grid",
-  "runeAutoRouting": "tall-or-square-alphabet-grid-wide-classic-character",
-  "runeDecorativeLineAuto": "classic-character-path-for-wide-images"
+  "runeAutoRouting": "generic-v7-v9-template-and-classic-multipass",
+  "runeDecorativeLineAuto": "no-alphabet-special-routing",
+  "rollbackBeforeLiveRegressionRepairV12": "rollback/pre-live-fix-v12-20260818",
+  "heightViewport": "scaled-stage-auto-height-no-reserved-vh",
+  "runeRecognitionTechnology": "rollback-to-first-paint-mask-v9",
+  "runeActiveRecognizerScripts": [
+    "runes-app.js",
+    "runes-template-v7.js",
+    "runes-mask-v9.js"
+  ],
+  "realDeviceRegressionRepair": "height-nav-legacy-rail-rune-tech-rollback"
 }
