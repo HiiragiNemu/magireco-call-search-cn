@@ -10,15 +10,28 @@ body:not(.suite-page) #pagebtm {
   pointer-events: none !important;
 }
 
-/* V12 moves the call-page suite nav to be a direct body child. Keeping sticky on
-   the document scroll container avoids the wrapper/overflow sticky failure seen
-   on the real desktop page. */
-body:not(.suite-page) > .suite-nav {
-  position: sticky !important;
+/* Sticky was being defeated by the legacy page's scroll/overflow structure on
+   the real call page. V12 therefore uses a measured fixed nav plus an in-flow
+   spacer, which gives the same follow-scroll behavior without relying on that
+   legacy ancestor chain. */
+body:not(.suite-page) > .suite-nav.call-suite-nav-fixed-v12 {
+  position: fixed !important;
   top: 0 !important;
+  left: 50% !important;
   z-index: 1950 !important;
-  width: min(100%, 1280px);
-  margin-inline: auto;
+  width: min(calc(100% - 8px), 1280px);
+  margin: 0 !important;
+  transform: translateX(-50%);
+}
+
+.call-suite-nav-spacer-v12 {
+  display: block;
+  width: 100%;
+  height: var(--call-suite-nav-height-v12, 0px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: none;
 }
 
 /* The stage already carries the exact scaled natural height. Do not reserve a
@@ -48,8 +61,8 @@ body:not(.suite-page) > .suite-nav {
 }
 
 @media (max-width: 640px) {
-  body:not(.suite-page) > .suite-nav {
-    width: 100%;
+  body:not(.suite-page) > .suite-nav.call-suite-nav-fixed-v12 {
+    width: calc(100% - 2px);
   }
 
   .height-chart-viewport-v2 {
