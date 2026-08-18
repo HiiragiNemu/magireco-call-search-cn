@@ -85,6 +85,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # The staged archive also contains workflow drafts.  Do not let the
+          # repository GITHUB_TOKEN touch workflow files; those are managed by
+          # the connected administrator separately.
+          rm -f \
+            .github/workflows/build-story-title-groups-v1.yml \
+            .github/workflows/verify-v16-delivery.yml
+          git restore -- .github/workflows || true
+
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
