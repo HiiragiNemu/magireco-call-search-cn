@@ -1,1 +1,0 @@
-Trigger V16 bootstrap through a GitHub merge event.
