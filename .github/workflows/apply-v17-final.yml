@@ -1,0 +1,137 @@
+name: Apply final V16 delivery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .automation/v17-patch/trigger.txt
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-final-v16-main
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download and verify final delivery archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -LfsS --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 300 \
+            'https://bashupload.com/9mu1m/v17-final-patch.tar.gz' \
+            -o /tmp/v17-final-patch.tar.gz
+          echo 'bc6ac1698d91084727a0becaf62a2579568be413b88d6416711101ca8e25c389  /tmp/v17-final-patch.tar.gz' | sha256sum -c -
+          tar -tzf /tmp/v17-final-patch.tar.gz > /tmp/v17-final-files.txt
+          grep -Fq './public/runes.html' /tmp/v17-final-files.txt
+          grep -Fq './public/data/story-title-groups-v1.json' /tmp/v17-final-files.txt
+          grep -Fq './public/downloads/story-title-groups.xlsx' /tmp/v17-final-files.txt
+          grep -Fq './tests/fixtures/runes/charlotte-complex-background.png' /tmp/v17-final-files.txt
+
+      - name: Apply final sources and validate deterministic data
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -xzf /tmp/v17-final-patch.tar.gz -C .
+          rm -rf .automation/v16-patch .automation/v17-patch
+          rm -f .github/workflows/apply-v16-patch.yml .github/workflows/apply-v17-final.yml
+
+          sha256sum \
+            public/data/story-title-groups-v1.json \
+            public/data/story-title-map.generated.json \
+            public/data/story-title-build-report-v1.json \
+            public/downloads/story-title-groups.csv \
+            public/downloads/story-title-overrides-template.json \
+            docs/story-title-groups-v1.md > /tmp/v16-before.sha256
+
+          python3 scripts/build-story-title-groups-v1.py
+
+          sha256sum \
+            public/data/story-title-groups-v1.json \
+            public/data/story-title-map.generated.json \
+            public/data/story-title-build-report-v1.json \
+            public/downloads/story-title-groups.csv \
+            public/downloads/story-title-overrides-template.json \
+            docs/story-title-groups-v1.md > /tmp/v16-after.sha256
+          diff -u /tmp/v16-before.sha256 /tmp/v16-after.sha256
+
+          python3 -m py_compile scripts/build-story-title-groups-v1.py
+          node --check public/myfile/runes-fix-v14.js
+          node --check public/myfile/runes-chart-v15.js
+          node --check public/myfile/runes-glyph-v16.js
+          node --check public/myfile/story-grouped-results-v15.js
+          node --check public/myfile/story-title-password-v1.js
+          node --check public/myfile/live-fixes-v12.js
+          node --check public/myfile/tools-suite.js
+          node --check public/myfile/layout-v8.js
+          node --check scripts/smoke-v16-delivery.mjs
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          groups = json.loads(Path('public/data/story-title-groups-v1.json').read_text(encoding='utf-8'))
+          report = json.loads(Path('public/data/story-title-build-report-v1.json').read_text(encoding='utf-8'))
+          summary = groups['summary']
+          assert report['state'] == 'pass'
+          assert summary['totalRows'] == 14466
+          assert summary['categoryCount'] == 19
+          assert summary['parentGroups'] == 1443
+          assert summary['childTitles'] == 5710
+          aquarium = next(g for g in groups['groups'] if g['category'] == 'イベント' and g['source_base'] == 'ウワサアクアリウムへようこそ')
+          assert aquarium['child_count'] == 21
+          assert any(c['source_title'].endswith('5話') for c in aquarium['children'])
+          assert Path('public/downloads/story-title-groups.xlsx').read_bytes().startswith(b'PK')
+          assert Path('public/downloads/story-title-groups.xlsx').stat().st_size > 100000
+          assert Path('public/downloads/story-title-groups.csv').read_bytes().startswith(b'\xef\xbb\xbf')
+          assert Path('tests/fixtures/runes/charlotte-complex-background.png').exists()
+          assert Path('tests/fixtures/runes/ornamental-black-background.jpg').exists()
+          assert Path('tests/fixtures/runes/madokarunes-alphabet-with-labels.jpg').exists()
+          html = Path('public/runes.html').read_text(encoding='utf-8')
+          assert 'rune-glyph-color-chart-v16-20260818' in html
+          assert 'runes-glyph-v16.js' in html and 'runes-chart-v15.js' in html and 'runes-fix-v14.js' in html
+          editor = Path('public/story-title-editor.html').read_text(encoding='utf-8')
+          assert 'story-title-password-v1.js' in editor
+          assert './data/story-title-groups-v1.json' in editor
+          index = Path('public/index.html').read_text(encoding='utf-8')
+          assert '母故事标题翻译清单（管理员）' in index
+          assert '魔女文翻译' in index
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Commit final V16 implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Deploy final V16 rune OCR and parent-story translation system'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload final delivery artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-v16-delivery-${{ github.run_id }}
+          path: |
+            /tmp/v17-final-files.txt
+            /tmp/v16-before.sha256
+            /tmp/v16-after.sha256
+            public/data/story-title-groups-v1.json
+            public/data/story-title-map.generated.json
+            public/data/story-title-build-report-v1.json
+            public/downloads/story-title-groups.csv
+            public/downloads/story-title-groups.xlsx
+            public/downloads/story-title-overrides-template.json
+            docs/story-title-groups-v1.md
+          if-no-files-found: warn
+          retention-days: 30
