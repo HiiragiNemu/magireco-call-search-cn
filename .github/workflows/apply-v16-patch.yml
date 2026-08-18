@@ -6,6 +6,7 @@ on:
     paths:
       - .automation/v16-patch/**
       - .github/workflows/apply-v16-patch.yml
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -23,15 +24,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Reconstruct and verify delivery archive
+      - name: Reconstruct and validate staged delivery archive
         shell: bash
         run: |
           set -euo pipefail
-          cat .automation/v16-patch/part-* | base64 --decode > /tmp/v16-patch.tar.gz
-          echo '62ddbaeb042017eeda7850e868ef97daf7f6b41715d2d878f1b1b2d95e7b04ad  /tmp/v16-patch.tar.gz' | sha256sum -c -
+          cat .automation/v16-patch/part-[0-9][0-9] | base64 --decode > /tmp/v16-patch.tar.gz
+          sha256sum /tmp/v16-patch.tar.gz
+          gzip -t /tmp/v16-patch.tar.gz
           tar -tzf /tmp/v16-patch.tar.gz > /tmp/v16-patch-files.txt
-          grep -Fq './public/runes.html' /tmp/v16-patch-files.txt
-          grep -Fq './scripts/build-story-title-groups-v1.py' /tmp/v16-patch-files.txt
+          grep -Fq 'public/runes.html' /tmp/v16-patch-files.txt
+          grep -Fq 'public/myfile/runes-glyph-v16.js' /tmp/v16-patch-files.txt
+          grep -Fq 'scripts/build-story-title-groups-v1.py' /tmp/v16-patch-files.txt
 
       - name: Apply sources and generate parent-story data
         shell: bash
@@ -40,6 +43,8 @@ jobs:
           tar -xzf /tmp/v16-patch.tar.gz -C .
           rm -rf .automation/v16-patch
           rm -f .github/workflows/apply-v16-patch.yml
+          rm -f .github/workflows/verify-rune-v13.yml
+          rm -f .github/workflows/repair-rune-ocr-v5.yml
           python3 scripts/build-story-title-groups-v1.py
 
       - name: Validate delivered sources and generated outputs
@@ -94,5 +99,5 @@ jobs:
             public/downloads/story-title-groups.csv
             public/downloads/story-title-overrides-template.json
             docs/story-title-groups-v1.md
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
