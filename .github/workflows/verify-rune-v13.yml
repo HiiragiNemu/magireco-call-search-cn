@@ -1,0 +1,73 @@
+name: Verify V13 rune OCR
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - public/runes.html
+      - public/myfile/runes-fix-v13.js
+      - scripts/smoke-rune-v13.mjs
+      - .github/workflows/verify-rune-v13.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for V13 on Cloudflare Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://magireco-call-search-cn.pages.dev'
+          ready=0
+          for n in $(seq 1 120); do
+            q="${GITHUB_RUN_ID}-${n}-$(date +%s%N)"
+            if curl -LfsS -H 'Cache-Control: no-cache, no-store' "$BASE/runes.html?v=$q" -o /tmp/runes-v13.html \
+              && curl -LfsS -H 'Cache-Control: no-cache, no-store' "$BASE/myfile/runes-fix-v13.js?v=$q" -o /tmp/runes-fix-v13.js \
+              && grep -Fq 'data-build="rune-engine-router-v13-20260818"' /tmp/runes-v13.html \
+              && grep -Fq './myfile/runes-fix-v13.js?v=20260818-2' /tmp/runes-v13.html \
+              && grep -Fq "const RELEASE = 'rune-engine-router-v13-20260818'" /tmp/runes-fix-v13.js; then
+              ready=1
+              break
+            fi
+            sleep 5
+          done
+          test "$ready" = 1
+
+      - name: Install browser driver
+        run: npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Run live V13 routing and preprocessing acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          BASE_URL='https://magireco-call-search-cn.pages.dev' CHROME_PATH="$CHROME" node scripts/smoke-rune-v13.mjs | tee /tmp/rune-v13.txt
+          grep -Fq '"state": "pass"' /tmp/rune-v13.txt
+
+      - name: Confirm fix scope is rune-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'runes-fix-v13.js' public/runes.html
+          test -f public/myfile/runes-fix-v13.js
+          test -f scripts/smoke-rune-v13.mjs
+
+      - name: Upload V13 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rune-v13-${{ github.sha }}
+          path: |
+            /tmp/runes-v13.html
+            /tmp/runes-fix-v13.js
+            /tmp/rune-v13.txt
+            /tmp/rune-v13-mobile.png
+          if-no-files-found: warn
+          retention-days: 30
