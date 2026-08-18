@@ -1,0 +1,422 @@
+{
+  "release": "story-title-build-report-v1-20260818",
+  "version": 1,
+  "generatedAt": "2026-08-18T19:38:31+00:00",
+  "state": "pass",
+  "checks": {
+    "manifestRows": 14466,
+    "manifestExpectedRows": 14466,
+    "uniqueCategoryTitlePairs": 5826,
+    "exactUniqueKeys": 5826,
+    "groupCount": 2409,
+    "childCount": 5826,
+    "collapsedGroupCount": 444,
+    "approvedGroupCount": 0,
+    "approvedChildCount": 0,
+    "missingLocalizationCount": 891,
+    "aquariumChildCount": 21,
+    "aquariumHasEpisode5": true
+  },
+  "missingLocalizationSample": [
+    {
+      "category": "ピュエラ・ヒストリア",
+      "source_title": "パクス・ロマーナの恋人編"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編10話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編11話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編12話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編13話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編14話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編7話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編8話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 アオ編9話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 プロローグ"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編10話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編11話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編7話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編8話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編9話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 全体編EPILOGUE"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編10話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編11話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編12話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編7話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編8話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 樹里編9話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜・樹里編7話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編10話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編11話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編12話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編13話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編14話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編15話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編7話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編8話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Crimson Resolve〜深紅の決断〜 結菜編9話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 10話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 11話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 12話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 13話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 14話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 15話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 16話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 17話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 18話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 19話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 20話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 7話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 8話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 9話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Homecoming ～佐倉杏子の３日間～ 序"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 10話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 11話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 12話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 13話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 14話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 15話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 16話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 17話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 18話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 19話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 1話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 2話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 3話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 4話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 5話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 6話"
+    },
+    {
+      "category": "イベント",
+      "source_title": "Mixed Summer！～幻のベストショット～ 7話"
+    }
+  ]
+}

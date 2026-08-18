@@ -1,7 +1,8 @@
-/* V12 real-device regression repair. */
+/* V12/V15 real-device regression repair and call-page menu integration. */
 (function (global) {
   'use strict';
   const RELEASE = 'live-regression-repair-v12-20260818';
+  const FEATURE_RELEASE = 'story-title-rune-v16-20260818';
   let heightFrame = 0;
 
   function isCallPage() {
@@ -21,6 +22,35 @@
       node.style.setProperty('opacity', '0', 'important');
       node.style.setProperty('pointer-events', 'none', 'important');
     }
+  }
+
+  function ensureCallMenuLinks() {
+    if (!isCallPage()) return;
+    const menu = document.querySelector('.header .menu');
+    if (!menu) return;
+    const runes = [...menu.querySelectorAll('a')].find((link) => /(?:^|\/)runes\.html(?:$|[?#])/i.test(link.getAttribute('href') || ''));
+    if (runes && runes.textContent.trim() !== '魔女文翻译') runes.textContent = '魔女文翻译';
+
+    let editor = [...menu.querySelectorAll('a')].find((link) => /story-title-editor\.html(?:$|[?#])/i.test(link.getAttribute('href') || ''));
+    if (!editor) {
+      const item = document.createElement('li');
+      editor = document.createElement('a');
+      editor.href = './story-title-editor.html';
+      editor.textContent = '母故事标题翻译清单（管理员）';
+      item.appendChild(editor);
+      const story = [...menu.querySelectorAll('a')].find((link) => /(?:^|\/)story\.html(?:$|[?#])/i.test(link.getAttribute('href') || ''));
+      const anchorItem = runes?.closest('li') || story?.closest('li');
+      if (anchorItem) anchorItem.insertAdjacentElement('afterend', item);
+      else menu.appendChild(item);
+    }
+
+    for (const link of document.querySelectorAll('.suite-nav a')) {
+      if (!/runes\.html(?:$|[?#])/i.test(link.getAttribute('href') || '')) continue;
+      const spans = link.querySelectorAll('span');
+      const target = spans[spans.length - 1] || link;
+      if (target.textContent !== '魔女文翻译') target.textContent = '魔女文翻译';
+    }
+    document.documentElement.dataset.callMenuV15 = 'true';
   }
 
   function promoteCallSuiteNav() {
@@ -105,6 +135,7 @@
   function enforceCallChrome() {
     promoteCallSuiteNav();
     hideLegacyCallRail();
+    ensureCallMenuLinks();
   }
 
   function init() {
@@ -125,7 +156,15 @@
       scheduleHeightFit();
     }, { once: true });
     document.documentElement.dataset.liveV12 = RELEASE;
-    global.__MAGIRECO_LIVE_V12__ = Object.freeze({ release: RELEASE, promoteCallSuiteNav, hideLegacyCallRail, fitHeightViewports });
+    document.documentElement.dataset.liveFeatureV16 = FEATURE_RELEASE;
+    global.__MAGIRECO_LIVE_V12__ = Object.freeze({
+      release: RELEASE,
+      featureRelease: FEATURE_RELEASE,
+      promoteCallSuiteNav,
+      hideLegacyCallRail,
+      ensureCallMenuLinks,
+      fitHeightViewports
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
