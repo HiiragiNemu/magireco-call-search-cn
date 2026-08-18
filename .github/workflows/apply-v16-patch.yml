@@ -99,7 +99,6 @@ jobs:
             public/myfile/runes-glyph-v16.js \
             public/myfile/story-grouped-results-v15.js \
             public/myfile/story-title-password-v1.js \
-            scripts/apply-v16-overlay.py \
             scripts/build-story-title-groups-v1.py \
             scripts/smoke-v16-delivery.mjs \
             public/data/story-title-groups-v1.json \
@@ -137,4 +136,4 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-# production retry: 2026-08-19
+# production retry: 2026-08-19-r2
