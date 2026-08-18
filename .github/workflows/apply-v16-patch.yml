@@ -24,12 +24,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Reconstruct and validate staged delivery archive
+      - name: Reconstruct and verify repaired V16 archive
         shell: bash
         run: |
           set -euo pipefail
-          cat .automation/v16-patch/part-[0-9][0-9] | base64 --decode > /tmp/v16-patch.tar.gz
-          sha256sum /tmp/v16-patch.tar.gz
+          cat \
+            .automation/v16-patch/part-00 \
+            .automation/v16-patch/part-01 \
+            .automation/v16-patch/part-02 \
+            .automation/v16-patch/part-03 \
+            .automation/v16-patch/fix-04-00 \
+            .automation/v16-patch/fix-04-01 \
+            .automation/v16-patch/fix-04-02 \
+            .automation/v16-patch/fix-04-03 \
+            .automation/v16-patch/part-05 \
+            | base64 --decode > /tmp/v16-patch.tar.gz
+          echo '62ddbaeb042017eeda7850e868ef97daf7f6b41715d2d878f1b1b2d95e7b04ad  /tmp/v16-patch.tar.gz' | sha256sum -c -
           gzip -t /tmp/v16-patch.tar.gz
           tar -tzf /tmp/v16-patch.tar.gz > /tmp/v16-patch-files.txt
           grep -Fq 'public/runes.html' /tmp/v16-patch-files.txt
