@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: apply-v16-delivery-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   apply:
@@ -85,9 +85,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # The staged archive also contains workflow drafts.  Do not let the
-          # repository GITHUB_TOKEN touch workflow files; those are managed by
-          # the connected administrator separately.
           rm -f \
             .github/workflows/build-story-title-groups-v1.yml \
             .github/workflows/verify-v16-delivery.yml
