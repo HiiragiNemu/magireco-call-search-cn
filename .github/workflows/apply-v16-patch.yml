@@ -110,8 +110,6 @@ jobs:
             public/downloads/story-title-overrides-template.json \
             docs/story-title-groups-v1.md
 
-          # Preserve the selected staged delivery files while discarding every
-          # unrelated tracked/untracked change extracted from the archive.
           git restore --worktree -- .
           git clean -fd
 
@@ -138,3 +136,5 @@ jobs:
             docs/story-title-groups-v1.md
           if-no-files-found: warn
           retention-days: 30
+
+# production retry: 2026-08-19
