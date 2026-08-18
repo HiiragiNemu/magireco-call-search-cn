@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -71,3 +71,37 @@ jobs:
             /tmp/rune-v13-mobile.png
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Record successful production acceptance
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .github/validation
+          python3 - <<'PY'
+          import json, os, datetime
+          data = {
+              'release': 'rune-engine-router-v13-20260818',
+              'state': 'pass',
+              'production': 'https://magireco-call-search-cn.pages.dev/runes.html',
+              'workflowRunId': os.environ['GITHUB_RUN_ID'],
+              'testedCommit': os.environ['GITHUB_SHA'],
+              'validatedAtUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'checks': [
+                  'default-auto-routes-to-classic-not-instant-template',
+                  'keep-original-routes-to-classic-without-blank-override',
+                  'template-isolated-to-explicit-chart-auto',
+                  'decorated-auto-focus-produces-nonblank-text-image',
+                  'mobile-browser-no-fatal-js-errors'
+              ]
+          }
+          with open('.github/validation/rune-v13-production.json', 'w', encoding='utf-8') as f:
+              json.dump(data, f, ensure_ascii=False, indent=2)
+              f.write('\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/validation/rune-v13-production.json
+          git commit -m 'Record V13 rune production acceptance'
+          git pull --rebase origin main
+          git push origin HEAD:main
