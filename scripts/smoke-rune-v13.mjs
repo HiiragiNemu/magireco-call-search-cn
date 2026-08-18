@@ -80,10 +80,10 @@ try {
     ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, c.width, c.height);
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 18, c.width, 9); ctx.fillRect(0, c.height - 27, c.width, 9);
-    for (const y of [80, 405]) for (const x of [80, 180, 280, 620, 720, 820]) {
-      ctx.beginPath(); ctx.arc(x, y, 34, 0, Math.PI * 2); ctx.fill();
+    for (const y of [95, 405]) for (const x of [22, 170, 310, 590, 730, 878]) {
+      ctx.beginPath(); ctx.arc(x, y, 58, 0, Math.PI * 2); ctx.fill();
     }
-    ctx.font = 'bold 72px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = 'bold 52px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('A B C D E F G', c.width / 2, c.height / 2);
     const blob = await new Promise(resolve => c.toBlob(resolve, 'image/png'));
     const file = new File([blob], 'decorated-runes.png', { type: 'image/png' });
