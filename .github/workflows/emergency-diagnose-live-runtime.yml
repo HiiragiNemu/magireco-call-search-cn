@@ -44,7 +44,7 @@ jobs:
       - name: Test event-loop responsiveness
         shell: bash
         run: |
-          cat > /tmp/diag.mjs <<'NODE'
+          cat > emergency-diag.mjs <<'NODE'
           import puppeteer from 'puppeteer-core';
           const chrome = process.env.CHROME_PATH;
           const base = 'https://magireco-call-search-cn.pages.dev';
@@ -89,7 +89,7 @@ jobs:
           await browser.close();
           NODE
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
-          CHROME_PATH="$CHROME" node /tmp/diag.mjs
+          CHROME_PATH="$CHROME" node ./emergency-diag.mjs
 
       - name: Upload diagnosis
         if: always()
