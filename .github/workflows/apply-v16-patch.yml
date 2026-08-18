@@ -1,0 +1,98 @@
+name: Apply V16 delivery patch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .automation/v16-patch/**
+      - .github/workflows/apply-v16-patch.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-v16-delivery-main
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct and verify delivery archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .automation/v16-patch/part-* | base64 --decode > /tmp/v16-patch.tar.gz
+          echo '62ddbaeb042017eeda7850e868ef97daf7f6b41715d2d878f1b1b2d95e7b04ad  /tmp/v16-patch.tar.gz' | sha256sum -c -
+          tar -tzf /tmp/v16-patch.tar.gz > /tmp/v16-patch-files.txt
+          grep -Fq './public/runes.html' /tmp/v16-patch-files.txt
+          grep -Fq './scripts/build-story-title-groups-v1.py' /tmp/v16-patch-files.txt
+
+      - name: Apply sources and generate parent-story data
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -xzf /tmp/v16-patch.tar.gz -C .
+          rm -rf .automation/v16-patch
+          rm -f .github/workflows/apply-v16-patch.yml
+          python3 scripts/build-story-title-groups-v1.py
+
+      - name: Validate delivered sources and generated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/build-story-title-groups-v1.py
+          node --check public/myfile/runes-fix-v14.js
+          node --check public/myfile/runes-chart-v15.js
+          node --check public/myfile/runes-glyph-v16.js
+          node --check public/myfile/story-grouped-results-v15.js
+          node --check public/myfile/story-title-password-v1.js
+          node --check public/myfile/live-fixes-v12.js
+          node --check scripts/smoke-v16-delivery.mjs
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          groups = json.loads(Path('public/data/story-title-groups-v1.json').read_text(encoding='utf-8'))
+          report = json.loads(Path('public/data/story-title-build-report-v1.json').read_text(encoding='utf-8'))
+          assert groups['version'] == 1
+          assert groups['summary']['totalRows'] == 14466
+          assert groups['summary']['groupCount'] > 100
+          assert report['state'] == 'pass'
+          aquarium = next(g for g in groups['groups'] if g['category'] == 'イベント' and g['source_base'] == 'ウワサアクアリウムへようこそ')
+          assert aquarium['child_count'] >= 10
+          assert any(c['source_title'].endswith('5話') for c in aquarium['children'])
+          assert Path('public/downloads/story-title-groups.json').read_bytes().startswith(b'{')
+          print(json.dumps(report['checks'], ensure_ascii=False, indent=2))
+          PY
+
+      - name: Commit complete V16 sources and generated data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Deploy V16 rune OCR and parent-story translation system'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload generated parent-story data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v16-parent-story-generated-${{ github.run_id }}
+          path: |
+            public/data/story-title-groups-v1.json
+            public/data/story-title-map.generated.json
+            public/data/story-title-build-report-v1.json
+            public/downloads/story-title-groups.json
+            public/downloads/story-title-groups.csv
+            public/downloads/story-title-overrides-template.json
+            docs/story-title-groups-v1.md
+          if-no-files-found: error
+          retention-days: 30
