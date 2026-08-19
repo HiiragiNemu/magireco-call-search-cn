@@ -130,6 +130,18 @@ if 'async function buildSeedFocusedCanvas' not in text:
         raise SystemExit('V20 seed-focused insertion anchor was not found')
     text = text.replace(anchor, function_code + anchor, 1)
 
+# Enabling the checkbox must not hijack a newly selected image when the user has
+# not painted anything on that image. This keeps chart/template recognition
+# available after Clear or after switching files.
+old_guard = '''    const mask = global.__RUNE_MASK_V9__;
+    if (!mask?.state?.enabled) return;'''
+new_guard = '''    const mask = global.__RUNE_MASK_V9__;
+    if (!mask?.state?.enabled || !mask.maskMetrics?.()) return;'''
+if new_guard not in text:
+    if old_guard not in text:
+        raise SystemExit('V20 empty-mask guard anchor was not found')
+    text = text.replace(old_guard, new_guard, 1)
+
 old_route = '''      const colorEngine = global.__RUNE_COLOR_V14__;
       const glyphEngine = nodes.model.value === 'mdk' ? global.__RUNE_GLYPH_V16__ : null;
       const focused = colorEngine?.buildColorFocusedInput
@@ -177,4 +189,4 @@ if new_api not in text:
     text = text.replace(old_api, new_api, 1)
 
 path.write_text(text, encoding='utf-8', newline='\n')
-print('Applied V20 deterministic color-mask isolation')
+print('Applied V20 deterministic color-mask isolation with empty-mask bypass')
