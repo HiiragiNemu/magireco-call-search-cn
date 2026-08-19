@@ -66,6 +66,7 @@ jobs:
           set -euo pipefail
           python .automation/v21-apply.py
           python .automation/v21-patch-bare.py
+          python .automation/v21-patch-mask.py
           python -m pip install --quiet openpyxl
           python scripts/build-story-title-groups-v1.py
           python .automation/v21-verify.py
