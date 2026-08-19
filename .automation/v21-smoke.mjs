@@ -126,8 +126,8 @@ try {
     notes: document.querySelectorAll('textarea,[data-title-field="note"],[data-title-field="status"]').length,
     pagination: document.querySelectorAll('[class*="pagination"],#titlePrevPage,#titleNextPage').length,
     cards: document.querySelectorAll('.story-title-card,.story-title-group-card').length,
-    inputs: document.querySelectorAll('#titleEditorList input[data-title-field="translation"]').length,
-    emptyValues: [...document.querySelectorAll('#titleEditorList input[data-title-field="translation"]')]
+    inputs: document.querySelectorAll('#titleEditorList input[data-title-display]').length,
+    emptyValues: [...document.querySelectorAll('#titleEditorList input[data-title-display]')]
       .filter(input => !input.value.trim()).length
   }));
   assert(editorState.build === 'story-title-dense-v21-20260819', 'editor build marker', editorState);
