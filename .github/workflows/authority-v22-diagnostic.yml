@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnose:
@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout target repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Checkout official CN patch source
         uses: actions/checkout@v4
@@ -87,14 +89,14 @@ jobs:
                   item["count"] = len(data)
                   if data and isinstance(data[0], dict):
                       item["sample_keys"] = sorted(data[0].keys())
-                      item["sample"] = data[:3]
+                      item["sample"] = data[:5]
                   else:
-                      item["sample"] = data[:3]
+                      item["sample"] = data[:5]
               elif isinstance(data, dict):
                   item["count"] = len(data)
-                  item["sample_keys"] = list(data.keys())[:30]
+                  item["sample_keys"] = list(data.keys())[:50]
                   sample = {}
-                  for key in list(data.keys())[:3]:
+                  for key in list(data.keys())[:5]:
                       sample[key] = data[key]
                   item["sample"] = sample
               return item
@@ -116,3 +118,22 @@ jobs:
           path: ${{ runner.temp }}/authority-v22-diagnostic
           retention-days: 3
           compression-level: 6
+
+      - name: Record diagnostic run id on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .automation
+          cat > .automation/authority-v22-diagnostic-run.json <<JSON
+          {
+            "run_id": ${GITHUB_RUN_ID},
+            "run_attempt": ${GITHUB_RUN_ATTEMPT},
+            "source_sha": "${GITHUB_SHA}",
+            "artifact_name": "authority-v22-diagnostic-${GITHUB_RUN_ID}"
+          }
+          JSON
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .automation/authority-v22-diagnostic-run.json
+          git commit -m "Record V22 source diagnostic run ${GITHUB_RUN_ID}"
+          git push origin HEAD:main
