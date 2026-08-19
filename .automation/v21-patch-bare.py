@@ -3,6 +3,7 @@ from pathlib import Path
 import base64
 import hashlib
 import io
+import shutil
 import subprocess
 import tarfile
 
@@ -51,13 +52,47 @@ with tarfile.open(fileobj=io.BytesIO(data), mode='r:gz') as archive:
         if target != root.resolve() and root.resolve() not in target.parents:
             raise SystemExit(f'Unsafe fixture member: {member.name}')
     archive.extractall(root)
-print(f'Extracted {len(members)} real OCR fixture members')
-for required in (
-    root / 'tests/fixtures/runes/charlotte.png',
-    root / 'tests/fixtures/runes/alphabet.jpg',
-):
+print(f'Extracted {len(members)} real OCR fixture members:')
+for member in members:
+    print(f'  {member.name}')
+
+fixture_dir = root / 'tests/fixtures/runes'
+fixture_dir.mkdir(parents=True, exist_ok=True)
+extracted_files = []
+for member in members:
+    candidate = root / member.name
+    if candidate.is_file() and candidate.suffix.lower() in {'.png', '.jpg', '.jpeg', '.webp'}:
+        extracted_files.append(candidate)
+
+charlotte = fixture_dir / 'charlotte.png'
+if not charlotte.exists():
+    candidates = [p for p in extracted_files if p.suffix.lower() == '.png'
+                  and ('qq20260818-164056' in p.name.lower() or 'charlotte' in p.name.lower())]
+    if not candidates:
+        pngs = [p for p in extracted_files if p.suffix.lower() == '.png']
+        if len(pngs) == 1:
+            candidates = pngs
+    if candidates:
+        shutil.copyfile(candidates[0], charlotte)
+
+alphabet = fixture_dir / 'alphabet.jpg'
+if not alphabet.exists():
+    candidates = [p for p in extracted_files if p.name.lower() == 'images.jpg'
+                  or 'alphabet' in p.name.lower()]
+    if candidates:
+        shutil.copyfile(candidates[0], alphabet)
+
+decorated = fixture_dir / 'decorated.jpg'
+if not decorated.exists():
+    candidates = [p for p in extracted_files if p.name.lower() in {'images (1).jpg', 'images_1.jpg'}
+                  or 'decorated' in p.name.lower()]
+    if candidates:
+        shutil.copyfile(candidates[0], decorated)
+
+for required in (charlotte, alphabet):
     if not required.exists():
-        raise SystemExit(f'Required OCR fixture is missing: {required}')
+        raise SystemExit(f'Required OCR fixture is missing after normalization: {required}')
+print(f'Normalized OCR fixtures: {charlotte}, {alphabet}, decorated={decorated.exists()}')
 
 # Keep the browser test usable both in Actions and in an ordinary checkout.
 path = root / '.automation/v21-smoke.mjs'
