@@ -1,8 +1,9 @@
-name: Deploy verified V21 production repair
+name: Deploy V21 production repair
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - .deploy-v21-trigger
   workflow_dispatch:
@@ -14,15 +15,13 @@ concurrency:
   group: magireco-call-search-v21-production
   cancel-in-progress: false
 
-env:
-  LIVE_BASE: https://magireco-call-search-cn.pages.dev
-
 jobs:
-  verify-deploy-verify:
+  deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout main
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -31,135 +30,158 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          previous='${{ github.event.before }}'
-          if [[ -z "$previous" || "$previous" =~ ^0+$ ]]; then previous="$(git rev-parse HEAD^)"; fi
-          echo "previous=$previous" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Restore reviewed V20 source and exact image fixtures
+      - name: Restore reviewed V20 source bundle
         shell: bash
         run: |
           set -euo pipefail
           git fetch origin safe-v20-production-fix
-          : >/tmp/v20-final.b64
+          : > /tmp/v20-final.b64
           for part in 00 01 02 03 04 05 06 07 08; do
-            git show "origin/safe-v20-production-fix:.automation/v20-final-bundle/part-${part}.b64" >>/tmp/v20-final.b64
+            git show "origin/safe-v20-production-fix:.automation/v20-final-bundle/part-${part}.b64" >> /tmp/v20-final.b64
           done
-          tr -d '\n\r ' </tmp/v20-final.b64 | base64 -d >/tmp/v20-final.tar.gz
-          tar -tzf /tmp/v20-final.tar.gz >/tmp/v20-final-members.txt
-          python - <<'PY_BUNDLE'
+          tr -d '\n\r ' < /tmp/v20-final.b64 | base64 -d > /tmp/v20-final.tar.gz
+          python - <<'PY'
           from pathlib import Path
           import tarfile
-          root=Path.cwd().resolve()
-          with tarfile.open('/tmp/v20-final.tar.gz','r:gz') as tf:
-              for member in tf.getmembers():
-                  target=(root/member.name).resolve()
+          root = Path.cwd().resolve()
+          with tarfile.open('/tmp/v20-final.tar.gz', 'r:gz') as archive:
+              members = archive.getmembers()
+              for member in members:
+                  target = (root / member.name).resolve()
                   if target != root and root not in target.parents:
-                      raise SystemExit(f'unsafe bundle member: {member.name}')
-              tf.extractall(root)
-          PY_BUNDLE
+                      raise SystemExit(f'Unsafe bundle member: {member.name}')
+              archive.extractall(root)
+          print(f'Extracted {len(members)} reviewed bundle members.')
+          PY
           test -f public/runes.html
           test -f public/story-title-editor.html
           test -f scripts/build-story-title-groups-v1.py
           test -f tests/fixtures/runes/charlotte.png
           test -f tests/fixtures/runes/alphabet.jpg
 
-      - name: Apply exact production fixes
+      - name: Apply V21 production patches
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          root=Path('.')
-          def read(p): return (root/p).read_text(encoding='utf-8')
-          def write(p,s): (root/p).write_text(s,encoding='utf-8',newline='\n')
-
-          p='public/myfile/callTable.js'; s=read(p)
-          old='ç§ãƒãƒ£ãƒ³ (Watashi-chan / æˆ‘é…±ã€ç‹¬ç‰¹çš„è‡ªç§°ã€‘)'; new='ç§ãƒãƒ£ãƒ³ (Watashi-chan / æˆ‘é…±ã€ç›´è¯‘ã€‘/äººå®¶)'
-          if old not in s and new not in s: raise SystemExit('Aika source string missing')
-          write(p,s.replace(old,new))
-
-          p='public/myfile/tools-suite.js'; write(p,read(p).replace("label: 'é­”å¥³æ–‡å­—è§£è¯»'","label: 'é­”å¥³æ–‡ç¿»è¯‘'"))
-          p='public/myfile/layout-v8.js'; s=read(p)
-          s=s.replace("['runes.html', 'é­”å¥³æ–‡å­—è§£è¯»']","['runes.html', 'é­”å¥³æ–‡ç¿»è¯‘']")
-          s=s.replace("const search = createCallPanel('æœç´¢æ¡ä»¶', 'call-search-panel-v8', true);","const search = createCallPanel('æœç´¢æ¡ä»¶', 'call-search-panel-v8', false);")
-          s=s.replace("selection.details.insertAdjacentElement('afterend', search.details);","selection.details.parentNode.insertBefore(search.details, selection.details);")
-          write(p,s)
-
-          p='public/myfile/call-ui-v10.js'; s=read(p)
-          replacement='''function enhanceSearchPanel() {
-            const panel = document.querySelector('.call-search-panel-v8');
-            const body = panel?.querySelector(':scope > .call-panel-body-v8');
-            if (!body || body.dataset.v21SearchLayout === 'true') return;
-            body.dataset.v21SearchLayout = 'true';
-            document.querySelectorAll('.call-help-toggle-v10, .call-help-details-v10').forEach((node) => node.remove());
-            removeOldHelpText();
-          }
-
-          function ensureResultStructure()'''
-          s,n=re.subn(r'function enhanceSearchPanel\(\) \{.*?\n  \}\n\n  function ensureResultStructure\(\)',replacement,s,count=1,flags=re.S)
-          if n!=1: raise SystemExit('call help replacement failed')
-          write(p,s)
-
-          for hp in (root/'public').glob('*.html'):
-              h=hp.read_text(encoding='utf-8').replace('é­”å¥³æ–‡å­—è§£è¯»å·¥å…·','é­”å¥³æ–‡ç¿»è¯‘').replace('é­”å¥³æ–‡å­—è§£è¯»','é­”å¥³æ–‡ç¿»è¯‘')
-              if hp.name=='index.html':
-                  h=h.replace('ç‚¹å‡»å³ä¸‹è§’çš„','ç‚¹å‡»å³ä¾§çš„â€œæœâ€').replace('æˆ–â€œæœç´¢â€æŒ‰é’®','æˆ–æ­¤å¤„çš„â€œç§°å‘¼æœç´¢â€æŒ‰é’®')
-                  h=re.sub(r'\s*<i class="fa fa-share-alt-square"[^>]*></i>\s*','\n',h,count=1)
-                  editor='<li><a href="./story-title-editor.html">æ¯æ•…äº‹æ ‡é¢˜ç¿»è¯‘æ¸…å•ï¼ˆç®¡ç†å‘˜ï¼‰</a></li>'
-                  if editor not in h:
-                      h=h.replace('<li><a href="./story.html">è§’è‰²æ•…äº‹æœç´¢</a></li>','<li><a href="./story.html">è§’è‰²æ•…äº‹æœç´¢</a></li>\n\t\t\t\t'+editor,1)
-                  h=re.sub(r'data-build="[^"]*"','data-build="safe-call-layout-v21-20260819"',h,count=1)
-              hp.write_text(h,encoding='utf-8',newline='\n')
-
-          p='public/myfile/hamburgerMenu.css'; s=read(p); marker='/* V21 hamburger overlay isolation */'
-          if marker not in s:
-              s += (
-                  '\n\n/* V21 hamburger overlay isolation */\n'
-                  '.header { z-index: 2147483000; isolation: isolate; }\n'
-                  '.header .menu { z-index: 2147483001; }\n'
-                  '.header .menu-icon { z-index: 2147483002; }\n'
-                  'body:has(.menu-btn:checked) #pagetop,\n'
-                  'body:has(.menu-btn:checked) #pagemdl,\n'
-                  'body:has(.menu-btn:checked) #pagebtm,\n'
-                  'body:has(.menu-btn:checked) .call-quick-rail-v10 {\n'
-                  '  opacity: 0 !important;\n'
-                  '  visibility: hidden !important;\n'
-                  '  pointer-events: none !important;\n'
-                  '}\n'
-              )
-          write(p,s)
-
-          for name,marker in {'runes.html':'rune-glyph-color-chart-v21-20260819','story-title-editor.html':'story-title-dense-v21-20260819','story.html':'story-parent-map-v21-20260819'}.items():
-              p=root/'public'/name; h=p.read_text(encoding='utf-8').replace('20260819-18','20260819-21')
-              h=re.sub(r'data-build="[^"]*"',f'data-build="{marker}"',h,count=1)
-              p.write_text(h,encoding='utf-8',newline='\n')
-          PY
-
-      - name: Build complete parent-story catalog
-        run: |
-          set -euo pipefail
+          python .automation/v21-apply.py
           python -m pip install --quiet openpyxl
           python scripts/build-story-title-groups-v1.py
+          python .automation/v21-verify.py
+          for file in \
+            public/myfile/call-ui-v10.js \
+            public/myfile/layout-v8.js \
+            public/myfile/live-fixes-v12.js \
+            public/myfile/runes-mask-glyph-v18.js \
+            public/myfile/story-grouped-results-v18.js \
+            public/myfile/story-title-editor-v2.js \
+            public/myfile/story-title-password-v2.js \
+            public/myfile/story-title-runtime-v2.js
+          do
+            node --check "$file"
+          done
 
-      - name: Static validation
+      - name: Install browser dependency
+        shell: bash
+        run: npm install --no-save --no-package-lock puppeteer-core@24.16.0
+
+      - name: Local browser regression
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile scripts/build-story-title-groups-v1.py
-          for f in public/myfile/call-ui-v10.js public/myfile/layout-v8.js public/myfile/live-fixes-v12.js public/myfile/runes-mask-glyph-v18.js public/myfile/story-grouped-results-v18.js public/myfile/story-title-editor-v2.js public/myfile/story-title-password-v2.js public/myfile/story-title-runtime-v2.js; do node --check "$f"; done
-          grep -Fq 'ç§ãƒãƒ£ãƒ³ (Watashi-chan / æˆ‘é…±ã€ç›´è¯‘ã€‘/äººå®¶)' public/myfile/callTable.js
-          ! grep -Fq 'æˆ‘é…±ã€ç‹¬ç‰¹çš„è‡ªç§°ã€‘' public/myfile/callTable.js
-          grep -Fq 'ç‚¹å‡»å³ä¾§çš„â€œæœâ€' public/index.html
-          grep -Fq 'æˆ–æ­¤å¤„çš„â€œç§°å‘¼æœç´¢â€æŒ‰é’®' public/index.html
-          grep -Fq 'æ¯æ•…äº‹æ ‡é¢˜ç¿»è¯æ¸…å•ï¼ˆç®¡ç†å‘˜ï¼‰' public/index.html
-          grep -Fq 'V21 hamburger overlay isolation' public/myfile/hamburgerMenu.css
-          ! grep -Fq "toggle.textContent = 'æ“ä½œè¯´æ˜'" public/myfile/call-ui-v10.js
+          python -m http.server 4173 --directory public > /tmp/v21-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/ > /dev/null; then break; fi
+            sleep 1
+          done
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          BASE_URL=http://127.0.0.1:4173 \
+          FIXTURE_DIR="$GITHUB_WORKSPACE/tests/fixtures/runes" \
+          CHROME_PATH="$chrome" \
+          node .automation/v21-smoke.mjs
 
-          python - <<'PY'
-           import json
-          from pathlib import Path
-          d=json.loads(Path('public/data/story-title-groups-v1.json').read_text(encoding='utf-8')); g=d['groups']
-          for source,count in {'Film.0':6,'ã‚µã‚¤ãƒ‰ã‚¹ãƒ‹ãƒ¼ãƒªãƒ¼ Film.0':30,'éã®å›½ã®ã‚·ãƒ§ã‚³ãƒ©ãƒ†ã‚£ã‚¨Part1':16,'å¾œåˆ» ã¿ã‹ã¥ãè˜ã®Summer Vacation 6å¤§ç›®':16,'ã‚¦ãƒ¯ã‚µã‚¢ã‚®§«
-›ƒã
-#OpœèÈÅô¹¥Ñ•µÌ ¤è(€€€€€€€€€€€€€É½İÌõmà™½Èà¥¸œ¥˜álÍ½ÕÉ•}‰…Í”tôõÍ½ÕÉ•tì…ÍÍ•ÉĞ±•¸¡É½İÌ¤ôôÄ°¡Í½ÕÉ”±±•¸¡É½İÌ¤¤ì…ÍÍ•ÉĞÉ½İÍlÁul¡¥±‘}½Õ¹Ğtôõ½Õ¹Ğ°¡Í½ÕÉ”±É½İÍlÁul¡¥±‘}½Õ¹Ğt¤(€€€€€€€€€…ÍÍ•ÉĞ±•¸¡œ¤ğÈĞÀä±±•¸¡œ¤(€€€€€€€€€Ad((€€€€€€´¹…µ”è%¹ÍÑ…±°‰É½İÍ•È‘•Á•¹‘•¹ä…¹İÉ¥Ñ”É•É•ÍÍ¥½¸Ñ•ÍĞ(€€€€€€€Í¡•±°è‰…Í (€€€€€€€ÉÕ¸èğ(€€€€€€€€€¹Á´¥¹ÍÑ…±°€´µ¹¼µÍ…Ù”€´µ¹¼µÁ…­…”µ±½¬ÁÕÁÁ•Ñ••Èµ½É• ÈĞ¸ÄØ¸À(€€€€€€€€€…Ğ€ø½ÑµÀ½ØÈÄµÍµ½­”¹µ©Ì€ğğ9=œ(€€€€€€€€€¥µÁ½ÉĞÁ…Ñ ™É½´€¹½‘”éÁ…Ñ œì¥µÁ½ÉĞÁÕÁÁ•Ñ••È™É½´€ÁÕÁÁ•Ñ••Èµ½É”œì(€€€€€€€€€½¹ÍĞ‰…Í”õÁÉ½•ÍÌ¹•¹Ø¹	M}UI0°™¥áÑÕÉ•ÌõÁÉ½•ÍÌ¹•¹Ø¹%aQUI}%H°¡É½µ”õÁÉ½•ÍÌ¹•¹Ø¹!I=5}AQ ì(€€€€€€€€€½¹ÍĞ‰É½İÍ•Èõ…İ…¥ĞÁÕÁÁ•Ñ••È¹±…Õ¹ ¡í•á•ÕÑ…‰±•A…Ñ é¡É½µ”±¡•…‘±•ÍÌéÑÉÕ”±…ÉÌélœ´µ¹¼µÍ…¹‘‰½àœ°œ´µ‘¥Í…‰±”µ‘•ØµÍ¡´µÕÍ…”œ°œ´µ‘¥Í…‰±”µÁÔuô¤ì(€€€€€€€€€½¹ÍĞ…ÍÍ•ÉĞô¡Ø±´±¤ôùí¥˜ …Ø¥Ñ¡É½Ü¹•ÜÉÉ½È¡€‘íµôè€‘í)M=8¹ÍÑÉ¥¹¥™ä¡¥õ€¤í½¹Í½±”¹±½œ AMLœ±´¥ôì(€€€€€€€€€½¹ÍĞ½Á•¸õ…Íå¹Œ¡É½ÕÑ”¤ôùí½¹ÍĞÀõ…İ…¥Ğ‰É½İÍ•È¹¹•İA…” ¤í…İ…¥ĞÀ¹Í•ÑY¥•İÁ½ÉĞ¡íİ¥‘Ñ èÄØÀÀ±¡•¥¡ĞèÄÀÀÁô¤í…İ…¥ĞÀ¹Í•Ñ…¡•¹…‰±•¡™…±Í”¤í½¹ÍĞ•ÉÉ½ÉÌõmtíÀ¹½¸ Á…••ÉÉ½Èœ±”ôù•ÉÉ½ÉÌ¹ÁÕÍ ¡”¹µ•ÍÍ…”¤¤í…İ…¥ĞÀ¹½Ñ¼¡€‘í‰…Í•ô‘íÉ½ÕÑ•ôıØÈÄô‘í…Ñ”¹¹½Ü ¥õ€±íİ…¥ÑU¹Ñ¥°è‘½µ½¹Ñ•¹Ñ±½…‘•œ±Ñ¥µ•½ÕĞèØÀÀÀÁô¤íÉ•ÑÕÉ¹íÀ±•ÉÉ½ÉÍõôì(€€€€€€€€€½¹ÍĞÕÁ±½…õ…Íå¹Œ¡À±™¥±”±ÁÉ”±±…å½ÕĞ±•áÁ•Ñ•¤ôùí½¹ÍĞ¥¹ÁÕĞõ…İ…¥ĞÀ¸ œÉÕ¹•Í¥±”œ¤í…İ…¥Ğ¥¹ÁÕĞ¹ÕÁ±½…‘¥±”¡Á…Ñ ¹©½¥¸¡™¥áÑÕÉ•Ì±™¥±”¤¤í…İ…¥ĞÀ¹Í•±•Ğ œÉÕ¹•ÍAÉ•ÁÉ½•ÍÌœ±ÁÉ”¤í…İ…¥ĞÀ¹Í•±•Ğ œÉÕ¹•Í1…å½ÕĞœ±±…å½ÕĞ¤í…İ…¥ĞÀ¹±¥¬ œÉÕ¹•ÍI•½¹¥é”œ¤í…İ…¥ĞÀ¹İ…¥Ñ½ÉÕ¹Ñ¥½¸¡”ôù‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ÉÕ¹•Í=ÕÑÁÕĞœ¤ü¹Ù…±Õ”ü¹ÑÉ¥´ ¤ôôõ•ññ‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ÉÕ¹•ÍMÑ…ÑÕÌœ¤ü¹‘…Ñ…Í•Ğ¹­¥¹ôôô•ÉÉ½Èœ±íÑ¥µ•½ÕĞèÄÈÀÀÀÁô±•áÁ•Ñ•¤í½¹ÍĞÈõ…İ…¥ĞÀ¹•Ù…±Õ…Ñ”  ¤ôø¡í½ÕÑÁÕĞé‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ÉÕ¹•Í=ÕÑÁÕĞœ¤ü¹Ù…±Õ”ü¹ÑÉ¥´ ¥ñğœœ±ÍÑ…ÑÕÌé‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ÉÕ¹•ÍMÑ…ÑÕÌœ¤ü¹Ñ•áÑ½¹Ñ•¹Ññğœœ±‘¥…œé‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% ÉÕ¹•Í¥…¹½ÍÑ¥Ìœ¤ü¹Ñ•áÑ½¹Ñ•¹Ññğô¤¤í…ÍÍ•ÉĞ¡È¹½ÕÑÁÕĞôôõ•áÁ•Ñ•±ÉÕ¹”€‘í™¥±•õ€±È¤í…İ…¥ĞÀ¹±¥¬ œÉÕ¹•Í±•…Èœ¤íôì(€€€€€€€€€ÑÉäì(€€€€€€€€€€€±•ĞíÀ±•ÉÉ½ÉÍôõ…İ…¥Ğ½Á•¸ œ¼œ¤ì…İ…¥ĞÀ¹İ…¥Ñ½ÉÕ¹Ñ¥½¸  ¤ôù‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½É±° ¥¹ÁÕĞ¹5…¥…±¡¬œ¤¹±•¹Ñ øÄàÀ±íÑ¥µ•½ÕĞèØÀÀÀÁô¤ì(€€€€€€€€€€€½¹ÍĞ…±°õ…İ…¥ĞÀ¹•Ù…±Õ…Ñ”¡…Íå¹Œ ¤ôùí½¹ÍĞÌõ‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½È œ¹…±°µÍ•…É µÁ…¹•°µØàœ¤±Œõ‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½È œ¹…±°µÍ•±•Ñ¥½¸µÁ…¹•°µØàœ¤í½¹ÍĞ¥½¸õ‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½È ±…‰•±m™½Èô‰µ•¹Ôµ‰Ñ¸‰tœ¤±‰½àõ‘½Õµ•¹Ğ¹•Ñ±•µ•¹Ñ	å% µ•¹Ôµ‰Ñ¸œ¤í¥½¸¹±¥¬ ¤í…İ…¥Ğ¹•ÜAÉ½µ¥Í”¡ÈôùÍ•ÑQ¥µ•½ÕĞ¡È°ĞÔÀ¤¤í½¹ÍĞ™¥á•õl¸¸¹‘½Õµ•¹Ğ¹ÅÕ•ÉåM•±•Ñ½É±° œÁ…•Ñ½À°Á…•µ‘°°Á…•‰Ñ´°¹…±°µÅÕ¥¬µÉ…¥°µØÄÀœ¥t¹µ…À¡¸ôùí½¹ÍĞàõ•Ñ½µÁÕÑ•‘MÑå±”¡¸¤íÉ•ÑÕÉ¹mà¹‘¥ÍÁ±…ä±à¹Ù¥Í¥‰¥±¥Ñä±à¹½Á…¥Ñä±à¹Á½¥¹Ñ•ÉÙ•¹ÑÍuô¤í½¹ÍĞ½Á•¹•õ‰½à¹¡•­•í¥½¸¹±¥¬ ¤í…İ…¥Ğ¹•ÜAÉ½µ¥Í”¡ÈôùÍ•ÑQ¥µ•½ÕĞ¡È°ĞÔÀ¤¤íÉ•ÑÕÉ¹íÍ•…É¡=Á•¸éÌü¹½Á•¸±Í•…É¡	•™½É”é	½½±•…¸¡Ì˜™Œ˜˜¡Ì¹½µÁ…É•½Õµ•¹ÑA½Í¥Ñ¥½¸¡Œ¤™9½‘”¹=U59Q}A=M%Q%=9}=11=]%9¤¤
+      - name: Commit verified release to main
+        id: push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No product changes to commit."
+          else
+            git commit -m "Deploy verified V21 production fixes"
+            git push origin HEAD:main
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Cloudflare Pages production
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          for attempt in $(seq 1 90); do
+            token="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            index="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/?v21=$token" || true)"
+            runes="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/runes.html?v21=$token" || true)"
+            editor="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/story-title-editor.html?v21=$token" || true)"
+            story="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/story.html?v21=$token" || true)"
+            json_head="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/downloads/story-title-groups.json?v21=$token" 2>/dev/null | head -c 1 || true)"
+            if grep -Fq 'safe-call-layout-v21-20260819' <<< "$index" \
+              && grep -Fq 'rune-glyph-color-chart-v21-20260819' <<< "$runes" \
+              && grep -Fq 'story-title-dense-v21-20260819' <<< "$editor" \
+              && grep -Fq 'story-parent-map-v21-20260819' <<< "$story" \
+              && [[ "$json_head" == '{' ]]; then
+              echo "Cloudflare Pages serves the V21 production build."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Timed out waiting for the V21 production build.' >&2
+          exit 1
+
+      - name: Production browser regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          BASE_URL=https://magireco-call-search-cn.pages.dev \
+          FIXTURE_DIR="$GITHUB_WORKSPACE/tests/fixtures/runes" \
+          CHROME_PATH="$chrome" \
+          node .automation/v21-smoke.mjs
+
+      - name: Write production proof
+        if: success()
+        shell: bash
+        run: |
+          mkdir -p /tmp/v21-proof
+          cat > /tmp/v21-proof/result.json <<JSON
+          {
+            "state": "pass",
+            "release_sha": "${{ steps.push.outputs.sha }}",
+            "production": "https://magireco-call-search-cn.pages.dev",
+            "run_id": "${GITHUB_RUN_ID}"
+          }
+          JSON
+
+      - name: Upload production proof
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v21-production-proof-${{ github.run_id }}
+          path: /tmp/v21-proof/result.json
+          retention-days: 14
+
+      - name: Roll back failed production deployment
+        if: failure() && steps.push.outputs.pushed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          base_sha='${{ steps.base.outputs.sha }}'
+          git fetch origin main
+          git push --force-with-lease=refs/heads/main:$(git rev-parse origin/main) origin "$base_sha":refs/heads/main
