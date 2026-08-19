@@ -4,20 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="在浏览器内识别魔法少女小圆与魔法纪录中的魔女文字。">
-  <title>魔女文字解读</title>
-  <link rel="stylesheet" href="./myfile/tools-suite.css">
+  <title>魔女文翻译</title>
+  <link rel="stylesheet" href="./myfile/tools-suite.css?v=20260819-19">
   <link rel="stylesheet" href="./myfile/layout-v6.css">
   <link rel="stylesheet" href="./myfile/suite-v7.css">
-  <link rel="stylesheet" href="./myfile/layout-v8.css">
+  <link rel="stylesheet" href="./myfile/layout-v8.css?v=20260819-19">
   <link rel="stylesheet" href="./myfile/runes-mask-v9.css">
   <link rel="stylesheet" href="./myfile/runes-v10.css">
   <link rel="stylesheet" href="./myfile/live-fixes-v11.css">
   <link rel="stylesheet" href="./myfile/live-fixes-v12.css">
+  <link rel="stylesheet" href="./myfile/runes-v18.css?v=20260819-19">
 </head>
-<body class="suite-page" data-build="rune-engine-router-v13-20260818" data-suite-tool="runes">
+<body data-build="rune-glyph-color-chart-v21-20260819" class="suite-page" data-build="rune-safe-v19-20260819" data-rune-release="rune-glyph-color-chart-v19-20260819" data-suite-tool="runes">
   <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
   <main class="suite-shell" data-suite-nav-anchor>
-    <header class="suite-hero"><h1>魔女文字解读</h1></header>
+    <header class="suite-hero"><h1>魔女文翻译</h1></header>
 
     <section class="suite-panel runes-layout" aria-labelledby="runes-input-title">
       <div>
@@ -25,7 +26,7 @@
         <div id="runesDrop" class="runes-drop">
           <div>
             <p><strong>点击选择图片，或把图片拖到这里</strong></p>
-            <p>支持黑底白字、白底黑字、上下边框、背景纹理和多行字母表。复杂图片可选择“自动去边框”或指定布局。</p>
+            <p>支持黑底白字、白底黑字、上下边框、复杂彩色场景和带普通拉丁标注的标准字母表。</p>
             <input id="runesFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" class="suite-input">
           </div>
         </div>
@@ -42,6 +43,7 @@
             <select id="runesPreprocess" class="suite-select">
               <option value="auto">智能多方案（推荐）</option>
               <option value="border">强制自动去边框／去背景</option>
+              <option value="decorated">复杂背景（彩色／黑底白字自动取文字行）</option>
               <option value="contrast">灰度高对比</option>
               <option value="invert">反色高对比</option>
               <option value="original">保持原图</option>
@@ -53,7 +55,7 @@
               <option value="auto">自动判断</option>
               <option value="line">单行文字</option>
               <option value="block">多行／段落</option>
-              <option value="chart">字母表／规则网格（高精度逐字）</option>
+              <option value="chart">字母表／规则网格（忽略普通拉丁标注）</option>
               <option value="character">单个字符</option>
             </select>
           </label>
@@ -71,7 +73,7 @@
         <img id="runesPreview" class="runes-preview" alt="待识别图片预览" hidden>
         <div class="runes-processed-wrap-v6">
           <h3>处理后图像</h3>
-          <canvas id="runesCanvas" class="runes-preview" aria-label="自动去边框和二值化后的识别图像" hidden></canvas>
+          <canvas id="runesCanvas" class="runes-preview" aria-label="文字分离和二值化后的识别图像" hidden></canvas>
         </div>
       </div>
     </section>
@@ -83,23 +85,28 @@
         <button id="runesCopy" type="button" class="suite-button secondary">复制结果</button>
       </div>
       <pre id="runesDiagnostics" class="runes-diagnostics-v6" aria-label="OCR 候选方案诊断"></pre>
-      <p class="suite-notice">V6 会比较原图、去边框二值图、备用极性、整行与逐字识别结果，并按置信度、字符数量和重复噪声选择最佳候选。透视严重时仍建议先校正画面。</p>
+      <p class="suite-notice">复杂背景先分离文字行，再用登记字形模板逐字分类；标准字母表模式会忽略每个魔女文字下方的普通拉丁字母。置信度不足时才回退本地 Madoka OCR 模型。</p>
     </section>
 
     <section class="suite-panel" aria-labelledby="runes-reference-title">
       <h2 id="runes-reference-title">已登记魔女文字对照表</h2>
       <img class="runes-reference" src="./mdkOCR/madokarunes.jpg" alt="MadokaRunes 魔女文字与拉丁字母对照表">
-      <p class="suite-notice">本地模型：<a href="./mdkOCR/mdk.traineddata">MadokaRunes</a>、<a href="./mdkOCR/mdm.traineddata">MadokaMusical</a>。识别引擎由 Tesseract.js 在浏览器中运行。</p>
+      <p class="suite-notice">本地模型：<a href="./mdkOCR/mdk.traineddata">MadokaRunes</a>、<a href="./mdkOCR/mdm.traineddata">MadokaMusical</a>。</p>
     </section>
   </main>
-  <script src="./myfile/tools-suite.js"></script>
+
+  <script src="./myfile/tools-suite.js?v=20260819-19"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" crossorigin="anonymous"></script>
   <script src="./myfile/runes-app.js"></script>
   <script src="./myfile/runes-template-v7.js"></script>
-  <script src="./myfile/layout-v8.js"></script>
+  <script src="./myfile/layout-v8.js?v=20260819-19"></script>
   <script src="./myfile/runes-mask-v9.js"></script>
   <script src="./myfile/live-fixes-v11.js"></script>
-  <script src="./myfile/live-fixes-v12.js"></script>
-  <script src="./myfile/runes-fix-v13.js?v=20260818-2"></script>
+  <script src="./myfile/live-fixes-v12.js?v=20260819-19"></script>
+  <script src="./myfile/runes-glyph-v16.js?v=20260819-19"></script>
+  <script src="./myfile/runes-fix-v14.js?v=20260819-19"></script>
+  <script src="./myfile/runes-mask-glyph-v18.js?v=20260819-19"></script>
+  <script src="./myfile/runes-fix-v13.js?v=20260819-19"></script>
+  <script src="./myfile/runes-chart-v15.js?v=20260819-19"></script>
 </body>
 </html>

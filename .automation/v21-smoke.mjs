@@ -2,9 +2,9 @@ import path from 'node:path';
 import puppeteer from 'puppeteer-core';
 
 const base = process.env.BASE_URL;
-const fixtures = process.env.FIXTURE_DIR;
+const fixtures = process.env.FIXTURE_DIR || path.resolve('tests/fixtures/runes');
 const chrome = process.env.CHROME_PATH;
-if (!base || !fixtures || !chrome) throw new Error('BASE_URL, FIXTURE_DIR and CHROME_PATH are required');
+if (!base || !chrome) throw new Error('BASE_URL and CHROME_PATH are required');
 
 const browser = await puppeteer.launch({
   executablePath: chrome,
@@ -35,6 +35,40 @@ async function uploadAndRecognize(page, fileName, preprocess, layout, expected) 
   await input.uploadFile(path.join(fixtures, fileName));
   await page.select('#runesPreprocess', preprocess);
   await page.select('#runesLayout', layout);
+  if (/charlotte/i.test(fileName)) {
+    const direct = await page.evaluate(async () => {
+      const file = document.getElementById('runesFile')?.files?.[0];
+      const focused = file ? await window.__RUNE_COLOR_V14__?.buildColorFocusedInput?.(file, true) : null;
+      const glyph = focused?.canvas ? window.__RUNE_GLYPH_V16__?.recognizeCanvas?.(focused.canvas, { expectedGlyphs: focused.segments }) : null;
+      return {
+        focused: focused ? {
+          segments: focused.segments,
+          score: focused.score,
+          foregroundRatio: focused.foregroundRatio,
+          width: focused.canvas?.width,
+          height: focused.canvas?.height,
+          bounds: focused.bounds
+        } : null,
+        glyph: glyph ? {
+          text: glyph.text,
+          raw: glyph.raw,
+          accepted: glyph.accepted,
+          corrected: glyph.corrected,
+          glyphs: glyph.glyphs,
+          averageScore: glyph.averageScore,
+          averageMargin: glyph.averageMargin,
+          topCandidates: glyph.topCandidates
+        } : null
+      };
+    });
+    console.log('DIRECT_CHARLOTTE_DIAGNOSTIC', JSON.stringify(direct));
+    if (!direct.focused || !direct.glyph) {
+      throw new Error(`direct Charlotte pipeline returned no result: ${JSON.stringify(direct)}`);
+    }
+    if (!direct.glyph.accepted || direct.glyph.text.toUpperCase() !== expected) {
+      throw new Error(`direct Charlotte glyph result rejected: ${JSON.stringify(direct)}`);
+    }
+  }
   await page.click('#runesRecognize');
   await page.waitForFunction(
     value => document.getElementById('runesOutput')?.value?.trim() === value
@@ -153,11 +187,11 @@ try {
   assert(runeState.nav.length === 4 && runeState.nav.includes('魔女文翻译'), 'rune four-button navigation', runeState);
   assert(runeState.title.includes('魔女文翻译') && runeState.refWidth <= 420, 'rune title and compact chart', runeState);
 
-  await uploadAndRecognize(page, 'charlotte.png', 'decorated', 'line', 'CHARLOTTE');
+  await uploadAndRecognize(page, 'charlotte.jpg', 'decorated', 'line', 'CHARLOTTE');
   await page.click('#runesClear');
 
   const fileInput = await page.$('#runesFile');
-  await fileInput.uploadFile(path.join(fixtures, 'charlotte.png'));
+  await fileInput.uploadFile(path.join(fixtures, 'charlotte.jpg'));
   await page.waitForFunction(() => window.__RUNE_MASK_V9__?.state?.workingFile, { timeout: 30000 });
   await page.evaluate(() => {
     const api = window.__RUNE_MASK_V9__;
@@ -170,6 +204,53 @@ try {
   });
   await page.select('#runesPreprocess', 'decorated');
   await page.select('#runesLayout', 'line');
+  const directMask = await page.evaluate(async () => {
+    const file = document.getElementById('runesFile')?.files?.[0];
+    const maskApi = window.__RUNE_MASK_V9__;
+    const maskEngine = window.__RUNE_MASK_GLYPH_V19__;
+    const colorEngine = window.__RUNE_COLOR_V14__;
+    const glyphEngine = window.__RUNE_GLYPH_V16__;
+    const colorMask = file && maskApi && maskEngine
+      ? await maskEngine.buildColorMaskedFile(file, maskApi)
+      : null;
+    const focused = colorMask && maskEngine?.buildSeedFocusedCanvas
+      ? await maskEngine.buildSeedFocusedCanvas(colorMask, colorEngine)
+      : null;
+    const glyph = focused?.canvas
+      ? glyphEngine?.recognizeCanvas?.(focused.canvas, { expectedGlyphs: focused.segments })
+      : null;
+    return {
+      colorMask: colorMask ? {
+        width: colorMask.width,
+        height: colorMask.height,
+        retainedRatio: colorMask.retainedRatio
+      } : null,
+      focused: focused ? {
+        segments: focused.segments,
+        foregroundRatio: focused.foregroundRatio,
+        width: focused.canvas?.width,
+        height: focused.canvas?.height,
+        bounds: focused.bounds
+      } : null,
+      glyph: glyph ? {
+        text: glyph.text,
+        raw: glyph.raw,
+        accepted: glyph.accepted,
+        corrected: glyph.corrected,
+        glyphs: glyph.glyphs,
+        averageScore: glyph.averageScore,
+        averageMargin: glyph.averageMargin,
+        topCandidates: glyph.topCandidates
+      } : null
+    };
+  });
+  console.log('DIRECT_MASK_CHARLOTTE_DIAGNOSTIC', JSON.stringify(directMask));
+  if (!directMask.focused || !directMask.glyph) {
+    throw new Error(`direct painted-mask pipeline returned no result: ${JSON.stringify(directMask)}`);
+  }
+  if (!directMask.glyph.accepted || directMask.glyph.text.toUpperCase() !== 'CHARLOTTE') {
+    throw new Error(`direct painted-mask result rejected: ${JSON.stringify(directMask)}`);
+  }
   await page.click('#runesRecognize');
   await page.waitForFunction(
     () => document.getElementById('runesOutput')?.value?.trim() === 'CHARLOTTE'

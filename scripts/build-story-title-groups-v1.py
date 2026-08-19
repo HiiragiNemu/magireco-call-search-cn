@@ -44,6 +44,25 @@ CATEGORY_PREFIX_RE = re.compile(
 EPISODE_RE_SOURCE = re.compile(r"(?:第\s*)?\d+\s*話", re.IGNORECASE)
 EPISODE_RE_LOCAL = re.compile(r"(?:第\s*)?\d+\s*(?:话|話)", re.IGNORECASE)
 
+
+# Additional trailing counters that represent episodes/chapters but do not use 話.
+TRAILING_COUNTER_SOURCE_RE = re.compile(
+    r"(?:"
+    r"(?:DAY|NIGHT|SCENE|STAGE|SECTION|PHASE|PART|CHAPTER|EPISODE|ACT)\s*[.:#_-]?\s*(?:\d+(?:\.\d+)*|[IVXLC]+)"
+    r"|第\s*\d+\s*(?:日目?|章|幕|部)"
+    r"|\d+\s*(?:日目|章|幕)"
+    r")\s*$",
+    re.IGNORECASE,
+)
+TRAILING_COUNTER_LOCAL_RE = re.compile(
+    r"(?:"
+    r"(?:DAY|NIGHT|SCENE|STAGE|SECTION|PHASE|PART|CHAPTER|EPISODE|ACT)\s*[.:#_-]?\s*(?:\d+(?:\.\d+)*|[IVXLC]+)"
+    r"|第\s*\d+\s*(?:天|日|章|幕|部)"
+    r"|\d+\s*(?:天|日|章|幕)"
+    r")\s*$",
+    re.IGNORECASE,
+)
+
 STRUCTURAL_SOURCE = [
     r"百禍チャレンジクエスト", r"百禍チャレンジ", r"EXチャレンジクエスト",
     r"EXチャレンジ", r"チャレンジクエスト", r"チャレンジ",
@@ -61,7 +80,7 @@ STRUCTURAL_LOCAL = [
 ]
 STRUCTURAL_SOURCE_RE = re.compile(r"(?:" + "|".join(STRUCTURAL_SOURCE) + r")\s*$", re.IGNORECASE)
 STRUCTURAL_LOCAL_RE = re.compile(r"(?:" + "|".join(STRUCTURAL_LOCAL) + r")\s*$", re.IGNORECASE)
-BARE_NUMBER_RE = re.compile(r"^(?P<base>.+?)(?P<joiner>[\s\u3000]+)(?P<number>\d+)$")
+BARE_NUMBER_RE = re.compile(r"^(?P<base>.+?)(?P<joiner>[\s\u3000]+)(?P<number>\d+(?:\s*[（(][^()（）]*[)）])?)$")
 STATUS_OPTIONS = {"待校对", "校对中", "已校对", "保留现状"}
 
 
@@ -115,6 +134,14 @@ def split_title(value: str, localized: bool = False) -> SplitTitle:
         if base:
             joiner = normalize_joiner(raw_prefix[len(base):])
             return SplitTitle(base, text[match.start():].strip(), joiner, "episode")
+    counter_re = TRAILING_COUNTER_LOCAL_RE if localized else TRAILING_COUNTER_SOURCE_RE
+    match = counter_re.search(text)
+    if match:
+        raw_prefix = text[: match.start()]
+        base = raw_prefix.rstrip()
+        if base:
+            joiner = normalize_joiner(raw_prefix[len(base):])
+            return SplitTitle(base, text[match.start():].strip(), joiner, "counter")
     structural_re = STRUCTURAL_LOCAL_RE if localized else STRUCTURAL_SOURCE_RE
     match = structural_re.search(text)
     if match:
@@ -454,8 +481,8 @@ def build_groups() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
 def write_csv(groups_data: dict[str, Any], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     headers = [
-        "group_id", "分类", "分类中文", "日文母故事名", "当前母故事译名", "校对后母故事译名",
-        "状态", "备注", "子剧情数量", "出现次数", "source_sha256", "children_sha256",
+        "group_id", "分类", "分类中文", "日文母故事名", "网站显示文本",
+        "子剧情数量", "出现次数", "source_sha256", "children_sha256",
     ]
     with path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=headers, extrasaction="ignore")
@@ -466,10 +493,7 @@ def write_csv(groups_data: dict[str, Any], path: Path) -> None:
                 "分类": group["category"],
                 "分类中文": group["category_label"],
                 "日文母故事名": group["source_base"],
-                "当前母故事译名": group["current_translation"],
-                "校对后母故事译名": group["approved_translation"],
-                "状态": group["status"],
-                "备注": group["note"],
+                "网站显示文本": group["approved_translation"] or group["current_translation"],
                 "子剧情数量": group["child_count"],
                 "出现次数": group["occurrence_count"],
                 "source_sha256": group["source_sha256"],

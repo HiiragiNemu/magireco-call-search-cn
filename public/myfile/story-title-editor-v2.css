@@ -1,0 +1,154 @@
+/* Dense one-page parent-story title editor. */
+.story-title-editor-v2 { width: min(1540px, 100%); }
+.story-title-editor-v2 .suite-panel { margin-block: 8px; padding: 10px; }
+.story-title-editor-v2 h1 { margin: 0; font-size: 1.35rem; }
+.story-title-editor-v2 .story-title-intro-v2 { margin: 4px 0 8px; color: #705565; font-size: .88rem; }
+
+.story-title-summary-v2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 16px;
+  margin: 5px 0 8px;
+  font-size: .84rem;
+}
+.story-title-summary-v2 strong { color: #8a1752; }
+
+.story-title-toolbar-v2 {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.5fr) minmax(170px, .65fr) auto;
+  gap: 7px;
+  align-items: end;
+}
+.story-title-toolbar-v2 .suite-field { gap: 3px; }
+.story-title-toolbar-v2 .suite-field > span { font-size: .82rem; }
+.story-title-toolbar-v2 .suite-input,
+.story-title-toolbar-v2 .suite-select { min-height: 34px; padding: 5px 8px; }
+.story-title-changed-toggle-v2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 5px 8px;
+  border: 1px solid #dbc3d0;
+  border-radius: 7px;
+  background: #fff8fc;
+  font-size: .84rem;
+  white-space: nowrap;
+}
+
+.story-title-password-v2 {
+  display: grid;
+  grid-template-columns: minmax(180px, 320px) auto auto minmax(220px, 1fr);
+  gap: 7px;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ead5e0;
+}
+.story-title-password-v2 .suite-input { min-height: 34px; padding: 5px 8px; }
+.story-title-password-v2 .suite-button { min-height: 34px; padding: 5px 10px; }
+.story-title-password-v2 #storyTitlePasswordState {
+  min-height: 34px;
+  margin: 0;
+  padding: 5px 8px;
+  font-size: .8rem;
+}
+
+.story-title-actions-v2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.story-title-actions-v2 .suite-button {
+  min-height: 34px;
+  padding: 5px 10px;
+  border-width: 1px;
+  font-size: .82rem;
+}
+.story-title-file-v2 { position: relative; overflow: hidden; }
+.story-title-file-v2 input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+#titleEditorStatus { min-height: 34px; margin-top: 7px; padding: 5px 8px; font-size: .82rem; }
+
+.story-title-table-wrap-v2 {
+  width: 100%;
+  border: 1px solid #dcc5d2;
+  border-radius: 8px;
+  overflow: clip;
+  background: #fff;
+}
+.story-title-table-v2 {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+.story-title-table-v2 col:first-child { width: 44%; }
+.story-title-table-v2 col:last-child { width: 56%; }
+.story-title-table-v2 thead th {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding: 6px 8px;
+  border-bottom: 2px solid #d7b7c8;
+  color: #5f1f43;
+  background: #fff3f9;
+  text-align: left;
+}
+.story-title-table-v2 tbody tr { background: #fff; }
+.story-title-table-v2 tbody tr:nth-child(even) { background: #fffafd; }
+.story-title-table-v2 tbody tr[data-dirty="true"] { background: #fff4cf; }
+.story-title-table-v2 tbody tr[hidden] { display: none; }
+.story-title-table-v2 td {
+  height: 36px;
+  padding: 2px 6px;
+  border-bottom: 1px solid #eee0e7;
+  vertical-align: middle;
+}
+.story-title-source-v2 > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 650;
+}
+.story-title-source-v2 > small {
+  display: block;
+  overflow: hidden;
+  color: #8a7180;
+  font-size: 10.5px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.story-title-display-input-v2 {
+  width: 100%;
+  min-height: 29px !important;
+  height: 29px;
+  padding: 3px 7px !important;
+  border: 1px solid #b997aa;
+  border-radius: 5px;
+  background: #fffef8;
+  color: #25151e;
+  font: inherit;
+}
+.story-title-display-input-v2:focus {
+  outline: 2px solid rgba(245, 88, 173, .25);
+  border-color: #f558ad;
+}
+html[data-story-title-editor-locked="true"] .story-title-display-input-v2 {
+  background: #f5f3f4;
+  color: #5d5258;
+  cursor: not-allowed;
+}
+
+@media (max-width: 820px) {
+  .story-title-toolbar-v2 { grid-template-columns: 1fr; }
+  .story-title-password-v2 { grid-template-columns: 1fr 1fr; }
+  .story-title-password-v2 .suite-input,
+  .story-title-password-v2 #storyTitlePasswordState { grid-column: 1 / -1; }
+  .story-title-table-v2 { font-size: 12px; }
+  .story-title-table-v2 col:first-child { width: 43%; }
+  .story-title-table-v2 col:last-child { width: 57%; }
+  .story-title-source-v2 > small { font-size: 9.5px; }
+}

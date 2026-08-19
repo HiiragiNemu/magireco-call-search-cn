@@ -6,7 +6,7 @@
   const NAV_LABELS = [
     ['story.html', '角色故事搜索'],
     ['attendance.html', '共同出场次数排行'],
-    ['runes.html', '魔女文字解读'],
+    ['runes.html', '魔女文翻译'],
     ['index.html', '称呼与身高']
   ];
 
@@ -225,8 +225,8 @@
       cursor = next;
     }
 
-    const search = createCallPanel('搜索条件', 'call-search-panel-v8', true);
-    selection.details.insertAdjacentElement('afterend', search.details);
+    const search = createCallPanel('搜索条件', 'call-search-panel-v8', false);
+    selection.details.parentNode.insertBefore(search.details, selection.details);
     const explainer = document.getElementById('ndownword1')?.previousElementSibling;
     const nameFilter = document.getElementById('ndownword1');
     const filterReset = wrapper.querySelector('.ndownReset');

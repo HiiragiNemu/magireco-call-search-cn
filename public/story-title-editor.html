@@ -3,85 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="按母故事一次校对标题，并自动映射到该故事的全部子剧情。">
+  <meta name="description" content="在一张密集表格中校对母故事标题，并自动映射到全部子剧情。">
   <title>母故事标题翻译清单</title>
-  <link rel="stylesheet" href="./myfile/tools-suite.css">
+  <link rel="stylesheet" href="./myfile/tools-suite.css?v=20260819-19">
   <link rel="stylesheet" href="./myfile/layout-v6.css">
   <link rel="stylesheet" href="./myfile/suite-v7.css">
-  <link rel="stylesheet" href="./myfile/layout-v8.css">
   <link rel="stylesheet" href="./myfile/live-fixes-v11.css">
-  <link rel="stylesheet" href="./myfile/live-fixes-v12.css">
-  <link rel="stylesheet" href="./myfile/story-title-editor-v1.css">
+  <link rel="stylesheet" href="./myfile/story-title-editor-v2.css?v=20260819-19">
 </head>
-<body class="suite-page" data-build="story-title-groups-v1-20260818" data-suite-tool="story">
+<body data-build="story-title-dense-v21-20260819" class="suite-page" data-build="story-title-dense-v19-20260819" data-suite-tool="story">
   <nav class="suite-nav" data-suite-nav aria-label="工具模式切换"></nav>
-  <main class="suite-shell story-title-editor-v1" data-suite-nav-anchor>
-    <section class="suite-panel story-title-hero-v1">
-      <h1>母故事标题翻译清单</h1>
-      <p>同一个可折叠母故事只校对一次。系统会保留每条子剧情的“第几话、序章、分支、结局”等后缀，生成分类＋完整日文原题的精确映射，并由故事搜索页直接读取。</p>
-      <div class="story-title-kpis-v1" aria-label="清单统计">
-        <div class="story-title-kpi-v1"><strong id="titleTotalGroups">—</strong><span>母故事组</span></div>
-        <div class="story-title-kpi-v1"><strong id="titleTotalChildren">—</strong><span>完整子剧情标题</span></div>
-        <div class="story-title-kpi-v1"><strong id="titleEditedGroups">0</strong><span>已填写校对译名</span></div>
-        <div class="story-title-kpi-v1"><strong id="titleVisibleGroups">—</strong><span>当前筛选结果</span></div>
-      </div>
-    </section>
-
+  <main class="suite-shell story-title-editor-v2" data-suite-nav-anchor>
     <section class="suite-panel">
-      <h2>筛选与文件操作</h2>
-      <div class="story-title-toolbar-v1">
-        <label class="suite-field" for="titleGroupSearch">
-          <span>搜索母故事</span>
-          <input id="titleGroupSearch" class="suite-input" type="search" spellcheck="false" placeholder="日文、当前译名、校对译名、group_id">
+      <h1>母故事标题翻译清单</h1>
+      <p class="story-title-intro-v2">一行一个母故事。左边是原始日文母标题，右边是网站当前显示文本；同一母故事的全部话数、DAY、序章和分支会自动继承这一处修改。</p>
+      <div class="story-title-summary-v2">
+        <span>母故事：<strong id="titleTotalGroups">—</strong></span>
+        <span>完整子剧情：<strong id="titleTotalChildren">—</strong></span>
+        <span>已修改：<strong id="titleEditedGroups">0</strong></span>
+        <span>当前显示：<strong id="titleVisibleGroups">—</strong></span>
+      </div>
+
+      <div class="story-title-toolbar-v2">
+        <label class="suite-field" for="titleGroupSearch"><span>搜索</span>
+          <input id="titleGroupSearch" class="suite-input" type="search" spellcheck="false" placeholder="日文母标题或网站显示文本">
         </label>
-        <label class="suite-field" for="titleCategoryFilter">
-          <span>故事分类</span>
+        <label class="suite-field" for="titleCategoryFilter"><span>分类</span>
           <select id="titleCategoryFilter" class="suite-select"><option value="">全部分类</option></select>
         </label>
-        <label class="suite-field" for="titleStatusFilter">
-          <span>校对状态</span>
-          <select id="titleStatusFilter" class="suite-select"><option value="">全部状态</option></select>
-        </label>
+        <label class="story-title-changed-toggle-v2"><input id="titleOnlyChanged" type="checkbox">只看已修改</label>
       </div>
 
-      <div class="story-title-actions-v1">
-        <button id="titleSaveLocal" type="button" class="suite-button primary">保存到浏览器并应用网站</button>
-        <button id="titleClearLocal" type="button" class="suite-button secondary">清除浏览器覆盖</button>
-        <label class="suite-button secondary story-title-file-v1">导入 JSON／CSV／XLSX
+      <div class="story-title-password-v2" id="storyTitlePasswordGate">
+        <input id="storyTitlePasswordInput" class="suite-input" type="password" autocomplete="current-password" spellcheck="false" placeholder="管理员密码">
+        <button id="storyTitlePasswordUnlock" type="button" class="suite-button primary">解锁</button>
+        <button id="storyTitlePasswordLock" type="button" class="suite-button secondary">锁定</button>
+        <div id="storyTitlePasswordState" class="suite-status" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="story-title-actions-v2">
+        <button id="titleSaveLocal" type="button" class="suite-button primary">保存并应用</button>
+        <button id="titleClearLocal" type="button" class="suite-button secondary">清除本地修改</button>
+        <label class="suite-button secondary story-title-file-v2">导入 JSON／CSV／XLSX
           <input id="titleImportFile" type="file" accept=".json,.csv,.xlsx,.xls,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
         </label>
-      </div>
-
-      <div class="story-title-actions-v1">
-        <button id="titleExportOverridesJson" type="button" class="suite-button secondary">导出覆盖 JSON</button>
-        <button id="titleExportExactJson" type="button" class="suite-button secondary">导出网站精确映射 JSON</button>
+        <button id="titleExportOverridesJson" type="button" class="suite-button secondary">导出变更 JSON</button>
+        <button id="titleExportExactJson" type="button" class="suite-button secondary">导出网站映射 JSON</button>
         <button id="titleExportCsv" type="button" class="suite-button secondary">导出完整 CSV</button>
         <button id="titleExportXlsx" type="button" class="suite-button secondary">导出完整 XLSX</button>
-        <a class="suite-button secondary" href="./downloads/story-title-groups.xlsx" download>下载仓库基准 XLSX</a>
         <a class="suite-button secondary" href="./downloads/story-title-groups.csv" download>下载仓库基准 CSV</a>
         <a class="suite-button secondary" href="./downloads/story-title-groups.json" download>下载仓库基准 JSON</a>
-        <a class="suite-button secondary" href="./story.html">打开故事搜索实测</a>
+        <a class="suite-button secondary" href="./story.html">打开故事搜索</a>
       </div>
-      <div id="titleEditorStatus" class="suite-status story-title-status-v1" role="status" aria-live="polite">正在加载母故事清单…</div>
+      <div id="titleEditorStatus" class="suite-status" role="status" aria-live="polite">正在加载母故事清单…</div>
     </section>
 
     <section class="suite-panel">
-      <h2>标题翻译</h2>
-      <p class="suite-notice">只修改黄色字段。不要修改 <code>group_id</code>、日文母故事名、分类或 <code>source_sha256</code>。导入时系统会逐项校验这些稳定标识，避免新旧清单错位。</p>
-      <div id="titleEditorList" class="story-title-list-v1"></div>
-      <nav class="story-title-pagination-v1" aria-label="母故事清单分页">
-        <button id="titlePrevPage" type="button" class="suite-button secondary">上一页</button>
-        <span id="titlePageInfo">第 1 页</span>
-        <button id="titleNextPage" type="button" class="suite-button secondary">下一页</button>
-      </nav>
+      <div class="story-title-table-wrap-v2">
+        <table class="story-title-table-v2">
+          <colgroup><col><col></colgroup>
+          <thead><tr><th>原始日文母故事名</th><th>网站显示文本</th></tr></thead>
+          <tbody id="titleEditorList"></tbody>
+        </table>
+      </div>
     </section>
   </main>
 
-  <script src="./myfile/tools-suite.js"></script>
+  <script src="./myfile/tools-suite.js?v=20260819-19"></script>
   <script src="./myfile/suite-v7.js"></script>
-  <script src="./myfile/story-title-runtime-v1.js"></script>
-  <script src="./myfile/nav-label-v14.js"></script>
+  <script src="./myfile/story-title-runtime-v2.js?v=20260819-19"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" crossorigin="anonymous"></script>
-  <script src="./myfile/story-title-editor-v1.js"></script>
+  <script src="./myfile/story-title-password-v2.js?v=20260819-19"></script>
+  <script src="./myfile/story-title-editor-v2.js?v=20260819-19"></script>
 </body>
 </html>

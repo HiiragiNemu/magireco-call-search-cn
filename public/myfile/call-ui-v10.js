@@ -81,27 +81,9 @@
   function enhanceSearchPanel() {
     const panel = document.querySelector('.call-search-panel-v8');
     const body = panel?.querySelector(':scope > .call-panel-body-v8');
-    if (!body || body.dataset.v10SearchLayout === 'true') return;
-    body.dataset.v10SearchLayout = 'true';
-
-    const fields = document.createElement('div');
-    fields.className = 'call-search-fields-v10';
-    while (body.firstChild) fields.appendChild(body.firstChild);
-    const help = buildHelpDetails();
-    body.append(fields, help);
-
-    const searchButton = document.querySelector('input[name="call_search"], input[value="称呼搜索"], button[data-call-search]');
-    if (searchButton && !document.querySelector('.call-help-toggle-v10')) {
-      const toggle = document.createElement('button');
-      toggle.type = 'button';
-      toggle.className = 'call-help-toggle-v10';
-      toggle.textContent = '操作说明';
-      toggle.addEventListener('click', () => {
-        help.open = !help.open;
-        if (help.open) scrollToTarget(help);
-      });
-      searchButton.insertAdjacentElement('afterend', toggle);
-    }
+    if (!body || body.dataset.v21SearchLayout === 'true') return;
+    body.dataset.v21SearchLayout = 'true';
+    document.querySelectorAll('.call-help-toggle-v10, .call-help-details-v10').forEach((node) => node.remove());
     removeOldHelpText();
   }
 

@@ -10,7 +10,7 @@
 (function (global) {
   'use strict';
 
-  const RELEASE = 'rune-color-isolation-v14.1-20260818';
+  const RELEASE = 'rune-color-isolation-v14.2-20260819';
   const MAX_ANALYSIS_SIDE = 1200;
   const MAX_QUEUE_PIXELS = MAX_ANALYSIS_SIDE * MAX_ANALYSIS_SIDE;
   const TARGET_LINE_HEIGHT = 220;
@@ -270,13 +270,14 @@
     for (let index = 0; index < segments.length;) {
       const segment = segments[index];
       const segmentWidth = segment.right - segment.left + 1;
-      if (segmentWidth > minimumWidth * 1.35) {
+      const tinyWidthLimit = Math.max(4, minimumWidth * 2.5);
+      if (segmentWidth > tinyWidthLimit) {
         index += 1;
         continue;
       }
       const previousGap = index > 0 ? segment.left - segments[index - 1].right - 1 : Infinity;
       const nextGap = index + 1 < segments.length ? segments[index + 1].left - segment.right - 1 : Infinity;
-      const gapLimit = Math.max(4, Math.round(width * .014));
+      const gapLimit = Math.max(6, Math.round(width * .014));
       if (previousGap <= nextGap && previousGap <= gapLimit) {
         segments[index - 1].right = segment.right;
         segments.splice(index, 1);

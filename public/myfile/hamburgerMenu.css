@@ -174,3 +174,20 @@ body {
         font-size: 16px;
     }
 }
+
+/* V21 hamburger overlay isolation */
+.header {
+  z-index: 2147483000;
+  isolation: isolate;
+}
+.header .menu { z-index: 2147483001; }
+.header .menu-icon { z-index: 2147483002; }
+body:has(.menu-btn:checked) { overflow: hidden; }
+body:has(.menu-btn:checked) #pagetop,
+body:has(.menu-btn:checked) #pagemdl,
+body:has(.menu-btn:checked) #pagebtm,
+body:has(.menu-btn:checked) .call-quick-rail-v10 {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
