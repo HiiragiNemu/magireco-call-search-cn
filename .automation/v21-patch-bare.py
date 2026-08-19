@@ -74,5 +74,6 @@ text = text.replace(
     "if (!base || !fixtures || !chrome) throw new Error('BASE_URL, FIXTURE_DIR and CHROME_PATH are required');",
     "if (!base || !chrome) throw new Error('BASE_URL and CHROME_PATH are required');",
 )
+text = text.replace("'charlotte.png'", "'charlotte.jpg'")
 path.write_text(text, encoding='utf-8', newline='\n')
 print('Configured browser smoke to use real OCR fixtures')
