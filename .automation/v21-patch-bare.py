@@ -29,6 +29,32 @@ if 'max-width: 360px !important;' not in text:
 path.write_text(text, encoding='utf-8', newline='\n')
 print('Applied compact rune-reference size')
 
+# JPEG compression can turn one detached rune accent into a 3-4 px projection
+# segment. Treat those fragments as accents and merge them with the nearest
+# glyph instead of counting them as an extra character.
+path = root / 'public/myfile/runes-fix-v14.js'
+text = path.read_text(encoding='utf-8')
+old = '''      const segmentWidth = segment.right - segment.left + 1;
+      if (segmentWidth > minimumWidth * 1.35) {'''
+new = '''      const segmentWidth = segment.right - segment.left + 1;
+      const tinyWidthLimit = Math.max(4, minimumWidth * 2.5);
+      if (segmentWidth > tinyWidthLimit) {'''
+if new not in text:
+    if old not in text:
+        raise SystemExit('V14 tiny-segment anchor was not found')
+    text = text.replace(old, new, 1)
+text = text.replace(
+    'const gapLimit = Math.max(4, Math.round(width * .014));',
+    'const gapLimit = Math.max(6, Math.round(width * .014));',
+    1,
+)
+text = text.replace(
+    "const RELEASE = 'rune-color-isolation-v14.1-20260818';",
+    "const RELEASE = 'rune-color-isolation-v14.2-20260819';",
+)
+path.write_text(text, encoding='utf-8', newline='\n')
+print('Applied V14 JPEG accent-fragment merging')
+
 chunks = []
 for part in range(1, 7):
     member = f'scripts/v18-fixtures/part-{part:02d}.b64'
