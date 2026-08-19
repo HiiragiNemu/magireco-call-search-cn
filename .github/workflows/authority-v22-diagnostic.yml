@@ -1,4 +1,4 @@
-name: V22 authoritative title source diagnostic
+name: V22 final-source snapshot
 
 on:
   push:
@@ -12,9 +12,11 @@ permissions:
   contents: write
 
 jobs:
-  diagnose:
+  snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    env:
+      WIKI_TOKEN: ${{ secrets.GH_TOKEN || secrets.PAT || secrets.GITHUB_PAT }}
     steps:
       - name: Checkout target repository
         uses: actions/checkout@v4
@@ -35,105 +37,99 @@ jobs:
           path: _sources/magi-reader
           fetch-depth: 1
 
-      - name: Collect focused source package
+      - name: Checkout structured Chinese Wiki source when a cross-repository token is available
+        if: ${{ env.WIKI_TOKEN != '' }}
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          repository: HiiragiNemu/magireco-wiki-data
+          path: _sources/magireco-wiki-data
+          token: ${{ env.WIKI_TOKEN }}
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            data/catalog.json
+            data/characters.json
+            data/memoria.json
+            data/pages_index.json
+            data/story.json
+
+      - name: Collect complete working snapshot
         shell: bash
         run: |
           set -euo pipefail
-          out="$RUNNER_TEMP/authority-v22-diagnostic"
-          mkdir -p "$out/cn-patch" "$out/magi-reader/candidates" "$out/target"
+          out="$RUNNER_TEMP/authority-v22-final-source"
+          mkdir -p "$out/target-repo" "$out/sources"
 
-          cp -a _sources/magireco-cn-patch/magica/js/libs "$out/cn-patch/libs"
-          find _sources/magireco-cn-patch/magica/js/libs -maxdepth 1 -type f -printf '%f\t%s\n' | sort > "$out/cn-patch/libs-files.tsv"
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='_sources/' \
+            --exclude='node_modules/' \
+            ./ "$out/target-repo/"
 
-          find _sources/magi-reader -type f -not -path '*/.git/*' -printf '%P\t%s\n' | sort > "$out/magi-reader/file-list.tsv"
-          find _sources/magi-reader -type f -not -path '*/.git/*' \
-            \( -iname '*story*index*.json' -o -iname 'titles.json' -o -iname '*title*.json' \
-               -o -iname '*dictionary*.js' -o -iname '*dictionary*.json' \
-               -o -iname '*event*.json' -o -iname '*chapter*.json' \) \
-            -size -25M -print0 | while IFS= read -r -d '' file; do
-              rel="${file#_sources/magi-reader/}"
-              mkdir -p "$out/magi-reader/candidates/$(dirname "$rel")"
-              cp "$file" "$out/magi-reader/candidates/$rel"
+          mkdir -p "$out/sources/cn-patch"
+          cp -a _sources/magireco-cn-patch/magica/js/libs "$out/sources/cn-patch/libs"
+
+          mkdir -p "$out/sources/magi-reader"
+          for candidate in \
+            _sources/magi-reader/website/public/story_index.json \
+            _sources/magi-reader/website/public/data/titles.json \
+            _sources/magi-reader/artifacts/exedra_portrait_title_catalog.json \
+            _sources/magi-reader/artifacts/exedra_tw_manifest_titles.generated.json \
+            _sources/magi-reader/artifacts/tw_title_coverage.audit.json; do
+            if [[ -f "$candidate" ]]; then
+              rel="${candidate#_sources/magi-reader/}"
+              mkdir -p "$out/sources/magi-reader/$(dirname "$rel")"
+              cp "$candidate" "$out/sources/magi-reader/$rel"
+            fi
+          done
+          find _sources/magi-reader -type f -name 'titles.json' -size -25M -print0 | while IFS= read -r -d '' file; do
+            rel="${file#_sources/magi-reader/}"
+            mkdir -p "$out/sources/magi-reader/$(dirname "$rel")"
+            cp "$file" "$out/sources/magi-reader/$rel"
+          done
+
+          if [[ -d _sources/magireco-wiki-data/data ]]; then
+            mkdir -p "$out/sources/magireco-wiki-data/data"
+            for file in catalog.json characters.json memoria.json pages_index.json story.json; do
+              if [[ -f "_sources/magireco-wiki-data/data/$file" ]]; then
+                cp "_sources/magireco-wiki-data/data/$file" "$out/sources/magireco-wiki-data/data/$file"
+              fi
             done
+            printf 'available\n' > "$out/sources/magireco-wiki-data/status.txt"
+          else
+            mkdir -p "$out/sources/magireco-wiki-data"
+            printf 'unavailable: no usable cross-repository token in this repository\n' > "$out/sources/magireco-wiki-data/status.txt"
+          fi
 
-          {
-            echo '=== Japanese title probes in MagiReader ==='
-            git -C _sources/magi-reader grep -n -I -E 'トナカイサンタ繁盛記|ウワサアクアリウムへようこそ|Bittersweet AI Memory|万年桜のウワサ' || true
-            echo
-            echo '=== Official CN title probes in CN patch ==='
-            git -C _sources/magireco-cn-patch grep -n -I -E '驯鹿|水族馆|Bittersweet|万年樱|三日月别墅的Merry Christmas' -- magica/js/libs || true
-          } > "$out/probes.txt"
-
-          cp public/data/story-v6/manifest.json "$out/target/"
-          cp public/data/story-v7/localization.json "$out/target/"
-          cp public/data/story-title-build-report-v1.json "$out/target/"
-          cp public/data/translation-audit-v5.json "$out/target/" || true
-          cp scripts/build-story-titles-v10.py "$out/target/"
-          cp scripts/build-story-title-groups-v1.py "$out/target/"
-
-          python - "$out" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          root = Path(sys.argv[1])
-          report = {"libs": [], "reader_candidates": []}
-
-          def summarize(path: Path):
-              try:
-                  data = json.loads(path.read_text(encoding="utf-8"))
-              except Exception as exc:
-                  return {"path": str(path.relative_to(root)), "error": type(exc).__name__}
-              item = {"path": str(path.relative_to(root)), "bytes": path.stat().st_size, "type": type(data).__name__}
-              if isinstance(data, list):
-                  item["count"] = len(data)
-                  if data and isinstance(data[0], dict):
-                      item["sample_keys"] = sorted(data[0].keys())
-                      item["sample"] = data[:5]
-                  else:
-                      item["sample"] = data[:5]
-              elif isinstance(data, dict):
-                  item["count"] = len(data)
-                  item["sample_keys"] = list(data.keys())[:50]
-                  sample = {}
-                  for key in list(data.keys())[:5]:
-                      sample[key] = data[key]
-                  item["sample"] = sample
-              return item
-
-          for path in sorted((root / "cn-patch/libs").glob("*.json")):
-              report["libs"].append(summarize(path))
-          for path in sorted((root / "magi-reader/candidates").rglob("*.json")):
-              report["reader_candidates"].append(summarize(path))
-
-          (root / "schema-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-          PY
-
+          git branch -r --format='%(refname:short)' | sort > "$out/remote-branches.txt"
+          find .github/workflows -maxdepth 1 -type f -printf '%f\t%s\n' | sort > "$out/workflows.tsv"
           du -ah "$out" | sort -h > "$out/package-sizes.txt"
 
-      - name: Upload focused diagnostic artifact
+      - name: Upload final-source snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: authority-v22-diagnostic-${{ github.run_id }}
-          path: ${{ runner.temp }}/authority-v22-diagnostic
+          name: authority-v22-final-source-${{ github.run_id }}
+          path: ${{ runner.temp }}/authority-v22-final-source
           retention-days: 3
           compression-level: 6
 
-      - name: Record diagnostic run id on main
+      - name: Record snapshot run id on main
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .automation
-          cat > .automation/authority-v22-diagnostic-run.json <<JSON
+          cat > .automation/authority-v22-final-source-run.json <<JSON
           {
             "run_id": ${GITHUB_RUN_ID},
             "run_attempt": ${GITHUB_RUN_ATTEMPT},
             "source_sha": "${GITHUB_SHA}",
-            "artifact_name": "authority-v22-diagnostic-${GITHUB_RUN_ID}"
+            "artifact_name": "authority-v22-final-source-${GITHUB_RUN_ID}"
           }
           JSON
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add .automation/authority-v22-diagnostic-run.json
-          git commit -m "Record V22 source diagnostic run ${GITHUB_RUN_ID}"
+          git add .automation/authority-v22-final-source-run.json
+          git commit -m "Record final-source snapshot run ${GITHUB_RUN_ID}"
+          git pull --rebase origin main
           git push origin HEAD:main
