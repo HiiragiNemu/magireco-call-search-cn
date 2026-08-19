@@ -3,7 +3,6 @@ from pathlib import Path
 import base64
 import hashlib
 import io
-import shutil
 import subprocess
 import tarfile
 
@@ -30,7 +29,6 @@ if 'max-width: 360px !important;' not in text:
 path.write_text(text, encoding='utf-8', newline='\n')
 print('Applied compact rune-reference size')
 
-# Recover the exact user-provided OCR fixtures from the reviewed fixture bundle.
 chunks = []
 for part in range(1, 7):
     member = f'scripts/v18-fixtures/part-{part:02d}.b64'
@@ -57,44 +55,15 @@ for member in members:
     print(f'  {member.name}')
 
 fixture_dir = root / 'tests/fixtures/runes'
-fixture_dir.mkdir(parents=True, exist_ok=True)
-extracted_files = []
-for member in members:
-    candidate = root / member.name
-    if candidate.is_file() and candidate.suffix.lower() in {'.png', '.jpg', '.jpeg', '.webp'}:
-        extracted_files.append(candidate)
-
-charlotte = fixture_dir / 'charlotte.png'
-if not charlotte.exists():
-    candidates = [p for p in extracted_files if p.suffix.lower() == '.png'
-                  and ('qq20260818-164056' in p.name.lower() or 'charlotte' in p.name.lower())]
-    if not candidates:
-        pngs = [p for p in extracted_files if p.suffix.lower() == '.png']
-        if len(pngs) == 1:
-            candidates = pngs
-    if candidates:
-        shutil.copyfile(candidates[0], charlotte)
-
-alphabet = fixture_dir / 'alphabet.jpg'
-if not alphabet.exists():
-    candidates = [p for p in extracted_files if p.name.lower() == 'images.jpg'
-                  or 'alphabet' in p.name.lower()]
-    if candidates:
-        shutil.copyfile(candidates[0], alphabet)
-
-decorated = fixture_dir / 'decorated.jpg'
-if not decorated.exists():
-    candidates = [p for p in extracted_files if p.name.lower() in {'images (1).jpg', 'images_1.jpg'}
-                  or 'decorated' in p.name.lower()]
-    if candidates:
-        shutil.copyfile(candidates[0], decorated)
-
-for required in (charlotte, alphabet):
+for required in (
+    fixture_dir / 'charlotte.jpg',
+    fixture_dir / 'alphabet.jpg',
+    fixture_dir / 'decorated.jpg',
+):
     if not required.exists():
-        raise SystemExit(f'Required OCR fixture is missing after normalization: {required}')
-print(f'Normalized OCR fixtures: {charlotte}, {alphabet}, decorated={decorated.exists()}')
+        raise SystemExit(f'Required OCR fixture is missing: {required}')
+print('Real OCR fixtures are present')
 
-# Keep the browser test usable both in Actions and in an ordinary checkout.
 path = root / '.automation/v21-smoke.mjs'
 text = path.read_text(encoding='utf-8')
 text = text.replace(
