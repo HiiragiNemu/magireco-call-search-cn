@@ -64,6 +64,65 @@ if count != 1 and 'body.dataset.v21SearchLayout' not in text:
     raise RuntimeError('call-ui-v10.js: enhanceSearchPanel replacement failed')
 write(path, text)
 
+# Extend the title parser beyond N話 so DAY.N, NIGHT.N, chapters and similar
+# structural counters collapse into one editable parent title.
+path = 'scripts/build-story-title-groups-v1.py'
+text = read(path)
+if 'TRAILING_COUNTER_SOURCE_RE' not in text:
+    anchor = 'EPISODE_RE_LOCAL = re.compile(r"(?:第\\s*)?\\d+\\s*(?:话|話)", re.IGNORECASE)\n'
+    block = r'''
+
+# Additional trailing counters that represent episodes/chapters but do not use 話.
+TRAILING_COUNTER_SOURCE_RE = re.compile(
+    r"(?:"
+    r"(?:DAY|NIGHT|SCENE|STAGE|SECTION|PHASE|PART|CHAPTER|EPISODE|ACT)\s*[.:#_-]?\s*(?:\d+(?:\.\d+)*|[IVXLC]+)"
+    r"|第\s*\d+\s*(?:日目?|章|幕|部)"
+    r"|\d+\s*(?:日目|章|幕)"
+    r")\s*$",
+    re.IGNORECASE,
+)
+TRAILING_COUNTER_LOCAL_RE = re.compile(
+    r"(?:"
+    r"(?:DAY|NIGHT|SCENE|STAGE|SECTION|PHASE|PART|CHAPTER|EPISODE|ACT)\s*[.:#_-]?\s*(?:\d+(?:\.\d+)*|[IVXLC]+)"
+    r"|第\s*\d+\s*(?:天|日|章|幕|部)"
+    r"|\d+\s*(?:天|日|章|幕)"
+    r")\s*$",
+    re.IGNORECASE,
+)
+'''
+    if anchor not in text:
+        raise RuntimeError('generator episode regex anchor missing')
+    text = text.replace(anchor, anchor + block, 1)
+
+if 'return SplitTitle(base, text[match.start():].strip(), joiner, "counter")' not in text:
+    anchor = '''            return SplitTitle(base, text[match.start():].strip(), joiner, "episode")
+    structural_re = STRUCTURAL_LOCAL_RE if localized else STRUCTURAL_SOURCE_RE
+'''
+    block = '''            return SplitTitle(base, text[match.start():].strip(), joiner, "episode")
+    counter_re = TRAILING_COUNTER_LOCAL_RE if localized else TRAILING_COUNTER_SOURCE_RE
+    match = counter_re.search(text)
+    if match:
+        raw_prefix = text[: match.start()]
+        base = raw_prefix.rstrip()
+        if base:
+            joiner = normalize_joiner(raw_prefix[len(base):])
+            return SplitTitle(base, text[match.start():].strip(), joiner, "counter")
+    structural_re = STRUCTURAL_LOCAL_RE if localized else STRUCTURAL_SOURCE_RE
+'''
+    if anchor not in text:
+        raise RuntimeError('generator split_title anchor missing')
+    text = text.replace(anchor, block, 1)
+
+text = text.replace(
+    '"group_id", "分类", "分类中文", "日文母故事名", "当前母故事译名", "校对后母故事译名",\n        "状态", "备注", "子剧情数量", "出现次数", "source_sha256", "children_sha256",',
+    '"group_id", "分类", "分类中文", "日文母故事名", "网站显示文本",\n        "子剧情数量", "出现次数", "source_sha256", "children_sha256",',
+)
+text = text.replace(
+    '"当前母故事译名": group["current_translation"],\n                "校对后母故事译名": group["approved_translation"],\n                "状态": group["status"],\n                "备注": group["note"],',
+    '"网站显示文本": group["approved_translation"] or group["current_translation"],',
+)
+write(path, text)
+
 for html_path in (ROOT / 'public').glob('*.html'):
     html = html_path.read_text(encoding='utf-8')
     html = html.replace('魔女文字解读工具', '魔女文翻译')
