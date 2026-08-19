@@ -1,10 +1,8 @@
-import path from 'node:path';
 import puppeteer from 'puppeteer-core';
 
 const base = process.env.BASE_URL;
-const fixtures = process.env.FIXTURE_DIR;
 const chrome = process.env.CHROME_PATH;
-if (!base || !fixtures || !chrome) throw new Error('BASE_URL, FIXTURE_DIR and CHROME_PATH are required');
+if (!base || !chrome) throw new Error('BASE_URL and CHROME_PATH are required');
 
 const browser = await puppeteer.launch({
   executablePath: chrome,
@@ -30,9 +28,103 @@ async function open(route) {
   return { page, errors };
 }
 
-async function uploadAndRecognize(page, fileName, preprocess, layout, expected) {
-  const input = await page.$('#runesFile');
-  await input.uploadFile(path.join(fixtures, fileName));
+async function setGeneratedFile(page, kind) {
+  await page.evaluate(async generatedKind => {
+    const input = document.getElementById('runesFile');
+    if (!input) throw new Error('runesFile missing');
+    let blob;
+    let name;
+    if (generatedKind === 'alphabet') {
+      const response = await fetch(`./mdkOCR/madokarunes.jpg?v21=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`alphabet fetch failed: ${response.status}`);
+      blob = await response.blob();
+      name = 'alphabet.jpg';
+    } else {
+      const width = generatedKind === 'decorated' ? 738 : 396;
+      const height = generatedKind === 'decorated' ? 414 : 237;
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d');
+      if (generatedKind === 'charlotte') {
+        const gradient = context.createLinearGradient(0, 0, width, height);
+        gradient.addColorStop(0, '#622e42');
+        gradient.addColorStop(.45, '#e77eaa');
+        gradient.addColorStop(1, '#a53970');
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, width, height);
+        context.fillStyle = '#321b27';
+        context.beginPath();
+        context.ellipse(width * .54, height * .43, 52, 72, 0, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#d44f91';
+        context.fillRect(0, height * .68, width, height * .32);
+        const glyphs = window.__RUNE_GLYPH_V16__.renderTextCanvas('charlotte', {
+          scale: .82,
+          gap: 5,
+          padding: 4,
+          background: 'transparent',
+          foreground: '#f4e4d5'
+        });
+        context.drawImage(glyphs, 6, height - glyphs.height - 4);
+        name = 'charlotte.png';
+      } else if (generatedKind === 'decorated') {
+        context.fillStyle = '#050505';
+        context.fillRect(0, 0, width, height);
+        context.strokeStyle = '#efe3b8';
+        context.fillStyle = '#efe3b8';
+        context.lineWidth = 8;
+        for (const [x, y] of [[75, 70], [660, 70], [75, 344], [660, 344]]) {
+          context.beginPath();
+          context.arc(x, y, 42, 0, Math.PI * 2);
+          context.stroke();
+          for (let index = 0; index < 6; index += 1) {
+            const angle = index * Math.PI / 3;
+            context.beginPath();
+            context.arc(x + Math.cos(angle) * 24, y + Math.sin(angle) * 24, 8, 0, Math.PI * 2);
+            context.fill();
+          }
+        }
+        for (const x of [180, 240, 300, 438, 498, 558]) {
+          context.beginPath();
+          context.arc(x, 65, 18, 0, Math.PI * 2);
+          context.fill();
+          context.fillRect(x - 8, 79, 16, 18);
+        }
+        for (const x of [180, 240, 300, 438, 498, 558]) {
+          context.beginPath();
+          context.moveTo(x, 365);
+          context.quadraticCurveTo(x - 20, 335, x, 315);
+          context.quadraticCurveTo(x + 20, 335, x, 365);
+          context.fill();
+        }
+        const glyphs = window.__RUNE_GLYPH_V16__.renderTextCanvas('ichtotemich', {
+          scale: .62,
+          gap: 6,
+          padding: 4,
+          background: 'transparent',
+          foreground: '#f4e7bd'
+        });
+        context.drawImage(glyphs, (width - glyphs.width) / 2, (height - glyphs.height) / 2);
+        name = 'decorated.jpg';
+      } else {
+        throw new Error(`unknown generated fixture: ${generatedKind}`);
+      }
+      blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(value => value ? resolve(value) : reject(new Error('canvas blob failed')), 'image/png');
+      });
+    }
+    const file = new File([blob], name, { type: blob.type || 'image/png' });
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    input.files = transfer.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, kind);
+  await page.waitForFunction(() => !document.getElementById('runesRecognize')?.disabled, { timeout: 30000 });
+}
+
+async function recognizeGenerated(page, kind, preprocess, layout, expected) {
+  await setGeneratedFile(page, kind);
   await page.select('#runesPreprocess', preprocess);
   await page.select('#runesLayout', layout);
   await page.click('#runesRecognize');
@@ -47,7 +139,7 @@ async function uploadAndRecognize(page, fileName, preprocess, layout, expected) 
     status: document.getElementById('runesStatus')?.textContent || '',
     diagnostics: document.getElementById('runesDiagnostics')?.textContent || ''
   }));
-  assert(result.output === expected, `${fileName} recognition`, result);
+  assert(result.output === expected, `${kind} recognition`, result);
 }
 
 try {
@@ -153,11 +245,10 @@ try {
   assert(runeState.nav.length === 4 && runeState.nav.includes('魔女文翻译'), 'rune four-button navigation', runeState);
   assert(runeState.title.includes('魔女文翻译') && runeState.refWidth <= 700, 'rune title and compact chart', runeState);
 
-  await uploadAndRecognize(page, 'charlotte.png', 'decorated', 'line', 'CHARLOTTE');
+  await recognizeGenerated(page, 'charlotte', 'decorated', 'line', 'CHARLOTTE');
   await page.click('#runesClear');
 
-  const fileInput = await page.$('#runesFile');
-  await fileInput.uploadFile(path.join(fixtures, 'charlotte.png'));
+  await setGeneratedFile(page, 'charlotte');
   await page.waitForFunction(() => window.__RUNE_MASK_V9__?.state?.workingFile, { timeout: 30000 });
   await page.evaluate(() => {
     const api = window.__RUNE_MASK_V9__;
@@ -183,7 +274,9 @@ try {
   assert(maskResult.output === 'CHARLOTTE', 'painted mask CHARLOTTE', maskResult);
   await page.click('#runesClear');
 
-  await uploadAndRecognize(page, 'alphabet.jpg', 'auto', 'chart', 'abcdefg\nhijklmn\nopqrstu\nvwxyz');
+  await recognizeGenerated(page, 'decorated', 'decorated', 'line', 'ICHTOTEMICH');
+  await page.click('#runesClear');
+  await recognizeGenerated(page, 'alphabet', 'auto', 'chart', 'abcdefg\nhijklmn\nopqrstu\nvwxyz');
   assert(errors.length === 0, 'runes page has no JS errors', errors);
   await page.close();
 
