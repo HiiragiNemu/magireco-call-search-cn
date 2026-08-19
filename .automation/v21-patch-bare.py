@@ -101,11 +101,12 @@ text = text.replace(
     "if (!base || !chrome) throw new Error('BASE_URL and CHROME_PATH are required');",
 )
 text = text.replace("'charlotte.png'", "'charlotte.jpg'")
-needle = """  await page.select('#runesPreprocess', preprocess);
+
+auto_needle = """  await page.select('#runesPreprocess', preprocess);
   await page.select('#runesLayout', layout);
   await page.click('#runesRecognize');
 """
-replacement = """  await page.select('#runesPreprocess', preprocess);
+auto_replacement = """  await page.select('#runesPreprocess', preprocess);
   await page.select('#runesLayout', layout);
   if (/charlotte/i.test(fileName)) {
     const direct = await page.evaluate(async () => {
@@ -144,8 +145,69 @@ replacement = """  await page.select('#runesPreprocess', preprocess);
   await page.click('#runesRecognize');
 """
 if 'DIRECT_CHARLOTTE_DIAGNOSTIC' not in text:
-    if needle not in text:
+    if auto_needle not in text:
         raise SystemExit('Smoke recognition injection anchor was not found')
-    text = text.replace(needle, replacement, 1)
+    text = text.replace(auto_needle, auto_replacement, 1)
+
+mask_needle = """  await page.select('#runesPreprocess', 'decorated');
+  await page.select('#runesLayout', 'line');
+  await page.click('#runesRecognize');
+"""
+mask_replacement = """  await page.select('#runesPreprocess', 'decorated');
+  await page.select('#runesLayout', 'line');
+  const directMask = await page.evaluate(async () => {
+    const file = document.getElementById('runesFile')?.files?.[0];
+    const maskApi = window.__RUNE_MASK_V9__;
+    const maskEngine = window.__RUNE_MASK_GLYPH_V19__;
+    const colorEngine = window.__RUNE_COLOR_V14__;
+    const glyphEngine = window.__RUNE_GLYPH_V16__;
+    const colorMask = file && maskApi && maskEngine
+      ? await maskEngine.buildColorMaskedFile(file, maskApi)
+      : null;
+    const focused = colorMask && maskEngine?.buildSeedFocusedCanvas
+      ? await maskEngine.buildSeedFocusedCanvas(colorMask, colorEngine)
+      : null;
+    const glyph = focused?.canvas
+      ? glyphEngine?.recognizeCanvas?.(focused.canvas, { expectedGlyphs: focused.segments })
+      : null;
+    return {
+      colorMask: colorMask ? {
+        width: colorMask.width,
+        height: colorMask.height,
+        retainedRatio: colorMask.retainedRatio
+      } : null,
+      focused: focused ? {
+        segments: focused.segments,
+        foregroundRatio: focused.foregroundRatio,
+        width: focused.canvas?.width,
+        height: focused.canvas?.height,
+        bounds: focused.bounds
+      } : null,
+      glyph: glyph ? {
+        text: glyph.text,
+        raw: glyph.raw,
+        accepted: glyph.accepted,
+        corrected: glyph.corrected,
+        glyphs: glyph.glyphs,
+        averageScore: glyph.averageScore,
+        averageMargin: glyph.averageMargin,
+        topCandidates: glyph.topCandidates
+      } : null
+    };
+  });
+  console.log('DIRECT_MASK_CHARLOTTE_DIAGNOSTIC', JSON.stringify(directMask));
+  if (!directMask.focused || !directMask.glyph) {
+    throw new Error(`direct painted-mask pipeline returned no result: ${JSON.stringify(directMask)}`);
+  }
+  if (!directMask.glyph.accepted || directMask.glyph.text.toUpperCase() !== 'CHARLOTTE') {
+    throw new Error(`direct painted-mask result rejected: ${JSON.stringify(directMask)}`);
+  }
+  await page.click('#runesRecognize');
+"""
+if 'DIRECT_MASK_CHARLOTTE_DIAGNOSTIC' not in text:
+    if mask_needle not in text:
+        raise SystemExit('Painted-mask smoke injection anchor was not found')
+    text = text.replace(mask_needle, mask_replacement, 1)
+
 path.write_text(text, encoding='utf-8', newline='\n')
-print('Configured browser smoke to use real OCR fixtures with direct Charlotte diagnostics')
+print('Configured browser smoke with direct automatic and painted-mask Charlotte diagnostics')
