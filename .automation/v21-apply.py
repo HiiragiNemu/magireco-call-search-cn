@@ -130,6 +130,13 @@ for html_path in (ROOT / 'public').glob('*.html'):
     if html_path.name == 'index.html':
         html = html.replace('点击右下角的', '点击右侧的“搜”')
         html = html.replace('或“搜索”按钮', '或此处的“称呼搜索”按钮')
+        # The second legacy sentence refers to the page-scroll arrows, not the
+        # search shortcut. Restore that independent instruction after replacing
+        # the first search sentence.
+        html = html.replace(
+            '页面底部将显示称呼关系图和表格。(点击右侧的“搜”箭头可以上下移动)',
+            '页面底部将显示称呼关系图和表格。(点击右下角的箭头可以上下移动)',
+        )
         html = re.sub(r'\s*<i class="fa fa-share-alt-square"[^>]*></i>\s*', '\n', html, count=1)
         editor = '<li><a href="./story-title-editor.html">母故事标题翻译清单（管理员）</a></li>'
         if editor not in html:
