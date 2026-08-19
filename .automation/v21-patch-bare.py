@@ -75,5 +75,51 @@ text = text.replace(
     "if (!base || !chrome) throw new Error('BASE_URL and CHROME_PATH are required');",
 )
 text = text.replace("'charlotte.png'", "'charlotte.jpg'")
+needle = """  await page.select('#runesPreprocess', preprocess);
+  await page.select('#runesLayout', layout);
+  await page.click('#runesRecognize');
+"""
+replacement = """  await page.select('#runesPreprocess', preprocess);
+  await page.select('#runesLayout', layout);
+  if (/charlotte/i.test(fileName)) {
+    const direct = await page.evaluate(async () => {
+      const file = document.getElementById('runesFile')?.files?.[0];
+      const focused = file ? await window.__RUNE_COLOR_V14__?.buildColorFocusedInput?.(file, true) : null;
+      const glyph = focused?.canvas ? window.__RUNE_GLYPH_V16__?.recognizeCanvas?.(focused.canvas, { expectedGlyphs: focused.segments }) : null;
+      return {
+        focused: focused ? {
+          segments: focused.segments,
+          score: focused.score,
+          foregroundRatio: focused.foregroundRatio,
+          width: focused.canvas?.width,
+          height: focused.canvas?.height,
+          bounds: focused.bounds
+        } : null,
+        glyph: glyph ? {
+          text: glyph.text,
+          raw: glyph.raw,
+          accepted: glyph.accepted,
+          corrected: glyph.corrected,
+          glyphs: glyph.glyphs,
+          averageScore: glyph.averageScore,
+          averageMargin: glyph.averageMargin,
+          topCandidates: glyph.topCandidates
+        } : null
+      };
+    });
+    console.log('DIRECT_CHARLOTTE_DIAGNOSTIC', JSON.stringify(direct));
+    if (!direct.focused || !direct.glyph) {
+      throw new Error(`direct Charlotte pipeline returned no result: ${JSON.stringify(direct)}`);
+    }
+    if (!direct.glyph.accepted || direct.glyph.text.toUpperCase() !== expected) {
+      throw new Error(`direct Charlotte glyph result rejected: ${JSON.stringify(direct)}`);
+    }
+  }
+  await page.click('#runesRecognize');
+"""
+if 'DIRECT_CHARLOTTE_DIAGNOSTIC' not in text:
+    if needle not in text:
+        raise SystemExit('Smoke recognition injection anchor was not found')
+    text = text.replace(needle, replacement, 1)
 path.write_text(text, encoding='utf-8', newline='\n')
-print('Configured browser smoke to use real OCR fixtures')
+print('Configured browser smoke to use real OCR fixtures with direct Charlotte diagnostics')
