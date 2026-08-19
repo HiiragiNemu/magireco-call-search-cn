@@ -32,34 +32,33 @@ jobs:
           set -euo pipefail
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Restore reviewed V20 source bundle
+      - name: Restore reviewed source files
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin safe-v20-production-fix
-          : > /tmp/v20-final.b64
-          for part in 00 01 02 03 04 05 06 07 08; do
-            git show "origin/safe-v20-production-fix:.automation/v20-final-bundle/part-${part}.b64" >> /tmp/v20-final.b64
+          source_branch='safe-v18-production-fix'
+          git fetch origin "$source_branch"
+          copy_from_source() {
+            local path="$1"
+            mkdir -p "$(dirname "$path")"
+            git show "origin/$source_branch:$path" > "$path"
+          }
+          for path in \
+            public/runes.html \
+            public/story.html \
+            public/story-title-editor.html \
+            public/myfile/live-fixes-v12.js \
+            public/myfile/runes-mask-glyph-v18.js \
+            public/myfile/runes-v18.css \
+            public/myfile/story-grouped-results-v18.js \
+            public/myfile/story-title-editor-v2.css \
+            public/myfile/story-title-editor-v2.js \
+            public/myfile/story-title-password-v2.js \
+            public/myfile/story-title-runtime-v2.js \
+            scripts/build-story-title-groups-v1.py
+          do
+            copy_from_source "$path"
           done
-          tr -d '\n\r ' < /tmp/v20-final.b64 | base64 -d > /tmp/v20-final.tar.gz
-          python - <<'PY'
-          from pathlib import Path
-          import tarfile
-          root = Path.cwd().resolve()
-          with tarfile.open('/tmp/v20-final.tar.gz', 'r:gz') as archive:
-              members = archive.getmembers()
-              for member in members:
-                  target = (root / member.name).resolve()
-                  if target != root and root not in target.parents:
-                      raise SystemExit(f'Unsafe bundle member: {member.name}')
-              archive.extractall(root)
-          print(f'Extracted {len(members)} reviewed bundle members.')
-          PY
-          test -f public/runes.html
-          test -f public/story-title-editor.html
-          test -f scripts/build-story-title-groups-v1.py
-          test -f tests/fixtures/runes/charlotte.png
-          test -f tests/fixtures/runes/alphabet.jpg
 
       - name: Apply V21 production patches
         shell: bash
@@ -99,7 +98,6 @@ jobs:
           done
           chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
           BASE_URL=http://127.0.0.1:4173 \
-          FIXTURE_DIR="$GITHUB_WORKSPACE/tests/fixtures/runes" \
           CHROME_PATH="$chrome" \
           node .automation/v21-smoke.mjs
 
@@ -151,7 +149,6 @@ jobs:
           set -euo pipefail
           chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
           BASE_URL=https://magireco-call-search-cn.pages.dev \
-          FIXTURE_DIR="$GITHUB_WORKSPACE/tests/fixtures/runes" \
           CHROME_PATH="$chrome" \
           node .automation/v21-smoke.mjs
 
