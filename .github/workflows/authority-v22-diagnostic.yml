@@ -1,0 +1,118 @@
+name: V22 authoritative title source diagnostic
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/authority-v22-diagnostic.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+
+      - name: Checkout official CN patch source
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magireco-cn-patch
+          path: _sources/magireco-cn-patch
+          fetch-depth: 1
+
+      - name: Checkout MagiReader source
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magi-reader
+          path: _sources/magi-reader
+          fetch-depth: 1
+
+      - name: Collect focused source package
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/authority-v22-diagnostic"
+          mkdir -p "$out/cn-patch" "$out/magi-reader/candidates" "$out/target"
+
+          cp -a _sources/magireco-cn-patch/magica/js/libs "$out/cn-patch/libs"
+          find _sources/magireco-cn-patch/magica/js/libs -maxdepth 1 -type f -printf '%f\t%s\n' | sort > "$out/cn-patch/libs-files.tsv"
+
+          find _sources/magi-reader -type f -not -path '*/.git/*' -printf '%P\t%s\n' | sort > "$out/magi-reader/file-list.tsv"
+          find _sources/magi-reader -type f -not -path '*/.git/*' \
+            \( -iname '*story*index*.json' -o -iname 'titles.json' -o -iname '*title*.json' \
+               -o -iname '*dictionary*.js' -o -iname '*dictionary*.json' \
+               -o -iname '*event*.json' -o -iname '*chapter*.json' \) \
+            -size -25M -print0 | while IFS= read -r -d '' file; do
+              rel="${file#_sources/magi-reader/}"
+              mkdir -p "$out/magi-reader/candidates/$(dirname "$rel")"
+              cp "$file" "$out/magi-reader/candidates/$rel"
+            done
+
+          {
+            echo '=== Japanese title probes in MagiReader ==='
+            git -C _sources/magi-reader grep -n -I -E 'トナカイサンタ繁盛記|ウワサアクアリウムへようこそ|Bittersweet AI Memory|万年桜のウワサ' || true
+            echo
+            echo '=== Official CN title probes in CN patch ==='
+            git -C _sources/magireco-cn-patch grep -n -I -E '驯鹿|水族馆|Bittersweet|万年樱|三日月别墅的Merry Christmas' -- magica/js/libs || true
+          } > "$out/probes.txt"
+
+          cp public/data/story-v6/manifest.json "$out/target/"
+          cp public/data/story-v7/localization.json "$out/target/"
+          cp public/data/story-title-build-report-v1.json "$out/target/"
+          cp public/data/translation-audit-v5.json "$out/target/" || true
+          cp scripts/build-story-titles-v10.py "$out/target/"
+          cp scripts/build-story-title-groups-v1.py "$out/target/"
+
+          python - "$out" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          root = Path(sys.argv[1])
+          report = {"libs": [], "reader_candidates": []}
+
+          def summarize(path: Path):
+              try:
+                  data = json.loads(path.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  return {"path": str(path.relative_to(root)), "error": type(exc).__name__}
+              item = {"path": str(path.relative_to(root)), "bytes": path.stat().st_size, "type": type(data).__name__}
+              if isinstance(data, list):
+                  item["count"] = len(data)
+                  if data and isinstance(data[0], dict):
+                      item["sample_keys"] = sorted(data[0].keys())
+                      item["sample"] = data[:3]
+                  else:
+                      item["sample"] = data[:3]
+              elif isinstance(data, dict):
+                  item["count"] = len(data)
+                  item["sample_keys"] = list(data.keys())[:30]
+                  sample = {}
+                  for key in list(data.keys())[:3]:
+                      sample[key] = data[key]
+                  item["sample"] = sample
+              return item
+
+          for path in sorted((root / "cn-patch/libs").glob("*.json")):
+              report["libs"].append(summarize(path))
+          for path in sorted((root / "magi-reader/candidates").rglob("*.json")):
+              report["reader_candidates"].append(summarize(path))
+
+          (root / "schema-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+
+          du -ah "$out" | sort -h > "$out/package-sizes.txt"
+
+      - name: Upload focused diagnostic artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: authority-v22-diagnostic-${{ github.run_id }}
+          path: ${{ runner.temp }}/authority-v22-diagnostic
+          retention-days: 3
+          compression-level: 6
