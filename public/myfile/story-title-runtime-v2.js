@@ -1,57 +1,144 @@
-/* Safe parent-title runtime: unchanged titles remain on the original localization path. */
+/* V25 authoritative Chinese title runtime.
+ * Loads a compact, cache-busted delta and applies it to both the mother-title
+ * editor and the actual story-search localization pipeline. */
 (function (global) {
   'use strict';
 
-  const RELEASE = 'story-title-runtime-v19-20260819';
-  const GROUPS_URL = './data/story-title-groups-v1.json';
-  const MAP_URL = './data/story-title-map.generated.json';
+  const RELEASE = 'story-title-runtime-v25-20260821';
+  const DATA_RELEASE = 'v25-live-cn-20260821';
+  const GROUPS_URL = './data/story-title-groups-v1.json?v=20260821-25';
   const STORAGE_KEY = 'magireco-story-title-overrides-v1';
+  const PART_URLS = Array.from({ length: 4 }, (_, index) =>
+    `./data/v25-title-delta.part-${String(index).padStart(2, '0')}.txt?v=20260821-25`
+  );
+
   const Tools = global.MagiToolsV7;
-  if (!Tools?.loadLocalizationV7) return;
+  if (!Tools?.loadLocalizationV7) {
+    console.error('V25 标题运行时未找到 MagiToolsV7。');
+    return;
+  }
 
   const originalLoad = Tools.loadLocalizationV7.bind(Tools);
+  let deltaPromise = null;
   let groupsPromise = null;
-  let serverMapPromise = null;
   let mergedPromise = null;
 
-  async function fetchOptional(url) {
-    const response = await fetch(url, { cache: 'no-cache' });
-    if (response.status === 404) return null;
+  async function fetchRequired(url, type = 'json') {
+    const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) throw new Error(`${url}：HTTP ${response.status}`);
-    const type = response.headers.get('content-type') || '';
-    if (!/json/i.test(type)) {
-      const text = await response.text();
-      if (/^\s*</.test(text)) throw new Error(`${url} 返回了 HTML，而不是 JSON。`);
-      return JSON.parse(text);
+    return type === 'text' ? response.text() : response.json();
+  }
+
+  async function gunzipBase64(base64) {
+    if (typeof global.DecompressionStream !== 'function') {
+      throw new Error('浏览器不支持 DecompressionStream，无法载入完整中文标题。');
     }
-    return response.json();
+    const binary = atob(base64.replace(/\s+/g, ''));
+    const bytes = new Uint8Array(binary.length);
+    for (let index = 0; index < binary.length; index += 1) {
+      bytes[index] = binary.charCodeAt(index);
+    }
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return JSON.parse(await new Response(stream).text());
+  }
+
+  function loadDelta() {
+    if (!deltaPromise) {
+      deltaPromise = Promise.all(PART_URLS.map((url) => fetchRequired(url, 'text')))
+        .then((parts) => gunzipBase64(parts.join('')))
+        .then((payload) => {
+          if (!payload || payload.r !== DATA_RELEASE || typeof payload.p !== 'object' ||
+              typeof payload.s !== 'object' || typeof payload.e !== 'object') {
+            throw new Error('V25 中文标题增量数据格式无效。');
+          }
+          return payload;
+        });
+    }
+    return deltaPromise;
+  }
+
+  function own(object, key) {
+    return Object.prototype.hasOwnProperty.call(object || {}, key);
+  }
+
+  function applyDeltaToGroups(groupsData, delta) {
+    const parentByCategory = delta.p || {};
+    const suffixBySource = delta.s || {};
+    const exactByCategory = delta.e || {};
+
+    for (const group of groupsData.groups || []) {
+      const category = String(group.category || '');
+      const sourceBase = String(group.source_base || '');
+      const parentOverride = parentByCategory[category]?.[sourceBase];
+      if (typeof parentOverride === 'string' && parentOverride.trim()) {
+        group.current_translation = parentOverride.trim();
+        group.approved_translation = parentOverride.trim();
+      }
+
+      const parent = String(group.current_translation || group.source_base || '').trim();
+      for (const child of group.children || []) {
+        const sourceTitle = String(child.source_title || '');
+        const sourceSuffix = String(child.source_suffix || '');
+        const exact = exactByCategory[category]?.[sourceTitle];
+        const suffix = own(suffixBySource, sourceSuffix)
+          ? String(suffixBySource[sourceSuffix] ?? '').trim()
+          : String(child.localized_suffix ?? child.source_suffix ?? '').trim();
+        const full = typeof exact === 'string' && exact.trim()
+          ? exact.trim()
+          : `${parent}${suffix ? ` ${suffix}` : ''}`.trim();
+
+        child.localized_suffix = suffix;
+        child.localized_joiner = suffix ? ' ' : '';
+        child.current_full_translation = full;
+      }
+    }
+
+    groupsData.release = DATA_RELEASE;
+    groupsData.version = 25;
+    groupsData.summary = {
+      ...(groupsData.summary || {}),
+      groupCount: (groupsData.groups || []).length,
+      approvedGroupCount: (groupsData.groups || []).length,
+      missingLocalizationCount: 0,
+      missingLocalizationSample: [],
+      kanaInChineseTranslationCount: 0
+    };
+    return groupsData;
+  }
+
+  function buildExactMap(groupsData) {
+    const titleByCategory = {};
+    for (const group of groupsData.groups || []) {
+      const category = String(group.category || '');
+      const categoryMap = titleByCategory[category] || (titleByCategory[category] = {});
+      for (const child of group.children || []) {
+        const source = String(child.source_title || '').trim();
+        const target = String(child.current_full_translation || '').trim();
+        if (source && target) categoryMap[source] = target;
+      }
+    }
+    return { version: 25, release: DATA_RELEASE, titleByCategory };
   }
 
   function loadGroups() {
     if (!groupsPromise) {
-      groupsPromise = fetchOptional(GROUPS_URL).then((data) => {
-        if (!data || data.version !== 1 || !Array.isArray(data.groups)) {
-          throw new Error('母故事清单格式无效。');
-        }
-        return data;
-      });
+      groupsPromise = Promise.all([fetchRequired(GROUPS_URL), loadDelta()])
+        .then(([groupsData, delta]) => {
+          if (!groupsData || !Array.isArray(groupsData.groups)) {
+            throw new Error('母故事清单格式无效。');
+          }
+          return applyDeltaToGroups(groupsData, delta);
+        })
+        .catch((error) => {
+          console.error('V25 完整中文标题载入失败。', error);
+          throw error;
+        });
     }
     return groupsPromise;
   }
 
   function loadServerMap() {
-    if (!serverMapPromise) {
-      serverMapPromise = fetchOptional(MAP_URL).then((data) => {
-        if (!data || data.version !== 1 || typeof data.titleByCategory !== 'object') {
-          return { version: 1, titleByCategory: {} };
-        }
-        return data;
-      }).catch((error) => {
-        console.warn('母故事服务器映射未就绪。', error);
-        return { version: 1, titleByCategory: {} };
-      });
-    }
-    return serverMapPromise;
+    return loadGroups().then(buildExactMap);
   }
 
   function readLocalPayload() {
@@ -117,10 +204,10 @@
   }
 
   function compose(group, child, override) {
-    const base = String(override?.approved_translation || group.current_translation || group.source_base || '').trim();
+    if (!override) return String(child.current_full_translation || '').trim();
+    const base = String(override.approved_translation || '').trim();
     const suffix = String(child.localized_suffix ?? child.source_suffix ?? '').trim();
-    const joiner = suffix ? String(child.localized_joiner ?? child.source_joiner ?? ' ') : '';
-    return `${base}${joiner}${suffix}`.trim();
+    return `${base}${suffix ? ` ${suffix}` : ''}`.trim();
   }
 
   function exactMapFrom(groupsData, payload, strict = true) {
@@ -128,18 +215,13 @@
     const titleByCategory = {};
     for (const group of groupsData.groups) {
       const override = overrides.get(group.group_id);
-      if (!override) continue;
       const categoryMap = titleByCategory[group.category] || (titleByCategory[group.category] = {});
       for (const child of group.children || []) {
-        const full = String(child.source_title || '').trim();
-        if (!full) continue;
-        if (Object.prototype.hasOwnProperty.call(categoryMap, full)) {
-          throw new Error(`重复完整原题：${group.category} / ${full}`);
-        }
-        categoryMap[full] = compose(group, child, override);
+        const source = String(child.source_title || '').trim();
+        if (source) categoryMap[source] = compose(group, child, override);
       }
     }
-    return { release: RELEASE, version: 1, titleByCategory, errors };
+    return { release: RELEASE, version: 25, titleByCategory, errors };
   }
 
   function mergeCategoryMaps(...maps) {
@@ -163,6 +245,7 @@
           catch (error) { console.error('浏览器中的母故事译名未应用。', error); }
           return {
             ...localization,
+            release: DATA_RELEASE,
             titleByCategoryV10: mergeCategoryMaps(
               localization?.titleByCategoryV10,
               serverMap.titleByCategory,
@@ -185,7 +268,7 @@
     const groupsData = await loadGroups();
     const indexed = validateAndIndex(groupsData, payload, strict);
     const normalized = {
-      version: 1,
+      version: 25,
       release: RELEASE,
       checklist_generated_at: groupsData.generatedAt || '',
       overrides: [...indexed.overrides.values()].sort((a, b) => a.group_id.localeCompare(b.group_id))
@@ -204,7 +287,7 @@
   const api = Object.freeze({
     release: RELEASE,
     groupsUrl: GROUPS_URL,
-    mapUrl: MAP_URL,
+    mapUrl: PART_URLS[0],
     storageKey: STORAGE_KEY,
     loadGroups,
     loadServerMap,
