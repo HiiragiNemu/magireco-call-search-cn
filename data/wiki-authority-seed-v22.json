@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "source": "HiiragiNemu/magireco-wiki-data:data/characters.json",
+  "authority": "wiki-fallback",
+  "notes": "Only used when no official CN client, reviewed local, or MagiReader translation exists. Latin-script canonical names are intentionally preserved.",
+  "entries": [
+    {"ja": "マギウスの翼", "zh": "Magius之翼", "kind": "organization"},
+    {"ja": "ネオマギウス", "zh": "Neo-Magius", "kind": "organization"},
+    {"ja": "プロミストブラッド", "zh": "PROMISED BLOOD", "kind": "organization"},
+    {"ja": "ピュエラケア", "zh": "Puella Care", "kind": "organization"},
+    {"ja": "七海 やちよ", "zh": "七海八千代", "kind": "character"},
+    {"ja": "アリナ・グレイ", "zh": "阿莉娜·格雷", "kind": "character"},
+    {"ja": "万年桜のウワサ", "zh": "万年樱的传闻", "kind": "character"},
+    {"ja": "マギウス", "zh": "Magius", "kind": "term"},
+    {"ja": "ウワサ", "zh": "传闻", "kind": "term"},
+    {"ja": "ドッペル", "zh": "魔女化身", "kind": "term"}
+  ]
+}
