@@ -1,0 +1,287 @@
+name: V24 complete authoritative localization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/v24-complete-localization.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: magireco-call-search-v24-localization
+  cancel-in-progress: false
+
+jobs:
+  finalize-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout official CN client tables
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magireco-cn-patch
+          path: _sources/magireco-cn-patch
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            magica/js/libs
+
+      - name: Apply V24 pipeline corrections
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/prepare-v24.py
+          python -m py_compile scripts/prepare-v24.py scripts/finalize-v23.py
+          node --check public/myfile/story-title-runtime-v2.js
+
+      - name: Generate complete authoritative localization
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/finalize-v23.py \
+            --repo-root . \
+            --libs-dir _sources/magireco-cn-patch/magica/js/libs \
+            | tee /tmp/v24-finalizer.json
+
+      - name: Validate all title surfaces
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+          import datetime as dt
+          import json
+          import re
+          from pathlib import Path
+
+          KANA = re.compile(r'[\u3040-\u30ff\u31f0-\u31ffー]')
+          root = Path('.')
+          groups = json.loads((root / 'public/data/story-title-groups-v1.json').read_text(encoding='utf-8'))
+          title_map = json.loads((root / 'public/data/story-title-map.generated.json').read_text(encoding='utf-8'))
+          localization = json.loads((root / 'public/data/story-v7/localization.json').read_text(encoding='utf-8'))
+          marker = json.loads((root / 'public/v23-build-marker.json').read_text(encoding='utf-8'))
+
+          assert groups.get('release') == 'v24-complete-cn-20260820', groups.get('release')
+          assert title_map.get('release') == 'v24-complete-cn-20260820'
+          assert localization.get('release') == 'v24-complete-cn-20260820'
+          assert marker.get('release') == 'v24-complete-cn-20260820'
+          assert len(groups.get('groups', [])) == 2166
+          assert sum(len(g.get('children', [])) for g in groups['groups']) == 5826
+
+          kana_hits = []
+          for group in groups['groups']:
+              for field in ('current_translation', 'approved_translation'):
+                  value = str(group.get(field) or '')
+                  if KANA.search(value):
+                      kana_hits.append((group.get('category'), group.get('source_base'), field, value))
+              for child in group.get('children', []):
+                  for field in ('localized_suffix', 'current_full_translation'):
+                      value = str(child.get(field) or '')
+                      if KANA.search(value):
+                          kana_hits.append((group.get('category'), child.get('source_title'), field, value))
+          for category, mapping in title_map.get('titleByCategory', {}).items():
+              for source, target in mapping.items():
+                  if KANA.search(str(target)):
+                      kana_hits.append((category, source, 'titleByCategory', target))
+          assert not kana_hits, kana_hits[:30]
+
+          def group(source: str, category: str | None = None):
+              matches = [g for g in groups['groups'] if g.get('source_base') == source and (category is None or g.get('category') == category)]
+              assert len(matches) == 1, (source, category, len(matches))
+              return matches[0]
+
+          expected_groups = {
+              ('メモリア', 'No.888 夢を追う妹'): 'No.888 追梦的妹妹',
+              ('メモリア', 'No.889 新鮮なポジション'): 'No.889 新鲜的位置',
+              ('メモリア', 'No.900 夏のはじまりに母の影光り'): 'No.900 夏日伊始，母亲的影子',
+              ('メモリア', 'No.901 記憶の中の温もりは蘇り'): 'No.901 记忆中的温暖复苏了',
+              ('scene0', 'サイドストーリー Film.0'): '支线故事 Film.0',
+              ('イベント', 'トリック☆トラブル☆学園祭 BADEND'): '诡计☆骚乱☆学园祭 坏结局',
+              ('イベント', 'ドリームハロウィンフェスタ ～アリナ先輩！いい子になるの！～'): 'Dream Halloween Festa～阿莉娜前辈！做个好孩子！～',
+              ('イベント', '始まりと永遠と'): '起始和永远',
+              ('ピュエラ・ヒストリア', 'Pillar of Tomorrow'): 'Pillar of Tomorrow',
+              ('ピュエラ・ヒストリア', '邪馬台国の跡目編'): '邪马台国的后嗣篇',
+          }
+          for (category, source), expected in expected_groups.items():
+              actual = group(source, category).get('current_translation')
+              assert actual == expected, (category, source, actual, expected)
+
+          by_category = title_map['titleByCategory']
+          expected_children = {
+              ('scene0', 'サイドストーリー Film.0 1 (紫)'): '支线故事 Film.0 1 （紫色）',
+              ('イベント', 'トリック☆トラブル☆学園祭 BADEND1話'): '诡计☆骚乱☆学园祭 坏结局 第1话',
+              ('スペシャル', 'お月見はゆらねむパジャマパーティー 1話 期間限定ミッション'): '睡眼朦胧的睡衣赏月派对 第1话 期间限定任务',
+              ('ピュエラ・ヒストリア', '神浜の戦神子編 EXチャレンジ'): '神滨战神子篇 EX挑战',
+              ('メモリア', 'No.952 ラテアートチャレンジ'): 'No.952 咖啡拉花挑战 挑战',
+          }
+          for (category, source), expected in expected_children.items():
+              actual = by_category.get(category, {}).get(source)
+              assert actual == expected, (category, source, actual, expected)
+
+          scene_sources = [g['source_base'] for g in groups['groups'] if g.get('category') == 'scene0']
+          assert scene_sources.index('Film.2') < scene_sources.index('Film.10')
+          memoria_sources = [g['source_base'] for g in groups['groups'] if g.get('category') == 'メモリア']
+          assert memoria_sources.index('No.9 犬の魔女の手下') < memoria_sources.index('No.90 無味乾燥') < memoria_sources.index('No.900 夏のはじまりに母の影光り')
+
+          index = (root / 'public/index.html').read_text(encoding='utf-8')
+          assert '魔法纪录·Magia Exedra 魔法少女称呼搜索</div>' not in index
+          assert 'hamburger-menu-v23.js' in index
+          runtime = (root / 'public/myfile/story-title-runtime-v2.js').read_text(encoding='utf-8')
+          assert "story-title-runtime-v24-20260820" in runtime
+          assert 'data.version !== 1' not in runtime
+          for page in ('public/story.html', 'public/story-title-editor.html'):
+              html = (root / page).read_text(encoding='utf-8')
+              assert 'story-title-runtime-v2.js?v=20260820-24' in html
+
+          report = {
+              'schemaVersion': 1,
+              'state': 'pass',
+              'release': 'v24-complete-cn-20260820',
+              'checkedAt': dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
+              'sourceSha': __import__('os').environ.get('SOURCE_SHA'),
+              'runId': __import__('os').environ.get('RUN_ID'),
+              'groupCount': len(groups['groups']),
+              'childTitleCount': sum(len(g.get('children', [])) for g in groups['groups']),
+              'kanaInChineseDisplayFields': 0,
+              'sampleChecks': len(expected_groups) + len(expected_children),
+              'memoriaAlignment': 'official pieceList sorted by pieceId, 1-based ordinal',
+              'runtimeAcceptsGeneratedVersion': True,
+              'visibleTopTitleRemoved': True,
+          }
+          for path in ('reports/v24-local-validation.json', 'public/v24-local-validation.json'):
+              output = root / path
+              output.parent.mkdir(parents=True, exist_ok=True)
+              output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Commit generated V24 release to main
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _sources
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No V24 product changes were generated.' >&2
+            exit 1
+          fi
+          git commit -m 'Deploy complete V24 authoritative Chinese localization'
+          git push origin HEAD:main
+          release_sha="$(git rev-parse HEAD)"
+          echo "sha=$release_sha" >> "$GITHUB_OUTPUT"
+          echo "$release_sha" > /tmp/v24-release-sha.txt
+
+      - name: Wait for Cloudflare Pages production
+        shell: bash
+        env:
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          for attempt in $(seq 1 120); do
+            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            marker="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/v23-build-marker.json?v24=$nonce" 2>/dev/null || true)"
+            index="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/?v24=$nonce" 2>/dev/null || true)"
+            if python - "$marker" <<'PY'
+          import json, sys
+          try:
+              value = json.loads(sys.argv[1])
+          except Exception:
+              raise SystemExit(1)
+          raise SystemExit(0 if value.get('release') == 'v24-complete-cn-20260820' and value.get('kanaInChineseTranslationCount') == 0 else 1)
+          PY
+            then
+              if ! grep -Fq '魔法纪录·Magia Exedra 魔法少女称呼搜索</div>' <<< "$index" \
+                && grep -Fq 'hamburger-menu-v23.js' <<< "$index"; then
+                echo "Cloudflare Pages is serving V24 after attempt $attempt."
+                exit 0
+              fi
+            fi
+            sleep 10
+          done
+          echo 'Timed out waiting for Cloudflare Pages V24 production.' >&2
+          exit 1
+
+      - name: Verify production title data independently
+        shell: bash
+        env:
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          nonce="${GITHUB_RUN_ID}-verify-$(date +%s%N)"
+          curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/data/story-title-groups-v1.json?v24=$nonce" -o /tmp/groups.json
+          curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/data/story-title-map.generated.json?v24=$nonce" -o /tmp/map.json
+          curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/myfile/story-title-runtime-v2.js?v24=$nonce" -o /tmp/runtime.js
+          curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/story-title-editor.html?v24=$nonce" -o /tmp/editor.html
+          python - <<'PY'
+          import datetime as dt, json, os, re
+          from pathlib import Path
+          kana = re.compile(r'[\u3040-\u30ff\u31f0-\u31ffー]')
+          groups = json.loads(Path('/tmp/groups.json').read_text(encoding='utf-8'))
+          title_map = json.loads(Path('/tmp/map.json').read_text(encoding='utf-8'))
+          assert groups.get('release') == 'v24-complete-cn-20260820'
+          assert title_map.get('release') == 'v24-complete-cn-20260820'
+          assert len(groups.get('groups', [])) == 2166
+          assert sum(len(g.get('children', [])) for g in groups['groups']) == 5826
+          for mapping in title_map.get('titleByCategory', {}).values():
+              for target in mapping.values():
+                  assert not kana.search(str(target)), target
+          samples = {
+              ('メモリア', 'No.888 夢を追う妹'): 'No.888 追梦的妹妹',
+              ('メモリア', 'No.900 夏のはじまりに母の影光り'): 'No.900 夏日伊始，母亲的影子',
+              ('scene0', 'サイドストーリー Film.0 1 (紫)'): '支线故事 Film.0 1 （紫色）',
+              ('イベント', 'トリック☆トラブル☆学園祭 BADEND1話'): '诡计☆骚乱☆学园祭 坏结局 第1话',
+          }
+          by_category = title_map['titleByCategory']
+          for key, expected in samples.items():
+              actual = by_category[key[0]][key[1]]
+              assert actual == expected, (key, actual, expected)
+          runtime = Path('/tmp/runtime.js').read_text(encoding='utf-8')
+          editor = Path('/tmp/editor.html').read_text(encoding='utf-8')
+          assert 'story-title-runtime-v24-20260820' in runtime
+          assert 'data.version !== 1' not in runtime
+          assert 'story-title-runtime-v2.js?v=20260820-24' in editor
+          proof = {
+              'state': 'pass',
+              'release': 'v24-complete-cn-20260820',
+              'releaseSha': os.environ.get('RELEASE_SHA'),
+              'runId': os.environ.get('GITHUB_RUN_ID'),
+              'verifiedAt': dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
+              'production': 'https://magireco-call-search-cn.pages.dev',
+              'groupCount': 2166,
+              'childTitleCount': 5826,
+              'kanaInChineseDisplayFields': 0,
+              'sampleChecks': len(samples),
+              'visibleTopTitleRemoved': True,
+              'runtimeConsumesV24Data': True,
+          }
+          Path('/tmp/v24-production-proof.json').write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(proof, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload production proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: v24-production-proof-${{ github.run_id }}
+          path: |
+            /tmp/v24-finalizer.json
+            /tmp/v24-release-sha.txt
+            /tmp/v24-production-proof.json
+            reports/v24-local-validation.json
+          retention-days: 30
+          compression-level: 6
