@@ -1,0 +1,260 @@
+name: V22 authoritative localization finalization R2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .v22-finalize-r2-trigger
+
+permissions:
+  contents: write
+
+env:
+  BUILD_ID: v22-authority-20260820
+  PRODUCTION_URL: https://magireco-call-search-cn.pages.dev
+
+concurrency:
+  group: magireco-call-search-v22-finalization
+  cancel-in-progress: true
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify target branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = main
+          git rev-parse HEAD
+
+      - name: Checkout official CN client tables
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magireco-cn-patch
+          path: _sources/magireco-cn-patch
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            magica/js/libs
+
+      - name: Checkout MagiReader title sources
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magi-reader
+          path: _sources/magi-reader
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate implementation syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/finalize-v22.py
+          node --check public/myfile/v22-final.js
+          node --check tests/v22-smoke-r2.mjs
+
+      - name: Apply authority hierarchy and menu repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/finalize-v22.py apply \
+            --libs _sources/magireco-cn-patch/magica/js/libs \
+            --reader _sources/magi-reader
+
+      - name: Replace historical automation with one manual main-only audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          find .github/workflows -maxdepth 1 -type f \
+            ! -name 'v22-finalize-r2.yml' \
+            -delete
+          rm -rf .automation
+          rm -f .deploy-v21-trigger .v22-finalize-trigger .v22-finalize-r2-trigger
+          rm -f tests/v22-smoke.mjs
+          git rm -r --cached --ignore-unmatch node_modules || true
+          rm -rf node_modules
+
+          cat > .github/workflows/v22-maintenance.yml <<'YAML'
+          name: V22 main-only maintenance acceptance
+
+          on:
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          concurrency:
+            group: magireco-call-search-v22-maintenance
+            cancel-in-progress: true
+
+          jobs:
+            audit:
+              runs-on: ubuntu-latest
+              timeout-minutes: 20
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-python@v5
+                  with:
+                    python-version: '3.12'
+                - name: Static integrity audit
+                  run: |
+                    python -m py_compile scripts/finalize-v22.py
+                    python scripts/finalize-v22.py audit --strict
+                    node --check public/myfile/v22-final.js
+                    node --check tests/v22-smoke-r2.mjs
+                - name: Responsive browser acceptance
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    npm install --no-save --no-package-lock puppeteer-core@24.16.0
+                    python -m http.server 4173 --directory public >/tmp/v22-http.log 2>&1 &
+                    server_pid=$!
+                    trap 'kill "$server_pid" 2>/dev/null || true; rm -rf node_modules' EXIT
+                    for _ in $(seq 1 30); do
+                      curl -fsS http://127.0.0.1:4173/ >/dev/null && break
+                      sleep 1
+                    done
+                    chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+                    BASE_URL=http://127.0.0.1:4173 \
+                    CHROME_PATH="$chrome" \
+                    REPORT_PATH=reports/v22-maintenance-browser.json \
+                    node tests/v22-smoke-r2.mjs
+          YAML
+
+      - name: Static integrity audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/finalize-v22.py audit --strict
+          node --check public/myfile/v22-final.js
+          node --check tests/v22-smoke-r2.mjs
+
+      - name: Local mobile and desktop acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+          python -m http.server 4173 --directory public >/tmp/v22-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -rf node_modules' EXIT
+          for _ in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && break
+            sleep 1
+          done
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          test -n "$chrome"
+          BASE_URL=http://127.0.0.1:4173 \
+          CHROME_PATH="$chrome" \
+          REPORT_PATH=reports/v22-local-browser.json \
+          node tests/v22-smoke-r2.mjs
+          rm -rf node_modules
+
+      - name: Prepare source-only release tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _sources node_modules __pycache__ scripts/__pycache__
+          test ! -d node_modules
+          test ! -d _sources
+          test -f public/data/story-title-authority-v22.json
+          test -f reports/v22-translation-report.json
+          test -f reports/v22-site-audit.json
+          test -f reports/v22-unresolved-titles.tsv
+          rm -f .github/workflows/v22-finalize-r2.yml
+          git status --short
+
+      - name: Commit verified release directly to main
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No V22 product changes were generated.' >&2
+            exit 1
+          fi
+          git commit -m "Finalize V22 authoritative Chinese localization and menu layout"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Cloudflare Pages main deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 150); do
+            token="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            index="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/?v22=$token" || true)"
+            map_head="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/data/story-title-authority-v22.json?v22=$token" 2>/dev/null | head -c 1 || true)"
+            if grep -Fq "$BUILD_ID" <<<"$index" && [[ "$map_head" == '{' ]]; then
+              echo "Cloudflare Pages is serving V22 on attempt $attempt."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Timed out waiting for the V22 deployment.' >&2
+          exit 1
+
+      - name: Production mobile and desktop acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          BASE_URL="$PRODUCTION_URL" \
+          CHROME_PATH="$chrome" \
+          REPORT_PATH=/tmp/v22-production-browser.json \
+          node tests/v22-smoke-r2.mjs
+          rm -rf node_modules
+
+      - name: Create proof bundle
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v22-proof
+          cat > /tmp/v22-proof/result.json <<JSON
+          {
+            "state": "pass",
+            "build": "${BUILD_ID}",
+            "release_sha": "${{ steps.release.outputs.sha }}",
+            "production": "${PRODUCTION_URL}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "branch_cleanup": "deferred by explicit user request"
+          }
+          JSON
+          cp /tmp/v22-production-browser.json /tmp/v22-proof/production-browser.json
+          cp reports/v22-local-browser.json /tmp/v22-proof/local-browser.json
+          cp reports/v22-translation-report.json /tmp/v22-proof/translation-report.json
+          cp reports/v22-site-audit.json /tmp/v22-proof/site-audit.json
+          cp reports/v22-unresolved-titles.tsv /tmp/v22-proof/unresolved-titles.tsv
+
+      - name: Upload proof bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v22-final-acceptance-r2-${{ github.run_id }}
+          path: |
+            /tmp/v22-proof
+            reports/v22-local-browser.json
+            reports/v22-translation-report.json
+            reports/v22-site-audit.json
+            reports/v22-unresolved-titles.tsv
+          if-no-files-found: warn
+          retention-days: 30
