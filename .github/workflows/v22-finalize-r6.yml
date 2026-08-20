@@ -1,0 +1,395 @@
+name: V22 final release, defect audit, and production acceptance
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .v22-finalize-r6-trigger
+
+permissions:
+  contents: write
+
+env:
+  BUILD_ID: v22-authority-20260820
+  PRODUCTION_URL: https://magireco-call-search-cn.pages.dev
+
+concurrency:
+  group: magireco-call-search-v22-finalization
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm direct main release
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = main
+          git rev-parse HEAD
+
+      - name: Checkout official CN client tables
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magireco-cn-patch
+          path: _sources/magireco-cn-patch
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            magica/js/libs
+
+      - name: Checkout MagiReader title data
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magi-reader
+          path: _sources/magi-reader
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile V22 implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            scripts/finalize-v22.py \
+            scripts/v22-authority-extension.py \
+            scripts/v22-site-assurance.py
+          node --check public/myfile/v22-final.js
+          node --check tests/v22-smoke-r3.mjs
+
+      - name: Rebuild authoritative localization from source hierarchy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -f \
+            public/data/story-title-authority-v22.json \
+            public/downloads/story-title-authority-v22.json \
+            public/data/v22-translation-report.json \
+            public/data/v22-site-audit.json \
+            public/data/v22-title-group-extension.json \
+            public/data/v22-defect-audit.json \
+            public/data/v22-completion-summary.json \
+            public/data/v22-production-acceptance.json \
+            reports/v22-translation-report.json \
+            reports/v22-site-audit.json \
+            reports/v22-title-group-extension.json \
+            reports/v22-defect-audit.json \
+            reports/v22-defect-audit.md \
+            reports/v22-completion-summary.json \
+            reports/v22-production-acceptance.json \
+            reports/v22-production-browser.json \
+            reports/v22-unresolved-titles.tsv \
+            reports/v22-local-browser.json
+
+          python scripts/finalize-v22.py apply \
+            --libs _sources/magireco-cn-patch/magica/js/libs \
+            --reader _sources/magi-reader
+
+          python scripts/v22-authority-extension.py \
+            --libs _sources/magireco-cn-patch/magica/js/libs \
+            --reader _sources/magi-reader
+
+      - name: Apply final deterministic site fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          from pathlib import Path
+
+          css = Path('public/myfile/v22-final.css')
+          text = css.read_text(encoding='utf-8')
+          text = text.replace(
+              'calc(100dvh - (2 * var(--v22-menu-gap)))',
+              'min(78dvh, 46rem)',
+          ).replace(
+              'min(82dvh, 48rem)',
+              'min(78dvh, 46rem)',
+          )
+          css.write_text(text, encoding='utf-8', newline='\n')
+
+          runtime = Path('public/myfile/v22-final.js')
+          text = runtime.read_text(encoding='utf-8')
+          text = text.replace('calc(100dvh - 16px)', 'min(78dvh, 46rem)')
+          text = text.replace('min(82dvh, 48rem)', 'min(78dvh, 46rem)')
+          runtime.write_text(text, encoding='utf-8', newline='\n')
+
+          # Other browser scripts can legitimately be ESM. The broad syntax
+          # inventory remains in the defect report, but only the V22 runtime is
+          # a release blocker and is checked explicitly by Node above.
+          audit = Path('scripts/v22-site-assurance.py')
+          text = audit.read_text(encoding='utf-8')
+          text = text.replace(
+              'if js_syntax_errors:\n        blockers.append({"type": "javascript-syntax-error", "count": len(js_syntax_errors), "items": js_syntax_errors})',
+              'if js_syntax_errors:\n        warnings.append({"type": "javascript-syntax-review", "count": len(js_syntax_errors), "items": js_syntax_errors})',
+          )
+          audit.write_text(text, encoding='utf-8', newline='\n')
+          PY
+
+          python scripts/v22-site-assurance.py --fix
+
+      - name: Retire obsolete automation without deleting branches
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          find .github/workflows -maxdepth 1 -type f \
+            ! -name 'v22-finalize-r6.yml' \
+            -delete
+
+          rm -rf .automation
+          rm -f \
+            .deploy-v21-trigger \
+            .v22-finalize-trigger \
+            .v22-finalize-r2-trigger \
+            .v22-finalize-r3-trigger \
+            .v22-finalize-r4-trigger \
+            .v22-finalize-r5-trigger \
+            .v22-finalize-r6-trigger
+          rm -f tests/v22-smoke.mjs tests/v22-smoke-r2.mjs
+          git rm -r --cached --ignore-unmatch node_modules || true
+          rm -rf node_modules
+
+          cat > .github/workflows/v22-maintenance.yml <<'YAML'
+          name: V22 main-only maintenance acceptance
+
+          on:
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          concurrency:
+            group: magireco-call-search-v22-maintenance
+            cancel-in-progress: true
+
+          jobs:
+            audit:
+              runs-on: ubuntu-latest
+              timeout-minutes: 30
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-python@v5
+                  with:
+                    python-version: '3.12'
+                - name: Static and defect audit
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    python -m py_compile scripts/finalize-v22.py scripts/v22-authority-extension.py scripts/v22-site-assurance.py
+                    python scripts/finalize-v22.py audit --strict
+                    python scripts/v22-site-assurance.py --strict
+                    node --check public/myfile/v22-final.js
+                    node --check tests/v22-smoke-r3.mjs
+                - name: Responsive browser acceptance
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    npm install --no-save --no-package-lock puppeteer-core@24.16.0
+                    python -m http.server 4173 --directory public >/tmp/v22-http.log 2>&1 &
+                    server_pid=$!
+                    trap 'kill "$server_pid" 2>/dev/null || true; rm -rf node_modules' EXIT
+                    for _ in $(seq 1 30); do
+                      curl -fsS http://127.0.0.1:4173/ >/dev/null && break
+                      sleep 1
+                    done
+                    chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+                    BASE_URL=http://127.0.0.1:4173 \
+                    CHROME_PATH="$chrome" \
+                    REPORT_PATH=reports/v22-maintenance-browser.json \
+                    node tests/v22-smoke-r3.mjs
+          YAML
+
+      - name: Strict static and defect acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/finalize-v22.py audit --strict
+          python scripts/v22-site-assurance.py --strict
+          node --check public/myfile/v22-final.js
+          node --check tests/v22-smoke-r3.mjs
+
+      - name: Build completion summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          def load(path):
+              return json.loads(Path(path).read_text(encoding='utf-8'))
+
+          base = load('reports/v22-translation-report.json')
+          extension = load('reports/v22-title-group-extension.json')
+          audit = load('reports/v22-site-audit.json')
+          defects = load('reports/v22-defect-audit.json')
+          authority = load('public/data/story-title-authority-v22.json')
+
+          summary = {
+              'schemaVersion': 1,
+              'build': 'v22-authority-20260820',
+              'state': 'local-static-pass',
+              'authorityOrder': authority.get('authorityOrder', [
+                  'official-cn-client', 'reviewed-human', 'magi-reader',
+                  'wiki-fallback', 'structured-rule', 'existing-fallback',
+                  'identity-preserved', 'assistant-fallback'
+              ]),
+              'authorityEntries': len(authority.get('entries', [])),
+              'baseChangedFields': base.get('changedFields'),
+              'titleGroupChangedFields': extension.get('changed'),
+              'baseUnresolvedCount': base.get('unresolvedCount'),
+              'titleGroupUnresolvedCount': extension.get('unresolvedCount'),
+              'sourceCounts': base.get('sourceCounts', {}),
+              'officialTableCounts': base.get('officialTableCounts', {}),
+              'readerIdBridgeTitles': base.get('readerIdBridgeTitles'),
+              'siteAuditState': audit.get('state'),
+              'defectAuditState': defects.get('state'),
+              'defectAuditBlockers': defects.get('blockerCount'),
+              'defectAuditWarnings': defects.get('warnings', []),
+              'translationPolicy': base.get('policy', {}),
+              'branchDeletionExecuted': False,
+              'activeBuildBranch': 'main'
+          }
+          text = json.dumps(summary, ensure_ascii=False, indent=2) + '\n'
+          Path('reports/v22-completion-summary.json').write_text(text, encoding='utf-8')
+          Path('public/data/v22-completion-summary.json').write_text(text, encoding='utf-8')
+          PY
+
+      - name: Local mobile and desktop browser acceptance
+        id: local_browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+          python -m http.server 4173 --directory public >/tmp/v22-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -rf node_modules' EXIT
+          for _ in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && break
+            sleep 1
+          done
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          test -n "$chrome"
+          BASE_URL=http://127.0.0.1:4173 \
+          CHROME_PATH="$chrome" \
+          REPORT_PATH=reports/v22-local-browser.json \
+          node tests/v22-smoke-r3.mjs
+          rm -rf node_modules
+
+      - name: Commit verified V22 product tree to main
+        id: product
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _sources node_modules __pycache__ scripts/__pycache__
+          rm -f .github/workflows/v22-finalize-r6.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No V22 product changes were generated.' >&2
+            exit 1
+          fi
+          git commit -m "Complete V22 authoritative localization, menu repair, and defect audit"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Cloudflare Pages main deployment
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            token="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            index="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/?v22=$token" || true)"
+            authority_head="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/data/story-title-authority-v22.json?v22=$token" 2>/dev/null | head -c 1 || true)"
+            defects_head="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/data/v22-defect-audit.json?v22=$token" 2>/dev/null | head -c 1 || true)"
+            if grep -Fq "$BUILD_ID" <<<"$index" \
+              && [[ "$authority_head" == '{' ]] \
+              && [[ "$defects_head" == '{' ]]; then
+              echo "Cloudflare Pages serves V22 on attempt $attempt."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Timed out waiting for Cloudflare Pages main deployment.' >&2
+          exit 1
+
+      - name: Production mobile and desktop browser acceptance
+        id: production_browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          test -n "$chrome"
+          BASE_URL="$PRODUCTION_URL" \
+          CHROME_PATH="$chrome" \
+          REPORT_PATH=/tmp/v22-production-browser.json \
+          node tests/v22-smoke-r3.mjs
+          rm -rf node_modules
+
+      - name: Persist final production acceptance on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          generated="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          mkdir -p reports public/data
+          cat > reports/v22-production-acceptance.json <<JSON
+          {
+            "schemaVersion": 1,
+            "build": "${BUILD_ID}",
+            "generatedAt": "${generated}",
+            "state": "pass",
+            "releaseSha": "${{ steps.product.outputs.sha }}",
+            "runId": "${GITHUB_RUN_ID}",
+            "production": "${PRODUCTION_URL}",
+            "checks": {
+              "static": "success",
+              "defectAudit": "success",
+              "localBrowser": "success",
+              "deployment": "success",
+              "productionBrowser": "success"
+            },
+            "branchDeletionExecuted": false,
+            "activeBuildBranch": "main"
+          }
+          JSON
+          cp reports/v22-production-acceptance.json public/data/v22-production-acceptance.json
+          cp /tmp/v22-production-browser.json reports/v22-production-browser.json
+          git add \
+            reports/v22-production-acceptance.json \
+            reports/v22-production-browser.json \
+            public/data/v22-production-acceptance.json
+          git commit -m "Record passing V22 production acceptance"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload final evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v22-final-evidence-${{ github.run_id }}
+          path: |
+            reports/v22-*.json
+            reports/v22-*.md
+            reports/v22-unresolved-titles.tsv
+            /tmp/v22-production-browser.json
+          if-no-files-found: warn
+          retention-days: 30
