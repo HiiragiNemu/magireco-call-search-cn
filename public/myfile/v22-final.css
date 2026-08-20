@@ -1,0 +1,160 @@
+/* V22 final layout safeguards.
+ * The hamburger menu remains a local floating panel. It must never become a
+ * full-screen page replacement or lock document scrolling.
+ */
+
+:root {
+  --v22-menu-gap: clamp(8px, 1.6vw, 18px);
+  --v22-menu-max-width: min(92vw, 42rem);
+}
+
+/* The page title formerly rendered above the menu is deliberately removed. */
+.navtext-container,
+[data-v22-obsolete-site-title],
+.site-title-bar:has(.v22-obsolete-site-title) {
+  display: none !important;
+}
+
+/* Do not let opening any legacy menu freeze or hide the page behind it. */
+html:has(.menu-btn:checked),
+body:has(.menu-btn:checked),
+html.menu-open,
+body.menu-open,
+body.nav-open,
+body.is-menu-open {
+  overflow-y: auto !important;
+  overscroll-behavior-y: auto !important;
+  touch-action: auto !important;
+}
+
+/* Keep the legacy menu intrinsically sized by its longest line. */
+.menu,
+.hamburger-menu .menu,
+nav.menu,
+#menu,
+.menu-panel,
+.hamburger-panel,
+.drawer-menu {
+  box-sizing: border-box !important;
+  width: max-content !important;
+  inline-size: max-content !important;
+  min-width: 0 !important;
+  max-width: var(--v22-menu-max-width) !important;
+  max-inline-size: var(--v22-menu-max-width) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100dvh - (2 * var(--v22-menu-gap))) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  white-space: nowrap !important;
+  contain: layout paint !important;
+}
+
+.menu :is(ul, ol),
+.hamburger-menu .menu :is(ul, ol),
+.menu-panel :is(ul, ol),
+.drawer-menu :is(ul, ol) {
+  box-sizing: border-box !important;
+  width: max-content !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: 0 !important;
+  padding-inline: clamp(14px, 2.8vw, 28px) !important;
+}
+
+.menu :is(li, a, button),
+.hamburger-menu .menu :is(li, a, button),
+.menu-panel :is(li, a, button),
+.drawer-menu :is(li, a, button) {
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin-inline: 0 !important;
+}
+
+.menu :is(a, button),
+.hamburger-menu .menu :is(a, button),
+.menu-panel :is(a, button),
+.drawer-menu :is(a, button) {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Legacy overlays sometimes stretch a pseudo-element across the viewport. */
+.menu::before,
+.menu::after,
+.hamburger-menu .menu::before,
+.hamburger-menu .menu::after,
+.menu-panel::before,
+.menu-panel::after,
+.drawer-menu::before,
+.drawer-menu::after {
+  max-width: 100% !important;
+}
+
+/* Opening the menu must not suppress the persistent page tools. */
+body:has(.menu-btn:checked) :is(
+  .quick-nav,
+  .quick-menu,
+  .side-tools,
+  .floating-tools,
+  .right-buttons,
+  .right-nav,
+  [data-quick-nav]
+) {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Avoid accidental viewport-wide overflow while preserving intentional
+ * scrolling inside tables, charts and result panes. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+:is(table, .table-wrap, .results-table, .story-results, .scroll-container) {
+  max-width: 100%;
+}
+
+/* The injected runtime marks the actual panel, allowing a stronger rule
+ * without depending on the historical DOM hierarchy. */
+[data-v22-menu-panel="true"] {
+  position: fixed !important;
+  inset: var(--v22-menu-gap) auto auto var(--v22-menu-gap) !important;
+  z-index: 2147483000 !important;
+  width: max-content !important;
+  max-width: var(--v22-menu-max-width) !important;
+  height: auto !important;
+  max-height: calc(100dvh - (2 * var(--v22-menu-gap))) !important;
+  overflow: auto !important;
+  white-space: nowrap !important;
+}
+
+@supports not (width: max-content) {
+  .menu,
+  .menu-panel,
+  .drawer-menu,
+  [data-v22-menu-panel="true"] {
+    width: auto !important;
+  }
+}
+
+@media (max-width: 560px) {
+  :root {
+    --v22-menu-gap: 8px;
+    --v22-menu-max-width: calc(100vw - 16px);
+  }
+
+  .menu,
+  .hamburger-menu .menu,
+  .menu-panel,
+  .drawer-menu,
+  [data-v22-menu-panel="true"] {
+    font-size: clamp(15px, 4vw, 20px) !important;
+  }
+}
