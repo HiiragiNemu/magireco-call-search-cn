@@ -1,0 +1,53 @@
+name: V22 force final main release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .deploy-v22-force-final-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: magireco-call-search-v22-authoritative-main
+  cancel-in-progress: true
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      WIKI_TOKEN: ${{ secrets.GH_TOKEN || secrets.PAT || secrets.GITHUB_PAT }}
+      V22_MAX_MACHINE_TRANSLATIONS: "3000"
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run fail-closed final release
+        shell: bash
+        run: bash .automation/run-v22-final-release.sh
+
+      - name: Upload complete final evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v22-force-final-evidence-${{ github.run_id }}
+          path: |
+            /tmp/v22-final-release
+            /tmp/v22-local-acceptance
+            /tmp/v22-production-acceptance
+            public/data/story-title-authority-report-v22.json
+            public/data/story-title-authority-map-v22.json
+            public/data/v22-site-audit.json
+            public/data/v22-final-acceptance.json
+            public/downloads/story-title-missing-authoritative-v22.tsv
+            docs/V22_SITE_AUDIT.md
+            .automation/v22-build-summary.json
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
