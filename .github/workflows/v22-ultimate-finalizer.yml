@@ -1,0 +1,56 @@
+name: V22 ultimate finalizer
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .deploy-v22-ultimate-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: magireco-call-search-v22-authoritative-main
+  cancel-in-progress: true
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      WIKI_TOKEN: ${{ secrets.GH_TOKEN || secrets.PAT || secrets.GITHUB_PAT }}
+      V22_MAX_MACHINE_TRANSLATIONS: "3000"
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Execute fail-closed product, cleanup, deployment and audit finalizer
+        shell: bash
+        run: bash .automation/run-v22-ultimate-finalizer-v2.sh
+
+      - name: Upload ultimate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v22-ultimate-evidence-${{ github.run_id }}
+          path: |
+            /tmp/v22-ultimate
+            /tmp/v22-ultimate-local
+            /tmp/v22-ultimate-production
+            public/data/story-title-authority-report-v22.json
+            public/data/story-title-authority-map-v22.json
+            public/data/v22-site-audit.json
+            public/data/v22-post-cleanup-audit.json
+            public/data/v22-final-acceptance.json
+            public/data/v22-final-state.json
+            public/downloads/story-title-missing-authoritative-v22.tsv
+            docs/V22_SITE_AUDIT.md
+            docs/V22_POST_CLEANUP_AUDIT.md
+            .automation/v22-build-summary.json
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 6
