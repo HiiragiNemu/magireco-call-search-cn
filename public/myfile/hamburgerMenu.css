@@ -1,193 +1,205 @@
 body {
-    margin: 0;
-    font-family: "Futura", Helvetica, sans-serif;
+  margin: 0;
+  font-family: "Futura", Helvetica, sans-serif;
 }
 
-/* Navbar & Navmenu color */
 :root {
-    --background-navbar: #fc6ab1;
+  --background-navbar: #fc6ab1;
+  --hamburger-panel-shadow: 0 12px 30px rgba(92, 23, 59, 0.24);
 }
 
+/*
+ * V23: the header is only the 52 px menu button. It no longer creates a
+ * full-width pink title bar and opening the menu never covers or locks the page.
+ */
 .header {
-    background: var(--background-navbar);
-    position: relative;
-    width: 100%;
-    /* height: 52px; */
-    height: 52px;
-}
-
-/* Nav items */
-.menu {
-    list-style: none;
-    position: absolute;
-    width: 100%;
-    height: auto;
-    top: 0;
-    margin-top: 52px;
-    /* margin-top: 45px; */
-    padding: 0 0 15px 0;
-    clear: both;
-    background: var(--background-navbar);
-    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
-    transform: scale(1, 0);
-    transform-origin: top;
-    z-index: 10000;
-}
-
-/* Hamburger menu button */
-.menu-btn:checked~.menu {
-    transform: scale(1, 1);
-    transform-origin: top;
-    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
-}
-
-/* Hamburger menu text */
-.menu a {
-    text-decoration: none;
-    font-weight: 500;
-    letter-spacing: 0px;
-    font-size: 16px;
-    text-transform: capitalize;
-    color: #fdf1f7;
-    opacity: 0;
-}
-
-.menu li {
-    border-top: 1px solid #fc6ab1;
-    padding: 2px 0;
-    margin: 0 50px;
-    opacity: 0;
-    transition: 0.5s;
-    width: 100%;
-}
-
-.menulabel {
-    color: #ffffff;
-    font-size: 22px;
-    letter-spacing: 8px;
-}
-
-.thismenu {
-    color: #ac4878;
-}
-
-.menu-btn:checked~.menu a,
-.menu-btn:checked~.menu li {
-    opacity: 1;
-    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.2s;
-}
-
-.menu-btn {
-    display: none;
-}
-
-.menu-icon {
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-    padding: 24px 14px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-.navicon {
-    background: #ffffff;
-    display: block;
-    height: 3px;
-    width: 26px;
-    position: relative;
-    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
-}
-
-.navicon:before,
-.navicon:after {
-    content: "";
-    display: block;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    background: #ffffff;
-    transition: 0.3192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
-}
-
-.navicon:before {
-    top: 9px;
-}
-
-.navicon:after {
-    bottom: 9px;
-}
-
-/* Hamburger Menu Animation Start */
-.menu-btn:checked~.menu-icon .navicon:before {
-    transform: rotate(-45deg);
-}
-
-.menu-btn:checked~.menu-icon .navicon:after {
-    transform: rotate(45deg);
-}
-
-.menu-btn:checked~.menu-icon:not(.steps) .navicon:before {
-    top: 0;
-}
-
-.menu-btn:checked~.menu-icon:not(.steps) .navicon:after {
-    bottom: 0;
-}
-
-.menu-btn:checked~.menu-icon .navicon {
-    background: rgba(0, 0, 0, 0);
-    transition: 0.2192s cubic-bezier(0.04, 0.04, 0.12, 0.96) 0.1008s;
-}
-
-/* Hamburger Menu Animation End */
-
-/* Navbar Container */
-.navtext-container {
-    width: 100%;
-    height: 52px;
-    position: absolute;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Navbar Text */
-.navtext {
-    position: absolute;
-    text-transform: uppercase;
-    color: #ffffff;
-    font-size: 20px;
-}
-
-/* PC用 */
-@media(min-width:751px) {
-    .navtext {
-        font-size: 20px;
-        letter-spacing: 4px;
-    }
-}
-
-/* スマホ用 */
-@media(max-width:750px) {
-    .navtext {
-        font-size: 16px;
-    }
-}
-
-/* V21 hamburger overlay isolation */
-.header {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  background: transparent;
   z-index: 2147483000;
   isolation: isolate;
 }
-.header .menu { z-index: 2147483001; }
-.header .menu-icon { z-index: 2147483002; }
-body:has(.menu-btn:checked) { overflow: hidden; }
-body:has(.menu-btn:checked) #pagetop,
-body:has(.menu-btn:checked) #pagemdl,
-body:has(.menu-btn:checked) #pagebtm,
-body:has(.menu-btn:checked) .call-quick-rail-v10 {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+
+.navtext-container,
+.navtext {
+  display: none !important;
+}
+
+.menu-btn {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.menu-icon {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0 0 12px 0;
+  background: var(--background-navbar);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.menu-icon:focus-visible {
+  outline: 3px solid #7b1649;
+  outline-offset: 2px;
+}
+
+.navicon,
+.navicon::before,
+.navicon::after {
+  display: block;
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background: #fff;
+  transition: transform 180ms ease, top 180ms ease, bottom 180ms ease, opacity 180ms ease;
+}
+
+.navicon {
+  position: relative;
+}
+
+.navicon::before,
+.navicon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.navicon::before { top: -9px; }
+.navicon::after { bottom: -9px; }
+
+.menu-btn:checked ~ .menu-icon .navicon {
+  background: transparent;
+}
+
+.menu-btn:checked ~ .menu-icon .navicon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.menu-btn:checked ~ .menu-icon .navicon::after {
+  bottom: 0;
+  transform: rotate(-45deg);
+}
+
+/* Width follows the widest item, with a viewport cap for narrow phones. */
+.menu {
+  position: absolute;
+  z-index: 1;
+  top: 52px;
+  left: 0;
+  box-sizing: border-box;
+  width: max-content;
+  min-width: min(19rem, calc(100vw - 16px));
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 60px);
+  margin: 0;
+  padding: 12px 0 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  border-radius: 0 0 14px 0;
+  background: var(--background-navbar);
+  box-shadow: var(--hamburger-panel-shadow);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top left;
+  transition: opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
+}
+
+.menu-btn:checked ~ .menu {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition-delay: 0s;
+}
+
+.menu li {
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 4px 18px;
+  border: 0;
+  opacity: 1;
+  color: #fff;
+  line-height: 1.55;
+}
+
+.menu a {
+  display: block;
+  max-width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.55;
+  text-decoration: none;
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+.menu a:hover,
+.menu a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.menulabel {
+  padding-top: 10px !important;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
+.thismenu {
+  color: #8b225b !important;
+  font-weight: 700;
+}
+
+/* The page and right-side quick controls remain fully usable while open. */
+body:has(.menu-btn:checked) {
+  overflow: visible;
+}
+
+@media (max-width: 480px) {
+  .menu {
+    min-width: min(18rem, calc(100vw - 12px));
+    max-width: calc(100vw - 12px);
+  }
+
+  .menu a,
+  .menu li,
+  .menulabel {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu,
+  .navicon,
+  .navicon::before,
+  .navicon::after {
+    transition: none;
+  }
 }
