@@ -1,0 +1,203 @@
+name: V25 production verifier
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .v25-production-verify-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: magireco-call-search-v25-production-verifier
+  cancel-in-progress: false
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for Cloudflare Pages V25
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          ready=0
+          for attempt in $(seq 1 180); do
+            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            marker="$(curl -LfsS --retry 2 -H 'Cache-Control: no-cache, no-store' "$base/v25-build-marker.json?v=$nonce" 2>/dev/null || true)"
+            runtime="$(curl -LfsS --retry 2 -H 'Cache-Control: no-cache, no-store' "$base/myfile/story-title-runtime-v2.js?v=$nonce" 2>/dev/null || true)"
+            editor="$(curl -LfsS --retry 2 -H 'Cache-Control: no-cache, no-store' "$base/story-title-editor.html?v=$nonce" 2>/dev/null || true)"
+            story="$(curl -LfsS --retry 2 -H 'Cache-Control: no-cache, no-store' "$base/story.html?v=$nonce" 2>/dev/null || true)"
+            if python - "$marker" <<'PY'
+          import json, sys
+          try:
+              value = json.loads(sys.argv[1])
+          except Exception:
+              raise SystemExit(1)
+          ok = (
+              value.get('release') == 'v25-live-cn-20260821'
+              and value.get('groupCount') == 2166
+              and value.get('childTitleCount') == 5826
+              and value.get('kanaInChineseDisplayFields') == 0
+          )
+          raise SystemExit(0 if ok else 1)
+          PY
+            then
+              if grep -Fq "story-title-runtime-v25-20260821" <<< "$runtime" \
+                && grep -Fq 'story-title-runtime-v2.js?v=20260821-25' <<< "$editor" \
+                && grep -Fq 'story-title-runtime-v2.js?v=20260821-25' <<< "$story"; then
+                ready=1
+                echo "Cloudflare Pages V25 assets visible after attempt $attempt."
+                break
+              fi
+            fi
+            sleep 5
+          done
+          if [[ "$ready" != 1 ]]; then
+            echo 'Cloudflare Pages did not expose the V25 release within the verification window.' >&2
+            exit 1
+          fi
+
+      - name: Download production inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          nonce="${GITHUB_RUN_ID}-verify-$(date +%s%N)"
+          mkdir -p /tmp/v25-production
+          curl -LfsS --retry 4 -H 'Cache-Control: no-cache, no-store' "$base/data/story-title-groups-v1.json?v=$nonce" -o /tmp/v25-production/groups.json
+          curl -LfsS --retry 4 -H 'Cache-Control: no-cache, no-store' "$base/v25-build-marker.json?v=$nonce" -o /tmp/v25-production/marker.json
+          curl -LfsS --retry 4 -H 'Cache-Control: no-cache, no-store' "$base/story-title-editor.html?v=$nonce" -o /tmp/v25-production/editor.html
+          curl -LfsS --retry 4 -H 'Cache-Control: no-cache, no-store' "$base/story.html?v=$nonce" -o /tmp/v25-production/story.html
+          curl -LfsS --retry 4 -H 'Cache-Control: no-cache, no-store' "$base/myfile/story-title-runtime-v2.js?v=$nonce" -o /tmp/v25-production/runtime.js
+          for index in 00 01 02 03; do
+            curl -LfsS --retry 4 -H 'Cache-Control: no-cache, no-store' \
+              "$base/data/v25-title-delta.part-$index.txt?v=$nonce" \
+              -o "/tmp/v25-production/part-$index.txt"
+          done
+
+      - name: Reconstruct and verify all production titles
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const zlib = require('zlib');
+          const path = '/tmp/v25-production';
+          const groups = JSON.parse(fs.readFileSync(`${path}/groups.json`, 'utf8'));
+          const marker = JSON.parse(fs.readFileSync(`${path}/marker.json`, 'utf8'));
+          const encoded = ['00','01','02','03']
+            .map(index => fs.readFileSync(`${path}/part-${index}.txt`, 'utf8').trim())
+            .join('');
+          const delta = JSON.parse(zlib.gunzipSync(Buffer.from(encoded, 'base64')).toString('utf8'));
+
+          if (delta.r !== 'v25-live-cn-20260821') throw new Error(`wrong delta release: ${delta.r}`);
+          if (!Array.isArray(groups.groups) || groups.groups.length !== 2166) throw new Error('wrong group count');
+          const childCount = groups.groups.reduce((sum, group) => sum + (group.children || []).length, 0);
+          if (childCount !== 5826) throw new Error(`wrong child count: ${childCount}`);
+
+          const titleByCategory = {};
+          for (const group of groups.groups) {
+            const category = String(group.category || '');
+            const sourceBase = String(group.source_base || '');
+            const parent = String(delta.p?.[category]?.[sourceBase] ?? group.current_translation ?? sourceBase).trim();
+            const categoryMap = titleByCategory[category] ||= {};
+            for (const child of group.children || []) {
+              const sourceTitle = String(child.source_title || '');
+              const sourceSuffix = String(child.source_suffix || '');
+              const exact = delta.e?.[category]?.[sourceTitle];
+              const hasSuffixOverride = Object.prototype.hasOwnProperty.call(delta.s || {}, sourceSuffix);
+              const suffix = String(hasSuffixOverride ? (delta.s[sourceSuffix] ?? '') : (child.localized_suffix ?? sourceSuffix)).trim();
+              const target = String(exact ?? `${parent}${suffix ? ` ${suffix}` : ''}`).trim();
+              categoryMap[sourceTitle] = target;
+            }
+          }
+
+          const kana = /[\u3040-\u30ff\u31f0-\u31ffー]/;
+          const kanaHits = [];
+          let mappedTitleCount = 0;
+          for (const [category, pairs] of Object.entries(titleByCategory)) {
+            for (const [source, target] of Object.entries(pairs)) {
+              mappedTitleCount += 1;
+              if (kana.test(String(target))) kanaHits.push([category, source, target]);
+            }
+          }
+          if (mappedTitleCount !== 5826) throw new Error(`wrong mapped count: ${mappedTitleCount}`);
+          if (kanaHits.length) throw new Error(`kana remained: ${JSON.stringify(kanaHits.slice(0, 20))}`);
+
+          const samples = {
+            sceneParent: delta.p?.scene0?.['サイドストーリー Film.0'],
+            sceneChild: titleByCategory.scene0?.['サイドストーリー Film.0 1 (紫)'],
+            eventParent: delta.p?.['イベント']?.['トリック☆トラブル☆学園祭 BADEND'],
+            eventChild: titleByCategory['イベント']?.['トリック☆トラブル☆学園祭 BADEND1話'],
+            memoria888: titleByCategory['メモリア']?.['No.888 夢を追う妹'],
+            memoria889: titleByCategory['メモリア']?.['No.889 新鮮なポジション'],
+            memoria900: titleByCategory['メモリア']?.['No.900 夏のはじまりに母の影光り'],
+            memoria901: titleByCategory['メモリア']?.['No.901 記憶の中の温もりは蘇り']
+          };
+          const expected = {
+            sceneParent: '支线故事 Film.0',
+            sceneChild: '支线故事 Film.0 1 （紫色）',
+            eventParent: '诡计☆骚乱☆学园祭 坏结局',
+            eventChild: '诡计☆骚乱☆学园祭 坏结局 第1话',
+            memoria888: 'No.888 追梦的妹妹',
+            memoria889: 'No.889 新鲜的位置',
+            memoria900: 'No.900 夏日伊始，母亲的影子',
+            memoria901: 'No.901 记忆中的温暖复苏了'
+          };
+          for (const [key, value] of Object.entries(expected)) {
+            if (samples[key] !== value) throw new Error(`${key}: ${JSON.stringify(samples[key])} !== ${JSON.stringify(value)}`);
+          }
+
+          const runtime = fs.readFileSync(`${path}/runtime.js`, 'utf8');
+          const editor = fs.readFileSync(`${path}/editor.html`, 'utf8');
+          const story = fs.readFileSync(`${path}/story.html`, 'utf8');
+          if (!runtime.includes('story-title-runtime-v25-20260821')) throw new Error('production runtime is stale');
+          if (!editor.includes('story-title-runtime-v2.js?v=20260821-25')) throw new Error('production editor is stale');
+          if (!story.includes('story-title-runtime-v2.js?v=20260821-25')) throw new Error('production story search is stale');
+
+          const proof = {
+            schemaVersion: 1,
+            state: 'pass',
+            release: 'v25-live-cn-20260821',
+            sourceMainSha: process.env.SOURCE_SHA,
+            runId: process.env.RUN_ID,
+            verifiedAt: new Date().toISOString(),
+            production: 'https://magireco-call-search-cn.pages.dev',
+            groupCount: 2166,
+            childTitleCount: 5826,
+            mappedTitleCount,
+            changedParentTitleCount: Object.values(delta.p || {}).reduce((sum, pairs) => sum + Object.keys(pairs || {}).length, 0),
+            translatedSuffixCount: Object.keys(delta.s || {}).length,
+            exactExceptionCount: Object.values(delta.e || {}).reduce((sum, pairs) => sum + Object.keys(pairs || {}).length, 0),
+            kanaInChineseDisplayFields: 0,
+            runtime: 'story-title-runtime-v25-20260821',
+            samples,
+            marker
+          };
+          fs.mkdirSync('reports', { recursive: true });
+          fs.writeFileSync('reports/v25-production-proof.json', JSON.stringify(proof, null, 2) + '\n');
+          fs.writeFileSync('public/v25-production-proof.json', JSON.stringify(proof, null, 2) + '\n');
+          console.log(JSON.stringify(proof, null, 2));
+          NODE
+
+      - name: Commit production proof to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add reports/v25-production-proof.json public/v25-production-proof.json
+          git commit -m 'Record passing V25 production localization verification'
+          git push origin HEAD:main
