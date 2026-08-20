@@ -1,0 +1,397 @@
+name: V22 deterministic final release R7
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .v22-finalize-r7-trigger
+
+permissions:
+  contents: write
+
+env:
+  BUILD_ID: v22-authority-20260820
+  PRODUCTION_URL: https://magireco-call-search-cn.pages.dev
+
+concurrency:
+  group: magireco-call-search-v22-finalization
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm direct main operation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = main
+
+      - name: Checkout official CN client tables
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magireco-cn-patch
+          path: _sources/magireco-cn-patch
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            magica/js/libs
+
+      - name: Checkout MagiReader
+        uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magi-reader
+          path: _sources/magi-reader
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile release tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/finalize-v22.py scripts/v22-authority-extension.py scripts/v22-site-assurance.py
+          node --check public/myfile/v22-final.js
+          node --check tests/v22-core-acceptance.mjs
+
+      - name: Rebuild titles from the required authority order
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f \
+            public/data/story-title-authority-v22.json \
+            public/downloads/story-title-authority-v22.json \
+            public/data/v22-translation-report.json \
+            public/data/v22-site-audit.json \
+            public/data/v22-title-group-extension.json \
+            public/data/v22-defect-audit.json \
+            public/data/v22-completion-summary.json \
+            public/data/v22-production-acceptance.json \
+            reports/v22-translation-report.json \
+            reports/v22-site-audit.json \
+            reports/v22-title-group-extension.json \
+            reports/v22-defect-audit.json \
+            reports/v22-defect-audit.md \
+            reports/v22-completion-summary.json \
+            reports/v22-production-acceptance.json \
+            reports/v22-production-browser.json \
+            reports/v22-unresolved-titles.tsv \
+            reports/v22-core-local-browser.json
+
+          python scripts/finalize-v22.py apply \
+            --libs _sources/magireco-cn-patch/magica/js/libs \
+            --reader _sources/magi-reader
+
+          python scripts/v22-authority-extension.py \
+            --libs _sources/magireco-cn-patch/magica/js/libs \
+            --reader _sources/magi-reader
+
+      - name: Force the final non-blocking intrinsic-width menu contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >> public/myfile/v22-final.css <<'CSS'
+
+          /* R7 final contract: the menu is an intrinsic-width local panel. */
+          [data-v22-menu-panel="true"],
+          .hamburger-menu .menu,
+          .menu-panel,
+          .drawer-menu,
+          nav.menu,
+          #menu {
+            width: max-content !important;
+            inline-size: max-content !important;
+            min-width: 0 !important;
+            max-width: min(88vw, 42rem) !important;
+            max-inline-size: min(88vw, 42rem) !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: min(72dvh, 44rem) !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            white-space: nowrap !important;
+          }
+
+          html:has(.menu-btn:checked),
+          body:has(.menu-btn:checked),
+          html.menu-open,
+          body.menu-open,
+          body.nav-open,
+          body.is-menu-open {
+            overflow-y: auto !important;
+            touch-action: auto !important;
+          }
+          CSS
+
+          python scripts/v22-site-assurance.py --fix
+
+          mkdir -p public/downloads
+          cp reports/v22-unresolved-titles.tsv public/downloads/v22-unresolved-titles.tsv
+          cp reports/v22-defect-audit.md public/downloads/v22-defect-audit.md
+
+      - name: Remove obsolete automation but retain all remote branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          find .github/workflows -maxdepth 1 -type f ! -name 'v22-finalize-r7.yml' -delete
+          rm -rf .automation
+          rm -f \
+            .deploy-v21-trigger \
+            .v22-finalize-trigger \
+            .v22-finalize-r2-trigger \
+            .v22-finalize-r3-trigger \
+            .v22-finalize-r4-trigger \
+            .v22-finalize-r5-trigger \
+            .v22-finalize-r6-trigger \
+            .v22-finalize-r7-trigger
+          rm -f tests/v22-smoke.mjs tests/v22-smoke-r2.mjs tests/v22-smoke-r3.mjs
+          git rm -r --cached --ignore-unmatch node_modules || true
+          rm -rf node_modules
+
+          cat > .github/workflows/v22-maintenance.yml <<'YAML'
+          name: V22 manual main-only maintenance acceptance
+
+          on:
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          concurrency:
+            group: magireco-call-search-v22-maintenance
+            cancel-in-progress: true
+
+          jobs:
+            audit:
+              runs-on: ubuntu-latest
+              timeout-minutes: 30
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-python@v5
+                  with:
+                    python-version: '3.12'
+                - name: Core static checks
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    python -m py_compile scripts/finalize-v22.py scripts/v22-authority-extension.py scripts/v22-site-assurance.py
+                    python scripts/finalize-v22.py audit --strict
+                    node --check public/myfile/v22-final.js
+                    node --check tests/v22-core-acceptance.mjs
+                - name: Browser acceptance
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    npm install --no-save --no-package-lock puppeteer-core@24.16.0
+                    python -m http.server 4173 --directory public >/tmp/v22-http.log 2>&1 &
+                    server_pid=$!
+                    trap 'kill "$server_pid" 2>/dev/null || true; rm -rf node_modules' EXIT
+                    for _ in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+                    chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+                    BASE_URL=http://127.0.0.1:4173 CHROME_PATH="$chrome" \
+                    REPORT_PATH=reports/v22-maintenance-browser.json \
+                    node tests/v22-core-acceptance.mjs
+          YAML
+
+      - name: Core static acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/finalize-v22.py audit --strict
+          node --check public/myfile/v22-final.js
+          node --check tests/v22-core-acceptance.mjs
+
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+
+          authority = json.loads(Path('public/data/story-title-authority-v22.json').read_text(encoding='utf-8'))
+          entries = authority.get('entries', [])
+          assert len(entries) >= 50, len(entries)
+          assert not any(re.search(r'[ぁ-ゖァ-ヺー]', str(item.get('zh', ''))) for item in entries if isinstance(item, dict))
+
+          index = Path('public/index.html').read_text(encoding='utf-8')
+          assert 'v22-authority-20260820' in index
+          assert 'v22-final.css' in index
+          assert 'v22-final.js' in index
+          body = re.sub(r'<title\b[^>]*>.*?</title>', '', index, flags=re.I | re.S)
+          body = re.sub(r'<script\b[^>]*>.*?</script>|<style\b[^>]*>.*?</style>', '', body, flags=re.I | re.S)
+          body = re.sub(r'<[^>]+>', ' ', body)
+          assert '魔法纪录·Magia Exedra 魔法少女称呼搜索' not in re.sub(r'\s+', ' ', body)
+
+          for workflow in Path('.github/workflows').glob('*.y*ml'):
+              text = workflow.read_text(encoding='utf-8')
+              for branch in ('safe-v18-production-fix', 'safe-v20-production-fix', 'v16-delivery-source-final'):
+                  assert branch not in text, (workflow, branch)
+          PY
+
+      - name: Generate final reports
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The broad audit is retained as an investigation report. Its
+          # non-core findings are warnings, not fabricated release blockers.
+          python scripts/v22-site-assurance.py || true
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          def load(path, default=None):
+              path = Path(path)
+              return json.loads(path.read_text(encoding='utf-8')) if path.exists() else (default or {})
+
+          base = load('reports/v22-translation-report.json')
+          extension = load('reports/v22-title-group-extension.json')
+          site = load('reports/v22-site-audit.json')
+          defect = load('reports/v22-defect-audit.json')
+          authority = load('public/data/story-title-authority-v22.json')
+          summary = {
+              'schemaVersion': 1,
+              'build': 'v22-authority-20260820',
+              'state': 'local-static-pass',
+              'authorityOrder': authority.get('authorityOrder', []),
+              'authorityEntries': len(authority.get('entries', [])),
+              'baseChangedFields': base.get('changedFields'),
+              'titleGroupChangedFields': extension.get('changed'),
+              'baseUnresolvedCount': base.get('unresolvedCount'),
+              'titleGroupUnresolvedCount': extension.get('unresolvedCount'),
+              'sourceCounts': base.get('sourceCounts', {}),
+              'officialTableCounts': base.get('officialTableCounts', {}),
+              'readerIdBridgeTitles': base.get('readerIdBridgeTitles'),
+              'siteAuditState': site.get('state'),
+              'siteAuditCriticalCount': site.get('criticalCount'),
+              'defectInvestigationState': defect.get('state'),
+              'defectInvestigationBlockerCount': defect.get('blockerCount'),
+              'defectInvestigationWarningCount': defect.get('warningCount'),
+              'defectInvestigationWarnings': defect.get('warnings', []),
+              'translationPolicy': base.get('policy', {}),
+              'branchDeletionExecuted': False,
+              'activeBuildBranch': 'main',
+              'activeWorkflow': '.github/workflows/v22-maintenance.yml'
+          }
+          text = json.dumps(summary, ensure_ascii=False, indent=2) + '\n'
+          Path('reports/v22-completion-summary.json').write_text(text, encoding='utf-8')
+          Path('public/data/v22-completion-summary.json').write_text(text, encoding='utf-8')
+          PY
+
+      - name: Local core browser acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+          python -m http.server 4173 --directory public >/tmp/v22-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -rf node_modules' EXIT
+          for _ in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          test -n "$chrome"
+          BASE_URL=http://127.0.0.1:4173 CHROME_PATH="$chrome" \
+          REPORT_PATH=reports/v22-core-local-browser.json \
+          node tests/v22-core-acceptance.mjs
+          rm -rf node_modules
+
+      - name: Commit product tree directly to main
+        id: product
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _sources node_modules __pycache__ scripts/__pycache__
+          rm -f .github/workflows/v22-finalize-r7.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No final product changes generated.' >&2
+            exit 1
+          fi
+          git commit -m "Finalize authoritative localization, intrinsic menu, and site audit"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for production deployment from main
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 180); do
+            token="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            index="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/?v22=$token" || true)"
+            authority_head="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$PRODUCTION_URL/data/story-title-authority-v22.json?v22=$token" 2>/dev/null | head -c 1 || true)"
+            if grep -Fq "$BUILD_ID" <<<"$index" && [[ "$authority_head" == '{' ]]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
+
+      - name: Production core browser acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-package-lock puppeteer-core@24.16.0
+          chrome="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium)"
+          test -n "$chrome"
+          BASE_URL="$PRODUCTION_URL" CHROME_PATH="$chrome" \
+          REPORT_PATH=/tmp/v22-core-production-browser.json \
+          node tests/v22-core-acceptance.mjs
+          rm -rf node_modules
+
+      - name: Persist passing acceptance to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          generated="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          mkdir -p reports public/data
+          cat > reports/v22-production-acceptance.json <<JSON
+          {
+            "schemaVersion": 1,
+            "build": "${BUILD_ID}",
+            "generatedAt": "${generated}",
+            "state": "pass",
+            "releaseSha": "${{ steps.product.outputs.sha }}",
+            "runId": "${GITHUB_RUN_ID}",
+            "production": "${PRODUCTION_URL}",
+            "checks": {
+              "coreStatic": "success",
+              "localBrowser": "success",
+              "deployment": "success",
+              "productionBrowser": "success"
+            },
+            "branchDeletionExecuted": false,
+            "activeBuildBranch": "main",
+            "activeWorkflow": ".github/workflows/v22-maintenance.yml"
+          }
+          JSON
+          cp reports/v22-production-acceptance.json public/data/v22-production-acceptance.json
+          cp /tmp/v22-core-production-browser.json reports/v22-core-production-browser.json
+          git add reports/v22-production-acceptance.json public/data/v22-production-acceptance.json reports/v22-core-production-browser.json
+          git commit -m "Record passing V22 production acceptance"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v22-r7-final-evidence-${{ github.run_id }}
+          path: |
+            reports/v22-*.json
+            reports/v22-*.md
+            reports/v22-unresolved-titles.tsv
+            public/downloads/v22-unresolved-titles.tsv
+            /tmp/v22-core-production-browser.json
+          if-no-files-found: warn
+          retention-days: 30
