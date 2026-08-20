@@ -1,8 +1,0 @@
-https://magireco-call-search-cn.pages.dev/v25-build-marker.json
-https://magireco-call-search-cn.pages.dev/story-title-editor.html?v=20260821-25
-https://magireco-call-search-cn.pages.dev/story.html?v=20260821-25
-https://magireco-call-search-cn.pages.dev/myfile/story-title-runtime-v2.js?v=20260821-25
-https://magireco-call-search-cn.pages.dev/data/v25-title-delta.part-00.txt?v=20260821-25
-https://magireco-call-search-cn.pages.dev/data/v25-title-delta.part-01.txt?v=20260821-25
-https://magireco-call-search-cn.pages.dev/data/v25-title-delta.part-02.txt?v=20260821-25
-https://magireco-call-search-cn.pages.dev/data/v25-title-delta.part-03.txt?v=20260821-25
