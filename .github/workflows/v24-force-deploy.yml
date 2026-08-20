@@ -1,0 +1,62 @@
+name: V24 force deploy localization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/v24-force-deploy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: HiiragiNemu/magireco-cn-patch
+          path: _sources/magireco-cn-patch
+          fetch-depth: 1
+      - name: Generate and validate all Chinese titles
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/prepare-v24.py
+          python scripts/finalize-v23.py --repo-root . --libs-dir _sources/magireco-cn-patch/magica/js/libs
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          kana=re.compile(r'[\u3040-\u30ff\u31f0-\u31ffー]')
+          groups=json.loads(Path('public/data/story-title-groups-v1.json').read_text(encoding='utf-8'))
+          mapping=json.loads(Path('public/data/story-title-map.generated.json').read_text(encoding='utf-8'))
+          assert groups['release']=='v24-complete-cn-20260820'
+          assert len(groups['groups'])==2166
+          assert sum(len(g['children']) for g in groups['groups'])==5826
+          for g in groups['groups']:
+              assert not kana.search(str(g.get('current_translation') or '')), g
+              for c in g['children']:
+                  assert not kana.search(str(c.get('current_full_translation') or '')), c
+          assert mapping['titleByCategory']['scene0']['サイドストーリー Film.0 1 (紫)']=='支线故事 Film.0 1 （紫色）'
+          assert mapping['titleByCategory']['イベント']['トリック☆トラブル☆学園祭 BADEND1話']=='诡计☆骚乱☆学园祭 坏结局 第1话'
+          assert mapping['titleByCategory']['メモリア']['No.888 夢を追う妹']=='No.888 追梦的妹妹'
+          assert mapping['titleByCategory']['メモリア']['No.900 夏のはじまりに母の影光り']=='No.900 夏日伊始，母亲的影子'
+          index=Path('public/index.html').read_text(encoding='utf-8')
+          assert '魔法纪录·Magia Exedra 魔法少女称呼搜索</div>' not in index
+          Path('public/v24-deployment.json').write_text(json.dumps({'state':'pass','release':'v24-complete-cn-20260820','groups':2166,'children':5826,'kana':0},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Commit generated product to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _sources
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Deploy complete V24 Chinese localization'
+          git push origin HEAD:main
