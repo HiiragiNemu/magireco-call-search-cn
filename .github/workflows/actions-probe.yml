@@ -1,0 +1,25 @@
+name: Actions probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .actions-probe-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record probe
+        run: |
+          date -u +%FT%TZ > .actions-probe-result
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .actions-probe-result
+          git commit -m 'Record GitHub Actions probe'
+          git push origin HEAD:main
