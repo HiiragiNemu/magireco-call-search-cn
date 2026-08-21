@@ -1,13 +1,57 @@
 [
   {
-    "id": 32518042972,
+    "id": 32529003996,
     "name": "Observe V26 workflow runs",
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
+    "head_sha": "2c46d3f1e8f6cde935b01e7e2a376466d1ad4249",
+    "created_at": "2026-08-21T21:32:50Z",
+    "updated_at": "2026-08-21T21:32:53Z",
+    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32529003996"
+  },
+  {
+    "id": 32527429313,
+    "name": "Complete V26 safely without breaking production",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "7c75ecfabed587266ce7f936d747126802be21d6",
+    "created_at": "2026-08-21T21:13:01Z",
+    "updated_at": "2026-08-21T21:13:11Z",
+    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32527429313"
+  },
+  {
+    "id": 32520170246,
+    "name": "Delete accidental branches and trigger complete V26",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "d157149b76cc471bc7272fc2865e9a182d34ed89",
+    "created_at": "2026-08-21T19:46:16Z",
+    "updated_at": "2026-08-21T19:46:27Z",
+    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32520170246"
+  },
+  {
+    "id": 32519899199,
+    "name": "Complete V26 safely and atomically",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "20a23c33592ab634c3e2278074be4485af20cd0d",
+    "created_at": "2026-08-21T19:43:09Z",
+    "updated_at": "2026-08-21T19:43:20Z",
+    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32519899199"
+  },
+  {
+    "id": 32518042972,
+    "name": "Observe V26 workflow runs",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
     "head_sha": "27220aaac48552e23d3fb3c09b7f49ac93821e03",
     "created_at": "2026-08-21T19:21:26Z",
-    "updated_at": "2026-08-21T19:21:29Z",
+    "updated_at": "2026-08-21T19:21:39Z",
     "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32518042972"
   },
   {
@@ -284,49 +328,5 @@
     "created_at": "2026-08-21T12:20:02Z",
     "updated_at": "2026-08-21T12:20:02Z",
     "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32481384824"
-  },
-  {
-    "id": 32481383621,
-    "name": ".github/workflows/repair-height-guide-v4-desktop-acceptance.yml",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "failure",
-    "head_sha": "36f4d92f3bddd3449be35a69a815a8133c7c819c",
-    "created_at": "2026-08-21T12:20:02Z",
-    "updated_at": "2026-08-21T12:20:02Z",
-    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32481383621"
-  },
-  {
-    "id": 32481382810,
-    "name": ".github/workflows/repair-rune-ocr-v5.yml",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "failure",
-    "head_sha": "36f4d92f3bddd3449be35a69a815a8133c7c819c",
-    "created_at": "2026-08-21T12:20:01Z",
-    "updated_at": "2026-08-21T12:20:01Z",
-    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32481382810"
-  },
-  {
-    "id": 32481381986,
-    "name": ".github/workflows/repair-height-guide-v4-visibility.yml",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "failure",
-    "head_sha": "36f4d92f3bddd3449be35a69a815a8133c7c819c",
-    "created_at": "2026-08-21T12:20:00Z",
-    "updated_at": "2026-08-21T12:20:00Z",
-    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32481381986"
-  },
-  {
-    "id": 32481381248,
-    "name": ".github/workflows/v26-final-recovery-r2.yml",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "failure",
-    "head_sha": "36f4d92f3bddd3449be35a69a815a8133c7c819c",
-    "created_at": "2026-08-21T12:20:00Z",
-    "updated_at": "2026-08-21T12:20:00Z",
-    "html_url": "https://github.com/HiiragiNemu/magireco-call-search-cn/actions/runs/32481381248"
   }
 ]
