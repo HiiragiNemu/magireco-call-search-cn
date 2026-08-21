@@ -1,0 +1,9 @@
+V26 final convergence failed.
+run_rc=1
+js_rc=not-run
+source_sha=1cf4a2f9461a0c9285119382b8db0c14cdec9e49
+
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/v26-final-converge.py", line 253
+    RUNTIME_JS = r''*'/* V26 authoritative Chinese title runtime.
+                     ^
+SyntaxError: unterminated string literal (detected at line 253)
