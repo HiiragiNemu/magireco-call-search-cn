@@ -1,0 +1,49 @@
+son",
+        ROOT / "public/v25-build-marker.json",
+        ROOT / "public/v25-production-proof.json",
+        ROOT / "public/data/story-title-build-report-v1.json",
+        ROOT / "public/data/translation-audit-v5.json",
+        ROOT / "public/data/story-v10",
+        ROOT / "public/downloads/story-title-overrides-template.json",
+    ):
+        if path.is_dir():
+            shutil.rmtree(path)
+        elif path.exists():
+            path.unlink()
+
+    for name in (
+        "callTableOLD.js", "story-app.js", "story-grouped-results-v15.js",
+        "story-title-editor-v1.css", "story-title-editor-v1.js",
+        "story-title-password-v1.js", "story-title-password-v16-preload.js",
+        "story-title-runtime-v1.js",
+    ):
+        path = ROOT / "public/myfile" / name
+        if path.exists():
+            path.unlink()
+
+    reports = ROOT / "reports"
+    if reports.exists():
+        shutil.rmtree(reports)
+    reports.mkdir(parents=True, exist_ok=True)
+    write_text(reports / "README.md", "# 验收报告\n\n运行时验收结果通过 GitHub Actions Artifact 保存，不再提交逐次运行产物。\n")
+    write_text(ROOT / ".gitignore", GITIGNORE)
+    write_text(ROOT / "README.md", README)
+
+
+def main() -> int:
+    os.chdir(ROOT)
+    prepare_permanent_updater()
+    write_text(ROOT / "scripts/build-title-data.py", BUILD_SCRIPT)
+    write_text(ROOT / "scripts/validate-site.py", VALIDATE_SCRIPT)
+    run(sys.executable, "scripts/build-title-data.py", "--repo-root", ".", "--input", "public/data/story-title-groups-v1.json", "--release", RELEASE, "--apply-v25-delta", "--remove-delta")
+    patch_pages_and_runtime()
+    cleanup_repository()
+    run(sys.executable, "scripts/validate-site.py")
+    run("node", "--check", "public/myfile/story-title-runtime-v2.js")
+    run("node", "--check", "public/myfile/story-title-editor-v2.js")
+    print(json.dumps({"state": "pass", "release": RELEASE, "runtime": RUNTIME_RELEASE, "groups": 2166, "children": 5826, "workflows": ["ci.yml", "update-authoritative-titles.yml", "production-verify.yml"]}, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
