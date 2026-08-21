@@ -1,0 +1,43 @@
+name: Delete accidental branches and trigger complete V26
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/delete-accidental-branches-and-trigger-v26.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clean-and-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Delete every remote branch except main
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r branch; do
+            [ -z "$branch" ] && continue
+            [ "$branch" = "main" ] && continue
+            echo "Deleting accidental/obsolete branch: $branch"
+            git push origin --delete "$branch"
+          done < <(git ls-remote --heads origin | sed 's#.*refs/heads/##')
+          mapfile -t branches < <(git ls-remote --heads origin | sed 's#.*refs/heads/##' | sort)
+          printf 'Remaining branches: %s\n' "${branches[*]}"
+          [ "${#branches[@]}" -eq 1 ]
+          [ "${branches[0]}" = "main" ]
+      - name: Trigger the complete V26 workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'run=%s\n' "$(date -u +%FT%TZ)" > .v26-complete-final-safe-trigger
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .v26-complete-final-safe-trigger
+          git commit -m 'Trigger complete safe V26 migration'
+          git push origin HEAD:main
