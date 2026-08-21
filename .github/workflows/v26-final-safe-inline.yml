@@ -11,13 +11,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: v26-final-safe-inline
+  group: v26-final-safe-inline-corrected
   cancel-in-progress: false
 
 jobs:
   complete:
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    timeout-minutes: 90
     steps:
       - name: Checkout current main
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Verify production is currently healthy before migration
+      - name: Verify current production is healthy before migration
         shell: bash
         run: |
           set -euo pipefail
@@ -41,11 +41,11 @@ jobs:
 
           def get(path):
               sep = '&' if '?' in path else '?'
-              req = urllib.request.Request(
+              request = urllib.request.Request(
                   f'{base}/{path.lstrip("/")}{sep}preflight={nonce}',
-                  headers={'Cache-Control': 'no-cache, no-store', 'User-Agent': 'V26-safe-preflight'}
+                  headers={'Cache-Control': 'no-cache, no-store', 'User-Agent': 'V26-final-preflight'}
               )
-              with urllib.request.urlopen(req, timeout=60) as response:
+              with urllib.request.urlopen(request, timeout=60) as response:
                   raw = response.read()
                   status = response.status
               if status != 200:
@@ -68,1249 +68,237 @@ jobs:
                   raise RuntimeError(f'{path}: returned HTML')
               json.loads(raw.decode('utf-8'))
 
-          print('Preflight production health check passed.')
+          print('Production preflight passed.')
           PY
 
-      - name: Build the complete V26 tree in the runner workspace
+      - name: Verify branch state
         shell: bash
         run: |
           set -euo pipefail
           mapfile -t branches < <(git ls-remote --heads origin | sed 's#.*refs/heads/##' | sort)
+          printf 'Remote branches: %s\n' "${branches[*]}"
           [ "${#branches[@]}" -eq 1 ]
           [ "${branches[0]}" = "main" ]
-          python - <<'PY'
-          from __future__ import annotations
 
-          import base64
-          import gzip
-          import hashlib
-          import json
-          import re
-          import shutil
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          root = Path('.')
-          public = root / 'public'
-          release = 'v26-converged-20260822'
-          cache_version = '20260822-v26-final'
-          source_priority = [
-              'magireco-cn-patch/magica/js/libs',
-              'existing human/audited translations',
-              'MagiReader',
-              'magireco-wiki-data',
-              'manual fallback',
-          ]
-
-          def dump_json(path: Path, value) -> None:
-              path.parent.mkdir(parents=True, exist_ok=True)
-              text = json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + '\n'
-              path.write_text(text, encoding='utf-8')
-
-          def nested_count(mapping) -> int:
-              return sum(len(value) for value in mapping.values() if isinstance(value, dict))
-
-          def sha256_text(path: Path) -> str:
-              return hashlib.sha256(path.read_bytes()).hexdigest()
-
-          # Decode the already production-proven V25 translation payload.
-          chunks = []
-          for index in range(4):
-              path = public / 'data' / f'v25-title-delta.part-{index:02d}.txt'
-              if not path.is_file():
-                  raise SystemExit(f'missing required V25 source payload: {path}')
-              chunks.append(path.read_text(encoding='utf-8').strip())
-          payload = json.loads(gzip.decompress(base64.b64decode(''.join(chunks))).decode('utf-8'))
-          if payload.get('r') != 'v25-live-cn-20260821':
-              raise SystemExit(f'unexpected source release: {payload.get("r")!r}')
-
-          parents = payload.get('p')
-          suffixes = payload.get('s')
-          titles = payload.get('e')
-          if not isinstance(parents, dict) or not isinstance(suffixes, dict) or not isinstance(titles, dict):
-              raise SystemExit('V25 source payload has invalid structure')
-
-          groups = json.loads((public / 'data/story-title-groups-v1.json').read_text(encoding='utf-8'))
-          if not isinstance(groups.get('groups'), list) or len(groups['groups']) != 2166:
-              raise SystemExit('story-title group baseline is incomplete')
-          mapped_title_count = nested_count(titles)
-          if mapped_title_count != 5826:
-              raise SystemExit(f'expected 5826 exact title mappings, got {mapped_title_count}')
-
-          kana_re = re.compile(r'[\u3040-\u30ff]')
-          bad_values = []
-          for category, pairs in titles.items():
-              if not isinstance(pairs, dict):
-                  raise SystemExit(f'invalid exact title category: {category}')
-              for source, target in pairs.items():
-                  if not isinstance(target, str) or not target.strip():
-                      bad_values.append((category, source, target))
-                  elif kana_re.search(target):
-                      bad_values.append((category, source, target))
-          for category, pairs in parents.items():
-              if not isinstance(pairs, dict):
-                  raise SystemExit(f'invalid parent category: {category}')
-              for source, target in pairs.items():
-                  if not isinstance(target, str) or not target.strip() or kana_re.search(target):
-                      bad_values.append((category, source, target))
-          if bad_values:
-              raise SystemExit(f'Chinese display data failed validation: {bad_values[:8]}')
-
-          samples = {
-              ('scene0', 'サイドストーリー Film.0'): '支线故事 Film.0',
-              ('イベント', 'トリック☆トラブル☆学園祭 BADEND1話'): '诡计☆骚乱☆学园祭 坏结局 第1话',
-              ('メモリア', 'No.888 夢を追う妹'): 'No.888 追梦的妹妹',
-              ('メモリア', 'No.900 夏のはじまりに母の影光り'): 'No.900 夏日伊始，母亲的影子',
-          }
-          for (category, source), expected in samples.items():
-              actual = titles.get(category, {}).get(source)
-              if actual != expected:
-                  raise SystemExit(f'sample mismatch for {category}/{source}: {actual!r}')
-
-          generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-          authority = {
-              'schemaVersion': 1,
-              'release': release,
-              'sourceRelease': payload['r'],
-              'generatedAt': generated_at,
-              'sourcePriority': source_priority,
-              'parentByCategory': parents,
-              'suffixBySource': suffixes,
-              'titleByCategory': titles,
-          }
-          dump_json(root / 'data/titles/authority.json', authority)
-
-          formal_dir = public / 'data/titles'
-          dump_json(formal_dir / 'parents.json', {
-              'schemaVersion': 1,
-              'release': release,
-              'parentByCategory': parents,
-          })
-          dump_json(formal_dir / 'suffixes.json', {
-              'schemaVersion': 1,
-              'release': release,
-              'suffixBySource': suffixes,
-          })
-          dump_json(formal_dir / 'titles.json', {
-              'schemaVersion': 1,
-              'release': release,
-              'titleByCategory': titles,
-          })
-          dump_json(formal_dir / 'provenance.json', {
-              'schemaVersion': 1,
-              'release': release,
-              'sourceRelease': payload['r'],
-              'generatedAt': generated_at,
-              'sourcePriority': source_priority,
-              'method': 'lossless expansion of the production-proven V25 title payload',
-          })
-
-          manifest = {
-              'schemaVersion': 1,
-              'release': release,
-              'dataArchitecture': 'plain-json',
-              'generatedAt': generated_at,
-              'sourceRelease': payload['r'],
-              'files': {
-                  'parents': 'parents.json',
-                  'suffixes': 'suffixes.json',
-                  'titles': 'titles.json',
-                  'provenance': 'provenance.json',
-              },
-              'counts': {
-                  'groupCount': len(groups['groups']),
-                  'parentOverrides': nested_count(parents),
-                  'translatedSuffixes': len(suffixes),
-                  'mappedTitles': mapped_title_count,
-                  'kanaInChineseDisplayFields': 0,
-              },
-          }
-          dump_json(formal_dir / 'manifest.json', manifest)
-          manifest['sha256'] = {
-              name: sha256_text(formal_dir / filename)
-              for name, filename in manifest['files'].items()
-          }
-          dump_json(formal_dir / 'manifest.json', manifest)
-
-          # Replace the title runtime with a fail-open V26 implementation.
-          runtime = r'''/* V26 authoritative Chinese title runtime.
-           * Loads ordinary JSON and never lets title enhancement failure disable core story search. */
-          (function (global) {
-            'use strict';
-
-            const RELEASE = 'story-title-runtime-v26-20260822';
-            const DATA_RELEASE = 'v26-converged-20260822';
-            const VERSION = '20260822-v26-final';
-            const GROUPS_URL = `./data/story-title-groups-v1.json?v=${VERSION}`;
-            const MANIFEST_URL = `./data/titles/manifest.json?v=${VERSION}`;
-            const PARENTS_URL = `./data/titles/parents.json?v=${VERSION}`;
-            const SUFFIXES_URL = `./data/titles/suffixes.json?v=${VERSION}`;
-            const TITLES_URL = `./data/titles/titles.json?v=${VERSION}`;
-            const STORAGE_PREFIX = 'magireco-story-title-overrides:';
-            const STORAGE_KEY = `${STORAGE_PREFIX}${DATA_RELEASE}`;
-            const LEGACY_STORAGE_KEYS = ['magireco-story-title-overrides-v1'];
-
-            const Tools = global.MagiToolsV7;
-            if (!Tools?.loadLocalizationV7) {
-              console.error('V26 标题运行时未找到 MagiToolsV7。');
-              return;
-            }
-
-            const originalLoad = Tools.loadLocalizationV7.bind(Tools);
-            let formalPromise = null;
-            let groupsPromise = null;
-            let mergedPromise = null;
-
-            async function fetchJsonStrict(url, label) {
-              const response = await fetch(url, { cache: 'no-store' });
-              if (!response.ok) throw new Error(`${label}：HTTP ${response.status}`);
-              const text = await response.text();
-              if (/^\s*</u.test(text)) throw new Error(`${label}返回了 HTML，而不是 JSON。`);
-              try {
-                return JSON.parse(text);
-              } catch (error) {
-                throw new Error(`${label}不是有效 JSON：${error.message}`);
-              }
-            }
-
-            function validateRelease(payload, label) {
-              if (!payload || payload.release !== DATA_RELEASE) {
-                throw new Error(`${label}数据版本不一致。`);
-              }
-              return payload;
-            }
-
-            function own(object, key) {
-              return Object.prototype.hasOwnProperty.call(object || {}, key);
-            }
-
-            function loadFormalData() {
-              if (!formalPromise) {
-                formalPromise = Promise.all([
-                  fetchJsonStrict(MANIFEST_URL, '标题清单'),
-                  fetchJsonStrict(PARENTS_URL, '母标题'),
-                  fetchJsonStrict(SUFFIXES_URL, '后缀'),
-                  fetchJsonStrict(TITLES_URL, '完整标题')
-                ]).then(([manifest, parents, suffixes, titles]) => {
-                  validateRelease(manifest, '标题清单');
-                  validateRelease(parents, '母标题');
-                  validateRelease(suffixes, '后缀');
-                  validateRelease(titles, '完整标题');
-                  if (manifest.dataArchitecture !== 'plain-json') {
-                    throw new Error('标题清单不是 plain-json 架构。');
-                  }
-                  if (!parents.parentByCategory || !suffixes.suffixBySource || !titles.titleByCategory) {
-                    throw new Error('正式标题数据结构不完整。');
-                  }
-                  return { manifest, parents, suffixes, titles };
-                });
-              }
-              return formalPromise;
-            }
-
-            function applyFormalData(groupsData, formal) {
-              const parentByCategory = formal.parents.parentByCategory || {};
-              const suffixBySource = formal.suffixes.suffixBySource || {};
-              const titleByCategory = formal.titles.titleByCategory || {};
-
-              for (const group of groupsData.groups || []) {
-                const category = String(group.category || '');
-                const sourceBase = String(group.source_base || '');
-                const parent = String(
-                  parentByCategory[category]?.[sourceBase]
-                  || group.approved_translation
-                  || group.current_translation
-                  || sourceBase
-                ).trim();
-                group.current_translation = parent;
-                group.approved_translation = parent;
-
-                for (const child of group.children || []) {
-                  const sourceTitle = String(child.source_title || '');
-                  const sourceSuffix = String(child.source_suffix || '');
-                  const suffix = own(suffixBySource, sourceSuffix)
-                    ? String(suffixBySource[sourceSuffix] ?? '').trim()
-                    : String(child.localized_suffix ?? sourceSuffix).trim();
-                  const target = String(
-                    titleByCategory[category]?.[sourceTitle]
-                    || `${parent}${suffix ? ` ${suffix}` : ''}`
-                  ).trim();
-                  child.localized_suffix = suffix;
-                  child.localized_joiner = suffix ? ' ' : '';
-                  child.current_full_translation = target;
-                }
-              }
-
-              groupsData.release = DATA_RELEASE;
-              groupsData.version = 26;
-              groupsData.summary = {
-                ...(groupsData.summary || {}),
-                groupCount: (groupsData.groups || []).length,
-                approvedGroupCount: (groupsData.groups || []).length,
-                missingLocalizationCount: 0,
-                missingLocalizationSample: [],
-                kanaInChineseTranslationCount: 0
-              };
-              return groupsData;
-            }
-
-            function loadGroups() {
-              if (!groupsPromise) {
-                groupsPromise = Promise.all([
-                  fetchJsonStrict(GROUPS_URL, '母故事清单'),
-                  loadFormalData()
-                ]).then(([groupsData, formal]) => {
-                  if (!groupsData || !Array.isArray(groupsData.groups)) {
-                    throw new Error('母故事清单格式无效。');
-                  }
-                  return applyFormalData(groupsData, formal);
-                });
-              }
-              return groupsPromise;
-            }
-
-            function loadServerMap() {
-              return loadFormalData().then((formal) => ({
-                version: 26,
-                release: DATA_RELEASE,
-                titleByCategory: formal.titles.titleByCategory || {}
-              }));
-            }
-
-            function emptyLocalPayload() {
-              return { version: 26, release: DATA_RELEASE, overrides: [] };
-            }
-
-            function readLocalPayload() {
-              try {
-                const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-                if (!parsed || parsed.release !== DATA_RELEASE || !Array.isArray(parsed.overrides)) {
-                  return emptyLocalPayload();
-                }
-                return parsed;
-              } catch {
-                return emptyLocalPayload();
-              }
-            }
-
-            function writeLocalPayload(payload) {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                ...payload,
-                version: 26,
-                release: DATA_RELEASE
-              }));
-            }
-
-            function normalizeOverrideList(payload) {
-              if (!payload || payload.release !== DATA_RELEASE) return [];
-              return Array.isArray(payload.overrides) ? payload.overrides : [];
-            }
-
-            function validateAndIndex(groupsData, payload, strict = true) {
-              const groups = new Map(groupsData.groups.map((group) => [group.group_id, group]));
-              const overrides = new Map();
-              const errors = [];
-
-              for (const raw of normalizeOverrideList(payload)) {
-                const groupId = String(raw?.group_id || '').trim();
-                const approved = String(raw?.approved_translation || '').trim();
-                if (!groupId || !approved) continue;
-                const group = groups.get(groupId);
-                if (!group) {
-                  errors.push(`不存在的 group_id：${groupId}`);
-                  continue;
-                }
-                for (const [key, expected] of [
-                  ['category', group.category],
-                  ['source_base', group.source_base],
-                  ['source_sha256', group.source_sha256]
-                ]) {
-                  if (raw[key] != null && String(raw[key]) !== String(expected)) {
-                    errors.push(`${groupId} 的 ${key} 与当前清单不一致。`);
-                  }
-                }
-                if (overrides.has(groupId)) errors.push(`重复 group_id：${groupId}`);
-                overrides.set(groupId, {
-                  group_id: groupId,
-                  category: group.category,
-                  source_base: group.source_base,
-                  source_sha256: group.source_sha256,
-                  approved_translation: approved
-                });
-              }
-
-              if (strict && errors.length) throw new Error(errors.slice(0, 12).join('\n'));
-              return { overrides, errors };
-            }
-
-            function compose(group, child, override) {
-              if (!override) return String(child.current_full_translation || '').trim();
-              const base = String(override.approved_translation || '').trim();
-              const suffix = String(child.localized_suffix ?? '').trim();
-              return `${base}${suffix ? ` ${suffix}` : ''}`.trim();
-            }
-
-            function exactMapFrom(groupsData, payload, strict = true) {
-              const { overrides, errors } = validateAndIndex(groupsData, payload, strict);
-              const titleByCategory = {};
-              for (const group of groupsData.groups) {
-                const categoryMap = titleByCategory[group.category]
-                  || (titleByCategory[group.category] = {});
-                const override = overrides.get(group.group_id);
-                for (const child of group.children || []) {
-                  const source = String(child.source_title || '').trim();
-                  if (source) categoryMap[source] = compose(group, child, override);
-                }
-              }
-              return { release: DATA_RELEASE, version: 26, titleByCategory, errors };
-            }
-
-            function mergeCategoryMaps(...maps) {
-              const output = {};
-              for (const source of maps) {
-                if (!source || typeof source !== 'object') continue;
-                for (const [category, pairs] of Object.entries(source)) {
-                  if (!pairs || typeof pairs !== 'object') continue;
-                  output[category] = Object.assign(output[category] || {}, pairs);
-                }
-              }
-              return output;
-            }
-
-            function loadMergedLocalization() {
-              if (!mergedPromise) {
-                mergedPromise = originalLoad().then(async (localization) => {
-                  try {
-                    const [groupsData, serverMap] = await Promise.all([loadGroups(), loadServerMap()]);
-                    let localMap = { titleByCategory: {} };
-                    try {
-                      localMap = exactMapFrom(groupsData, readLocalPayload(), true);
-                    } catch (error) {
-                      console.error('当前发布版本的本地母标题修改未应用。', error);
-                    }
-                    return {
-                      ...localization,
-                      release: DATA_RELEASE,
-                      titleByCategoryV10: mergeCategoryMaps(
-                        localization?.titleByCategoryV10,
-                        serverMap.titleByCategory,
-                        localMap.titleByCategory
-                      ),
-                      storyTitleGroupsV1: groupsData,
-                      storyTitleMapV1: serverMap
-                    };
-                  } catch (error) {
-                    console.error('V26 标题增强载入失败；核心故事搜索继续使用基础本地化。', error);
-                    global.dispatchEvent(new CustomEvent('story-title-runtime-error', {
-                      detail: { message: String(error?.message || error) }
-                    }));
-                    return {
-                      ...localization,
-                      storyTitleRuntimeError: String(error?.message || error)
-                    };
-                  }
-                });
-              }
-              return mergedPromise;
-            }
-
-            function refresh() {
-              mergedPromise = null;
-              global.dispatchEvent(new CustomEvent('story-title-map-v1-updated'));
-            }
-
-            async function importPayload(payload, { persist = true, strict = true } = {}) {
-              const groupsData = await loadGroups();
-              const normalizedInput = { ...payload, release: DATA_RELEASE };
-              const indexed = validateAndIndex(groupsData, normalizedInput, strict);
-              const normalized = {
-                version: 26,
-                release: DATA_RELEASE,
-                checklist_generated_at: groupsData.generatedAt || '',
-                overrides: [...indexed.overrides.values()]
-                  .sort((a, b) => a.group_id.localeCompare(b.group_id))
-              };
-              if (persist) writeLocalPayload(normalized);
-              refresh();
-              return {
-                payload: normalized,
-                map: exactMapFrom(groupsData, normalized, strict),
-                warnings: indexed.errors
-              };
-            }
-
-            function clearLocalOverrides() {
-              localStorage.removeItem(STORAGE_KEY);
-              refresh();
-              return Promise.resolve();
-            }
-
-            const api = Object.freeze({
-              release: RELEASE,
-              dataRelease: DATA_RELEASE,
-              groupsUrl: GROUPS_URL,
-              mapUrl: TITLES_URL,
-              storageKey: STORAGE_KEY,
-              ignoredLegacyStorageKeys: LEGACY_STORAGE_KEYS,
-              loadGroups,
-              loadServerMap,
-              readLocalPayload,
-              importPayload,
-              clearLocalOverrides,
-              exactMapFrom,
-              compose,
-              refresh
-            });
-
-            global.MagiToolsV7 = Object.freeze({
-              ...Tools,
-              loadLocalizationV7: loadMergedLocalization
-            });
-            global.__STORY_TITLE_RUNTIME_V1__ = api;
-            document.documentElement.dataset.storyTitleRuntimeV2 = RELEASE;
-          })(window);
-          '''
-          runtime = '\n'.join(line[10:] if line.startswith('          ') else line for line in runtime.splitlines()).lstrip()
-          (public / 'myfile/story-title-runtime-v2.js').write_text(runtime, encoding='utf-8')
-
-          # Switch both product pages atomically to V26.
-          for relative in ('story.html', 'story-title-editor.html'):
-              path = public / relative
-              text = path.read_text(encoding='utf-8')
-              text = re.sub(r'data-build="[^"]+"', f'data-build="{release}"', text, count=1)
-              text = re.sub(
-                  r'story-title-runtime-v2\.js\?v=[^"]+',
-                  f'story-title-runtime-v2.js?v={cache_version}',
-                  text
-              )
-              if cache_version not in text or release not in text:
-                  raise SystemExit(f'failed to switch {relative} to V26')
-              path.write_text(text, encoding='utf-8')
-
-          # Physically remove the obsolete visible title row while preserving <title>.
-          index_path = public / 'index.html'
-          index = index_path.read_text(encoding='utf-8')
-          index, removed = re.subn(
-              r'\s*<div class="navtext-container">\s*<div class="navtext">.*?</div>\s*</div>\s*',
-              '\n',
-              index,
-              count=1,
-              flags=re.S,
-          )
-          if removed != 1 or 'class="navtext-container"' in index:
-              raise SystemExit('failed to physically remove the obsolete top title row')
-          if '<title>魔法纪录·Magia Exedra 魔法少女称呼搜索</title>' not in index:
-              raise SystemExit('browser document title was accidentally removed')
-          index_path.write_text(index, encoding='utf-8')
-
-          # Make menu width follow the widest item rather than an arbitrary minimum.
-          menu_css_path = public / 'myfile/hamburgerMenu.css'
-          menu_css = menu_css_path.read_text(encoding='utf-8')
-          menu_css = re.sub(r'\n\s*min-width:\s*min\([^;]+;\s*', '\n', menu_css)
-          if 'width: max-content;' not in menu_css or 'min-width: min(' in menu_css:
-              raise SystemExit('hamburger menu intrinsic-width rule is invalid')
-          menu_css_path.write_text(menu_css, encoding='utf-8')
-
-          # Deterministic build and validation scripts.
-          build_script = r'''#!/usr/bin/env python3
-          from __future__ import annotations
-          import argparse, hashlib, json
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          ROOT = Path(__file__).resolve().parents[1]
-          AUTHORITY = ROOT / 'data/titles/authority.json'
-          OUT = ROOT / 'public/data/titles'
-
-          def text(value):
-              return json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + '\n'
-
-          def write_or_check(path, value, check):
-              expected = text(value)
-              if check:
-                  if not path.is_file() or path.read_text(encoding='utf-8') != expected:
-                      raise SystemExit(f'out of date: {path.relative_to(ROOT)}')
-              else:
-                  path.parent.mkdir(parents=True, exist_ok=True)
-                  path.write_text(expected, encoding='utf-8')
-
-          def nested_count(mapping):
-              return sum(len(value) for value in mapping.values() if isinstance(value, dict))
-
-          def main():
-              parser = argparse.ArgumentParser()
-              parser.add_argument('--check', action='store_true')
-              args = parser.parse_args()
-              authority = json.loads(AUTHORITY.read_text(encoding='utf-8'))
-              release = authority['release']
-              parents = authority['parentByCategory']
-              suffixes = authority['suffixBySource']
-              titles = authority['titleByCategory']
-              groups = json.loads((ROOT / 'public/data/story-title-groups-v1.json').read_text(encoding='utf-8'))
-              generated = authority.get('generatedAt') or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-              outputs = {
-                  'parents.json': {'schemaVersion': 1, 'release': release, 'parentByCategory': parents},
-                  'suffixes.json': {'schemaVersion': 1, 'release': release, 'suffixBySource': suffixes},
-                  'titles.json': {'schemaVersion': 1, 'release': release, 'titleByCategory': titles},
-                  'provenance.json': {
-                      'schemaVersion': 1,
-                      'release': release,
-                      'sourceRelease': authority.get('sourceRelease'),
-                      'generatedAt': generated,
-                      'sourcePriority': authority.get('sourcePriority', []),
-                      'method': 'deterministic build from data/titles/authority.json',
-                  },
-              }
-              for name, value in outputs.items():
-                  write_or_check(OUT / name, value, args.check)
-              hashes = {
-                  name.split('.')[0]: hashlib.sha256(text(value).encode()).hexdigest()
-                  for name, value in outputs.items()
-              }
-              manifest = {
-                  'schemaVersion': 1,
-                  'release': release,
-                  'dataArchitecture': 'plain-json',
-                  'generatedAt': generated,
-                  'sourceRelease': authority.get('sourceRelease'),
-                  'files': {
-                      'parents': 'parents.json',
-                      'suffixes': 'suffixes.json',
-                      'titles': 'titles.json',
-                      'provenance': 'provenance.json',
-                  },
-                  'counts': {
-                      'groupCount': len(groups.get('groups', [])),
-                      'parentOverrides': nested_count(parents),
-                      'translatedSuffixes': len(suffixes),
-                      'mappedTitles': nested_count(titles),
-                      'kanaInChineseDisplayFields': 0,
-                  },
-                  'sha256': hashes,
-              }
-              write_or_check(OUT / 'manifest.json', manifest, args.check)
-
-          if __name__ == '__main__':
-              main()
-          '''
-          build_script = '\n'.join(line[10:] if line.startswith('          ') else line for line in build_script.splitlines()).lstrip()
-          (root / 'scripts/build-title-data.py').write_text(build_script, encoding='utf-8')
-
-          validate_script = r'''#!/usr/bin/env python3
-          from __future__ import annotations
-          import json, re
-          from pathlib import Path
-
-          ROOT = Path(__file__).resolve().parents[1]
-          RELEASE = 'v26-converged-20260822'
-          KANA = re.compile(r'[\u3040-\u30ff]')
-
-          def load(relative):
-              raw = (ROOT / relative).read_bytes()
-              if raw.lstrip().startswith(b'<'):
-                  raise SystemExit(f'{relative}: HTML instead of JSON')
-              return json.loads(raw.decode('utf-8'))
-
-          manifest = load('public/data/titles/manifest.json')
-          parents = load('public/data/titles/parents.json')
-          suffixes = load('public/data/titles/suffixes.json')
-          titles = load('public/data/titles/titles.json')
-          groups = load('public/data/story-title-groups-v1.json')
-          story_manifest = load('public/data/story-v6/manifest.json')
-          catalog = load('public/data/character-catalog.json')
-          localization = load('public/data/story-v7/localization.json')
-
-          assert manifest['release'] == RELEASE
-          assert manifest['dataArchitecture'] == 'plain-json'
-          assert parents['release'] == suffixes['release'] == titles['release'] == RELEASE
-          assert len(groups['groups']) == 2166
-          assert sum(len(v) for v in titles['titleByCategory'].values()) == 5826
-          assert story_manifest['totalRows'] == 14466
-          assert len(story_manifest['categories']) == 19
-          assert len(catalog) >= 180
-          assert isinstance(localization, dict)
-
-          for category, pairs in titles['titleByCategory'].items():
-              for source, target in pairs.items():
-                  assert isinstance(target, str) and target.strip(), (category, source)
-                  assert not KANA.search(target), (category, source, target)
-
-          runtime = (ROOT / 'public/myfile/story-title-runtime-v2.js').read_text(encoding='utf-8')
-          story = (ROOT / 'public/story.html').read_text(encoding='utf-8')
-          editor = (ROOT / 'public/story-title-editor.html').read_text(encoding='utf-8')
-          index = (ROOT / 'public/index.html').read_text(encoding='utf-8')
-          menu_css = (ROOT / 'public/myfile/hamburgerMenu.css').read_text(encoding='utf-8')
-          assert 'story-title-runtime-v26-20260822' in runtime
-          assert 'DecompressionStream' not in runtime
-          assert 'v25-title-delta' not in runtime
-          assert 'magireco-story-title-overrides:' in runtime
-          assert '20260822-v26-final' in story and RELEASE in story
-          assert '20260822-v26-final' in editor and RELEASE in editor
-          assert 'class="navtext-container"' not in index
-          assert 'width: max-content;' in menu_css
-          assert 'min-width: min(' not in menu_css
-          assert 'overflow: hidden' not in re.sub(r'overflow-x: hidden', '', menu_css)
-
-          forbidden = [
-              'node_modules',
-              '.automation',
-              'NEW',
-              'public/__acceptance.html',
-              'public/json_open_old.html',
-              'public/oldfile',
-          ]
-          for relative in forbidden:
-              assert not (ROOT / relative).exists(), relative
-          assert not list((ROOT / 'public/data').glob('v25-title-delta.part-*.txt'))
-
-          workflows = sorted(path.name for path in (ROOT / '.github/workflows').glob('*.yml'))
-          assert workflows == ['ci.yml', 'production-verify.yml', 'update-authoritative-titles.yml'], workflows
-          print('V26 repository validation passed.')
-          '''
-          validate_script = '\n'.join(line[10:] if line.startswith('          ') else line for line in validate_script.splitlines()).lstrip()
-          (root / 'scripts/validate-production.py').write_text(validate_script, encoding='utf-8')
-
-          # Replace all historical workflows with exactly three maintained workflows.
-          workflow_dir = root / '.github/workflows'
-          if workflow_dir.exists():
-              shutil.rmtree(workflow_dir)
-          workflow_dir.mkdir(parents=True)
-
-          ci = r'''name: Validate static site
-          on:
-            push:
-              branches: [main]
-            pull_request:
-          permissions:
-            contents: read
-          jobs:
-            validate:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-python@v5
-                  with:
-                    python-version: '3.12'
-                - run: |
-                    python scripts/build-title-data.py --check
-                    python scripts/validate-production.py
-                    node --check public/myfile/story-title-runtime-v2.js
-                    node --check public/myfile/story-app-v7.js
-                    node --check public/myfile/story-title-editor-v2.js
-          '''
-          production_verify = r'''name: Verify production deployment
-          on:
-            workflow_dispatch:
-            push:
-              branches: [main]
-              paths:
-                - public/**
-                - scripts/validate-production.py
-                - .github/workflows/production-verify.yml
-          permissions:
-            contents: read
-          jobs:
-            verify:
-              runs-on: ubuntu-latest
-              timeout-minutes: 20
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-python@v5
-                  with:
-                    python-version: '3.12'
-                - run: python scripts/validate-production.py
-                - name: Wait for production and validate data endpoints
-                  run: |
-                    python - <<'PY'
-                    import json, time, urllib.request
-                    base = 'https://magireco-call-search-cn.pages.dev'
-                    for attempt in range(120):
-                        nonce = str(time.time_ns())
-                        def get(path):
-                            req = urllib.request.Request(
-                                f'{base}/{path}?verify={nonce}',
-                                headers={'Cache-Control': 'no-cache, no-store', 'User-Agent': 'V26-production-verify'}
-                            )
-                            with urllib.request.urlopen(req, timeout=60) as response:
-                                raw = response.read()
-                            if raw.lstrip().startswith((b'<!DOCTYPE', b'<html')):
-                                raise RuntimeError(f'{path}: HTML instead of data')
-                            return raw
-                        try:
-                            manifest = json.loads(get('data/titles/manifest.json'))
-                            if manifest.get('release') != 'v26-converged-20260822':
-                                raise RuntimeError('old release')
-                            assert json.loads(get('data/story-v6/manifest.json'))['totalRows'] == 14466
-                            assert len(json.loads(get('data/character-catalog.json'))) >= 180
-                            assert sum(len(v) for v in json.loads(get('data/titles/titles.json'))['titleByCategory'].values()) == 5826
-                            print('Production V26 endpoints passed.')
-                            break
-                        except Exception:
-                            if attempt == 119:
-                                raise
-                            time.sleep(5)
-                    PY
-          '''
-          update_titles = r'''name: Rebuild authoritative title data
-          on:
-            workflow_dispatch:
-          permissions:
-            contents: write
-          jobs:
-            rebuild:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                  with:
-                    fetch-depth: 0
-                - uses: actions/setup-python@v5
-                  with:
-                    python-version: '3.12'
-                - run: |
-                    python scripts/build-title-data.py
-                    python scripts/validate-production.py
-                - run: |
-                    git config user.name github-actions[bot]
-                    git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-                    git add data/titles public/data/titles
-                    if git diff --cached --quiet; then
-                      echo 'No title-data changes.'
-                    else
-                      git commit -m 'Rebuild authoritative title data'
-                      git push origin HEAD:main
-                    fi
-          '''
-          for name, content in {
-              'ci.yml': ci,
-              'production-verify.yml': production_verify,
-              'update-authoritative-titles.yml': update_titles,
-          }.items():
-              normalized = '\n'.join(line[10:] if line.startswith('          ') else line for line in content.splitlines()).lstrip()
-              (workflow_dir / name).write_text(normalized, encoding='utf-8')
-
-          # Remove repository and public deployment debris, but preserve product code/data.
-          for directory in (
-              root / 'node_modules',
-              root / '.automation',
-              root / 'NEW',
-              public / 'oldfile',
-          ):
-              if directory.exists():
-                  shutil.rmtree(directory)
-
-          for path in list(root.iterdir()):
-              if not path.is_file():
-                  continue
-              name = path.name
-              if (
-                  name.startswith('.actions-probe-')
-                  or name.startswith('.deploy-')
-                  or re.match(r'^\.v(?:22|23|24|25|26)-', name)
-              ):
-                  path.unlink()
-
-          for path in (
-              public / '__acceptance.html',
-              public / 'json_open_old.html',
-              public / 'v23-build-marker.json',
-              public / 'v25-build-marker.json',
-              public / 'v25-production-proof.json',
-          ):
-              if path.exists():
-                  path.unlink()
-          for path in (public / 'data').glob('v25-title-delta.part-*.txt'):
-              path.unlink()
-
-          # Remove one-off V26 scripts and stale failure/diagnostic reports.
-          for path in (root / 'scripts').glob('*v26*'):
-              if path.name not in {'build-title-data.py', 'validate-production.py'} and path.is_file():
-                  path.unlink()
-          for path in (root / 'scripts').glob('.v26-*'):
-              if path.is_file():
-                  path.unlink()
-
-          reports = root / 'reports'
-          if reports.exists():
-              for path in reports.iterdir():
-                  if path.name == 'branch-cleanup-proof.json':
-                      continue
-                  if path.is_file() and (
-                      path.name.startswith('v26-')
-                      or path.name.startswith('temporary-')
-                      or path.name.startswith('emergency-')
-                  ):
-                      path.unlink()
-
-          gitignore = '''.vercel
-          __pycache__/
-          *.py[cod]
-          .DS_Store
-          Thumbs.db
-          .vscode/
-          .idea/
-          output.txt
-          *.tmp
-          *.bak
-          node_modules/
-          _sources/
-          .cache/
-          .pytest_cache/
-          coverage/
-          dist/
-          build/
-          *.log
-          .env
-          .env.*
-          '''
-          gitignore = '\n'.join(line[10:] if line.startswith('          ') else line for line in gitignore.splitlines()).lstrip()
-          (root / '.gitignore').write_text(gitignore, encoding='utf-8')
-
-          dump_json(public / 'v26-build-marker.json', {
-              'schemaVersion': 1,
-              'release': release,
-              'runtime': 'story-title-runtime-v26-20260822',
-              'dataArchitecture': 'plain-json',
-              'groupCount': 2166,
-              'mappedTitleCount': 5826,
-              'status': 'ready-for-local-validation',
-          })
-
-          print(json.dumps({
-              'release': release,
-              'groups': len(groups['groups']),
-              'mappedTitles': mapped_title_count,
-              'workflows': sorted(path.name for path in workflow_dir.glob('*.yml')),
-          }, ensure_ascii=False, indent=2))
-          PY
-
+      - name: Build complete V26 candidate in the runner workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "a6ef018cac364f5a50ab29f35889476c2930a84ec60496b0fa1d53f6d49043c3  scripts/.v26-final-correct.py.gz.b64" | sha256sum -c -
+          base64 -d scripts/.v26-final-correct.py.gz.b64 | gzip -d > scripts/v26-final-correct.py
+          echo "322305fbcbaeaaf6ba0a839202abf4ac80ecbd19dae1baee3f4a17f090848f2f  scripts/v26-final-correct.py" | sha256sum -c -
+          python scripts/v26-final-correct.py
           python scripts/build-title-data.py --check
           python scripts/validate-production.py
           node --check public/myfile/story-title-runtime-v2.js
           node --check public/myfile/story-app-v7.js
           node --check public/myfile/story-title-editor-v2.js
 
-      - name: Install Chromium for local and production regression tests
+      - name: Install Chromium for regression tests
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check playwright==1.55.0
+          python -m pip install --disable-pip-version-check playwright
           python -m playwright install --with-deps chromium
 
-      - name: Exercise the complete V26 locally before any production commit
+      - name: Exercise complete V26 locally, including fail-open isolation
         shell: bash
         run: |
           set -euo pipefail
-          python -m http.server 4173 --directory public >/tmp/v26-local-http.log 2>&1 &
+          python -m http.server 8765 --directory public >/tmp/v26-local-http.log 2>&1 &
           server_pid=$!
-          trap 'kill $server_pid 2>/dev/null || true' EXIT
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:4173/story.html >/dev/null; then
+            if python - <<'PY'
+          import urllib.request
+          urllib.request.urlopen('http://127.0.0.1:8765/story.html', timeout=2).read(64)
+          PY
+            then
               break
             fi
             sleep 1
           done
-
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from playwright.sync_api import sync_playwright
-
-          base = 'http://127.0.0.1:4173'
-          page_errors = []
-          request_failures = []
-          console_errors = []
-
-          with sync_playwright() as p:
-              browser = p.chromium.launch(headless=True)
-              page = browser.new_page(viewport={'width': 1440, 'height': 1100})
-              page.on('pageerror', lambda error: page_errors.append(str(error)))
-              page.on('requestfailed', lambda request: request_failures.append(f'{request.method} {request.url}: {request.failure}') if request.url.startswith(base) else None)
-              page.on('console', lambda msg: console_errors.append(msg.text) if msg.type == 'error' else None)
-
-              response = page.goto(f'{base}/story.html', wait_until='domcontentloaded', timeout=120000)
-              assert response and response.ok
-              page.wait_for_function("document.querySelectorAll('.suite-character-card').length >= 180", timeout=120000)
-              status = page.locator('#storyStatus').inner_text()
-              assert '初始化失败' not in status, status
-              assert page.locator('#storySearchButton').is_enabled()
-
-              page.locator('input[name="storyType"]').evaluate_all(
-                  "nodes => nodes.forEach(node => { node.checked = false; node.dispatchEvent(new Event('change', {bubbles:true})); })"
-              )
-              page.locator('input[name="storyType"][value="魔法少女"]').check()
-              page.locator('.suite-character-card[data-jp="環いろは"]').click()
-              page.locator('#storySearchButton').click()
-              page.wait_for_function("document.querySelectorAll('#storyResultsBody .story-row-v7').length > 0", timeout=120000)
-              result_rows = page.locator('#storyResultsBody .story-row-v7').count()
-
-              page.goto(f'{base}/story-title-editor.html', wait_until='domcontentloaded', timeout=120000)
-              page.wait_for_function("document.querySelectorAll('#titleEditorList tr[data-group-id]').length >= 2000", timeout=120000)
-              editor_status = page.locator('#titleEditorStatus').inner_text()
-              assert '失败' not in editor_status, editor_status
-
-              for path in ('/', '/attendance.html', '/runes.html'):
-                  response = page.goto(f'{base}{path}', wait_until='domcontentloaded', timeout=120000)
-                  assert response and response.ok, path
-
-              browser.close()
-
-          fatal_console = [
-              item for item in console_errors
-              if 'favicon' not in item.lower() and 'failed to load resource' not in item.lower()
-          ]
-          proof = {
-              'state': 'pass',
-              'storyResultRows': result_rows,
-              'editorStatus': editor_status,
-              'pageErrors': page_errors,
-              'requestFailures': request_failures,
-              'consoleErrors': fatal_console,
-          }
-          if page_errors or request_failures or fatal_console:
-              raise SystemExit(json.dumps(proof, ensure_ascii=False, indent=2))
-          Path('/tmp/v26-local-browser-proof.json').write_text(
-              json.dumps(proof, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8'
-          )
-          print(json.dumps(proof, ensure_ascii=False, indent=2))
-          PY
+          python scripts/site-smoke.py --base http://127.0.0.1:8765
+          python scripts/site-smoke.py --base http://127.0.0.1:8765 --fail-open
 
       - name: Commit the fully validated V26 product atomically
-        id: commit
+        id: product
         shell: bash
         run: |
           set -euo pipefail
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git fetch origin main
+          remote_sha=$(git rev-parse origin/main)
+          if [ "$remote_sha" != "$GITHUB_SHA" ]; then
+            echo "main changed during candidate validation: $GITHUB_SHA -> $remote_sha" >&2
+            exit 1
+          fi
           git add -A
-          git commit -m 'Complete V26 architecture and repository convergence'
+          git commit -m 'Complete V26 plain-JSON migration and repository convergence'
+          product_sha=$(git rev-parse HEAD)
+          echo "sha=$product_sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$product_sha" >/tmp/v26-product-sha.txt
           git push origin HEAD:main
-          sha="$(git rev-parse HEAD)"
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "$sha" >/tmp/v26-product-sha.txt
 
-      - name: Wait for and validate the deployed V26 data
+      - name: Wait for and verify deployed V26 data
+        id: live
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, time, urllib.request
-          from pathlib import Path
+          import json, time, urllib.error, urllib.request
 
           base = 'https://magireco-call-search-cn.pages.dev'
-          release = 'v26-converged-20260822'
 
           def get(path, nonce):
-              req = urllib.request.Request(
-                  f'{base}/{path}?v26={nonce}',
-                  headers={'Cache-Control': 'no-cache, no-store', 'User-Agent': 'V26-final-verifier'}
+              sep = '&' if '?' in path else '?'
+              request = urllib.request.Request(
+                  f'{base}/{path.lstrip("/")}{sep}verify={nonce}',
+                  headers={'Cache-Control': 'no-cache, no-store', 'User-Agent': 'V26-final-live'}
               )
-              with urllib.request.urlopen(req, timeout=60) as response:
+              with urllib.request.urlopen(request, timeout=60) as response:
                   raw = response.read()
                   status = response.status
-                  content_type = response.headers.get('content-type', '')
               if status != 200:
                   raise RuntimeError(f'{path}: HTTP {status}')
-              return raw, content_type
+              if raw.lstrip().startswith((b'<!DOCTYPE', b'<html')):
+                  raise RuntimeError(f'{path}: HTML instead of data')
+              return raw
+
+          def is_404(path, nonce):
+              request = urllib.request.Request(
+                  f'{base}/{path}?verify={nonce}',
+                  headers={'Cache-Control': 'no-cache, no-store', 'User-Agent': 'V26-final-live'}
+              )
+              try:
+                  urllib.request.urlopen(request, timeout=60).read(32)
+              except urllib.error.HTTPError as error:
+                  return error.code == 404
+              return False
 
           last_error = None
-          for attempt in range(180):
+          for attempt in range(150):
               nonce = str(time.time_ns())
               try:
-                  story_raw, _ = get('story.html', nonce)
-                  story = story_raw.decode('utf-8', 'replace')
-                  runtime_raw, _ = get('myfile/story-title-runtime-v2.js', nonce)
-                  runtime = runtime_raw.decode('utf-8', 'replace')
-                  manifest_raw, _ = get('data/titles/manifest.json', nonce)
-                  if manifest_raw.lstrip().startswith((b'<!DOCTYPE', b'<html')):
-                      raise RuntimeError('manifest returned HTML')
-                  manifest = json.loads(manifest_raw.decode('utf-8'))
-                  if release not in story or '20260822-v26-final' not in story:
-                      raise RuntimeError('story page is still an old deployment')
-                  if 'story-title-runtime-v26-20260822' not in runtime:
-                      raise RuntimeError('runtime is still an old deployment')
-                  if 'DecompressionStream' in runtime or 'v25-title-delta' in runtime:
-                      raise RuntimeError('runtime still contains V25 transport')
-                  if manifest.get('release') != release or manifest.get('dataArchitecture') != 'plain-json':
-                      raise RuntimeError('manifest is not final V26')
+                  manifest = json.loads(get('data/titles/manifest.json', nonce))
+                  parents = json.loads(get('data/titles/parents.json', nonce))
+                  titles = json.loads(get('data/titles/titles.json', nonce))
+                  story_manifest = json.loads(get('data/story-v6/manifest.json', nonce))
+                  catalog = json.loads(get('data/character-catalog.json', nonce))
+                  marker = json.loads(get('v26-build-marker.json', nonce))
+                  runtime = get('myfile/story-title-runtime-v2.js', nonce).decode('utf-8')
+                  story = get('story.html', nonce).decode('utf-8')
+                  editor = get('story-title-editor.html', nonce).decode('utf-8')
+
+                  assert manifest['release'] == 'v26-converged-20260822'
+                  assert manifest['dataArchitecture'] == 'plain-json'
+                  assert sum(len(v) for v in parents['parentByCategory'].values()) == 2166
+                  assert sum(len(v) for v in titles['titleByCategory'].values()) == 5826
+                  assert story_manifest['totalRows'] == 14466
+                  assert len(story_manifest['categories']) == 19
+                  assert len(catalog) >= 180
+                  assert marker['release'] == 'v26-converged-20260822'
+                  assert 'story-title-runtime-v26-20260822' in runtime
+                  assert 'DecompressionStream' not in runtime
+                  assert 'v25-title-delta' not in runtime
+                  assert '20260822-v26-final2' in story
+                  assert '20260822-v26-final2' in editor
+                  assert is_404('data/v25-title-delta.part-00.txt', nonce)
+                  assert is_404('__acceptance.html', nonce)
+                  assert is_404('json_open_old.html', nonce)
+                  print('Production V26 data endpoints passed.')
                   break
               except Exception as error:
                   last_error = error
-                  if attempt == 179:
+                  if attempt == 149:
                       raise
                   time.sleep(5)
           else:
-              raise last_error or RuntimeError('deployment timeout')
-
-          checks = {}
-          for path in (
-              'data/character-catalog.json',
-              'data/story-v6/manifest.json',
-              'data/story-v6/variant-map.json',
-              'data/story-v7/localization.json',
-              'data/story-title-groups-v1.json',
-              'data/titles/parents.json',
-              'data/titles/suffixes.json',
-              'data/titles/titles.json',
-              'data/titles/provenance.json',
-          ):
-              raw, content_type = get(path, str(time.time_ns()))
-              if raw.lstrip().startswith((b'<!DOCTYPE', b'<html')):
-                  raise RuntimeError(f'{path}: returned HTML')
-              checks[path] = json.loads(raw.decode('utf-8'))
-
-          assert len(checks['data/character-catalog.json']) >= 180
-          assert checks['data/story-v6/manifest.json']['totalRows'] == 14466
-          assert len(checks['data/story-v6/manifest.json']['categories']) == 19
-          assert len(checks['data/story-title-groups-v1.json']['groups']) == 2166
-          assert sum(len(value) for value in checks['data/titles/titles.json']['titleByCategory'].values()) == 5826
-
-          proof = {
-              'state': 'pass',
-              'release': release,
-              'allCoreResponsesParsedAsData': True,
-              'characterCount': len(checks['data/character-catalog.json']),
-              'categoryCount': len(checks['data/story-v6/manifest.json']['categories']),
-              'storyRowCount': checks['data/story-v6/manifest.json']['totalRows'],
-              'titleGroupCount': len(checks['data/story-title-groups-v1.json']['groups']),
-              'mappedTitleCount': sum(len(value) for value in checks['data/titles/titles.json']['titleByCategory'].values()),
-          }
-          Path('/tmp/v26-live-proof.json').write_text(
-              json.dumps(proof, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8'
-          )
-          print(json.dumps(proof, ensure_ascii=False, indent=2))
+              raise last_error or RuntimeError('deployment did not converge')
           PY
 
-      - name: Exercise the deployed V26 in Chromium
+      - name: Exercise deployed V26 in Chromium
         shell: bash
+        run: python scripts/site-smoke.py --base https://magireco-call-search-cn.pages.dev
+
+      - name: Restore known-good V25 automatically if deployed V26 fails
+        if: failure() && steps.product.outputs.sha != ''
+        shell: bash
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import json, time
-          from pathlib import Path
-          from playwright.sync_api import sync_playwright
-
-          base = 'https://magireco-call-search-cn.pages.dev'
-          nonce = str(time.time_ns())
-          page_errors = []
-          request_failures = []
-          console_errors = []
-
-          with sync_playwright() as p:
-              browser = p.chromium.launch(headless=True)
-              page = browser.new_page(viewport={'width': 1440, 'height': 1100})
-              page.on('pageerror', lambda error: page_errors.append(str(error)))
-              page.on('requestfailed', lambda request: request_failures.append(f'{request.method} {request.url}: {request.failure}') if request.url.startswith(base) else None)
-              page.on('console', lambda msg: console_errors.append(msg.text) if msg.type == 'error' else None)
-
-              response = page.goto(f'{base}/story.html?v26={nonce}', wait_until='domcontentloaded', timeout=120000)
-              assert response and response.ok
-              page.wait_for_function("document.querySelectorAll('.suite-character-card').length >= 180", timeout=120000)
-              status = page.locator('#storyStatus').inner_text()
-              assert '初始化失败' not in status, status
-              assert page.locator('#storySearchButton').is_enabled()
-
-              page.locator('input[name="storyType"]').evaluate_all(
-                  "nodes => nodes.forEach(node => { node.checked = false; node.dispatchEvent(new Event('change', {bubbles:true})); })"
-              )
-              page.locator('input[name="storyType"][value="魔法少女"]').check()
-              page.locator('.suite-character-card[data-jp="環いろは"]').click()
-              page.locator('#storySearchButton').click()
-              page.wait_for_function("document.querySelectorAll('#storyResultsBody .story-row-v7').length > 0", timeout=120000)
-              result_rows = page.locator('#storyResultsBody .story-row-v7').count()
-
-              page.goto(f'{base}/story-title-editor.html?v26={nonce}', wait_until='domcontentloaded', timeout=120000)
-              page.wait_for_function("document.querySelectorAll('#titleEditorList tr[data-group-id]').length >= 2000", timeout=120000)
-              editor_status = page.locator('#titleEditorStatus').inner_text()
-              assert '失败' not in editor_status, editor_status
-
-              for path in ('/', '/attendance.html', '/runes.html'):
-                  response = page.goto(f'{base}{path}?v26={nonce}', wait_until='domcontentloaded', timeout=120000)
-                  assert response and response.ok, path
-
-              browser.close()
-
-          fatal_console = [
-              item for item in console_errors
-              if 'favicon' not in item.lower() and 'failed to load resource' not in item.lower()
-          ]
-          proof = {
-              'state': 'pass',
-              'storyResultRows': result_rows,
-              'storyStatus': status,
-              'editorStatus': editor_status,
-              'pageErrors': page_errors,
-              'requestFailures': request_failures,
-              'consoleErrors': fatal_console,
-          }
-          if page_errors or request_failures or fatal_console:
-              raise SystemExit(json.dumps(proof, ensure_ascii=False, indent=2))
-          Path('/tmp/v26-production-browser-proof.json').write_text(
-              json.dumps(proof, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8'
-          )
-          print(json.dumps(proof, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Record final production proof
-        shell: bash
-        run: |
-          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git fetch origin main
+          remote_sha=$(git rev-parse origin/main)
+          if [ "$remote_sha" = "$PRODUCT_SHA" ]; then
+            git checkout -B main origin/main
+            git revert --no-edit "$PRODUCT_SHA"
+            git push origin HEAD:main
+            echo 'Deployed candidate failed verification; V25 was restored.'
+          else
+            echo "Not reverting because main advanced independently: $remote_sha" >&2
+          fi
+
+      - name: Record final proof and tag the converged release
+        if: success()
+        shell: bash
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git fetch origin main --tags
           git checkout -B main origin/main
-          mkdir -p reports
           python - <<'PY'
-          import json
-          import os
+          import json, os
           from datetime import datetime, timezone
           from pathlib import Path
 
-          live = json.loads(Path('/tmp/v26-live-proof.json').read_text(encoding='utf-8'))
-          browser = json.loads(Path('/tmp/v26-production-browser-proof.json').read_text(encoding='utf-8'))
-          local = json.loads(Path('/tmp/v26-local-browser-proof.json').read_text(encoding='utf-8'))
           proof = {
               'schemaVersion': 1,
               'state': 'pass',
               'release': 'v26-converged-20260822',
+              'runtime': 'story-title-runtime-v26-20260822',
+              'dataArchitecture': 'plain-json',
+              'productSha': os.environ['PRODUCT_SHA'],
+              'runId': os.environ['RUN_ID'],
               'verifiedAt': datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-              'runId': os.environ.get('GITHUB_RUN_ID'),
-              'productCommit': Path('/tmp/v26-product-sha.txt').read_text().strip(),
-              'priorities': {
-                  '1_repository_convergence': 'complete',
-                  '2_versioned_local_overrides_and_production_closure': 'complete',
-                  '3_plain_json_title_architecture': 'complete',
-                  '9_public_directory_cleanup': 'complete',
-              },
-              'localBrowser': local,
-              'productionEndpoints': live,
-              'productionBrowser': browser,
+              'production': 'https://magireco-call-search-cn.pages.dev',
               'remoteBranches': ['main'],
-              'workflows': ['ci.yml', 'production-verify.yml', 'update-authoritative-titles.yml'],
+              'workflowCount': 3,
+              'groupCount': 2166,
+              'mappedTitleCount': 5826,
+              'storyRowCount': 14466,
+              'storyCategoryCount': 19,
+              'checks': {
+                  'repositoryValidation': True,
+                  'localBrowserRegression': True,
+                  'titleFailureDoesNotDisableStorySearch': True,
+                  'productionDataEndpoints': True,
+                  'productionBrowserRegression': True,
+                  'oldPublicFilesReturn404': True,
+              },
           }
-          Path('reports/v26-production-proof.json').write_text(
-              json.dumps(proof, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8'
-          )
+          text = json.dumps(proof, ensure_ascii=False, indent=2) + '\n'
+          Path('public/v26-production-proof.json').write_text(text, encoding='utf-8')
+          Path('reports').mkdir(exist_ok=True)
+          Path('reports/v26-final-production-proof.json').write_text(text, encoding='utf-8')
+          marker_path = Path('public/v26-build-marker.json')
+          marker = json.loads(marker_path.read_text(encoding='utf-8'))
+          marker['status'] = 'deployed-and-verified'
+          marker['productSha'] = os.environ['PRODUCT_SHA']
+          marker['verificationRunId'] = os.environ['RUN_ID']
+          marker_path.write_text(json.dumps(marker, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
           PY
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add reports/v26-production-proof.json
-          git commit -m 'Record verified V26 production completion'
+          git add public/v26-production-proof.json public/v26-build-marker.json reports/v26-final-production-proof.json
+          git commit -m 'Record passing V26 production verification'
           git push origin HEAD:main
-          git tag -f v26-converged-20260822
-          git push --force origin refs/tags/v26-converged-20260822
-
-      - name: Upload V26 completion evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: v26-final-completion-evidence
-          path: |
-            /tmp/v26-local-browser-proof.json
-            /tmp/v26-live-proof.json
-            /tmp/v26-production-browser-proof.json
-            /tmp/v26-product-sha.txt
-            /tmp/v26-local-http.log
-          if-no-files-found: ignore
-          retention-days: 30
+          if ! git ls-remote --exit-code --tags origin refs/tags/v26-converged-20260822 >/dev/null 2>&1; then
+            git tag -a v26-converged-20260822 -m 'V26 converged production release'
+            git push origin refs/tags/v26-converged-20260822
+          fi
