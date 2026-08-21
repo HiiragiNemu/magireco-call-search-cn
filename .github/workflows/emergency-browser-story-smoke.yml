@@ -1,0 +1,171 @@
+name: Emergency browser smoke for restored story search
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/emergency-browser-story-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Locate browser and Puppeteer
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser
+          node -e "require('puppeteer'); console.log('puppeteer available')"
+
+      - name: Exercise production story search and title editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/emergency-browser-smoke.cjs <<'JS'
+          const fs = require('fs');
+          const { execFileSync } = require('child_process');
+          const puppeteer = require('puppeteer');
+
+          function browserPath() {
+            for (const candidate of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']) {
+              try {
+                return execFileSync('which', [candidate], { encoding: 'utf8' }).trim();
+              } catch {}
+            }
+            throw new Error('No Chrome/Chromium executable found');
+          }
+
+          (async () => {
+            const base = 'https://magireco-call-search-cn.pages.dev';
+            const nonce = `${Date.now()}-${Math.random()}`;
+            const pageErrors = [];
+            const coreFailures = [];
+            const consoleErrors = [];
+            const browser = await puppeteer.launch({
+              headless: true,
+              executablePath: browserPath(),
+              args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+            const page = await browser.newPage();
+            await page.setViewport({ width: 1440, height: 1100, deviceScaleFactor: 1 });
+            page.on('pageerror', error => pageErrors.push(String(error)));
+            page.on('console', message => {
+              if (message.type() === 'error') consoleErrors.push(message.text());
+            });
+            page.on('requestfailed', request => {
+              const url = request.url();
+              if (/\/(data|myfile)\//.test(url) && !/\.(png|jpg|jpeg|webp|gif)(\?|$)/i.test(url)) {
+                coreFailures.push(`${request.method()} ${url}: ${request.failure()?.errorText || 'failed'}`);
+              }
+            });
+
+            const response = await page.goto(`${base}/story.html?repair=${nonce}`, {
+              waitUntil: 'networkidle2', timeout: 120000
+            });
+            if (!response || !response.ok()) throw new Error(`story.html HTTP ${response?.status()}`);
+            await page.waitForFunction(
+              () => document.querySelectorAll('.suite-character-card').length >= 180,
+              { timeout: 120000 }
+            );
+            const initial = await page.evaluate(() => ({
+              characterCards: document.querySelectorAll('.suite-character-card').length,
+              countText: document.querySelector('#storyCharacterCount')?.textContent || '',
+              status: document.querySelector('#storyStatus')?.textContent || '',
+              searchDisabled: Boolean(document.querySelector('#storySearchButton')?.disabled),
+              runtime: document.documentElement.dataset.storyTitleRuntimeV2 || ''
+            }));
+            if (initial.searchDisabled) throw new Error(`Search button remained disabled: ${JSON.stringify(initial)}`);
+            if (initial.status.includes('初始化失败')) throw new Error(initial.status);
+            if (!initial.runtime.includes('v25-emergency-20260822')) throw new Error(`Unexpected runtime: ${initial.runtime}`);
+
+            await page.$$eval('input[name="storyType"]', nodes => {
+              for (const node of nodes) {
+                node.checked = node.value === '魔法少女';
+                node.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            });
+            await page.click('.suite-character-card[data-jp="環いろは"]');
+            await page.click('#storySearchButton');
+            await page.waitForFunction(
+              () => document.querySelectorAll('#storyResultsBody .story-row-v7').length > 0,
+              { timeout: 120000 }
+            );
+            const search = await page.evaluate(() => ({
+              resultRows: document.querySelectorAll('#storyResultsBody .story-row-v7').length,
+              status: document.querySelector('#storyStatus')?.textContent || '',
+              selected: document.querySelectorAll('.suite-character-card[aria-pressed="true"]').length
+            }));
+            if (/失败|错误/.test(search.status)) throw new Error(search.status);
+            await page.screenshot({ path: '/tmp/emergency-story-search-restored.png', fullPage: false });
+
+            const editorResponse = await page.goto(`${base}/story-title-editor.html?repair=${nonce}`, {
+              waitUntil: 'networkidle2', timeout: 120000
+            });
+            if (!editorResponse || !editorResponse.ok()) throw new Error(`editor HTTP ${editorResponse?.status()}`);
+            await page.waitForFunction(
+              () => document.querySelectorAll('#titleEditorList tr[data-group-id]').length >= 2000,
+              { timeout: 120000 }
+            );
+            const editor = await page.evaluate(() => ({
+              rows: document.querySelectorAll('#titleEditorList tr[data-group-id]').length,
+              status: document.querySelector('#titleEditorStatus')?.textContent || ''
+            }));
+            if (/失败|错误/.test(editor.status)) throw new Error(editor.status);
+
+            await browser.close();
+            const relevantConsoleErrors = consoleErrors.filter(text =>
+              !/favicon|Failed to load resource.*404/i.test(text)
+            );
+            const proof = {
+              schemaVersion: 1,
+              state: pageErrors.length || coreFailures.length || relevantConsoleErrors.length ? 'fail' : 'pass',
+              storyInitial: initial,
+              storySearch: search,
+              titleEditor: editor,
+              pageErrors,
+              coreRequestFailures: coreFailures,
+              consoleErrors: relevantConsoleErrors
+            };
+            fs.writeFileSync('/tmp/emergency-browser-proof.json', `${JSON.stringify(proof, null, 2)}\n`);
+            console.log(JSON.stringify(proof, null, 2));
+            if (proof.state !== 'pass') process.exit(1);
+          })().catch(error => {
+            console.error(error.stack || error);
+            process.exit(1);
+          });
+          JS
+          node /tmp/emergency-browser-smoke.cjs
+
+      - name: Upload browser screenshot and proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: emergency-story-search-browser-proof
+          path: |
+            /tmp/emergency-browser-proof.json
+            /tmp/emergency-story-search-restored.png
+          retention-days: 30
+
+      - name: Record browser proof and remove emergency verifiers
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          mkdir -p reports
+          cp /tmp/emergency-browser-proof.json reports/emergency-story-search-browser-proof.json
+          rm -f .github/workflows/emergency-browser-story-smoke.yml
+          rm -f .github/workflows/emergency-story-search-repair-verify.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Record browser-verified story-search repair'
+          git push origin HEAD:main
