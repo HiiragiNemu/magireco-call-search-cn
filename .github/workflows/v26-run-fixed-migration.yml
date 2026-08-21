@@ -1,10 +1,10 @@
 name: Run corrected V26 migration runner
 
+# Queue reset: this is the only workflow retained until convergence completes.
 on:
   push:
     branches: [main]
     paths:
-      - scripts/run-v26-fixed-migration.py
       - .github/workflows/v26-run-fixed-migration.yml
   workflow_dispatch:
 
@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: corrected-v26-migration-runner
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   migrate:
