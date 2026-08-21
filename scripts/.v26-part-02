@@ -1,0 +1,154 @@
+.unlink()
+    return manifest
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repo-root", default=".")
+    parser.add_argument("--input", default="public/data/story-title-groups-v1.json")
+    parser.add_argument("--release", required=True)
+    parser.add_argument("--apply-v25-delta", action="store_true")
+    parser.add_argument("--remove-delta", action="store_true")
+    args = parser.parse_args()
+    root = Path(args.repo_root).resolve()
+    manifest = build(root, root / args.input, args.release, args.apply_v25_delta, args.remove_delta)
+    print(json.dumps(manifest, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+'''
+
+
+VALIDATE_SCRIPT = r'''#!/usr/bin/env python3
+from __future__ import annotations
+import json, re
+from pathlib import Path
+KANA = re.compile(r"[\u3040-\u30ff\u31f0-\u31ffー]")
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load(path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def main():
+    manifest = load(ROOT / "public/data/titles/manifest.json")
+    groups = load(ROOT / "public/data/titles/groups.json")
+    assert manifest["release"] == groups["release"]
+    assert manifest["groupCount"] == len(groups["groups"]) == 2166
+    assert manifest["childTitleCount"] == 5826
+    assert manifest["mappedTitleCount"] == 5826
+    assert manifest["kanaInChineseDisplayFields"] == 0
+    total = 0
+    exact = {}
+    for entry in manifest["shards"]:
+        shard = load(ROOT / "public/data/titles" / entry["file"])
+        assert shard["release"] == manifest["release"]
+        assert shard["count"] == len(shard["titles"]) == entry["count"]
+        total += len(shard["titles"])
+        exact[shard["category"]] = shard["titles"]
+        for target in shard["titles"].values():
+            assert not KANA.search(str(target)), target
+    assert total == 5826
+    samples = {
+        ("scene0", "サイドストーリー Film.0 1 (紫)"): "支线故事 Film.0 1 （紫色）",
+        ("イベント", "トリック☆トラブル☆学園祭 BADEND1話"): "诡计☆骚乱☆学园祭 坏结局 第1话",
+        ("メモリア", "No.888 夢を追う妹"): "No.888 追梦的妹妹",
+        ("メモリア", "No.900 夏のはじまりに母の影光り"): "No.900 夏日伊始，母亲的影子",
+    }
+    for key, expected in samples.items():
+        assert exact[key[0]][key[1]] == expected, (key, exact[key[0]].get(key[1]), expected)
+    runtime = (ROOT / "public/myfile/story-title-runtime-v2.js").read_text(encoding="utf-8")
+    assert "story-title-runtime-v26-20260821" in runtime
+    assert "DecompressionStream" not in runtime
+    assert "magireco-story-title-overrides-v26" in runtime
+    assert "magireco-story-title-overrides-v1" in runtime
+    editor = (ROOT / "public/story-title-editor.html").read_text(encoding="utf-8")
+    story = (ROOT / "public/story.html").read_text(encoding="utf-8")
+    assert "story-title-runtime-v2.js?v=20260821-26" in editor
+    assert "story-title-runtime-v2.js?v=20260821-26" in story
+    assert "恢复服务器最新版" in editor
+    index = (ROOT / "public/index.html").read_text(encoding="utf-8")
+    assert "魔法纪录·Magia Exedra 魔法少女称呼搜索</div>" not in index
+    print(json.dumps({"state":"pass","release":manifest["release"],"groups":2166,"children":5826,"mapped":5826}, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+'''
+
+
+RUNTIME_JS = r'''/* Canonical V26 Chinese title runtime.
+ * Loads standard JSON manifests and category shards. Local edits are versioned
+ * and older browser overrides are quarantined instead of silently replacing
+ * the current server translation. */
+(function (global) {
+  'use strict';
+
+  const RELEASE = 'story-title-runtime-v26-20260821';
+  const DATA_RELEASE = 'v26-canonical-cn-20260821';
+  const DATA_ROOT = './data/titles/';
+  const MANIFEST_URL = `${DATA_ROOT}manifest.json?v=20260821-26`;
+  const STORAGE_KEY = 'magireco-story-title-overrides-v26';
+  const LEGACY_STORAGE_KEYS = [
+    'magireco-story-title-overrides-v1',
+    'magireco-story-title-overrides-v25'
+  ];
+  const Tools = global.MagiToolsV7;
+  if (!Tools?.loadLocalizationV7) {
+    console.error('V26 标题运行时未找到 MagiToolsV7。');
+    return;
+  }
+
+  const originalLoad = Tools.loadLocalizationV7.bind(Tools);
+  let manifestPromise = null;
+  let groupsPromise = null;
+  let serverMapPromise = null;
+  let mergedPromise = null;
+
+  async function fetchRequired(url) {
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`${url}：HTTP ${response.status}`);
+    return response.json();
+  }
+
+  function loadManifest() {
+    if (!manifestPromise) {
+      manifestPromise = fetchRequired(MANIFEST_URL).then((manifest) => {
+        if (!manifest || manifest.release !== DATA_RELEASE ||
+            manifest.groupCount !== 2166 || manifest.childTitleCount !== 5826 ||
+            !Array.isArray(manifest.shards)) {
+          throw new Error('V26 标题清单格式或版本无效。');
+        }
+        return manifest;
+      });
+    }
+    return manifestPromise;
+  }
+
+  function loadGroups() {
+    if (!groupsPromise) {
+      groupsPromise = loadManifest()
+        .then((manifest) => fetchRequired(`${DATA_ROOT}${manifest.groups.file}?v=20260821-26`))
+        .then((data) => {
+          if (!data || data.release !== DATA_RELEASE || !Array.isArray(data.groups)) {
+            throw new Error('V26 母故事清单格式无效。');
+          }
+          return data;
+        });
+    }
+    return groupsPromise;
+  }
+
+  function loadServerMap() {
+    if (!serverMapPromise) {
+      serverMapPromise = loadManifest().then(async (manifest) => {
+        const shards = await Promise.all(manifest.shards.map((entry) =>
+          fetchRequired(`${DATA_ROOT}${entry.file}?v=20260821-26`)
+        ));
+        const titleByCategory = {};
+        for (const shard of shards) {
+          if (!shard || shar
