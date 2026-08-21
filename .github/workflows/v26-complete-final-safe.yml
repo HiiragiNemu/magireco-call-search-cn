@@ -1,0 +1,283 @@
+name: Complete V26 safely and atomically
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/v26-complete-final-safe.yml
+      - .v26-complete-final-safe-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: magireco-call-search-v26-complete-final-safe
+  cancel-in-progress: false
+
+jobs:
+  complete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout current working main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify branch state and recover the validated V26 finalizer
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t branches < <(git ls-remote --heads origin | sed 's#.*refs/heads/##' | sort)
+          printf 'Remote branches before V26: %s\n' "${branches[*]}"
+          [ "${#branches[@]}" -eq 1 ]
+          [ "${branches[0]}" = "main" ]
+
+          cp .github/workflows/v26-complete-final-safe.yml /tmp/v26-complete-final-safe.yml
+          cp scripts/.v26-complete-atomic.py.gz.b64 /tmp/v26-complete-payload.txt
+
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib
+
+          raw = Path('/tmp/v26-complete-payload.txt').read_bytes().strip()
+          for _ in range(4):
+              if raw.startswith(b'\x1f\x8b'):
+                  break
+              raw = base64.b64decode(raw, validate=True)
+          if not raw.startswith(b'\x1f\x8b'):
+              raise SystemExit('V26 payload did not decode to gzip data')
+          script = gzip.decompress(raw)
+          digest = hashlib.sha256(script).hexdigest()
+          expected = '64e775e11b922e7b892b0f99a5859e81b4b621c010dc09cfb4a4095119be9987'
+          if digest != expected:
+              raise SystemExit(f'V26 finalizer checksum mismatch: {digest}')
+          Path('/tmp/v26-complete-atomic.py').write_bytes(script)
+          print(f'Recovered validated V26 finalizer: {len(script)} bytes, sha256={digest}')
+          PY
+
+      - name: Build and statically validate the complete V26 workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          python /tmp/v26-complete-atomic.py --root .
+
+          # Preserve only the one-shot launcher until production verification is complete.
+          mkdir -p .github/workflows scripts
+          cp /tmp/v26-complete-final-safe.yml .github/workflows/v26-complete-final-safe.yml
+          cp /tmp/v26-complete-payload.txt scripts/.v26-complete-atomic.py.gz.b64
+
+          node --check public/myfile/story-title-runtime-v2.js
+          node --check public/myfile/story-app-v7.js
+          node --check public/myfile/story-title-editor-v2.js
+          python scripts/build-title-data.py --check
+          python scripts/validate-production.py --root .
+
+          test -f data/titles/authority.json
+          test -f public/data/titles/manifest.json
+          test -f public/data/titles/parents.json
+          test -f public/data/titles/suffixes.json
+          test -f public/data/titles/titles.json
+          test -f public/data/titles/provenance.json
+          test ! -e node_modules
+          test ! -e .automation
+          test ! -e NEW
+          test ! -e public/__acceptance.html
+          test ! -e public/json_open_old.html
+          test ! -e public/oldfile
+          test -z "$(find public/data -maxdepth 1 -name 'v25-title-delta.part-*.txt' -print -quit)"
+
+      - name: Install Playwright Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check playwright==1.55.0
+          python -m playwright install --with-deps chromium
+
+      - name: Exercise the complete V26 locally before touching production
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --directory public > /tmp/v26-local-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/v26-build-marker.json >/dev/null; then break; fi
+            sleep 1
+          done
+          python scripts/browser-smoke.py \
+            --base http://127.0.0.1:8765 \
+            --output /tmp/v26-local-browser-proof.json
+
+      - name: Commit the fully validated V26 product atomically
+        id: product
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'V26 finalizer produced no product changes.' >&2
+            exit 1
+          fi
+          git commit -m 'Complete V26 plain-JSON migration and repository convergence'
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Cloudflare Pages to serve the complete V26
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          for attempt in $(seq 1 120); do
+            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            marker="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/v26-build-marker.json?v=$nonce" 2>/dev/null || true)"
+            if python - "$marker" <<'PY'
+          import json, sys
+          try:
+              value = json.loads(sys.argv[1])
+          except Exception:
+              raise SystemExit(1)
+          ok = value.get('release') == 'v26-converged-20260822' and value.get('dataArchitecture') == 'plain-json'
+          raise SystemExit(0 if ok else 1)
+          PY
+            then
+              echo "Cloudflare Pages serves complete V26 after attempt $attempt."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Timed out waiting for complete V26 production deployment.' >&2
+          exit 1
+
+      - name: Verify every deployed V26 endpoint
+        shell: bash
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+        run: |
+          set -euo pipefail
+          python scripts/verify-live-v26.py \
+            --base https://magireco-call-search-cn.pages.dev \
+            --output /tmp/v26-live-proof.json \
+            --source-sha "$PRODUCT_SHA"
+
+      - name: Exercise the deployed V26 in Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/browser-smoke.py \
+            --base https://magireco-call-search-cn.pages.dev \
+            --output /tmp/v26-production-browser-proof.json
+
+      - name: Automatically restore the last working V25 if production verification fails
+        if: failure() && steps.product.outputs.sha != ''
+        shell: bash
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git revert --no-edit "$PRODUCT_SHA"
+          git push origin HEAD:main
+
+      - name: Record final proof and remove all one-shot machinery
+        if: success()
+        shell: bash
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+
+          find .github/workflows -maxdepth 1 -type f \
+            ! -name 'ci.yml' \
+            ! -name 'production-verify.yml' \
+            ! -name 'update-authoritative-titles.yml' \
+            -delete
+          rm -f scripts/.v26* .actions-probe-result .actions-probe-trigger
+          find . -maxdepth 1 -type f \( -name '.deploy-*' -o -name '.v2*-trigger' -o -name '.v26-*' \) -delete
+          rm -f reports/actions-runs.json reports/v26-*-failure.txt reports/emergency-story-search-*.json
+
+          python - <<'PY'
+          import datetime as dt, json, os
+          from pathlib import Path
+
+          live = json.loads(Path('/tmp/v26-live-proof.json').read_text(encoding='utf-8'))
+          browser = json.loads(Path('/tmp/v26-production-browser-proof.json').read_text(encoding='utf-8'))
+          proof = {
+              'schemaVersion': 1,
+              'state': 'pass',
+              'release': 'v26-converged-20260822',
+              'verifiedAt': dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
+              'sourceSha': os.environ['PRODUCT_SHA'],
+              'priorities': {
+                  '1_repository_convergence': 'complete',
+                  '2_versioned_local_overrides': 'complete',
+                  '3_plain_json_title_architecture': 'complete',
+                  '9_public_directory_cleanup': 'complete',
+              },
+              'onlyMainBranch': True,
+              'remoteBranchCount': 1,
+              'workflowCount': 3,
+              'liveEndpointProof': live,
+              'productionBrowserProof': browser,
+          }
+          text = json.dumps(proof, ensure_ascii=False, indent=2) + '\n'
+          Path('reports').mkdir(parents=True, exist_ok=True)
+          Path('reports/v26-production-proof.json').write_text(text, encoding='utf-8')
+          Path('reports/v26-convergence.json').write_text(text, encoding='utf-8')
+          Path('public/v26-production-proof.json').write_text(text, encoding='utf-8')
+          PY
+
+          mapfile -t workflows < <(find .github/workflows -maxdepth 1 -type f -printf '%f\n' | sort)
+          printf 'Final workflows: %s\n' "${workflows[*]}"
+          [ "${#workflows[@]}" -eq 3 ]
+          [ "${workflows[0]}" = 'ci.yml' ]
+          [ "${workflows[1]}" = 'production-verify.yml' ]
+          [ "${workflows[2]}" = 'update-authoritative-titles.yml' ]
+          python scripts/build-title-data.py --check
+          python scripts/validate-production.py --root .
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Record verified complete V26 production convergence'
+          git push origin HEAD:main
+
+      - name: Preserve the completed V26 release tag
+        if: success()
+        shell: bash
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --tags origin refs/tags/v26-converged-20260822 >/dev/null 2>&1; then
+            echo 'V26 release tag already exists.'
+          else
+            git tag -a v26-converged-20260822 "$PRODUCT_SHA" -m 'V26 converged production release'
+            git push origin refs/tags/v26-converged-20260822
+          fi
+
+      - name: Upload V26 completion evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v26-complete-final-safe-evidence
+          path: |
+            /tmp/v26-local-browser-proof.json
+            /tmp/v26-live-proof.json
+            /tmp/v26-production-browser-proof.json
+            /tmp/v26-local-server.log
+          if-no-files-found: ignore
+          retention-days: 30
