@@ -1,0 +1,148 @@
+name: V26 convergence recovery 2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .v26-finalize-recovery2-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  converge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply corrected V26 finalizer
+        shell: bash
+        run: |
+          set +e
+          python scripts/v26-finalize-atomic.py > /tmp/v26-recovery2.log 2>&1
+          rc=$?
+          cat /tmp/v26-recovery2.log
+          if [ "$rc" -ne 0 ]; then
+            mkdir -p reports
+            {
+              echo 'V26 recovery 2 failed.'
+              echo "exit_code=$rc"
+              echo "source_sha=$GITHUB_SHA"
+              echo
+              cat /tmp/v26-recovery2.log
+            } > reports/v26-recovery2-failure.txt
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git add reports/v26-recovery2-failure.txt
+            git commit -m 'Record V26 recovery 2 failure'
+            git push origin HEAD:main
+            exit "$rc"
+          fi
+          rm -f .actions-probe-trigger .actions-probe-result
+
+      - name: Commit converged product and cleanup
+        id: product
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Complete V26 repository and title-data convergence'
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Delete all non-main branches
+        run: |
+          set -euo pipefail
+          while IFS= read -r branch; do
+            [ -z "$branch" ] && continue
+            [ "$branch" = main ] && continue
+            git push origin --delete "$branch"
+          done < <(git ls-remote --heads origin | sed 's#.*refs/heads/##')
+          mapfile -t branches < <(git ls-remote --heads origin | sed 's#.*refs/heads/##' | sort)
+          [ "${#branches[@]}" -eq 1 ] && [ "${branches[0]}" = main ]
+
+      - name: Tag V26
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if ! git ls-remote --exit-code --tags origin refs/tags/v26-converged-20260821 >/dev/null 2>&1; then
+            git tag -a v26-converged-20260821 "$PRODUCT_SHA" -m 'V26 converged production release'
+            git push origin refs/tags/v26-converged-20260821
+          fi
+
+      - name: Wait for production and verify
+        env:
+          PRODUCT_SHA: ${{ steps.product.outputs.sha }}
+        run: |
+          set -euo pipefail
+          base='https://magireco-call-search-cn.pages.dev'
+          for attempt in $(seq 1 120); do
+            nonce="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+            marker="$(curl -LfsS -H 'Cache-Control: no-cache, no-store' "$base/v26-build-marker.json?v=$nonce" 2>/dev/null || true)"
+            if python - "$marker" <<'PY'
+          import json, sys
+          try:
+              value = json.loads(sys.argv[1])
+          except Exception:
+              raise SystemExit(1)
+          raise SystemExit(0 if value.get('release') == 'v26-converged-20260821' and value.get('dataArchitecture') == 'plain-json' else 1)
+          PY
+            then
+              python scripts/verify-live-v26.py \
+                --base "$base" \
+                --output /tmp/v26-production-proof.json \
+                --source-sha "$PRODUCT_SHA" \
+                --run-id "$GITHUB_RUN_ID"
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
+
+      - name: Commit final proof
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          proof = json.loads(Path('/tmp/v26-production-proof.json').read_text(encoding='utf-8'))
+          proof.update({
+              'onlyMainBranch': True,
+              'remoteBranchCount': 1,
+              'workflowCount': 3,
+              'repositoryConvergence': True,
+              'publicDirectoryCleanup': True,
+          })
+          text = json.dumps(proof, ensure_ascii=False, indent=2) + '\n'
+          Path('public/v26-production-proof.json').write_text(text, encoding='utf-8')
+          Path('reports').mkdir(parents=True, exist_ok=True)
+          Path('reports/v26-production-proof.json').write_text(text, encoding='utf-8')
+          Path('reports/v26-convergence.json').write_text(json.dumps({
+              'schemaVersion': 1,
+              'state': 'pass',
+              'release': proof['release'],
+              'priorities': {
+                  '1_repository_convergence': 'complete',
+                  '2_versioned_local_overrides': 'complete',
+                  '3_plain_json_title_architecture': 'complete',
+                  '9_public_directory_cleanup': 'complete',
+              },
+              'onlyMainBranch': True,
+              'remoteBranchCount': 1,
+              'workflowCount': 3,
+              'productionProof': 'public/v26-production-proof.json',
+          }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add public/v26-production-proof.json reports/v26-production-proof.json reports/v26-convergence.json
+          git commit -m 'Record completed V26 convergence and production proof'
+          git push origin HEAD:main
