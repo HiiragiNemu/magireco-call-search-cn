@@ -1,0 +1,12 @@
+V26 repository migration failed.
+migration_rc=1
+js_rc=
+source_sha=6b64b9352c5e217d4f5bd989ecfd15d0a4bc2e5b
+
+Traceback (most recent call last):
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/migrate-v26-repository.py", line 326, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/migrate-v26-repository.py", line 267, in main
+    raise RuntimeError(f"unexpected parent count: {parent_count}")
+RuntimeError: unexpected parent count: 1129
