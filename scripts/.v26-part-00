@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RELEASE = "v26-canonical-cn-20260821"
+RUNTIME_RELEASE = "story-title-runtime-v26-20260821"
+
+
+def write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+
+
+def run(*args: str) -> None:
+    subprocess.run(args, cwd=ROOT, check=True)
+
+
+def prepare_permanent_updater() -> None:
+    old = ROOT / "scripts/finalize-v23.py"
+    prep = ROOT / "scripts/prepare-v24.py"
+    target = ROOT / "scripts/update-authoritative-titles.py"
+    if old.exists() and prep.exists():
+        run(sys.executable, str(prep.relative_to(ROOT)))
+        text = old.read_text(encoding="utf-8")
+        text = re.sub(r'RELEASE = "[^"]+"', 'RELEASE = "v26-authoritative-source"', text, count=1)
+        write_text(target, text)
+    elif old.exists() and not target.exists():
+        shutil.copy2(old, target)
+    if not target.exists():
+        raise RuntimeError("Could not prepare scripts/update-authoritative-titles.py")
+
+
+BUILD_SCRIPT = r'''#!/usr/bin/env python3
+from __future__ import annotations
+import argparse, base64, csv, datetime as dt, gzip, hashlib, json, re, shutil
+from pathlib import Path
+from typing import Any
+
+KANA_RE = re.compile(r"[\u3040-\u30ff\u31f0-\u31ffー]")
+NUMBER_RE = re.compile(r"(\d+)")
+
+
+def load_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def json_bytes(value: Any) -> bytes:
+    return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+
+
+def write_json(path: Path, value: Any) -> str:
+    data = json_bytes(value)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(data)
+    return hashlib.sha256(data).hexdigest()
+
+
+def natural_key(value: str):
+    return [int(part) if part.isdigit() else part.casefold() for part in NUMBER_RE.split(str(value))]
+
+
+def apply_v25_delta(root: Path, groups_data: dict[str, Any]) -> dict[str, Any]:
+    parts = sorted((root / "public/data").glob("v25-title-delta.part-*.txt"))
+    if not parts:
+        return groups_data
+    encoded = "".join(path.read_text(encoding="utf-8").strip() for path in parts)
+    payload = json.loads(gzip.decompress(base64.b64decode(encoded)).decode("utf-8"))
+    if payload.get("r") != "v25-live-cn-20260821":
+        raise RuntimeError(f"Unexpected V25 payload release: {payload.get('r')}")
+    parents = payload.get("p") or {}
+    suffixes = payload.get("s") or {}
+    exact = payload.get("e") or {}
+    for group in groups_data.get("groups", []):
+        category = str(group.get("category") or "")
+        source_base = str(group.get("source_base") or "")
+        parent = parents.get(category, {}).get(source_base)
+        if isinstance(parent, str) and parent.strip():
+            group["current_translation"] = parent.strip()
+            group["approved_translation"] = parent.strip()
+        target_parent = str(group.get("current_translation") or group.get("approved_translation") or source_base).strip()
+        for child in group.get("children", []):
+            source_title = str(child.get("source_title") or "")
+            source_suffix = str(child.get("source_suffix") or "")
+            full = exact.get(category, {}).get(source_title)
+            suffix = suffixes[source_suffix] if source_suffix in suffixes else child.get("localized_suffix", source_suffix)
+            suffix = str(suffix or "").strip()
+            if not isinstance(full, str) or not full.strip():
+                full = f"{target_parent}{' ' + suffix if suffix else ''}".strip()
+            child["localized_suffix"] = suffix
+            child["localized_joiner"] = " " if suffix else ""
+            child["current_full_translation"] = full.strip()
+    return groups_data
+
+
+def build(root: Path, source: Path, release: str, apply_delta: bool, remove_delta: bool) -> dict[str, Any]:
+    groups_data = load_json(source)
+    if apply_delta:
+        groups_data = apply_v25_delta(root, groups_data)
+    groups = groups_data.get("groups")
+    if not isinstance(groups, list) or not groups:
+        raise RuntimeError("Title group source is empty or invalid")
+
+    first_category_order: dict[str, int] = {}
+    for group in groups:
+        first_category_order.setdefault(str(group.get("category") or ""), len(first_category_order))
+    groups.sort(key=lambda g: (
+        first_category_order.get(str(g.get("category") or ""), 9999),
+        natural_key(str(g.get("source_base") or "")),
+    ))
+    for group in groups:
+        group.get("children", []).sort(key=lambda c: natural_key(str(c.get("source_title") or "")))
+
+    kana_hits = []
+    title_by_category: dict[str, dict[str, str]] = {}
+    parent_rows = []
+    child_count = 0
+    for group in groups:
+        category = str(group.get("category") or "")
+        source_base = str(group.get("source_base") or "")
+        display = str(group.get("approved_translation") or group.get("current_translation") or source_base).strip()
+        group["current_translation"] = display
+        group["approved_translation"] = display
+        if KANA_RE.search(display):
+            kana_hits.append((category, source_base, "parent", display))
+        children = group.get("children") or []
+        mapping = title_by_category.setdefault(category, {})
+        for child in children:
+            source_title = str(child.get("source_title") or "").strip()
+            full = str(child.get("current_full_translation") or "").strip()
+            if not full:
+                suffix = str(child.get("localized_suffix") or child.get("source_suffix") or "").strip()
+                full = f"{display}{' ' + suffix if suffix else ''}".strip()
+                child["current_full_translation"] = full
+            if KANA_RE.search(str(child.get("localized_suffix") or "")):
+                kana_hits.append((category, source_title, "suffix", ch
