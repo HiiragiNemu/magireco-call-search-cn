@@ -1,0 +1,190 @@
+name: V26 final one-shot convergence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .v26-final-run-trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: v26-one-shot-convergence
+  cancel-in-progress: false
+
+jobs:
+  converge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ADMIN_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build and run converger
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --tags
+          git reset --hard origin/main
+          cat scripts/.v26-part-* > scripts/v26-converge.py
+          actual="$(sha256sum scripts/v26-converge.py | awk '{print $1}')"
+          [[ "$actual" == '93beda3b0562e9af0f0f562b0f072265d0fdc1c14147006d81f4049a5373b00a' ]]
+          python scripts/v26-hotfix.py
+          python -m py_compile scripts/v26-converge.py
+          set +e
+          python scripts/v26-converge.py > /tmp/v26-converge.log 2>&1
+          rc=$?
+          set -e
+          cat /tmp/v26-converge.log
+          if [[ "$rc" -ne 0 ]]; then
+            mkdir -p reports
+            {
+              echo 'V26 final convergence failed.'
+              echo "exit_code=$rc"
+              echo "source_sha=${GITHUB_SHA}"
+              echo
+              cat /tmp/v26-converge.log
+              echo
+              git status --short
+            } > reports/v26-final-failure.txt
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git add reports/v26-final-failure.txt
+            git commit -m 'Record final V26 convergence diagnostics'
+            git push origin HEAD:main
+            exit "$rc"
+          fi
+          rm -f scripts/.v26-part-* scripts/v26-converge.py scripts/v26-hotfix.py .v26-final-run-trigger
+          python scripts/validate-site.py
+          test ! -e node_modules
+          test ! -e .automation
+          test "$(find .github/workflows -maxdepth 1 -type f | wc -l)" -eq 3
+
+      - name: Commit canonical release
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Converge repository and deploy canonical V26 title data'
+          git push origin HEAD:main
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "$sha" > /tmp/v26-release-sha.txt
+          if ! git rev-parse -q --verify refs/tags/v26-converged-20260821 >/dev/null; then
+            git tag -a v26-converged-20260821 "$sha" -m 'Canonical V26 converged production release'
+            git push origin refs/tags/v26-converged-20260821
+          fi
+
+      - name: Verify Cloudflare production
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, time, urllib.request
+          from pathlib import Path
+          base = 'https://magireco-call-search-cn.pages.dev/'
+          release = 'v26-canonical-cn-20260821'
+          def get(path):
+              request = urllib.request.Request(base + path, headers={'Cache-Control':'no-cache, no-store','Pragma':'no-cache'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return response.read()
+          for _ in range(120):
+              try:
+                  manifest = json.loads(get(f'data/titles/manifest.json?v={time.time_ns()}'))
+                  if manifest.get('release') == release:
+                      break
+              except Exception:
+                  pass
+              time.sleep(10)
+          else:
+              raise SystemExit('Timed out waiting for V26 production')
+          exact = {}
+          for entry in manifest['shards']:
+              shard = json.loads(get(f"data/titles/{entry['file']}?v={time.time_ns()}"))
+              exact[shard['category']] = shard['titles']
+          assert manifest['groupCount'] == 2166
+          assert manifest['childTitleCount'] == manifest['mappedTitleCount'] == 5826
+          assert manifest['kanaInChineseDisplayFields'] == 0
+          assert exact['scene0']['サイドストーリー Film.0 1 (紫)'] == '支线故事 Film.0 1 （紫色）'
+          assert exact['イベント']['トリック☆トラブル☆学園祭 BADEND1話'] == '诡计☆骚乱☆学园祭 坏结局 第1话'
+          assert exact['メモリア']['No.888 夢を追う妹'] == 'No.888 追梦的妹妹'
+          assert exact['メモリア']['No.900 夏のはじまりに母の影光り'] == 'No.900 夏日伊始，母亲的影子'
+          runtime = get(f'myfile/story-title-runtime-v2.js?v={time.time_ns()}').decode()
+          editor = get(f'story-title-editor.html?v={time.time_ns()}').decode()
+          index = get(f'?v={time.time_ns()}').decode()
+          assert 'story-title-runtime-v26-20260821' in runtime
+          assert 'DecompressionStream' not in runtime
+          assert 'magireco-story-title-overrides-v26' in runtime
+          assert 'story-title-runtime-v2.js?v=20260821-26' in editor
+          assert '恢复服务器最新版' in editor
+          assert '魔法纪录·Magia Exedra 魔法少女称呼搜索</div>' not in index
+          proof = {'state':'pass','release':release,'groupCount':2166,'childTitleCount':5826,'mappedTitleCount':5826,'kanaInChineseDisplayFields':0,'runtime':'story-title-runtime-v26-20260821','canonicalTransport':'standard-json-manifest-and-shards','legacyBrowserOverrides':'quarantined'}
+          Path('/tmp/v26-production-proof.json').write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps(proof, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Delete every branch except main
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t branches < <(git ls-remote --heads origin | awk '{sub("refs/heads/", "", $2); print $2}' | sort)
+          : > /tmp/v26-deleted-branches.txt
+          for branch in "${branches[@]}"; do
+            [[ "$branch" == main ]] && continue
+            echo "$branch" | tee -a /tmp/v26-deleted-branches.txt
+            git push origin --delete "$branch"
+          done
+          mapfile -t remaining < <(git ls-remote --heads origin | awk '{sub("refs/heads/", "", $2); print $2}' | sort)
+          printf '%s\n' "${remaining[@]}" > /tmp/v26-remaining-branches.txt
+          [[ "${#remaining[@]}" -eq 1 && "${remaining[0]}" == main ]]
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          deleted=[x for x in Path('/tmp/v26-deleted-branches.txt').read_text().splitlines() if x]
+          value={'state':'pass','deletedCount':len(deleted),'deletedBranches':deleted,'remainingBranches':['main']}
+          Path('/tmp/v26-branch-cleanup.json').write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps(value, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Protect main when token permits
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/protection.json <<'JSON'
+          {"required_status_checks":null,"enforce_admins":false,"required_pull_request_reviews":null,"restrictions":null,"allow_force_pushes":false,"allow_deletions":false,"required_conversation_resolution":false,"lock_branch":false,"allow_fork_syncing":true}
+          JSON
+          if GH_TOKEN="$ADMIN_TOKEN" gh api --method PUT -H 'Accept: application/vnd.github+json' "repos/$GITHUB_REPOSITORY/branches/main/protection" --input /tmp/protection.json >/tmp/protection-response.json 2>/tmp/protection-error.txt; then
+            printf '{"state":"pass","forcePushes":false,"deletions":false}\n' > /tmp/v26-main-protection.json
+          else
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          error=Path('/tmp/protection-error.txt').read_text(errors='replace')
+          Path('/tmp/v26-main-protection.json').write_text(json.dumps({'state':'unavailable','reason':error.strip()}, ensure_ascii=False, indent=2) + '\n')
+          PY
+          fi
+          cat /tmp/v26-main-protection.json
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v26-final-evidence-${{ github.run_id }}
+          path: |
+            /tmp/v26-converge.log
+            /tmp/v26-release-sha.txt
+            /tmp/v26-production-proof.json
+            /tmp/v26-branch-cleanup.json
+            /tmp/v26-deleted-branches.txt
+            /tmp/v26-remaining-branches.txt
+            /tmp/v26-main-protection.json
+          retention-days: 30
