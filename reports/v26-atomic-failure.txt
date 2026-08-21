@@ -1,0 +1,17 @@
+V26 atomic finalizer failed.
+exit_code=1
+source_sha=d6b34c7a1276529fc8f8eb53f53b0883a15e4c5c
+
+Traceback (most recent call last):
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/validate-production.py", line 102, in <module>
+    main()
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/validate-production.py", line 55, in main
+    actual = maps[key[0]][key[1]]
+             ~~~~~~~~~~~~^^^^^^^^
+KeyError: 'サイドストーリー Film.0'
+Traceback (most recent call last):
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/v26-finalize-atomic.py", line 516, in <module>
+  File "/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/v26-finalize-atomic.py", line 495, in main
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python', '/home/runner/work/magireco-call-search-cn/magireco-call-search-cn/scripts/validate-production.py', '--root', '/home/runner/work/magireco-call-search-cn/magireco-call-search-cn']' returned non-zero exit status 1.
