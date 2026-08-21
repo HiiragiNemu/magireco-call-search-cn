@@ -1,0 +1,88 @@
+name: Run corrected V26 migration runner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/run-v26-fixed-migration.py
+      - .github/workflows/v26-run-fixed-migration.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: corrected-v26-migration-runner
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run corrected migration with captured diagnostics
+        id: run
+        shell: bash
+        run: |
+          set +e
+          python scripts/run-v26-fixed-migration.py > /tmp/v26-fixed-migration.log 2>&1
+          rc=$?
+          cat /tmp/v26-fixed-migration.log
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Validate JavaScript
+        id: js
+        if: steps.run.outputs.rc == '0'
+        shell: bash
+        run: |
+          set +e
+          {
+            node --check public/myfile/story-title-runtime-v2.js
+            node --check public/myfile/story-title-editor-v2.js
+          } >> /tmp/v26-fixed-migration.log 2>&1
+          rc=$?
+          cat /tmp/v26-fixed-migration.log
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Record corrected runner failure
+        if: steps.run.outputs.rc != '0' || steps.js.outputs.rc != '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git reset --hard HEAD
+          mkdir -p reports
+          {
+            echo 'Corrected V26 migration runner failed.'
+            echo "migration_rc=${{ steps.run.outputs.rc }}"
+            echo "js_rc=${{ steps.js.outputs.rc }}"
+            echo "source_sha=$GITHUB_SHA"
+            echo
+            cat /tmp/v26-fixed-migration.log
+          } > reports/v26-fixed-runner-failure.txt
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add reports/v26-fixed-runner-failure.txt
+          git commit -m 'Record corrected V26 runner failure'
+          git push origin HEAD:main
+          exit 1
+
+      - name: Commit completed repository convergence
+        if: steps.run.outputs.rc == '0' && steps.js.outputs.rc == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Complete V26 formal data and repository cleanup'
+          git push origin HEAD:main
