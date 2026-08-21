@@ -1,6 +1,6 @@
 name: Run corrected V26 migration runner
 
-# Queue reset: this is the only workflow retained until convergence completes.
+# Queue reset complete. Isolated trigger: 20260821-1226.
 on:
   push:
     branches: [main]
