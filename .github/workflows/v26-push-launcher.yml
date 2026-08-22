@@ -1,0 +1,20 @@
+name: Launch atomic V26 closure
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - ".v26-launch-bridge-trigger"
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch the atomic closure bridge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v26-workflow-run-bridge.yml --repo "$GITHUB_REPOSITORY" --ref main
