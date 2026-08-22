@@ -30,8 +30,10 @@ const RELEASES = Object.freeze({
   V8: 'collapsible-layout-v8-20260816',
   V9: 'rune-mask-v9-20260816',
   V10: 'height-export-title-call-rune-v10-20260817',
-  V11: 'live-reacceptance-v11-20260817'
+  V11: 'live-reacceptance-v11-20260817',
+  V26: 'v26-converged-20260822'
 });
+const isV26 = release === RELEASES.V26;
 const isV11 = release === RELEASES.V11;
 const isV10 = release === RELEASES.V10 || isV11;
 const isV9 = release === RELEASES.V9 || isV10;
@@ -80,6 +82,36 @@ const htmlPath = path.join('public', 'index.html');
 const html = validateHtml(htmlPath, release);
 const characterCount = (html.match(/class=["'][^"']*\bMagicalChk\b[^"']*["'][^>]*name=["']chara["']/g) || []).length;
 if (characterCount < 180) fail(`expected at least 180 character selectors, found ${characterCount}`);
+
+if (isV26) {
+  const manifestPath = path.join('public', 'data', 'titles', 'manifest.json');
+  const authorityPath = path.join('data', 'titles', 'authority.json');
+  const storyPath = path.join('public', 'story.html');
+  const editorPath = path.join('public', 'story-title-editor.html');
+  const runtimePath = path.join('public', 'myfile', 'story-title-runtime-v2.js');
+  const menuScript = './myfile/hamburger-menu-v23.js?v=20260822-v26-final3';
+  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath]) requireFile(file);
+  const manifest = JSON.parse(read(manifestPath));
+  if (manifest.release !== release || manifest.dataArchitecture !== 'plain-json') fail('V26 title manifest mismatch.');
+  if (manifest.counts?.groupCount !== 2166 || manifest.counts?.mappedTitles !== 5826) fail('V26 title counts mismatch.');
+  if (html.includes('navtext-container')) fail('V26 legacy top title node is still present.');
+  if (!html.includes(menuScript)) fail('V26 hamburger behavior script is not loaded.');
+  for (const file of [storyPath, editorPath]) {
+    if (!read(file).includes(`data-build="${release}"`)) fail(`${file} V26 release marker mismatch.`);
+  }
+  const runtime = read(runtimePath);
+  for (const name of ['manifest.json', 'parents.json', 'suffixes.json', 'titles.json']) {
+    if (!runtime.includes(name)) fail(`V26 runtime missing ${name}.`);
+  }
+  if (runtime.includes('DecompressionStream') || runtime.includes('v25-title-delta')) fail('V26 runtime still contains V25 compressed loading.');
+  if (!runtime.includes('magireco-story-title-overrides:')) fail('V26 release-scoped local storage key is missing.');
+  for (const forbidden of ['public/__acceptance.html', 'public/json_open_old.html', 'public/oldfile']) {
+    if (fs.existsSync(forbidden)) fail(`V26 public legacy path still exists: ${forbidden}`);
+  }
+  if (failed) process.exit(1);
+  console.log(`Static V26 validation passed for ${release}: ${characterCount} characters, ${manifest.counts.mappedTitles} titles.`);
+  process.exit(0);
+}
 
 for (const value of [
   'id="callFilterForm"', 'id="callResultSection"',

@@ -1,0 +1,31 @@
+name: Validate static site
+
+on:
+  push:
+    branches: [main, codex/v26-candidate]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python scripts/build-title-data.py --check
+          python scripts/validate-production.py
+          node scripts/validate-site.js
+          python scripts/audit-translations-v5.py
+          git diff --exit-code -- \
+            public/data/character-catalog.json \
+            public/data/translation-audit-v5.json \
+            docs/translation-audit-v5.md
+          node --check public/myfile/story-title-runtime-v2.js
+          node --check public/myfile/story-app-v7.js
+          node --check public/myfile/story-title-editor-v2.js
+          node --check public/myfile/hamburger-menu-v23.js

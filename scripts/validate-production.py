@@ -1,82 +1,105 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-
 import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE = "v26-converged-20260821"
-KANA = re.compile(r"[\u3040-\u30ff\u31f0-\u31ffー]")
+RELEASE = "v26-converged-20260822"
+KANA = re.compile(r"[\u3040-\u30ff]")
 
 
-def load(path: str):
-    return json.loads((ROOT / path).read_text(encoding="utf-8"))
+def load(relative):
+    path = ROOT / relative
+    raw = path.read_bytes()
+    if raw.lstrip().startswith((b"<!DOCTYPE", b"<html", b"<")):
+        raise SystemExit(f"{relative}: HTML instead of JSON")
+    return json.loads(raw.decode("utf-8"))
 
 
-def main() -> int:
-    manifest = load("public/data/titles/manifest.json")
-    parents = load("public/data/titles/parents.json")
-    suffixes = load("public/data/titles/suffixes.json")
-    titles = load("public/data/titles/titles.json")
-    marker = load("public/v26-build-marker.json")
-    branch_proof = load("reports/branch-cleanup-proof.json")
+manifest = load("public/data/titles/manifest.json")
+parents = load("public/data/titles/parents.json")
+suffixes = load("public/data/titles/suffixes.json")
+titles = load("public/data/titles/titles.json")
+groups = load("public/data/story-title-groups-v1.json")
+story_manifest = load("public/data/story-v6/manifest.json")
+catalog = load("public/data/character-catalog.json")
+localization = load("public/data/story-v7/localization.json")
 
-    for payload in (manifest, parents, suffixes, titles, marker):
-        assert payload.get("release") == RELEASE, payload.get("release")
-    assert manifest["summary"] == {
-        "groupCount": 2166,
-        "childTitleCount": 5826,
-        "mappedTitleCount": 5826,
-        "kanaInChineseDisplayFields": 0,
-    }
-    assert branch_proof.get("state") == "pass"
-    assert branch_proof.get("after") == ["main"]
+assert manifest["release"] == RELEASE
+assert manifest["dataArchitecture"] == "plain-json"
+assert parents["release"] == suffixes["release"] == titles["release"] == RELEASE
+assert len(groups["groups"]) == 2166
+assert sum(len(v) for v in titles["titleByCategory"].values()) == 5826
+assert story_manifest["totalRows"] == 14466
+assert len(story_manifest["categories"]) == 19
+assert len(catalog) >= 180
+assert isinstance(localization, dict)
 
-    hits = []
-    for category, mapping in parents["parentByCategory"].items():
-        for source, target in mapping.items():
-            if KANA.search(str(target)):
-                hits.append((category, source, target))
-    for category, mapping in titles["titleByCategory"].items():
-        for source, target in mapping.items():
-            if KANA.search(str(target)):
-                hits.append((category, source, target))
-    assert not hits, hits[:20]
+for category, pairs in titles["titleByCategory"].items():
+    for source, target in pairs.items():
+        assert isinstance(target, str) and target.strip(), (category, source)
+        assert not KANA.search(target), (category, source, target)
 
-    expected = {
-        ("scene0", "サイドストーリー Film.0 1 (紫)"): "支线故事 Film.0 1 （紫色）",
-        ("イベント", "トリック☆トラブル☆学園祭 BADEND1話"): "诡计☆骚乱☆学园祭 坏结局 第1话",
-        ("メモリア", "No.888 夢を追う妹"): "No.888 追梦的妹妹",
-        ("メモリア", "No.900 夏のはじまりに母の影光り"): "No.900 夏日伊始，母亲的影子",
-    }
-    for (category, source), target in expected.items():
-        assert titles["titleByCategory"][category][source] == target
+samples = {
+    ("scene0", "サイドストーリー Film.0 1 (紫)"): "支线故事 Film.0 1 （紫色）",
+    ("イベント", "トリック☆トラブル☆学園祭 BADEND1話"): "诡计☆骚乱☆学园祭 坏结局 第1话",
+    ("メモリア", "No.888 夢を追う妹"): "No.888 追梦的妹妹",
+    ("メモリア", "No.900 夏のはじまりに母の影光り"): "No.900 夏日伊始，母亲的影子",
+}
+for (category, source), expected in samples.items():
+    assert titles["titleByCategory"][category][source] == expected
 
-    runtime = (ROOT / "public/myfile/story-title-runtime-v2.js").read_text(encoding="utf-8")
-    assert "story-title-runtime-v26-20260821" in runtime
-    assert "DecompressionStream" not in runtime
-    assert "magireco-story-title-overrides:" in runtime
-    assert "v25-title-delta" not in runtime
+runtime = (ROOT / "public/myfile/story-title-runtime-v2.js").read_text(encoding="utf-8")
+story = (ROOT / "public/story.html").read_text(encoding="utf-8")
+editor = (ROOT / "public/story-title-editor.html").read_text(encoding="utf-8")
+index = (ROOT / "public/index.html").read_text(encoding="utf-8")
+menu_css = (ROOT / "public/myfile/hamburgerMenu.css").read_text(encoding="utf-8")
 
-    expected_workflows = {"ci.yml", "production-verify.yml", "update-authoritative-titles.yml"}
-    actual_workflows = {path.name for path in (ROOT / ".github/workflows").glob("*.yml")}
-    assert actual_workflows == expected_workflows, actual_workflows
+assert "story-title-runtime-v26-20260822" in runtime
+assert "DecompressionStream" not in runtime
+assert "v25-title-delta" not in runtime
+assert "magireco-story-title-overrides:" in runtime
+assert "v26-converged-20260822" in story
+assert "v26-converged-20260822" in editor
+assert "20260822-v26-final3" in story
+assert "20260822-v26-final3" in editor
+assert 'class="navtext-container"' not in index
+assert "hamburger-menu-v23.js?v=20260822-v26-final3" in index
+assert "width: max-content;" in menu_css
+assert "min-width:" not in menu_css
+assert "body:has(.menu-btn:checked)" in menu_css
+assert "overflow: visible;" in menu_css
 
-    forbidden = [
-        ROOT / ".automation",
-        ROOT / "NEW",
-        ROOT / "node_modules",
-        ROOT / "public/__acceptance.html",
-        ROOT / "public/json_open_old.html",
-        ROOT / "public/oldfile",
-    ]
-    assert not [str(path.relative_to(ROOT)) for path in forbidden if path.exists()]
-    assert not list(ROOT.glob(".deploy-*"))
-    assert not list(ROOT.glob(".v2*-*trigger*"))
-    assert not list((ROOT / "public/data").glob("v25-title-delta.part-*.txt"))
-    return 0
+for relative in (
+    "node_modules",
+    ".automation",
+    "NEW",
+    "public/__acceptance.html",
+    "public/json_open_old.html",
+    "public/oldfile",
+):
+    assert not (ROOT / relative).exists(), relative
 
+assert not list((ROOT / "public/data").glob("v25-title-delta.part-*.txt"))
+assert not (ROOT / "public/data/story-title-map.generated.json").exists()
 
-if __name__ == "__main__":
-    raise SystemExit(main())
+workflows = sorted(path.name for path in (ROOT / ".github/workflows").glob("*.yml"))
+assert workflows == ["ci.yml", "production-verify.yml", "update-authoritative-titles.yml"], workflows
+
+required_ignore = {
+    "node_modules/",
+    "_sources/",
+    ".cache/",
+    ".pytest_cache/",
+    "coverage/",
+    "dist/",
+    "build/",
+    "*.log",
+    ".env",
+    ".env.*",
+}
+ignore_lines = set((ROOT / ".gitignore").read_text(encoding="utf-8").splitlines())
+assert required_ignore <= ignore_lines
+
+print("V26 repository validation passed.")

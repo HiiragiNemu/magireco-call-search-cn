@@ -8,3 +8,13 @@ Thumbs.db
 output.txt
 *.tmp
 *.bak
+node_modules/
+_sources/
+.cache/
+.pytest_cache/
+coverage/
+dist/
+build/
+*.log
+.env
+.env.*

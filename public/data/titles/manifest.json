@@ -1,0 +1,26 @@
+{
+  "counts": {
+    "groupCount": 2166,
+    "kanaInChineseDisplayFields": 0,
+    "mappedTitles": 5826,
+    "parentOverrides": 1129,
+    "translatedSuffixes": 494
+  },
+  "dataArchitecture": "plain-json",
+  "files": {
+    "parents": "parents.json",
+    "provenance": "provenance.json",
+    "suffixes": "suffixes.json",
+    "titles": "titles.json"
+  },
+  "generatedAt": "2026-08-22T18:30:12+00:00",
+  "release": "v26-converged-20260822",
+  "schemaVersion": 1,
+  "sha256": {
+    "parents": "8c53c770372876bc6b8ea2172f42fdfbf017917ae5e5f4833dd17301f97b53a8",
+    "provenance": "75fa213ad388b74a5536711af0400ac5551354e9f0d5f2f07e342fb129f7952a",
+    "suffixes": "01ebf6fb75e8b06179586767d8e642cc2c83a7109fc3d5b3479f19e6be41cc64",
+    "titles": "9150e4e6d0386a10d1dd717d14ec885d32da44a8b10d193d5f715d15e1dbb832"
+  },
+  "sourceRelease": "v25-live-cn-20260821"
+}

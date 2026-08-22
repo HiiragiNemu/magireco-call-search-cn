@@ -1,0 +1,78 @@
+name: Verify production deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "public/**"
+      - "scripts/validate-production.py"
+      - ".github/workflows/production-verify.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/validate-production.py
+      - name: Wait for Cloudflare Pages and validate production data
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.request
+
+          base = "https://magireco-call-search-cn.pages.dev"
+          for attempt in range(120):
+              nonce = str(time.time_ns())
+
+              def get(path):
+                  req = urllib.request.Request(
+                      f"{base}/{path}?verify={nonce}",
+                      headers={
+                          "Cache-Control": "no-cache, no-store",
+                          "User-Agent": "V26-production-verify",
+                      },
+                  )
+                  with urllib.request.urlopen(req, timeout=60) as response:
+                      raw = response.read()
+                  if raw.lstrip().startswith((b"<!DOCTYPE", b"<html", b"<")):
+                      raise RuntimeError(f"{path}: HTML instead of data")
+                  return raw
+
+              try:
+                  manifest = json.loads(get("data/titles/manifest.json"))
+                  assert manifest["release"] == "v26-converged-20260822"
+                  assert manifest["dataArchitecture"] == "plain-json"
+                  assert json.loads(get("data/story-v6/manifest.json"))["totalRows"] == 14466
+                  assert len(json.loads(get("data/character-catalog.json"))) >= 180
+                  titles = json.loads(get("data/titles/titles.json"))
+                  assert sum(len(v) for v in titles["titleByCategory"].values()) == 5826
+                  print("Production V26 endpoints passed.")
+                  break
+              except Exception:
+                  if attempt == 119:
+                      raise
+                  time.sleep(5)
+          PY
+      - name: Exercise production in Chromium
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m playwright install --with-deps chromium
+          python scripts/browser-smoke.py \
+            --base https://magireco-call-search-cn.pages.dev \
+            --output /tmp/v26-production-browser-proof.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v26-production-verification
+          path: /tmp/v26-production-browser-proof.json
+          if-no-files-found: ignore
+          retention-days: 30

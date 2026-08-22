@@ -8,7 +8,8 @@
   "hardErrors": [],
   "warnings": [
     "称呼表中 3 个主键未直接映射到当前角色目录，通常是非可选配角或旧名。",
-    "称呼目标中 4 个名称未直接映射到当前可选角色目录，已列入人工复核清单。"
+    "称呼目标中 9 个名称未直接映射到当前可选角色目录，已列入人工复核清单。",
+    "发现 13 条候选‘仅日文、无明显中文释义’叶值；需逐条判断是否本来就是专名。"
   ],
   "duplicateJapaneseKeys": [],
   "duplicateChineseNames": [],
@@ -289,8 +290,24 @@
   ],
   "unmappedRelationTargets": [
     [
+      "年龄",
+      188
+    ],
+    [
+      "学年",
+      188
+    ],
+    [
+      "身高",
+      188
+    ],
+    [
       "二人称",
       109
+    ],
+    [
+      "称呼倾向",
+      4
     ],
     [
       "朱比",
@@ -301,11 +318,68 @@
       1
     ],
     [
+      "栗栖亚历山德ラ",
+      1
+    ],
+    [
       "水名前辈",
       1
     ]
   ],
-  "candidateJapaneseOnlyCallValues": [],
+  "candidateJapaneseOnlyCallValues": [
+    {
+      "caller": "阿莉娜·格雷 (アリナ・グレイ / Alina Gray)",
+      "value": "ベテラン (beteran / Veteran)"
+    },
+    {
+      "caller": "御园花凛 (御園かりん / Misono Karin)",
+      "value": "なぎたん (Nagitan / なぎたん)"
+    },
+    {
+      "caller": "八云御影 (八雲みかげ / Yakumo Mikage)",
+      "value": "なぎたん (Nagitan / なぎたん)"
+    },
+    {
+      "caller": "时女静香 (時女静香 / Tokime Shizuka)",
+      "value": "ちゃる (Charu / ちはる)"
+    },
+    {
+      "caller": "土岐沙绪 (土岐すなお / Toki Sunao)",
+      "value": "ちゃる (Charu / ちはる)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "みたま (Mitama)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "エミリー (Emily)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "ささら (Sasara)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "まどか (Madoka)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "ほむら (Homura)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "さやか (Sayaka)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "ひみか (Himika)"
+    },
+    {
+      "caller": "阿什莉·泰勒 (アシュリー・テイラー / Ashley Taylor)",
+      "value": "せいら (Seira)"
+    }
+  ],
   "displayNamePolicy": {
     "環いろは": "环彩羽",
     "常盤ななか": "常盘七香",

@@ -1,0 +1,31 @@
+name: Rebuild authoritative title data
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python scripts/build-title-data.py
+          python scripts/validate-production.py
+      - run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/titles public/data/titles
+          if git diff --cached --quiet; then
+            echo "No title-data changes."
+          else
+            git commit -m "Rebuild authoritative title data"
+            git push origin HEAD:main
+          fi

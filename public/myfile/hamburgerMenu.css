@@ -103,7 +103,6 @@ body {
   left: 0;
   box-sizing: border-box;
   width: max-content;
-  min-width: min(19rem, calc(100vw - 16px));
   max-width: calc(100vw - 16px);
   max-height: calc(100dvh - 60px);
   margin: 0;
@@ -183,7 +182,6 @@ body:has(.menu-btn:checked) {
 
 @media (max-width: 480px) {
   .menu {
-    min-width: min(18rem, calc(100vw - 12px));
     max-width: calc(100vw - 12px);
   }
 
