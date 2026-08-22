@@ -7,14 +7,26 @@ name: Launch atomic V26 closure
       - ".v26-launch-bridge-trigger"
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 jobs:
   launch:
     runs-on: ubuntu-latest
     steps:
-      - name: Dispatch the atomic closure bridge
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Record launcher run and dispatch bridge
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run v26-workflow-run-bridge.yml --repo "$GITHUB_REPOSITORY" --ref main
+        run: |
+          set -euo pipefail
+          printf '{"status":"launcher-ran","runId":%s,"attempt":%s}\n' "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" > .v26-launcher-ran.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .v26-launcher-ran.json
+          git commit -m "Record V26 launcher execution"
+          git push origin HEAD:main
+          gh workflow run v26-workflow-run-bridge.yml --repo "$GITHUB_REPOSITORY" --ref main
