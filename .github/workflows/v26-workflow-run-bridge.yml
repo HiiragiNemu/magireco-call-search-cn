@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Cancel competing runs and synchronize main
+      - name: Cancel competing runs, synchronize main, and publish run identity
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -62,6 +62,25 @@ jobs:
           mapfile -t branches < <(git ls-remote --heads origin | sed 's#.*refs/heads/##' | sort)
           test "${#branches[@]}" -eq 1
           test "${branches[0]}" = main
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          Path('.v26-active-run.json').write_text(json.dumps({
+              'schemaVersion': 1,
+              'status': 'running',
+              'runId': int(os.environ['GITHUB_RUN_ID']),
+              'runAttempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
+              'event': os.environ.get('GITHUB_EVENT_NAME'),
+              'eventSha': os.environ.get('GITHUB_SHA'),
+              'startedAt': datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+          }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .v26-active-run.json
+          git commit -m "Record active atomic V26 closure run"
+          git push origin HEAD:main
           echo "BASE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Correct the one-shot finalizer deterministically
@@ -69,10 +88,8 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-
           path = Path("scripts/v26-finalize-once.py")
           text = path.read_text(encoding="utf-8")
-
           old_parent = '''        parent = str(
               parent_by_category.get(category, {}).get(source_base)
               or group.get("approved_translation")
@@ -157,14 +174,12 @@ jobs:
               text = text.replace(old_parent, new_parent, 1)
           elif new_parent not in text:
               raise SystemExit("reconstruction block is neither original nor corrected")
-
           old_sample = '("scene0", "サイドストーリー Film.0"): "支线故事 Film.0",'
           new_sample = '("scene0", "サイドストーリー Film.0 1 (紫)"): "支线故事 Film.0 1 （紫色）",'
           if old_sample in text:
               text = text.replace(old_sample, new_sample)
           elif new_sample not in text:
               raise SystemExit("scene0 verification sample was not found")
-
           old_fail_open = '''        else:
               if runtime_info["mappedTitles"] < 1:
                   raise AssertionError("base localization did not load during fail-open test")
@@ -177,7 +192,6 @@ jobs:
               text = text.replace(old_fail_open, new_fail_open, 1)
           elif new_fail_open not in text:
               raise SystemExit("fail-open assertion was not found")
-
           path.write_text(text, encoding="utf-8")
           PY
           python -m py_compile scripts/v26-finalize-once.py
@@ -256,24 +270,17 @@ jobs:
             curl -fsS http://127.0.0.1:4173/story.html >/dev/null && break
             sleep 1
           done
-          python scripts/browser-smoke.py \
-            --base http://127.0.0.1:4173 \
-            --output /tmp/v26-local-browser-proof.json
+          python scripts/browser-smoke.py --base http://127.0.0.1:4173 --output /tmp/v26-local-browser-proof.json
 
       - name: Prove title enhancement failure cannot disable story search
         run: |
           set -euo pipefail
           mv public/data/titles /tmp/v26-title-data-hidden
           restore_titles() {
-            if [ -d /tmp/v26-title-data-hidden ]; then
-              mv /tmp/v26-title-data-hidden public/data/titles
-            fi
+            if [ -d /tmp/v26-title-data-hidden ]; then mv /tmp/v26-title-data-hidden public/data/titles; fi
           }
           trap restore_titles EXIT
-          python scripts/browser-smoke.py \
-            --base http://127.0.0.1:4173 \
-            --allow-title-runtime-error \
-            --output /tmp/v26-fail-open-browser-proof.json
+          python scripts/browser-smoke.py --base http://127.0.0.1:4173 --allow-title-runtime-error --output /tmp/v26-fail-open-browser-proof.json
           restore_titles
           trap - EXIT
           python scripts/validate-production.py
@@ -341,12 +348,7 @@ jobs:
                   assert "hamburger-menu-v23.js?v=20260822-v26-final3" in index
                   assert "width: max-content;" in css
                   assert "min-width:" not in css
-                  for old in (
-                      "data/v25-title-delta.part-00.txt",
-                      "__acceptance.html",
-                      "json_open_old.html",
-                      "oldfile/index.html",
-                  ):
+                  for old in ("data/v25-title-delta.part-00.txt", "__acceptance.html", "json_open_old.html", "oldfile/index.html"):
                       try:
                           get(old)
                           raise AssertionError(f"obsolete public file still exists: {old}")
@@ -356,8 +358,7 @@ jobs:
                   break
               except Exception as exc:
                   last = repr(exc)
-                  if attempt == 179:
-                      raise RuntimeError(last)
+                  if attempt == 179: raise RuntimeError(last)
                   time.sleep(5)
           PY
 
@@ -365,9 +366,7 @@ jobs:
         id: live_browser
         run: |
           set -euo pipefail
-          python scripts/browser-smoke.py \
-            --base https://magireco-call-search-cn.pages.dev \
-            --output /tmp/v26-production-browser-proof.json
+          python scripts/browser-smoke.py --base https://magireco-call-search-cn.pages.dev --output /tmp/v26-production-browser-proof.json
 
       - name: Preserve successful release tag
         if: success()
