@@ -7,6 +7,7 @@ on:
     paths:
       - "public/**"
       - "scripts/validate-production.py"
+      - "scripts/browser-smoke.py"
       - ".github/workflows/production-verify.yml"
 
 permissions:

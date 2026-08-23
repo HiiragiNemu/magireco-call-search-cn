@@ -168,7 +168,7 @@ def main() -> None:
             ):
                 other = context.new_page()
                 other.goto(f"{base}/{path}?smoke={time.time_ns()}", wait_until="domcontentloaded", timeout=120000)
-                other.wait_for_selector("h1", timeout=60000)
+                other.wait_for_selector("h1", state="attached", timeout=60000)
                 actual = other.locator("h1").first.inner_text()
                 if heading not in actual:
                     raise AssertionError(f"{path}: unexpected heading {actual!r}")
