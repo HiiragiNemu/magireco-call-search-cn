@@ -166,14 +166,21 @@ def main() -> None:
                 ("attendance.html", "共同出场次数排行"),
                 ("runes.html", "魔女文翻译"),
             ):
-                other = context.new_page()
-                other.goto(f"{base}/{path}?smoke={time.time_ns()}", wait_until="domcontentloaded", timeout=120000)
-                other.wait_for_selector("h1", state="attached", timeout=60000)
-                actual = other.locator("h1").first.inner_text()
-                if heading not in actual:
-                    raise AssertionError(f"{path}: unexpected heading {actual!r}")
-                proof["checks"][path] = {"heading": actual}
-                other.close()
+                response = context.request.get(
+                    f"{base}/{path}?smoke={time.time_ns()}",
+                    headers={"Cache-Control": "no-cache, no-store"},
+                    timeout=120000,
+                )
+                body = response.text()
+                if not response.ok:
+                    raise AssertionError(f"{path}: HTTP {response.status}")
+                if f"<h1>{heading}</h1>" not in body:
+                    raise AssertionError(f"{path}: expected heading is absent")
+                proof["checks"][path] = {
+                    "heading": heading,
+                    "status": response.status,
+                    "url": response.url,
+                }
 
         if proof["pageErrors"]:
             raise AssertionError(f"page errors: {proof['pageErrors']}")
