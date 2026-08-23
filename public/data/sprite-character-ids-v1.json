@@ -1,0 +1,790 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-23T08:10:00Z",
+  "source": {
+    "url": "https://kyu.gay/src/resource.js",
+    "retrievedAt": "2026-08-23T08:10:00Z"
+  },
+  "matching": {
+    "rule": "NFKD ASCII alphanumeric token signature; exact and unique",
+    "catalogCharacters": 186,
+    "kyuUnits": 244,
+    "mappedCharacters": 129
+  },
+  "characters": {
+    "アシュリー・テイラー": {
+      "characterId": "3052",
+      "roman": "Ashley Taylor",
+      "kyuName": "Ashley Taylor",
+      "variant": "305200_r"
+    },
+    "アマリュリス": {
+      "characterId": "1053",
+      "roman": "Amaryllis",
+      "kyuName": "Amaryllis",
+      "variant": "105300_r"
+    },
+    "アリナ・グレイ": {
+      "characterId": "1008",
+      "roman": "Alina Gray",
+      "kyuName": "Alina Gray",
+      "variant": "100800_r"
+    },
+    "エボニー": {
+      "characterId": "1048",
+      "roman": "Ebony",
+      "kyuName": "Ebony",
+      "variant": "104800_r"
+    },
+    "オルガ": {
+      "characterId": "1049",
+      "roman": "Olga",
+      "kyuName": "Olga",
+      "variant": "104900_r"
+    },
+    "かずみ": {
+      "characterId": "4011",
+      "roman": "Kazumi",
+      "kyuName": "Kazumi",
+      "variant": "401100_r"
+    },
+    "ガンヒルト": {
+      "characterId": "1050",
+      "roman": "Gunhild",
+      "kyuName": "Gunhild",
+      "variant": "105000_r"
+    },
+    "コルボー": {
+      "characterId": "4025",
+      "roman": "Corbeau",
+      "kyuName": "Corbeau",
+      "variant": "402500_r"
+    },
+    "シィ": {
+      "characterId": "3902",
+      "roman": "Shi",
+      "kyuName": "Shi",
+      "variant": "390200_r"
+    },
+    "タルト": {
+      "characterId": "4021",
+      "roman": "Tart",
+      "kyuName": "Tart",
+      "variant": "402100_r"
+    },
+    "トヨ": {
+      "characterId": "1052",
+      "roman": "Toyo",
+      "kyuName": "Toyo",
+      "variant": "105200_r"
+    },
+    "フェイト・T・ハラオウン": {
+      "characterId": "4052",
+      "roman": "Fate T. Harlaown",
+      "kyuName": "Fate T. Harlaown",
+      "variant": "405200_r"
+    },
+    "ヘルカ": {
+      "characterId": "1051",
+      "roman": "Heruka",
+      "kyuName": "Heruka",
+      "variant": "105100_r"
+    },
+    "ペレネル": {
+      "characterId": "4029",
+      "roman": "Pernelle Flamel",
+      "kyuName": "Pernelle Flamel",
+      "variant": "402900_r"
+    },
+    "ミヌゥ": {
+      "characterId": "4024",
+      "roman": "Minou",
+      "kyuName": "Minou",
+      "variant": "402400_r"
+    },
+    "メリッサ": {
+      "characterId": "4023",
+      "roman": "Melissa de Vignolles",
+      "kyuName": "Melissa de Vignolles",
+      "variant": "402300_r"
+    },
+    "リズ": {
+      "characterId": "4022",
+      "roman": "Riz Hawkwood",
+      "kyuName": "Riz Hawkwood",
+      "variant": "402200_r"
+    },
+    "阿見莉愛": {
+      "characterId": "3010",
+      "roman": "Ami Ria",
+      "kyuName": "Ami Ria",
+      "variant": "301000_r"
+    },
+    "愛生まばゆ": {
+      "characterId": "2009",
+      "roman": "Aki Mabayu",
+      "kyuName": "Aki Mabayu",
+      "variant": "200900_r"
+    },
+    "梓みふゆ": {
+      "characterId": "1006",
+      "roman": "Azusa Mifuyu",
+      "kyuName": "Azusa Mifuyu",
+      "variant": "100600_r"
+    },
+    "綾野梨花": {
+      "characterId": "3031",
+      "roman": "Ayano Rika",
+      "kyuName": "Ayano Rika",
+      "variant": "303100_r"
+    },
+    "粟根こころ": {
+      "characterId": "3016",
+      "roman": "Awane Kokoro",
+      "kyuName": "Awane Kokoro",
+      "variant": "301600_r"
+    },
+    "安積はぐむ": {
+      "characterId": "1030",
+      "roman": "Azumi Hagumu",
+      "kyuName": "Azumi Hagumu",
+      "variant": "103000_r"
+    },
+    "安名メル": {
+      "characterId": "3037",
+      "roman": "Anna Meru",
+      "kyuName": "Anna Meru",
+      "variant": "303700_r"
+    },
+    "伊並満": {
+      "characterId": "3022",
+      "roman": "Inami Mitsuru",
+      "kyuName": "Inami Mitsuru",
+      "variant": "302200_r"
+    },
+    "井ノ上たきな": {
+      "characterId": "4062",
+      "roman": "Inoue Takina",
+      "kyuName": "Inoue Takina",
+      "variant": "406200_r"
+    },
+    "加賀見まさら": {
+      "characterId": "3029",
+      "roman": "Kagami Masara",
+      "kyuName": "Kagami Masara",
+      "variant": "302900_r"
+    },
+    "夏目かこ": {
+      "characterId": "3011",
+      "roman": "Natsume Kako",
+      "kyuName": "Natsume Kako",
+      "variant": "301100_r"
+    },
+    "笠音アオ": {
+      "characterId": "1023",
+      "roman": "Kasane Ao",
+      "kyuName": "Kasane Ao",
+      "variant": "102300_r"
+    },
+    "環いろは": {
+      "characterId": "1001",
+      "roman": "Tamaki Iroha",
+      "kyuName": "Tamaki Iroha",
+      "variant": "100100_r"
+    },
+    "環うい": {
+      "characterId": "1015",
+      "roman": "Tamaki Ui",
+      "kyuName": "Tamaki Ui",
+      "variant": "101500_r"
+    },
+    "吉良てまり": {
+      "characterId": "3040",
+      "roman": "Kira Temari",
+      "kyuName": "Kira Temari",
+      "variant": "304000_r"
+    },
+    "宮尾時雨": {
+      "characterId": "1029",
+      "roman": "Miyabi Shigure",
+      "kyuName": "Miyabi Shigure",
+      "variant": "102900_r"
+    },
+    "暁美ほむら": {
+      "characterId": "2002",
+      "roman": "Akemi Homura",
+      "kyuName": "Akemi Homura",
+      "variant": "200200_r"
+    },
+    "暁美ほむら(眼鏡ver)": {
+      "characterId": "2003",
+      "roman": "Akemi Homura (Glasses ver)",
+      "kyuName": "Akemi Homura Glasses Ver.",
+      "variant": "200300_r"
+    },
+    "桐野紗枝": {
+      "characterId": "3055",
+      "roman": "Kirino Sae",
+      "kyuName": "Kirino Sae",
+      "variant": "305500_r"
+    },
+    "錦木千束": {
+      "characterId": "4061",
+      "roman": "Nishikigi Chisato",
+      "kyuName": "Nishikigi Chisato",
+      "variant": "406100_r"
+    },
+    "空穂夏希": {
+      "characterId": "3002",
+      "roman": "Utsuho Natsuki",
+      "kyuName": "Utsuho Natsuki",
+      "variant": "300200_r"
+    },
+    "桑水せいか": {
+      "characterId": "3014",
+      "roman": "Kumi Seika",
+      "kyuName": "Kumi Seika",
+      "variant": "301400_r"
+    },
+    "恵萌花": {
+      "characterId": "3034",
+      "roman": "Megumi Moka",
+      "kyuName": "Megumi Moka",
+      "variant": "303400_r"
+    },
+    "古町みくら": {
+      "characterId": "3038",
+      "roman": "Komachi Mikura",
+      "kyuName": "Komachi Mikura",
+      "variant": "303800_r"
+    },
+    "胡桃まなか": {
+      "characterId": "3009",
+      "roman": "Kurumi Manaka",
+      "kyuName": "Kurumi Manaka",
+      "variant": "300900_r"
+    },
+    "五十鈴れん": {
+      "characterId": "3025",
+      "roman": "Isuzu Ren",
+      "kyuName": "Isuzu Ren",
+      "variant": "302500_r"
+    },
+    "呉キリカ": {
+      "characterId": "4002",
+      "roman": "Kure Kirika",
+      "kyuName": "Kure Kirika",
+      "variant": "400200_r"
+    },
+    "御園かりん": {
+      "characterId": "1012",
+      "roman": "Misono Karin",
+      "kyuName": "Misono Karin",
+      "variant": "101200_r"
+    },
+    "御崎海香": {
+      "characterId": "4012",
+      "roman": "Misaki Umika",
+      "kyuName": "Misaki Umika",
+      "variant": "401200_r"
+    },
+    "広江ちはる": {
+      "characterId": "1026",
+      "roman": "Hiroe Chiharu",
+      "kyuName": "Hiroe Chiharu",
+      "variant": "102600_r"
+    },
+    "江利あいみ": {
+      "characterId": "3023",
+      "roman": "Eri Aimi",
+      "kyuName": "Eri Aimi",
+      "variant": "302300_r"
+    },
+    "紅晴結菜": {
+      "characterId": "1021",
+      "roman": "Kureha Yuna",
+      "kyuName": "Kureha Yuna",
+      "variant": "102100_r"
+    },
+    "香春ゆうな": {
+      "characterId": "3050",
+      "roman": "Kaharu Yuuna",
+      "kyuName": "Kaharu Yuuna",
+      "variant": "305000_r"
+    },
+    "高町なのは": {
+      "characterId": "4051",
+      "roman": "Takamachi Nanoha",
+      "kyuName": "Takamachi Nanoha",
+      "variant": "405100_r"
+    },
+    "黒江": {
+      "characterId": "1043",
+      "roman": "Kuroe",
+      "kyuName": "Kuroe",
+      "variant": "104300_r"
+    },
+    "佐鳥かごめ": {
+      "characterId": "1020",
+      "roman": "Satori Kagome",
+      "kyuName": "Satori Kagome",
+      "variant": "102000_r"
+    },
+    "佐和月出里": {
+      "characterId": "1039",
+      "roman": "Sawa Sudachi",
+      "kyuName": "Sawa Sudachi",
+      "variant": "103900_r"
+    },
+    "三浦旭": {
+      "characterId": "1034",
+      "roman": "Miura Asahi",
+      "kyuName": "Miura Asahi",
+      "variant": "103400_r"
+    },
+    "三栗あやめ": {
+      "characterId": "3028",
+      "roman": "Mikuri Ayame",
+      "kyuName": "Mikuri Ayame",
+      "variant": "302800_r"
+    },
+    "三穂野せいら": {
+      "characterId": "3039",
+      "roman": "Mihono Seira",
+      "kyuName": "Mihono Seira",
+      "variant": "303900_r"
+    },
+    "三輪みつね": {
+      "characterId": "3054",
+      "roman": "Miwa Mitsune",
+      "kyuName": "Miwa Mitsune",
+      "variant": "305400_r"
+    },
+    "史乃沙優希": {
+      "characterId": "3033",
+      "roman": "Fumino Sayuki",
+      "kyuName": "Fumino Sayuki",
+      "variant": "303300_r"
+    },
+    "志伸あきら": {
+      "characterId": "3008",
+      "roman": "Shinobu Akira",
+      "kyuName": "Shinobu Akira",
+      "variant": "300800_r"
+    },
+    "詩音千里": {
+      "characterId": "4034",
+      "roman": "Shion Chisato",
+      "kyuName": "Shion Chisato",
+      "variant": "403400_r"
+    },
+    "時女静香": {
+      "characterId": "1025",
+      "roman": "Tokime Shizuka",
+      "kyuName": "Tokime Shizuka",
+      "variant": "102500_r"
+    },
+    "鹿目まどか": {
+      "characterId": "2001",
+      "roman": "Kaname Madoka",
+      "kyuName": "Kaname Madoka",
+      "variant": "200100_r"
+    },
+    "七海やちよ": {
+      "characterId": "1002",
+      "roman": "Nanami Yachiyo",
+      "kyuName": "Yachiyo Nanami",
+      "variant": "100200_r"
+    },
+    "七瀬ゆきか": {
+      "characterId": "3017",
+      "roman": "Nanase Yukika",
+      "kyuName": "Nanase Yukika",
+      "variant": "301700_r"
+    },
+    "若菜つむぎ": {
+      "characterId": "3024",
+      "roman": "Wakana Tsumugi",
+      "kyuName": "Wakana Tsumugi",
+      "variant": "302400_r"
+    },
+    "秋野かえで": {
+      "characterId": "1011",
+      "roman": "Akino Kaede",
+      "kyuName": "Akino Kaede",
+      "variant": "101100_r"
+    },
+    "十咎ももこ": {
+      "characterId": "1010",
+      "roman": "Togame Momoko",
+      "kyuName": "Togame Momoko",
+      "variant": "101000_r"
+    },
+    "春名このみ": {
+      "characterId": "3030",
+      "roman": "Haruna Konomi",
+      "kyuName": "Haruna Konomi",
+      "variant": "303000_r"
+    },
+    "梢麻友": {
+      "characterId": "3032",
+      "roman": "Kozue Mayu",
+      "kyuName": "Kozue Mayu",
+      "variant": "303200_r"
+    },
+    "常盤ななか": {
+      "characterId": "3005",
+      "roman": "Tokiwa Nanaka",
+      "kyuName": "Tokiwa Nanaka",
+      "variant": "300500_r"
+    },
+    "飾利潤": {
+      "characterId": "3051",
+      "roman": "Kazari Jun",
+      "kyuName": "Kazari Jun",
+      "variant": "305100_r"
+    },
+    "深月フェリシア": {
+      "characterId": "1005",
+      "roman": "Mitsuki Felicia",
+      "kyuName": "Mitsuki Felicia",
+      "variant": "100500_r"
+    },
+    "真井あかり": {
+      "characterId": "3057",
+      "roman": "Mai Akari",
+      "kyuName": "Mai Akari",
+      "variant": "305700_r"
+    },
+    "神楽燦": {
+      "characterId": "1031",
+      "roman": "Kagura San",
+      "kyuName": "Kagura San",
+      "variant": "103100_r"
+    },
+    "水樹塁": {
+      "characterId": "3056",
+      "roman": "Mizuki Rui",
+      "kyuName": "Mizuki Rui",
+      "variant": "305600_r"
+    },
+    "水波レナ": {
+      "characterId": "1009",
+      "roman": "Minami Rena",
+      "kyuName": "Minami Rena",
+      "variant": "100900_r"
+    },
+    "水名露": {
+      "characterId": "1045",
+      "roman": "Mizuna Tsuyu",
+      "kyuName": "Mizuna Tsuyu",
+      "variant": "104500_r"
+    },
+    "瀬奈みこと": {
+      "characterId": "1044",
+      "roman": "Sena Mikoto",
+      "kyuName": "Sena Mikoto",
+      "variant": "104400_r"
+    },
+    "成見亜里紗": {
+      "characterId": "4033",
+      "roman": "Narumi Arisa",
+      "kyuName": "Narumi Arisa",
+      "variant": "403300_r"
+    },
+    "青葉ちか": {
+      "characterId": "3047",
+      "roman": "Aoba Chika",
+      "kyuName": "Aoba Chika",
+      "variant": "304700_r"
+    },
+    "静海このは": {
+      "characterId": "3026",
+      "roman": "Shizumi Konoha",
+      "kyuName": "Shizumi Konoha",
+      "variant": "302600_r"
+    },
+    "雪野かなえ": {
+      "characterId": "3049",
+      "roman": "Yukino Kanae",
+      "kyuName": "Yukino Kanae",
+      "variant": "304900_r"
+    },
+    "千歳ゆま": {
+      "characterId": "4003",
+      "roman": "Chitose Yuma",
+      "kyuName": "Chitose Yuma",
+      "variant": "400300_r"
+    },
+    "千秋理子": {
+      "characterId": "3035",
+      "roman": "Chiaki Riko",
+      "kyuName": "Chiaki Riko",
+      "variant": "303500_r"
+    },
+    "千鶴": {
+      "characterId": "1046",
+      "roman": "Chizuru",
+      "kyuName": "Chizuru",
+      "variant": "104600_r"
+    },
+    "奏遥香": {
+      "characterId": "4035",
+      "roman": "Kanade Haruka",
+      "kyuName": "Kanade Haruka",
+      "variant": "403500_r"
+    },
+    "相野みと": {
+      "characterId": "3015",
+      "roman": "Aino Mito",
+      "kyuName": "Aino Mito",
+      "variant": "301500_r"
+    },
+    "天音月咲": {
+      "characterId": "1019",
+      "roman": "Amane Tsukasa",
+      "kyuName": "Amane Tsukasa",
+      "variant": "101900_r"
+    },
+    "天音月夜": {
+      "characterId": "1018",
+      "roman": "Amane Tsukuyo",
+      "kyuName": "Amane Tsukuyo",
+      "variant": "101800_r"
+    },
+    "天乃鈴音": {
+      "characterId": "4031",
+      "roman": "Amano Suzune",
+      "kyuName": "Amano Suzune",
+      "variant": "403100_r"
+    },
+    "都ひなの": {
+      "characterId": "3003",
+      "roman": "Miyako Hinano",
+      "kyuName": "Miyako Hinano",
+      "variant": "300300_r"
+    },
+    "土岐すなお": {
+      "characterId": "1027",
+      "roman": "Toki Sunao",
+      "kyuName": "Toki Sunao",
+      "variant": "102700_r"
+    },
+    "二葉さな": {
+      "characterId": "1004",
+      "roman": "Futaba Sana",
+      "kyuName": "Futaba Sana",
+      "variant": "100400_r"
+    },
+    "日向茉莉": {
+      "characterId": "4032",
+      "roman": "Hinata Matsuri",
+      "kyuName": "Hinata Matsuri",
+      "variant": "403200_r"
+    },
+    "巴マミ": {
+      "characterId": "2005",
+      "roman": "Tomoe Mami",
+      "kyuName": "Tomoe Mami",
+      "variant": "200500_r"
+    },
+    "八雲みかげ": {
+      "characterId": "1038",
+      "roman": "Yakumo Mikage",
+      "kyuName": "Yakumo Mikage",
+      "variant": "103800_r"
+    },
+    "八雲みたま": {
+      "characterId": "1017",
+      "roman": "Yakumo Mitama",
+      "kyuName": "Yakumo Mitama",
+      "variant": "101700_r"
+    },
+    "八神はやて": {
+      "characterId": "4053",
+      "roman": "Yagami Hayate",
+      "kyuName": "Yagami Hayate",
+      "variant": "405300_r"
+    },
+    "枇々木めぐる": {
+      "characterId": "3042",
+      "roman": "Hibiki Meguru",
+      "kyuName": "Hibiki Meguru",
+      "variant": "304200_r"
+    },
+    "美琴椿": {
+      "characterId": "4036",
+      "roman": "Mikoto Tsubaki",
+      "kyuName": "Mikoto Tsubaki",
+      "variant": "403600_r"
+    },
+    "美国織莉子": {
+      "characterId": "4001",
+      "roman": "Mikuni Oriko",
+      "kyuName": "Mikuni Oriko",
+      "variant": "400100_r"
+    },
+    "美樹さやか": {
+      "characterId": "2004",
+      "roman": "Miki Sayaka",
+      "kyuName": "Miki Sayaka",
+      "variant": "200400_r"
+    },
+    "美凪ささら": {
+      "characterId": "3004",
+      "roman": "Minagi Sasara",
+      "kyuName": "Minagi Sasara",
+      "variant": "300400_r"
+    },
+    "柊ねむ": {
+      "characterId": "1014",
+      "roman": "Hiiragi Nemu",
+      "kyuName": "Hiiragi Nemu",
+      "variant": "101400_r"
+    },
+    "百江なぎさ": {
+      "characterId": "2007",
+      "roman": "Momoe Nagisa",
+      "kyuName": "Momoe Nagisa",
+      "variant": "200700_r"
+    },
+    "氷室ラビ": {
+      "characterId": "1033",
+      "roman": "Himuro Lavi",
+      "kyuName": "Himuro Lavi",
+      "variant": "103300_r"
+    },
+    "保澄雫": {
+      "characterId": "3007",
+      "roman": "Hozumi Shizuku",
+      "kyuName": "Hozumi Shizuku",
+      "variant": "300700_r"
+    },
+    "牧カオル": {
+      "characterId": "4013",
+      "roman": "Maki Kaoru",
+      "kyuName": "Maki Kaoru",
+      "variant": "401300_r"
+    },
+    "牧野郁美": {
+      "characterId": "3053",
+      "roman": "Makino Ikumi",
+      "kyuName": "Makino Ikumi",
+      "variant": "305300_r"
+    },
+    "万年桜のウワサ": {
+      "characterId": "3043",
+      "roman": "Eternal Sakura",
+      "kyuName": "Eternal Sakura",
+      "variant": "304300_r"
+    },
+    "木崎衣美里": {
+      "characterId": "3006",
+      "roman": "Kisaki Emiri",
+      "kyuName": "Kisaki Emiri",
+      "variant": "300600_r"
+    },
+    "矢宵かのこ": {
+      "characterId": "3001",
+      "roman": "Yayoi Kanoko",
+      "kyuName": "Yayoi Kanoko",
+      "variant": "300100_r"
+    },
+    "有愛うらら": {
+      "characterId": "1036",
+      "roman": "Yume Urara",
+      "kyuName": "Yume Urara",
+      "variant": "103600_r"
+    },
+    "柚希ほとり": {
+      "characterId": "3041",
+      "roman": "Yuzuki Hotori",
+      "kyuName": "Yuzuki Hotori",
+      "variant": "304100_r"
+    },
+    "柚希りおん": {
+      "characterId": "3045",
+      "roman": "Yuzuki Rion",
+      "kyuName": "Yuzuki Rion",
+      "variant": "304500_r"
+    },
+    "由比鶴乃": {
+      "characterId": "1003",
+      "roman": "Yui Tsuruno",
+      "kyuName": "Yui Tsuruno",
+      "variant": "100300_r"
+    },
+    "由良蛍": {
+      "characterId": "3048",
+      "roman": "Yura Hotaru",
+      "kyuName": "Yura Hotaru",
+      "variant": "304800_r"
+    },
+    "遊佐葉月": {
+      "characterId": "3027",
+      "roman": "Yusa Hazuki",
+      "kyuName": "Yusa Hazuki",
+      "variant": "302700_r"
+    },
+    "遊狩ミユリ": {
+      "characterId": "1032",
+      "roman": "Yukari Miyuri",
+      "kyuName": "Yukari Miyuri",
+      "variant": "103200_r"
+    },
+    "藍家ひめな": {
+      "characterId": "1028",
+      "roman": "Aika Himena",
+      "kyuName": "Aika Himena",
+      "variant": "102800_r"
+    },
+    "里見灯花": {
+      "characterId": "1007",
+      "roman": "Satomi Touka",
+      "kyuName": "Satomi Touka",
+      "variant": "100700_r"
+    },
+    "里見那由他": {
+      "characterId": "1037",
+      "roman": "Satomi Nayuta",
+      "kyuName": "Satomi Nayuta",
+      "variant": "103700_r"
+    },
+    "竜城明日香": {
+      "characterId": "1013",
+      "roman": "Tatsuki Asuka",
+      "kyuName": "Tatsuki Asuka",
+      "variant": "101300_r"
+    },
+    "鈴鹿さくや": {
+      "characterId": "3021",
+      "roman": "Suzuka Sakuya",
+      "kyuName": "Suzuka Sakuya",
+      "variant": "302100_r"
+    },
+    "和泉十七夜": {
+      "characterId": "1016",
+      "roman": "Izumi Kanagi",
+      "kyuName": "Izumi Kanagi",
+      "variant": "101600_r"
+    },
+    "毬子あやか": {
+      "characterId": "3019",
+      "roman": "Mariko Ayaka",
+      "kyuName": "Mariko Ayaka",
+      "variant": "301900_r"
+    },
+    "煌里ひかる": {
+      "characterId": "1022",
+      "roman": "Kirari Hikaru",
+      "kyuName": "Kirari Hikaru",
+      "variant": "102200_r"
+    },
+    "眞尾ひみか": {
+      "characterId": "3020",
+      "roman": "Mao Himika",
+      "kyuName": "Mao Himika",
+      "variant": "302000_r"
+    }
+  }
+}
