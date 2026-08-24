@@ -3,9 +3,9 @@
 (function (global) {
   'use strict';
 
-  const RELEASE = 'story-title-runtime-v26-20260822';
-  const DATA_RELEASE = 'v26-converged-20260822';
-  const VERSION = '20260822-v26-final3';
+  const RELEASE = 'story-title-runtime-canonical-title-authority-v1';
+  const DATA_RELEASE = 'canonical-title-authority-v1';
+  const VERSION = '20260825-canonical-title-v1';
   const GROUPS_URL = `./data/story-title-groups-v1.json?v=${VERSION}`;
   const MANIFEST_URL = `./data/titles/manifest.json?v=${VERSION}`;
   const PARENTS_URL = `./data/titles/parents.json?v=${VERSION}`;

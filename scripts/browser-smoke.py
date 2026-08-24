@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 
 from playwright.sync_api import sync_playwright
 
-EXPECTED_RELEASE = "v26-converged-20260822"
+EXPECTED_RELEASE = "canonical-title-authority-v1"
 
 
 def main() -> None:

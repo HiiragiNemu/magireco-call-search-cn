@@ -33,16 +33,16 @@
     "suffixes": "suffixes.json",
     "titles": "titles.json"
   },
-  "generatedAt": "2026-08-24T15:20:57+00:00",
+  "generatedAt": "2026-08-24T21:12:01+00:00",
   "release": "canonical-title-authority-v1",
   "schemaVersion": 1,
   "sha256": {
-    "parents": "29ec309e39c6e55f9ee86ebfd9e000cad6a5c0e974191408901b64671b47142c",
-    "provenance": "038e42f4579e5227d9888a8928c7488d6b29b116fba124116c295955989f23ef",
-    "reader-links": "3554487a51eff83c50652e5653e91c43d87f4c569b30114bd00d34c63e4b66e9",
-    "sources": "2f869be4a0147b9de3776c53d57a47dc3f4a529a20e0030e7b0f492bdf5218d9",
+    "parents": "b9bb35622ddb13afc8432adb62ed0c0ba191997b2e258160899440838f16f680",
+    "provenance": "bfa5937dab5214552b8bc559b01635b74aa1bc442d26f95d9944b6dcb54832db",
+    "reader-links": "64c6f498ea529165ff09007f6e2763ed73a6fbfb437167882e402fb84ac3ecfa",
+    "sources": "a2bf1e46804a2b9aca33b54aeeb7f997c9caf428ff57abc7f3a475a397ddb2e2",
     "suffixes": "222a1b2c70d2af10a2b7d3e91456502c88b89683bf10f58fe152cddef2a599f4",
-    "titles": "a650d5284c0de6282f8b6d9000cd39c6fdb017c38c656c469c70940797454a73"
+    "titles": "f5e657bb40274b2764bd73286a7c851f5740b1e161ebd2a88b4cde5695fdd47c"
   },
   "sourceRelease": "Call/Reader canonical title linkage v1"
 }

@@ -110,6 +110,10 @@ if (isV26) {
     if (!read(file).includes(`data-build="${release}"`)) fail(`${file} V26 release marker mismatch.`);
   }
   const runtime = read(runtimePath);
+  if (!runtime.includes("story-title-runtime-canonical-title-authority-v1") || !runtime.includes(TITLE_RELEASE)) fail('Canonical title runtime release mismatch.');
+  for (const file of [storyPath, editorPath]) {
+    if (!read(file).includes('story-title-runtime-v2.js?v=20260825-canonical-title-v1')) fail(`${file} canonical title runtime cache marker mismatch.`);
+  }
   for (const name of ['manifest.json', 'parents.json', 'suffixes.json', 'titles.json']) {
     if (!runtime.includes(name)) fail(`V26 runtime missing ${name}.`);
   }

@@ -43,7 +43,7 @@ assert reader_links["release"] == RELEASE
 assert reader_links["reader"]["head"] == READER_REVISION
 assert reader_links["reader"]["branch"] == "main"
 assert reader_links["reader"]["dirty"] is False
-assert reader_links["summary"] == {"entries": 1196, "officialCn": 368, "reader": 828}
+assert reader_links["summary"] == {"entries": 1196, "officialCn": 871, "reader": 325}
 assert len(reader_links["entriesBySourceIdentity"]) == 1196
 assert title_sources["canonicalNameAliases"]["环伊吕波"] == "环彩羽"
 assert title_sources["canonicalNameAliases"]["八云美玉"] == "八云御魂"
@@ -74,15 +74,15 @@ editor = (ROOT / "public/story-title-editor.html").read_text(encoding="utf-8")
 index = (ROOT / "public/index.html").read_text(encoding="utf-8")
 menu_css = (ROOT / "public/myfile/hamburgerMenu.css").read_text(encoding="utf-8")
 
-assert "story-title-runtime-v26-20260822" in runtime
+assert "story-title-runtime-canonical-title-authority-v1" in runtime
 assert "DecompressionStream" not in runtime
 assert "v25-title-delta" not in runtime
 assert "magireco-story-title-overrides:" in runtime
 assert "v26-converged-20260822" in story
 assert "story-route-bridge-v1.js" in story
 assert "v26-converged-20260822" in editor
-assert "20260822-v26-final3" in story
-assert "20260822-v26-final3" in editor
+assert "story-title-runtime-v2.js?v=20260825-canonical-title-v1" in story
+assert "story-title-runtime-v2.js?v=20260825-canonical-title-v1" in editor
 assert 'class="navtext-container"' not in index
 assert "hamburger-menu-v23.js?v=20260822-v26-final3" in index
 assert "width: max-content;" in menu_css
