@@ -27,7 +27,9 @@ jobs:
             docs/translation-audit-v5.md
           node --check public/myfile/story-title-runtime-v2.js
           node --check public/myfile/story-sprite-bridge-v1.js
+          node --check public/myfile/story-route-bridge-v1.js
           node --check public/myfile/story-app-v7.js
           node --check public/myfile/story-title-editor-v2.js
           node --check public/myfile/hamburger-menu-v23.js
           node tests/story-sprite-bridge-v1.test.mjs
+          node --test tests/story-route-bridge-v1.test.mjs

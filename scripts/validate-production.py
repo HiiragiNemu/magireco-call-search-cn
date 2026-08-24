@@ -5,7 +5,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE = "v26-converged-20260822"
+RELEASE = "canonical-title-authority-v1"
+READER_REVISION = "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0"
 KANA = re.compile(r"[\u3040-\u30ff]")
 
 
@@ -25,6 +26,9 @@ groups = load("public/data/story-title-groups-v1.json")
 story_manifest = load("public/data/story-v6/manifest.json")
 catalog = load("public/data/character-catalog.json")
 localization = load("public/data/story-v7/localization.json")
+reader_links = load("public/data/titles/reader-links.json")
+title_sources = load("public/data/titles/sources.json")
+story_router = load("public/data/story-router-v1.json")
 
 assert manifest["release"] == RELEASE
 assert manifest["dataArchitecture"] == "plain-json"
@@ -35,6 +39,20 @@ assert story_manifest["totalRows"] == 14466
 assert len(story_manifest["categories"]) == 19
 assert len(catalog) >= 180
 assert isinstance(localization, dict)
+assert reader_links["release"] == RELEASE
+assert reader_links["reader"]["head"] == READER_REVISION
+assert reader_links["reader"]["branch"] == "main"
+assert reader_links["reader"]["dirty"] is False
+assert reader_links["summary"] == {"entries": 1196, "officialCn": 368, "reader": 828}
+assert len(reader_links["entriesBySourceIdentity"]) == 1196
+assert title_sources["canonicalNameAliases"]["环伊吕波"] == "环彩羽"
+assert title_sources["canonicalNameAliases"]["八云美玉"] == "八云御魂"
+assert story_router["targets"]["reader"]["readerRevision"] == READER_REVISION
+assert story_router["targets"]["reader"]["indexEntries"] == 3017
+assert story_router["targets"]["adv"]["handoffReady"] is False
+assert len(story_router["routes"]) == 5327
+assert sum(route["reader"] is not None for route in story_router["routes"]) == 5327
+assert sum(route["adv"] is not None for route in story_router["routes"]) == 5036
 
 for category, pairs in titles["titleByCategory"].items():
     for source, target in pairs.items():
@@ -42,10 +60,10 @@ for category, pairs in titles["titleByCategory"].items():
         assert not KANA.search(target), (category, source, target)
 
 samples = {
-    ("scene0", "サイドストーリー Film.0 1 (紫)"): "支线故事 Film.0 1 （紫色）",
+    ("scene0", "サイドストーリー Film.0 1 (紫)"): "支线故事 Film.0 1 (紫色)",
     ("イベント", "トリック☆トラブル☆学園祭 BADEND1話"): "诡计☆骚乱☆学园祭 坏结局 第1话",
     ("メモリア", "No.888 夢を追う妹"): "No.888 追梦的妹妹",
-    ("メモリア", "No.900 夏のはじまりに母の影光り"): "No.900 夏日伊始，母亲的影子",
+    ("メモリア", "No.900 夏のはじまりに母の影光り"): "No.900 夏日伊始,母亲的影子",
 }
 for (category, source), expected in samples.items():
     assert titles["titleByCategory"][category][source] == expected
@@ -61,6 +79,7 @@ assert "DecompressionStream" not in runtime
 assert "v25-title-delta" not in runtime
 assert "magireco-story-title-overrides:" in runtime
 assert "v26-converged-20260822" in story
+assert "story-route-bridge-v1.js" in story
 assert "v26-converged-20260822" in editor
 assert "20260822-v26-final3" in story
 assert "20260822-v26-final3" in editor

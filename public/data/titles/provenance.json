@@ -1,14 +1,29 @@
 {
-  "generatedAt": "2026-08-22T18:30:12+00:00",
+  "fieldAuthority": {
+    "compositionRule": "magireco-cn-patch only decides the Chinese field; Reader Japanese, romanized and other trailing title components are preserved",
+    "titleJa": [
+      "MagiReader",
+      "original Japanese source"
+    ],
+    "titleRomaji": [
+      "MagiReader"
+    ],
+    "titleZh": [
+      "magireco-cn-patch/magica/js/libs",
+      "MagiReader",
+      "magireco-wiki-data",
+      "LLM/rule fallback"
+    ]
+  },
+  "generatedAt": "2026-08-24T15:20:57+00:00",
   "method": "deterministic build from data/titles/authority.json",
-  "release": "v26-converged-20260822",
+  "release": "canonical-title-authority-v1",
   "schemaVersion": 1,
   "sourcePriority": [
     "magireco-cn-patch/magica/js/libs",
-    "existing human/audited translations",
     "MagiReader",
     "magireco-wiki-data",
-    "manual fallback"
+    "LLM/rule fallback"
   ],
-  "sourceRelease": "v25-live-cn-20260821"
+  "sourceRelease": "Call/Reader canonical title linkage v1"
 }

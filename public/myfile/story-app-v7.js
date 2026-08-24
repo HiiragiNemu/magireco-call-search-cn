@@ -5,6 +5,7 @@
   const Tools = global.MagiToolsV7;
   if (!Tools?.loadLocalizationV7) return;
   const SpriteBridge = global.MagirecoStorySpriteBridge || null;
+  const RouteBridge = global.MagirecoStoryRouteBridge || null;
 
   const MANIFEST_URL = './data/story-v6/manifest.json';
   const VARIANT_URL = './data/story-v6/variant-map.json';
@@ -18,6 +19,7 @@
   let variantFamilies = new Map();
   let spriteCharacterIds = {};
   let storyGroupIds = new Map();
+  let routeReady = Promise.resolve(null);
   let attributeController = null;
   let searchSerial = 0;
 
@@ -285,7 +287,7 @@
       categoryCache.set(key, Tools.fetchJson(`./data/story-v6/${meta.file}`, { cache: 'force-cache' }, 45000)
         .then((data) => {
           if (!data || data.key !== key || !Array.isArray(data.rows)) throw new Error(`${key} 数据无效。`);
-          return data.rows;
+          return data.rows.map((row, rowIndex) => ({ row, rowIndex }));
         }));
     }
     return categoryCache.get(key);
@@ -359,16 +361,20 @@
       const list = document.createElement('div');
       list.className = 'story-result-list-v7';
 
-      for (const row of rows) {
+      for (const tagged of rows) {
         if (rendered >= MAX_RENDERED_ROWS) break;
         rendered += 1;
+        const row = tagged.row;
+        const rowIndex = tagged.rowIndex;
         const titleInfo = localizeTitle(storyType, row?.[0]);
+        const routeLinks = RouteBridge?.links(categoryMeta(storyType)?.slug, rowIndex) || null;
+        const sourceHref = storyLink(storyType, row, titleInfo.display, titleInfo.original);
         const item = document.createElement('article');
         item.className = 'story-row-v7';
         const title = document.createElement('div');
         title.className = `story-title-v7${titleInfo.translated ? '' : ' story-untranslated-v7'}`;
         const link = document.createElement('a');
-        link.href = storyLink(storyType, row, titleInfo.display, titleInfo.original);
+        link.href = routeLinks?.reader || sourceHref;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.textContent = titleInfo.display;
@@ -378,6 +384,39 @@
           original.className = 'story-title-original-v7';
           original.textContent = titleInfo.original;
           title.appendChild(original);
+        }
+        if (routeLinks?.reader) {
+          const actions = document.createElement('div');
+          actions.className = 'story-route-actions-v1';
+          const reader = document.createElement('a');
+          reader.className = 'story-route-link-v1 reader';
+          reader.href = routeLinks.reader;
+          reader.target = '_blank';
+          reader.rel = 'noopener noreferrer';
+          reader.textContent = 'Reader';
+          reader.title = `在 Reader 打开剧情 ${routeLinks.storyId}`;
+          actions.appendChild(reader);
+          if (routeLinks.adv) {
+            const adv = document.createElement('a');
+            adv.className = 'story-route-link-v1 adv';
+            adv.href = routeLinks.adv;
+            adv.target = '_blank';
+            adv.rel = 'noopener noreferrer';
+            adv.textContent = 'ADV';
+            adv.title = '在 ADV 播放该剧情章节';
+            actions.appendChild(adv);
+          }
+          if (sourceHref && sourceHref !== routeLinks.reader) {
+            const source = document.createElement('a');
+            source.className = 'story-route-link-v1 source';
+            source.href = sourceHref;
+            source.target = '_blank';
+            source.rel = 'noopener noreferrer';
+            source.textContent = '来源';
+            source.title = '打开原始资料来源';
+            actions.appendChild(source);
+          }
+          title.appendChild(actions);
         }
         item.append(title, await renderCast(row?.[1], storyBridgeContext(storyType, row)));
         if (showSpoiler) {
@@ -430,11 +469,12 @@
     const logic = selectedLogic();
     try {
       const datasets = await Promise.all(types.map(async (key) => [key, await loadCategory(key)]));
+      await routeReady;
       if (serial !== searchSerial) return;
       const grouped = new Map();
       let total = 0;
       for (const [key, rows] of datasets) {
-        const matches = rows.filter((row) => rowMatches(row, families, logic, includeVariants, keywordTerms));
+        const matches = rows.filter(({ row }) => rowMatches(row, families, logic, includeVariants, keywordTerms));
         grouped.set(key, matches);
         total += matches.length;
       }
@@ -492,6 +532,12 @@
         spriteMapPromise
       ]);
       if (!manifest?.categories?.length || manifest.totalRows < 10000) throw new Error('故事数据不完整。');
+      routeReady = RouteBridge
+        ? RouteBridge.initialize(manifest).catch((error) => {
+            console.error('Reader/ADV 精确路由不可用；故事搜索继续工作。', error);
+            return null;
+          })
+        : Promise.resolve(null);
       const variants = await Tools.fetchJson(VARIANT_URL, { cache: 'no-cache' }, 30000);
       variantFamilies = new Map(Object.entries(variants?.families || {}));
       buildStoryGroupIndex();

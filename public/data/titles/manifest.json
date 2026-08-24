@@ -3,24 +3,46 @@
     "groupCount": 2166,
     "kanaInChineseDisplayFields": 0,
     "mappedTitles": 5826,
-    "parentOverrides": 1129,
+    "parentOverrides": 1266,
+    "readerLinks": 1196,
+    "sourceEntries": 5826,
     "translatedSuffixes": 494
   },
   "dataArchitecture": "plain-json",
+  "fieldAuthority": {
+    "compositionRule": "magireco-cn-patch only decides the Chinese field; Reader Japanese, romanized and other trailing title components are preserved",
+    "titleJa": [
+      "MagiReader",
+      "original Japanese source"
+    ],
+    "titleRomaji": [
+      "MagiReader"
+    ],
+    "titleZh": [
+      "magireco-cn-patch/magica/js/libs",
+      "MagiReader",
+      "magireco-wiki-data",
+      "LLM/rule fallback"
+    ]
+  },
   "files": {
     "parents": "parents.json",
     "provenance": "provenance.json",
+    "readerLinks": "reader-links.json",
+    "sources": "sources.json",
     "suffixes": "suffixes.json",
     "titles": "titles.json"
   },
-  "generatedAt": "2026-08-22T18:30:12+00:00",
-  "release": "v26-converged-20260822",
+  "generatedAt": "2026-08-24T15:20:57+00:00",
+  "release": "canonical-title-authority-v1",
   "schemaVersion": 1,
   "sha256": {
-    "parents": "8c53c770372876bc6b8ea2172f42fdfbf017917ae5e5f4833dd17301f97b53a8",
-    "provenance": "75fa213ad388b74a5536711af0400ac5551354e9f0d5f2f07e342fb129f7952a",
-    "suffixes": "01ebf6fb75e8b06179586767d8e642cc2c83a7109fc3d5b3479f19e6be41cc64",
-    "titles": "9150e4e6d0386a10d1dd717d14ec885d32da44a8b10d193d5f715d15e1dbb832"
+    "parents": "29ec309e39c6e55f9ee86ebfd9e000cad6a5c0e974191408901b64671b47142c",
+    "provenance": "038e42f4579e5227d9888a8928c7488d6b29b116fba124116c295955989f23ef",
+    "reader-links": "3554487a51eff83c50652e5653e91c43d87f4c569b30114bd00d34c63e4b66e9",
+    "sources": "2f869be4a0147b9de3776c53d57a47dc3f4a529a20e0030e7b0f492bdf5218d9",
+    "suffixes": "222a1b2c70d2af10a2b7d3e91456502c88b89683bf10f58fe152cddef2a599f4",
+    "titles": "a650d5284c0de6282f8b6d9000cd39c6fdb017c38c656c469c70940797454a73"
   },
-  "sourceRelease": "v25-live-cn-20260821"
+  "sourceRelease": "Call/Reader canonical title linkage v1"
 }

@@ -50,12 +50,20 @@ jobs:
 
               try:
                   manifest = json.loads(get("data/titles/manifest.json"))
-                  assert manifest["release"] == "v26-converged-20260822"
+                  assert manifest["release"] == "canonical-title-authority-v1"
                   assert manifest["dataArchitecture"] == "plain-json"
                   assert json.loads(get("data/story-v6/manifest.json"))["totalRows"] == 14466
                   assert len(json.loads(get("data/character-catalog.json"))) >= 180
                   titles = json.loads(get("data/titles/titles.json"))
                   assert sum(len(v) for v in titles["titleByCategory"].values()) == 5826
+                  reader_links = json.loads(get("data/titles/reader-links.json"))
+                  assert reader_links["reader"]["head"] == "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0"
+                  assert reader_links["summary"]["entries"] == 1196
+                  story_router = json.loads(get("data/story-router-v1.json"))
+                  assert story_router["targets"]["reader"]["readerRevision"] == "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0"
+                  assert story_router["targets"]["adv"]["handoffReady"] is False
+                  assert len(story_router["routes"]) == 5327
+                  get("myfile/story-route-bridge-v1.js")
                   print("Production V26 endpoints passed.")
                   break
               except Exception:

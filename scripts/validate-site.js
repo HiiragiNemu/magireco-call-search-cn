@@ -20,6 +20,8 @@ const buildInfoPath = path.join('public', 'build-info.json');
 requireFile(buildInfoPath);
 const buildInfo = JSON.parse(read(buildInfoPath));
 const release = String(buildInfo.release || '');
+const TITLE_RELEASE = 'canonical-title-authority-v1';
+const READER_REVISION = '35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0';
 const RELEASES = Object.freeze({
   V2: 'layout-correction-v2-20260816',
   V3: 'neo11-mobile-interaction-v3-20260816',
@@ -89,11 +91,19 @@ if (isV26) {
   const storyPath = path.join('public', 'story.html');
   const editorPath = path.join('public', 'story-title-editor.html');
   const runtimePath = path.join('public', 'myfile', 'story-title-runtime-v2.js');
+  const routeBridgePath = path.join('public', 'myfile', 'story-route-bridge-v1.js');
+  const readerLinksPath = path.join('public', 'data', 'titles', 'reader-links.json');
+  const storyRouterPath = path.join('public', 'data', 'story-router-v1.json');
   const menuScript = './myfile/hamburger-menu-v23.js?v=20260822-v26-final3';
-  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath]) requireFile(file);
+  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath, routeBridgePath, readerLinksPath, storyRouterPath]) requireFile(file);
   const manifest = JSON.parse(read(manifestPath));
-  if (manifest.release !== release || manifest.dataArchitecture !== 'plain-json') fail('V26 title manifest mismatch.');
+  if (manifest.release !== TITLE_RELEASE || manifest.dataArchitecture !== 'plain-json') fail('V26 title manifest mismatch.');
   if (manifest.counts?.groupCount !== 2166 || manifest.counts?.mappedTitles !== 5826) fail('V26 title counts mismatch.');
+  const readerLinks = JSON.parse(read(readerLinksPath));
+  const storyRouter = JSON.parse(read(storyRouterPath));
+  if (readerLinks.release !== TITLE_RELEASE || readerLinks.reader?.head !== READER_REVISION || readerLinks.summary?.entries !== 1196) fail('Reader title linkage mismatch.');
+  if (storyRouter.targets?.reader?.readerRevision !== READER_REVISION || storyRouter.routes?.length !== 5327) fail('Reader story router mismatch.');
+  if (storyRouter.targets?.adv?.handoffReady !== false) fail('ADV route must remain fail-closed before production handoff.');
   if (html.includes('navtext-container')) fail('V26 legacy top title node is still present.');
   if (!html.includes(menuScript)) fail('V26 hamburger behavior script is not loaded.');
   for (const file of [storyPath, editorPath]) {
@@ -105,6 +115,7 @@ if (isV26) {
   }
   if (runtime.includes('DecompressionStream') || runtime.includes('v25-title-delta')) fail('V26 runtime still contains V25 compressed loading.');
   if (!runtime.includes('magireco-story-title-overrides:')) fail('V26 release-scoped local storage key is missing.');
+  if (!read(storyPath).includes('story-route-bridge-v1.js')) fail('Story route bridge is not loaded.');
   for (const forbidden of ['public/__acceptance.html', 'public/json_open_old.html', 'public/oldfile']) {
     if (fs.existsSync(forbidden)) fail(`V26 public legacy path still exists: ${forbidden}`);
   }

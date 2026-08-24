@@ -7,6 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORITY = ROOT / "data/titles/authority.json"
+AUTHORITY_PROVENANCE = ROOT / "data/titles/authority-provenance.json"
+READER_LINKS = ROOT / "data/titles/reader-links.json"
 OUT = ROOT / "public/data/titles"
 
 
@@ -34,6 +36,10 @@ def main():
     args = parser.parse_args()
 
     authority = json.loads(AUTHORITY.read_text(encoding="utf-8"))
+    authority_provenance = json.loads(
+        AUTHORITY_PROVENANCE.read_text(encoding="utf-8")
+    )
+    reader_links = json.loads(READER_LINKS.read_text(encoding="utf-8"))
     release = authority["release"]
     parents = authority["parentByCategory"]
     suffixes = authority["suffixBySource"]
@@ -63,8 +69,11 @@ def main():
             "sourceRelease": authority.get("sourceRelease"),
             "generatedAt": generated,
             "sourcePriority": authority.get("sourcePriority", []),
+            "fieldAuthority": authority.get("fieldAuthority", {}),
             "method": "deterministic build from data/titles/authority.json",
         },
+        "sources.json": authority_provenance,
+        "reader-links.json": reader_links,
     }
     for name, value in outputs.items():
         write_or_check(OUT / name, value, args.check)
@@ -79,17 +88,24 @@ def main():
         "dataArchitecture": "plain-json",
         "generatedAt": generated,
         "sourceRelease": authority.get("sourceRelease"),
+        "fieldAuthority": authority.get("fieldAuthority", {}),
         "files": {
             "parents": "parents.json",
             "suffixes": "suffixes.json",
             "titles": "titles.json",
             "provenance": "provenance.json",
+            "sources": "sources.json",
+            "readerLinks": "reader-links.json",
         },
         "counts": {
             "groupCount": len(groups.get("groups", [])),
             "parentOverrides": nested_count(parents),
             "translatedSuffixes": len(suffixes),
             "mappedTitles": nested_count(titles),
+            "sourceEntries": len(authority_provenance.get("entries", [])),
+            "readerLinks": len(
+                reader_links.get("entriesBySourceIdentity", {})
+            ),
             "kanaInChineseDisplayFields": 0,
         },
         "sha256": hashes,

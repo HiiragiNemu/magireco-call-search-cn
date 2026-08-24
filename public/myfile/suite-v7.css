@@ -177,6 +177,34 @@
   line-height: 1.35;
 }
 .story-title-v7 a { color: #8a1f58; text-decoration-thickness: 1px; }
+.story-route-actions-v1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+.story-route-link-v1 {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 7px;
+  border: 1px solid #d6a8bf;
+  border-radius: 999px;
+  background: #fff7fb;
+  color: #702047 !important;
+  font-size: .68rem;
+  font-weight: 750;
+  line-height: 1;
+  text-decoration: none;
+}
+.story-route-link-v1:hover,
+.story-route-link-v1:focus-visible {
+  border-color: #a94375;
+  background: #f6dce9;
+  outline: none;
+}
+.story-route-link-v1.adv { border-color: #82aebc; color: #205b6d !important; }
+.story-route-link-v1.source { border-color: #c9bdc3; color: #6d5b64 !important; }
 .story-title-original-v7 {
   display: block;
   margin-top: 2px;
