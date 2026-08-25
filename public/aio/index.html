@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AIO Story Router 运行状态</title>
+  <style>
+    :root{color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#fff8fc;color:#40142d}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
+    main{max-width:760px;width:100%;border:1px solid #edcade;border-radius:20px;padding:28px;background:#fff;box-shadow:0 16px 46px #7d18451a}
+    h1{margin:0 0 12px;font-size:clamp(26px,6vw,42px)}
+    p{line-height:1.7} .count{font-size:1.1rem;font-weight:700;color:#a31e61}
+    nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    a{display:inline-block;border-radius:999px;padding:10px 16px;background:#b62068;color:white;text-decoration:none;font-weight:700}
+    a.secondary{background:#f8e8f1;color:#721342}
+    code{overflow-wrap:anywhere}
+  </style>
+</head>
+<body><main>
+  <h1>Story Router 运行状态</h1>
+  <p>这里是路由运维页，不是剧情网站。正式用户界面仍在独立搜索站、Reader、ADV/L2D 和战斗精灵站点。</p>
+  <p class="count">Reader：9,535 / 12,469 条有效搜索行</p>
+  <p class="count">ADV 数据兼容：8,076 / 12,469 条；启动对接：等待目标站启动接收器</p>
+  <p>ADV 精确缺口：合计 1,459 行，涉及 346 个剧情编号；1,363 行（330 个剧情编号）仍缺视频结果到 Reader section 的逐行边界；88 行（15 个剧情编号）尚未进入目标站固定的 Reader revision；8 行（1 个剧情编号）存在章节版本漂移。</p>
+  <p>来源版本：搜索目录 <code>20260816t013548z</code>；Reader <code>bad94aa371dc9e6aed16ccf6d144106b31643f28</code>；ADV 固定 Reader <code>65f221f2aaa5a9fe161ed32e03e4dfbb93d4746d</code>。</p>
+  <p>源目录共 12,601 条剧情候选范围，其中 132 条为空白坏记录；另有 2,934 条有效行仍待精确映射。行数不等于独立剧情数。</p>
+  <p>剧情接口：<code>/open?source=story-v6:目录版本:分类:行号&amp;target=reader|adv</code></p>
+  <p>战斗精灵中继：<code>/open?target=sprite&amp;characterId=KyuUnitId&amp;variant=精确变体&amp;animation=动作</code>；中继只重建已登记字段，不采用子页面传来的目标 URL。</p>
+  <nav>
+    <a href="/open?source=story-v6%3A20260816t013548z%3Acharacter%3A0&amp;target=reader">测试 Reader 路由</a>
+    <a href="/open?source=story-v6%3A20260816t013548z%3Acharacter%3A0&amp;target=adv">检查 ADV 对接门控</a>
+    <a href="/open?target=sprite&amp;characterId=1001&amp;story=character%3A219cc4fe2f7c4c86&amp;scenario=%E7%92%B0%E3%81%84%E3%82%8D%E3%81%AF+1%E8%A9%B1&amp;variant=100100_r&amp;renderer=cocos2d&amp;animation=wait&amp;character=Tamaki+Iroha">测试战斗精灵路由</a>
+    <a class="secondary" href="/story-routes.json">查看路由清单</a>
+    <a class="secondary" href="/story-routes.report.json">查看覆盖与逐行缺口</a>
+    <a class="secondary" href="/story-sprite-bridge.v1.json">查看精灵桥契约</a>
+  </nav>
+</main></body></html>

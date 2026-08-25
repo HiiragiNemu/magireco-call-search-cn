@@ -2981,7 +2981,7 @@
       "#005 七海やちよ": "existing Call V26 title/rule result",
       "#006 二葉さな": "existing Call V26 title/rule result",
       "#007 由比鶴乃": "existing Call V26 title/rule result",
-      "#008 ウワサの鶴乃": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+      "#008 ウワサの鶴乃": "existing Call V26 title/rule result",
       "#009 深月フェリシア": "existing Call V26 title/rule result",
       "#010 天音月練": "existing Call V26 title/rule result",
       "#011 暁美ほむら(眼鏡)": "existing Call V26 title/rule result",
@@ -3063,7 +3063,7 @@
       "#087 水着いろは": "existing Call V26 title/rule result",
       "#088 水着ほむら": "existing Call V26 title/rule result",
       "#089 環うい": "existing Call V26 title/rule result",
-      "#090 万年桜のウワサ": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+      "#090 万年桜のウワサ": "existing Call V26 title/rule result",
       "#091 アルティメットまどか": "existing Call V26 title/rule result",
       "#092 いろは・やちよ": "existing Call V26 title/rule result",
       "#093 水着杏子": "existing Call V26 title/rule result",
@@ -3094,7 +3094,7 @@
       "#118 晴着さやか": "existing Call V26 title/rule result",
       "#119 バレンタインなぎさ": "existing Call V26 title/rule result",
       "#120 水着レナ・かえで": "existing Call V26 title/rule result",
-      "#121 水着万年桜のウワサ": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+      "#121 水着万年桜のウワサ": "existing Call V26 title/rule result",
       "#122 水着マミ": "existing Call V26 title/rule result",
       "#123 やちよ・みふゆ": "existing Call V26 title/rule result",
       "#124 シスターももこ": "existing Call V26 title/rule result",
@@ -3122,7 +3122,7 @@
       "#146 小さなキュゥべえ": "existing Call V26 title/rule result",
       "#147 巫女いろは・うい": "existing Call V26 title/rule result",
       "#148 美琴椿": "existing Call V26 title/rule result",
-      "#149 ウワサのさな": "existing Call V26 title/rule result; canonical names 谣莎奈→传闻莎奈",
+      "#149 ウワサのさな": "existing Call V26 title/rule result",
       "#150 七夕やちよ": "existing Call V26 title/rule result",
       "#151 波乗りさやか": "existing Call V26 title/rule result",
       "#152 人魚ももこ・みたま": "existing Call V26 title/rule result",
@@ -12655,7 +12655,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第1话|不完全燃烧的正义之心"
+          "titleZh": "第10章 第1话|未能尽兴燃烧的正义之心"
         }
       ],
       "canonicalTitleZh": "第10章 第1话｜未能尽兴燃烧的正义之心",
@@ -12687,7 +12687,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第2话|被镌刻在记录里,被再次翻起"
+          "titleZh": "第10章 第2话|铭刻在日志中,又被重新发掘"
         }
       ],
       "canonicalTitleZh": "第10章 第2话｜铭刻在日志中,又被重新发掘",
@@ -12719,7 +12719,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第3话|热度急剧上升的关键词"
+          "titleZh": "第10章 第3话|突然浮现的关键词"
         }
       ],
       "canonicalTitleZh": "第10章 第3话｜突然浮现的关键词",
@@ -12751,7 +12751,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第4话|# 我也一样,由我陪伴 #"
+          "titleZh": "第10章 第4话|#我也在一起,由我陪在一起"
         }
       ],
       "canonicalTitleZh": "第10章 第4话｜#我也在一起,由我陪在一起",
@@ -12783,7 +12783,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第1话|为规诫而做的记录"
+          "titleZh": "第11章 第1话|为了警醒而留下的记录"
         }
       ],
       "canonicalTitleZh": "第11章 第1话｜为了警醒而留下的记录",
@@ -12815,7 +12815,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第2话|展现学习成果的记录"
+          "titleZh": "第11章 第2话|展示学习成果的记录"
         }
       ],
       "canonicalTitleZh": "第11章 第2话｜展示学习成果的记录",
@@ -12847,7 +12847,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第3话|留有暗示的记录"
+          "titleZh": "第11章 第3话|留下深意的记录"
         }
       ],
       "canonicalTitleZh": "第11章 第3话｜留下深意的记录",
@@ -12885,7 +12885,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第1章 第1话|平稳以袭击告终"
+          "titleZh": "第1章 第1话|平静的终结始于袭击"
         }
       ],
       "canonicalTitleZh": "第1章 第1话｜平静的终结始于袭击",
@@ -12923,7 +12923,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第1章 第2话|就算迷茫,也要靠自己的意志……"
+          "titleZh": "第1章 第2话|即使迷惘,也要凭自己的意志……"
         }
       ],
       "canonicalTitleZh": "第1章 第2话｜即使迷惘,也要凭自己的意志……",
@@ -12999,7 +12999,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第1话|乡愁与矛盾"
+          "titleZh": "第2章 第1话|乡愁与纠葛"
         }
       ],
       "canonicalTitleZh": "第2章 第1话｜乡愁与纠葛",
@@ -13037,7 +13037,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第2话|所求之物即为惩罚"
+          "titleZh": "第2章 第2话|所求的是惩罚"
         }
       ],
       "canonicalTitleZh": "第2章 第2话｜所求的是惩罚",
@@ -13075,7 +13075,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第3话|关联的萌生"
+          "titleZh": "第2章 第3话|羁绊萌芽"
         }
       ],
       "canonicalTitleZh": "第2章 第3话｜羁绊萌芽",
@@ -13113,7 +13113,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第3章 第1话|追逐的温柔"
+          "titleZh": "第3章 第1话|追寻那份温柔"
         }
       ],
       "canonicalTitleZh": "第3章 第1话｜追寻那份温柔",
@@ -13151,7 +13151,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第3章 第2话|理所当然的事情"
+          "titleZh": "第3章 第2话|理所当然的事"
         }
       ],
       "canonicalTitleZh": "第3章 第2话｜理所当然的事",
@@ -13227,7 +13227,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第4章 第1话|次日早晨的伤痕"
+          "titleZh": "第4章 第1话|翌晨的伤痕"
         }
       ],
       "canonicalTitleZh": "第4章 第1话｜翌晨的伤痕",
@@ -13437,7 +13437,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第5章 第3话|惩恶之人是否为善"
+          "titleZh": "第5章 第3话|挫败恶者便是善吗"
         }
       ],
       "canonicalTitleZh": "第5章 第3话｜挫败恶者便是善吗",
@@ -13501,7 +13501,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第2话|走来走去的人们"
+          "titleZh": "第6章 第2话|四处奔走的人们"
         }
       ],
       "canonicalTitleZh": "第6章 第2话｜四处奔走的人们",
@@ -13533,7 +13533,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第3话|无形的存在"
+          "titleZh": "第6章 第3话|看不见的存在"
         }
       ],
       "canonicalTitleZh": "第6章 第3话｜看不见的存在",
@@ -13597,7 +13597,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第7章 第1话|在战斗幕后蠢动的思绪"
+          "titleZh": "第7章 第1话|战斗背后蠢动的思虑"
         }
       ],
       "canonicalTitleZh": "第7章 第1话｜战斗背后蠢动的思虑",
@@ -13629,7 +13629,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第7章 第2话|自己选择的道路"
+          "titleZh": "第7章 第2话|由我们亲自作出的选择"
         }
       ],
       "canonicalTitleZh": "第7章 第2话｜由我们亲自作出的选择",
@@ -13661,7 +13661,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第7章 第3话|天女露出无畏的微笑"
+          "titleZh": "第7章 第3话|天女无畏地微笑"
         }
       ],
       "canonicalTitleZh": "第7章 第3话｜天女无畏地微笑",
@@ -13693,7 +13693,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第8章 第1话|通往未来的一步"
+          "titleZh": "第8章 第1话|迈向未来的一步"
         }
       ],
       "canonicalTitleZh": "第8章 第1话｜迈向未来的一步",
@@ -13725,7 +13725,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第8章 第2话|为平等不可或缺的力量"
+          "titleZh": "第8章 第2话|实现平等所需的力量"
         }
       ],
       "canonicalTitleZh": "第8章 第2话｜实现平等所需的力量",
@@ -13757,7 +13757,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第8章 第3话|推了一把后背的神滨的人们"
+          "titleZh": "第8章 第3话|推动我们前行的神滨人们"
         }
       ],
       "canonicalTitleZh": "第8章 第3话｜推动我们前行的神滨人们",
@@ -13789,7 +13789,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第1话|宇宙的意志与断念"
+          "titleZh": "第9章 第1话|宇宙意志与绝念"
         }
       ],
       "canonicalTitleZh": "第9章 第1话｜宇宙意志与绝念",
@@ -13821,7 +13821,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第2话|连赎罪也不被允许的过去"
+          "titleZh": "第9章 第2话|连赎罪都不被允许的过去"
         }
       ],
       "canonicalTitleZh": "第9章 第2话｜连赎罪都不被允许的过去",
@@ -13853,7 +13853,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第3话|但愿终有一日能再次点亮"
+          "titleZh": "第9章 第3话|愿有朝一日再度点亮"
         }
       ],
       "canonicalTitleZh": "第9章 第3话｜愿有朝一日再度点亮",
@@ -70162,7 +70162,7 @@
     {
       "candidates": [
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "#008 传闻鹤乃"
@@ -70170,8 +70170,8 @@
       ],
       "canonicalTitleZh": "#008 传闻鹤乃",
       "category": "シール図鑑",
-      "changedFromPrevious": true,
-      "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+      "changedFromPrevious": false,
+      "detail": "existing Call V26 title/rule result",
       "officialIds": [],
       "readerIds": [],
       "readerSourceIdentities": [],
@@ -71802,7 +71802,7 @@
     {
       "candidates": [
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "#090 万年樱的传闻"
@@ -71810,8 +71810,8 @@
       ],
       "canonicalTitleZh": "#090 万年樱的传闻",
       "category": "シール図鑑",
-      "changedFromPrevious": true,
-      "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+      "changedFromPrevious": false,
+      "detail": "existing Call V26 title/rule result",
       "officialIds": [],
       "readerIds": [],
       "readerSourceIdentities": [],
@@ -72422,7 +72422,7 @@
     {
       "candidates": [
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "#121 泳装万年樱的传闻"
@@ -72430,8 +72430,8 @@
       ],
       "canonicalTitleZh": "#121 泳装万年樱的传闻",
       "category": "シール図鑑",
-      "changedFromPrevious": true,
-      "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+      "changedFromPrevious": false,
+      "detail": "existing Call V26 title/rule result",
       "officialIds": [],
       "readerIds": [],
       "readerSourceIdentities": [],
@@ -72982,7 +72982,7 @@
     {
       "candidates": [
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣莎奈→传闻莎奈",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "#149 传闻莎奈"
@@ -72990,8 +72990,8 @@
       ],
       "canonicalTitleZh": "#149 传闻莎奈",
       "category": "シール図鑑",
-      "changedFromPrevious": true,
-      "detail": "existing Call V26 title/rule result; canonical names 谣莎奈→传闻莎奈",
+      "changedFromPrevious": false,
+      "detail": "existing Call V26 title/rule result",
       "officialIds": [],
       "readerIds": [],
       "readerSourceIdentities": [],
@@ -87413,7 +87413,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第1话|探寻意念之丝"
+          "titleZh": "第10章 第1话|探寻思虑之线"
         }
       ],
       "canonicalTitleZh": "第10章 第1话｜探寻思虑之线",
@@ -87445,7 +87445,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第2话|拉近手中握住的意志"
+          "titleZh": "第10章 第2话|循着已握住的意志"
         }
       ],
       "canonicalTitleZh": "第10章 第2话｜循着已握住的意志",
@@ -87477,7 +87477,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第3话|连结起的悲叹历史,以及……"
+          "titleZh": "第10章 第3话|相连的悲叹历史与……"
         }
       ],
       "canonicalTitleZh": "第10章 第3话｜相连的悲叹历史与……",
@@ -87509,7 +87509,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第4话|愤怒孕育出的感情末路"
+          "titleZh": "第10章 第4话|愤怒孕育的感情尽头"
         }
       ],
       "canonicalTitleZh": "第10章 第4话｜愤怒孕育的感情尽头",
@@ -87541,7 +87541,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第10章 第5话|哀歌飞越伦理之壁"
+          "titleZh": "第10章 第5话|哀歌跨越伦理"
         }
       ],
       "canonicalTitleZh": "第10章 第5话｜哀歌跨越伦理",
@@ -87573,7 +87573,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第1话|不可胜数的叹息"
+          "titleZh": "第11章 第1话|无数叹息"
         }
       ],
       "canonicalTitleZh": "第11章 第1话｜无数叹息",
@@ -87605,7 +87605,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第2话|迈向以喜悦终结的世界"
+          "titleZh": "第11章 第2话|奔向以喜悦收尾的世界"
         }
       ],
       "canonicalTitleZh": "第11章 第2话｜奔向以喜悦收尾的世界",
@@ -87669,7 +87669,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第4话|欢迎来到断念"
+          "titleZh": "第11章 第4话|欢迎来到绝念"
         }
       ],
       "canonicalTitleZh": "第11章 第4话｜欢迎来到绝念",
@@ -87701,7 +87701,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第11章 第5话|让一切得以留存的话语"
+          "titleZh": "第11章 第5话|让一切得以存续的话语"
         }
       ],
       "canonicalTitleZh": "第11章 第5话｜让一切得以存续的话语",
@@ -87733,7 +87733,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第12章 第1话|映在镜中的毁灭景象"
+          "titleZh": "第12章 第1话|镜中映出的毁灭景象"
         }
       ],
       "canonicalTitleZh": "第12章 第1话｜镜中映出的毁灭景象",
@@ -87765,7 +87765,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第12章 第2话|谁都不会出生的世界"
+          "titleZh": "第12章 第2话|无人诞生的世界"
         }
       ],
       "canonicalTitleZh": "第12章 第2话｜无人诞生的世界",
@@ -87797,7 +87797,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第12章 第3话|托付给明天的生命"
+          "titleZh": "第12章 第3话|将明天托付的生命"
         }
       ],
       "canonicalTitleZh": "第12章 第3话｜将明天托付的生命",
@@ -87829,7 +87829,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第12章 第4话|从虚无中诞生的记录"
+          "titleZh": "第12章 第4话|诞生于虚无的记录"
         }
       ],
       "canonicalTitleZh": "第12章 第4话｜诞生于虚无的记录",
@@ -87861,7 +87861,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第12章 第5话|那就让我看看奇迹吧"
+          "titleZh": "第12章 第5话|既然如此,就让我看看奇迹"
         }
       ],
       "canonicalTitleZh": "第12章 第5话｜既然如此,就让我看看奇迹",
@@ -87893,7 +87893,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第12章 第6话|从至今为止走向明天"
+          "titleZh": "第12章 第6话|从一路走来的过去迈向明天"
         }
       ],
       "canonicalTitleZh": "第12章 第6话｜从一路走来的过去迈向明天",
@@ -87969,7 +87969,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第1章 第2话|为他人而在的少女们"
+          "titleZh": "第1章 第2话|为了他人的少女们"
         }
       ],
       "canonicalTitleZh": "第1章 第2话｜为了他人的少女们",
@@ -88007,7 +88007,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第1章 第3话|追梦的少女们"
+          "titleZh": "第1章 第3话|追逐梦想的少女们"
         }
       ],
       "canonicalTitleZh": "第1章 第3话｜追逐梦想的少女们",
@@ -88045,7 +88045,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第1章 第4话|记叙的少女"
+          "titleZh": "第1章 第4话|记录的少女"
         }
       ],
       "canonicalTitleZh": "第1章 第4话｜记录的少女",
@@ -88083,7 +88083,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第1话|勾心斗角哞哞农场"
+          "titleZh": "第2章 第1话|各怀心思的哞哞牧场"
         }
       ],
       "canonicalTitleZh": "第2章 第1话｜各怀心思的哞哞牧场",
@@ -88121,7 +88121,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第2话|包围敌人"
+          "titleZh": "第2章 第2话|敌人环伺"
         }
       ],
       "canonicalTitleZh": "第2章 第2话｜敌人环伺",
@@ -88159,7 +88159,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第3话|第三方势力"
+          "titleZh": "第2章 第3话|第三支箭"
         }
       ],
       "canonicalTitleZh": "第2章 第3话｜第三支箭",
@@ -88197,7 +88197,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第2章 第4话|为了寻找父亲……"
+          "titleZh": "第2章 第4话|寻找父亲……"
         }
       ],
       "canonicalTitleZh": "第2章 第4话｜寻找父亲……",
@@ -88235,7 +88235,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第3章 第1话|错综复杂的线索"
+          "titleZh": "第3章 第1话|线索交汇"
         }
       ],
       "canonicalTitleZh": "第3章 第1话｜线索交汇",
@@ -88311,7 +88311,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第3章 第3话|自古传承至今的骄傲"
+          "titleZh": "第3章 第3话|自古传承的矜持"
         }
       ],
       "canonicalTitleZh": "第3章 第3话｜自古传承的矜持",
@@ -88349,7 +88349,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第3章 第4话|地下墓地的悲叹"
+          "titleZh": "第3章 第4话|地下墓地的叹息"
         }
       ],
       "canonicalTitleZh": "第3章 第4话｜地下墓地的叹息",
@@ -88387,7 +88387,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第3章 第5话|回头望见的光明"
+          "titleZh": "第3章 第5话|回首便见光芒"
         }
       ],
       "canonicalTitleZh": "第3章 第5话｜回首便见光芒",
@@ -88425,7 +88425,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第4章 第1话|最后一博"
+          "titleZh": "第4章 第1话|最后的赌注"
         }
       ],
       "canonicalTitleZh": "第4章 第1话｜最后的赌注",
@@ -88463,7 +88463,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第4章 第2话|循环往复的往日"
+          "titleZh": "第4章 第2话|反复重现的那段时光"
         }
       ],
       "canonicalTitleZh": "第4章 第2话｜反复重现的那段时光",
@@ -88501,7 +88501,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第4章 第3话|通往决裂的倒计时"
+          "titleZh": "第4章 第3话|走向决裂的倒计时"
         }
       ],
       "canonicalTitleZh": "第4章 第3话｜走向决裂的倒计时",
@@ -88539,7 +88539,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第4章 第4话|甘美的悲伤"
+          "titleZh": "第4章 第4话|甜美的悲伤"
         }
       ],
       "canonicalTitleZh": "第4章 第4话｜甜美的悲伤",
@@ -88577,7 +88577,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第4章 第5话|离别连结起的关系"
+          "titleZh": "第4章 第5话|由离别缔结的羁绊"
         }
       ],
       "canonicalTitleZh": "第4章 第5话｜由离别缔结的羁绊",
@@ -88615,7 +88615,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第5章 第1话|本应坚不可摧的信念"
+          "titleZh": "第5章 第1话|本应坚定的信念"
         }
       ],
       "canonicalTitleZh": "第5章 第1话｜本应坚定的信念",
@@ -88653,7 +88653,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第5章 第2话|存活至今的证明"
+          "titleZh": "第5章 第2话|活下来的证明"
         }
       ],
       "canonicalTitleZh": "第5章 第2话｜活下来的证明",
@@ -88691,7 +88691,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第5章 第3话|狱中的叫喊"
+          "titleZh": "第5章 第3话|狱中的呐喊"
         }
       ],
       "canonicalTitleZh": "第5章 第3话｜狱中的呐喊",
@@ -88729,7 +88729,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第5章 第4话|心为一体,魂亦为一体"
+          "titleZh": "第5章 第4话|心为一体,灵魂亦为一体"
         }
       ],
       "canonicalTitleZh": "第5章 第4话｜心为一体,灵魂亦为一体",
@@ -88767,7 +88767,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第5章 第5话|镜子深处映出之物"
+          "titleZh": "第5章 第5话|镜子深处映出的事物"
         }
       ],
       "canonicalTitleZh": "第5章 第5话｜镜子深处映出的事物",
@@ -88799,7 +88799,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第1话|悄无声息的歪曲"
+          "titleZh": "第6章 第1话|寂静的扭曲"
         }
       ],
       "canonicalTitleZh": "第6章 第1话｜寂静的扭曲",
@@ -88831,7 +88831,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第2话|光与影"
+          "titleZh": "第6章 第2话|光与影子"
         }
       ],
       "canonicalTitleZh": "第6章 第2话｜光与影子",
@@ -88863,7 +88863,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第3话|带来幸运的孩子"
+          "titleZh": "第6章 第3话|带来恩惠的孩子"
         }
       ],
       "canonicalTitleZh": "第6章 第3话｜带来恩惠的孩子",
@@ -88895,7 +88895,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第4话|存活的意义"
+          "titleZh": "第6章 第4话|活过的意义"
         }
       ],
       "canonicalTitleZh": "第6章 第4话｜活过的意义",
@@ -88927,7 +88927,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第6章 第5话|碎裂,渗透,滴落"
+          "titleZh": "第6章 第5话|破碎、渗透、滴落"
         }
       ],
       "canonicalTitleZh": "第6章 第5话｜破碎、渗透、滴落",
@@ -88959,7 +88959,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第7章 第1话|回到据点"
+          "titleZh": "第7章 第1话|回归家园"
         }
       ],
       "canonicalTitleZh": "第7章 第1话｜回归家园",
@@ -88991,7 +88991,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第7章 第2话|情感的坩埚"
+          "titleZh": "第7章 第2话|思念的熔炉"
         }
       ],
       "canonicalTitleZh": "第7章 第2话｜思念的熔炉",
@@ -89087,7 +89087,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第7章 第5话|父亲凝视之物"
+          "titleZh": "第7章 第5话|父亲凝望之物"
         }
       ],
       "canonicalTitleZh": "第7章 第5话｜父亲凝望之物",
@@ -90319,7 +90319,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第1话|决意的芳香"
+          "titleZh": "第9章 第1话|决意的香气"
         }
       ],
       "canonicalTitleZh": "第9章 第1话｜决意的香气",
@@ -90383,7 +90383,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第3话|被讲述的目的"
+          "titleZh": "第9章 第3话|被道出的目的"
         }
       ],
       "canonicalTitleZh": "第9章 第3话｜被道出的目的",
@@ -90415,7 +90415,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第4话|朝着魔法少女至上主义"
+          "titleZh": "第9章 第4话|迈向魔法少女至上主义"
         }
       ],
       "canonicalTitleZh": "第9章 第4话｜迈向魔法少女至上主义",
@@ -90447,7 +90447,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "第9章 第5话|无形的意志"
+          "titleZh": "第9章 第5话|看不见的意志"
         }
       ],
       "canonicalTitleZh": "第9章 第5话｜看不见的意志",
@@ -90479,7 +90479,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "序章 第1话|两人的步伐"
+          "titleZh": "序章 第1话|两条道路"
         }
       ],
       "canonicalTitleZh": "序章 第1话｜两条道路",
@@ -90987,12 +90987,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.1010 炸裂Doppel!"
+          "titleZh": "No.1010 炸裂魔女化身!"
         }
       ],
       "canonicalTitleZh": "No.1010 炸裂魔女化身!",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:2023",
       "officialIds": [
         "pieceList:2023"
@@ -97135,12 +97135,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.24 Different Story:Rookies"
+          "titleZh": "No.24 另一段故事:新人们"
         }
       ],
       "canonicalTitleZh": "No.24 另一段故事:新人们",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1025",
       "officialIds": [
         "pieceList:1025"
@@ -101073,12 +101073,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.344 Standby Ready"
+          "titleZh": "No.344 准备就绪"
         }
       ],
       "canonicalTitleZh": "No.344 准备就绪",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1356",
       "officialIds": [
         "pieceList:1356"
@@ -105799,12 +105799,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.47 As a fashion model"
+          "titleZh": "No.47 作为一位时尚模特"
         }
       ],
       "canonicalTitleZh": "No.47 作为一位时尚模特",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1050",
       "officialIds": [
         "pieceList:1050"
@@ -107391,12 +107391,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.511 Miracle Heroines"
+          "titleZh": "No.511 奇迹女主角们"
         }
       ],
       "canonicalTitleZh": "No.511 奇迹女主角们",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1524",
       "officialIds": [
         "pieceList:1524"
@@ -108275,12 +108275,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.535 The Great Escape"
+          "titleZh": "No.535 大逃亡"
         }
       ],
       "canonicalTitleZh": "No.535 大逃亡",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1548",
       "officialIds": [
         "pieceList:1548"
@@ -108513,12 +108513,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.541 Maid in Vampire"
+          "titleZh": "No.541 MAID·IN·吸血鬼"
         }
       ],
       "canonicalTitleZh": "No.541 MAID·IN·吸血鬼",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1554",
       "officialIds": [
         "pieceList:1554"
@@ -109125,12 +109125,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.558 Little Vacation"
+          "titleZh": "No.558 小小假期"
         }
       ],
       "canonicalTitleZh": "No.558 小小假期",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1571",
       "officialIds": [
         "pieceList:1571"
@@ -109193,12 +109193,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.56 Begin a Hunt"
+          "titleZh": "No.56 开始狩猎"
         }
       ],
       "canonicalTitleZh": "No.56 开始狩猎",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1061",
       "officialIds": [
         "pieceList:1061"
@@ -109771,12 +109771,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.575 The Great Father"
+          "titleZh": "No.575 伟大的父亲"
         }
       ],
       "canonicalTitleZh": "No.575 伟大的父亲",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1588",
       "officialIds": [
         "pieceList:1588"
@@ -110349,12 +110349,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.590 Kumanosuke's Kawaii Vid"
+          "titleZh": "No.590 熊乃介的卡哇伊视频"
         }
       ],
       "canonicalTitleZh": "No.590 熊乃介的卡哇伊视频",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1603",
       "officialIds": [
         "pieceList:1603"
@@ -110383,12 +110383,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.591 My Victory Pose Is Kawaii Too"
+          "titleZh": "No.591 我的胜利姿势也很卡哇伊唷"
         }
       ],
       "canonicalTitleZh": "No.591 我的胜利姿势也很卡哇伊唷",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1604",
       "officialIds": [
         "pieceList:1604"
@@ -110417,12 +110417,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.592 Kawaii Collection"
+          "titleZh": "No.592 卡哇伊收藏"
         }
       ],
       "canonicalTitleZh": "No.592 卡哇伊收藏",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1605",
       "officialIds": [
         "pieceList:1605"
@@ -110519,12 +110519,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.595 Disguise"
+          "titleZh": "No.595 伪装"
         }
       ],
       "canonicalTitleZh": "No.595 伪装",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1608",
       "officialIds": [
         "pieceList:1608"
@@ -110553,12 +110553,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.596 Night Buzz Time"
+          "titleZh": "No.596 夜间热议时刻"
         }
       ],
       "canonicalTitleZh": "No.596 夜间热议时刻",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1609",
       "officialIds": [
         "pieceList:1609"
@@ -110587,12 +110587,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.597 Secret of Success"
+          "titleZh": "No.597 成功的秘诀"
         }
       ],
       "canonicalTitleZh": "No.597 成功的秘诀",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1610",
       "officialIds": [
         "pieceList:1610"
@@ -110621,12 +110621,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.598 Naked Heart"
+          "titleZh": "No.598 赤裸之心"
         }
       ],
       "canonicalTitleZh": "No.598 赤裸之心",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1611",
       "officialIds": [
         "pieceList:1611"
@@ -110655,12 +110655,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.599 Never Forget"
+          "titleZh": "No.599 永不忘怀"
         }
       ],
       "canonicalTitleZh": "No.599 永不忘怀",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1612",
       "officialIds": [
         "pieceList:1612"
@@ -110723,12 +110723,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.60 Splash party!"
+          "titleZh": "No.60 戏水派对!"
         }
       ],
       "canonicalTitleZh": "No.60 戏水派对!",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1065",
       "officialIds": [
         "pieceList:1065"
@@ -113171,12 +113171,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.665 Miracle☆Reporters"
+          "titleZh": "No.665 奇迹☆记者们"
         }
       ],
       "canonicalTitleZh": "No.665 奇迹☆记者们",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1678",
       "officialIds": [
         "pieceList:1678"
@@ -115721,12 +115721,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.732 First record"
+          "titleZh": "No.732 最初的记录"
         }
       ],
       "canonicalTitleZh": "No.732 最初的记录",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1745",
       "officialIds": [
         "pieceList:1745"
@@ -116537,12 +116537,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.754 Forever in Me"
+          "titleZh": "No.754 永存我心"
         }
       ],
       "canonicalTitleZh": "No.754 永存我心",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1767",
       "officialIds": [
         "pieceList:1767"
@@ -116877,12 +116877,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.763 来了! 恋爱中的小少女"
+          "titleZh": "No.763 来了!恋爱中的小少女"
         }
       ],
       "canonicalTitleZh": "No.763 来了!恋爱中的小少女",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1776",
       "officialIds": [
         "pieceList:1776"
@@ -117421,12 +117421,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.778 Little Summer Vacation"
+          "titleZh": "No.778 小小暑假"
         }
       ],
       "canonicalTitleZh": "No.778 小小暑假",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1791",
       "officialIds": [
         "pieceList:1791"
@@ -118067,12 +118067,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.795 Mikoto in Mirrors"
+          "titleZh": "No.795 镜界中的濑奈命"
         }
       ],
       "canonicalTitleZh": "No.795 镜界中的濑奈命",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1808",
       "officialIds": [
         "pieceList:1808"
@@ -120175,12 +120175,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.850 Bitter & Citrus"
+          "titleZh": "No.850 苦涩与柑橘"
         }
       ],
       "canonicalTitleZh": "No.850 苦涩与柑橘",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1863",
       "officialIds": [
         "pieceList:1863"
@@ -123847,12 +123847,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.948 Next☆Actor"
+          "titleZh": "No.948 下一位☆演员"
         }
       ],
       "canonicalTitleZh": "No.948 下一位☆演员",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1961",
       "officialIds": [
         "pieceList:1961"
@@ -124765,12 +124765,12 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "No.972 Bitter Sweet Heart"
+          "titleZh": "No.972 苦甜之心"
         }
       ],
       "canonicalTitleZh": "No.972 苦甜之心",
       "category": "メモリア",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "pieceList:1985",
       "officialIds": [
         "pieceList:1985"
@@ -133151,7 +133151,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "∞彩羽 第1话|战斗的终结是虹色"
+          "titleZh": "∞彩羽 第1话|战斗的终点是虹色"
         }
       ],
       "canonicalTitleZh": "∞彩羽 第1话｜战斗的终点是虹色",
@@ -133196,7 +133196,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "∞彩羽 第2话|回顾的过去是暗色"
+          "titleZh": "∞彩羽 第2话|回头便见暗色"
         }
       ],
       "canonicalTitleZh": "∞彩羽 第2话｜回头便见暗色",
@@ -133541,7 +133541,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "彩羽·黑江 第1话|不尽人意的现实"
+          "titleZh": "彩羽·黑江 第1话|黯淡的现实"
         }
       ],
       "canonicalTitleZh": "彩羽·黑江 第1话｜黯淡的现实",
@@ -133586,7 +133586,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "彩羽·黑江 第2话|展翅飞翔的瞬间"
+          "titleZh": "彩羽·黑江 第2话|振翅的瞬间"
         }
       ],
       "canonicalTitleZh": "彩羽·黑江 第2话｜振翅的瞬间",
@@ -133631,7 +133631,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "彩羽·黑江 第3话|梦的延续"
+          "titleZh": "彩羽·黑江 第3话|梦的后续"
         }
       ],
       "canonicalTitleZh": "彩羽·黑江 第3话｜梦的后续",
@@ -133940,7 +133940,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小黑 第1话|因为我已经决定了要一个人活下去"
+          "titleZh": "小黑 第1话|因为已经决定独自活下去"
         }
       ],
       "canonicalTitleZh": "小黑 第1话｜因为已经决定独自活下去",
@@ -133985,7 +133985,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小黑 第2话|被过去塑造的模糊的我"
+          "titleZh": "小黑 第2话|由过去塑造的暧昧自我"
         }
       ],
       "canonicalTitleZh": "小黑 第2话｜由过去塑造的暧昧自我",
@@ -134030,7 +134030,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小黑 第3话|如果未来还能相遇的话"
+          "titleZh": "小黑 第3话|有朝一日若能再会"
         }
       ],
       "canonicalTitleZh": "小黑 第3话｜有朝一日若能再会",
@@ -134075,7 +134075,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "木叶·叶月 第1话|断而敢行的菖蒲"
+          "titleZh": "木叶·叶月 第1话|执行戒除菖蒲计划"
         }
       ],
       "canonicalTitleZh": "木叶·叶月 第1话｜执行戒除菖蒲计划",
@@ -134120,7 +134120,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "木叶·叶月 第2话|忍住忍住忍住……追踪"
+          "titleZh": "木叶·叶月 第2话|忍耐忍耐忍耐…追踪"
         }
       ],
       "canonicalTitleZh": "木叶·叶月 第2话｜忍耐忍耐忍耐…追踪",
@@ -134165,7 +134165,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "木叶·叶月 第3话|就算家人的形态发生变化"
+          "titleZh": "木叶·叶月 第3话|即使家人的形式改变"
         }
       ],
       "canonicalTitleZh": "木叶·叶月 第3话｜即使家人的形式改变",
@@ -134270,7 +134270,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "圆·彩羽 第1话|巧遇偶然"
+          "titleZh": "圆·彩羽 第1话|偶然相遇"
         }
       ],
       "canonicalTitleZh": "圆·彩羽 第1话｜偶然相遇",
@@ -134315,7 +134315,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "圆·彩羽 第2话|在见泷原市开过夜会!"
+          "titleZh": "圆·彩羽 第2话|在见泷原市开住宿会!"
         }
       ],
       "canonicalTitleZh": "圆·彩羽 第2话｜在见泷原市开住宿会!",
@@ -134360,7 +134360,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "圆·彩羽 第3话|归还之处"
+          "titleZh": "圆·彩羽 第3话|归属之地"
         }
       ],
       "canonicalTitleZh": "圆·彩羽 第3话｜归属之地",
@@ -134540,7 +134540,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小圆前辈·小彩羽 第1话|这就是本家的底力"
+          "titleZh": "小圆前辈·小彩羽 第1话|这才是正宗本家的底力"
         }
       ],
       "canonicalTitleZh": "小圆前辈·小彩羽 第1话｜这才是正宗本家的底力",
@@ -134585,7 +134585,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小圆前辈·小彩羽 第2话|本家,出阵神滨观光之旅"
+          "titleZh": "小圆前辈·小彩羽 第2话|出发,正宗神滨观光"
         }
       ],
       "canonicalTitleZh": "小圆前辈·小彩羽 第2话｜出发,正宗神滨观光",
@@ -134630,7 +134630,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小圆前辈·小彩羽 第3话|为寻找新的探险"
+          "titleZh": "小圆前辈·小彩羽 第3话|追寻新的探险"
         }
       ],
       "canonicalTitleZh": "小圆前辈·小彩羽 第3话｜追寻新的探险",
@@ -134795,7 +134795,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "丽良·清佳 第1话|小区的危机"
+          "titleZh": "丽良·清佳 第1话|团地危机"
         }
       ],
       "canonicalTitleZh": "丽良·清佳 第1话｜团地危机",
@@ -134840,7 +134840,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "丽良·清佳 第2话|小区的节日"
+          "titleZh": "丽良·清佳 第2话|团地庆典"
         }
       ],
       "canonicalTitleZh": "丽良·清佳 第2话｜团地庆典",
@@ -134885,7 +134885,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "丽良·清佳 第3话|小区的冒险"
+          "titleZh": "丽良·清佳 第3话|团地大冒险"
         }
       ],
       "canonicalTitleZh": "丽良·清佳 第3话｜团地大冒险",
@@ -134930,7 +134930,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "阿什莉·泰勒 第1话|前往向往的地方,日本"
+          "titleZh": "阿什莉·泰勒 第1话|前往憧憬之地——日本"
         }
       ],
       "canonicalTitleZh": "阿什莉·泰勒 第1话｜前往憧憬之地——日本",
@@ -134975,7 +134975,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "阿什莉·泰勒 第2话|想靠喜欢的东西闪闪发光"
+          "titleZh": "阿什莉·泰勒 第2话|想因热爱之事而闪耀"
         }
       ],
       "canonicalTitleZh": "阿什莉·泰勒 第2话｜想因热爱之事而闪耀",
@@ -135020,7 +135020,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "阿什莉·泰勒 第3话|Daddy的心愿"
+          "titleZh": "阿什莉·泰勒 第3话|爸爸的心意"
         }
       ],
       "canonicalTitleZh": "阿什莉·泰勒 第3话｜爸爸的心意",
@@ -135065,7 +135065,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "阿玛琉莉丝 第1话|少女应当嗜好游戏"
+          "titleZh": "阿玛琉莉丝 第1话|少女理当精通游戏"
         }
       ],
       "canonicalTitleZh": "阿玛琉莉丝 第1话｜少女理当精通游戏",
@@ -135110,7 +135110,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "阿玛琉莉丝 第2话|燃起的恋之火种"
+          "titleZh": "阿玛琉莉丝 第2话|熊熊燃起的恋火"
         }
       ],
       "canonicalTitleZh": "阿玛琉莉丝 第2话｜熊熊燃起的恋火",
@@ -135155,7 +135155,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "阿玛琉莉丝 第3话|恋爱即战争"
+          "titleZh": "阿玛琉莉丝 第3话|恋爱即是战争"
         }
       ],
       "canonicalTitleZh": "阿玛琉莉丝 第3话｜恋爱即是战争",
@@ -135470,7 +135470,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "伊莎贝拉 第1话|计划之中的复活"
+          "titleZh": "伊莎贝拉 第1话|被安排好的复活"
         }
       ],
       "canonicalTitleZh": "伊莎贝拉 第1话｜被安排好的复活",
@@ -135560,7 +135560,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "伊莎贝拉 第3话|于是,演员齐聚"
+          "titleZh": "伊莎贝拉 第3话|于是演员们齐聚"
         }
       ],
       "canonicalTitleZh": "伊莎贝拉 第3话｜于是演员们齐聚",
@@ -135704,10 +135704,10 @@
           "titleZh": "传闻莎奈 第1话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣莎奈→传闻莎奈",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "传闻莎奈 第1话|做梦的理由"
+          "titleZh": "传闻莎奈 第1话|梦想的理由"
         }
       ],
       "canonicalTitleZh": "传闻莎奈 第1话｜梦想的理由",
@@ -135749,10 +135749,10 @@
           "titleZh": "传闻莎奈 第2话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣莎奈→传闻莎奈",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "传闻莎奈 第2话|想要留存的故事"
+          "titleZh": "传闻莎奈 第2话|想要留下的故事"
         }
       ],
       "canonicalTitleZh": "传闻莎奈 第2话｜想要留下的故事",
@@ -135794,10 +135794,10 @@
           "titleZh": "传闻莎奈 第3话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣莎奈→传闻莎奈",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "传闻莎奈 第3话|将思绪传达"
+          "titleZh": "传闻莎奈 第3话|传达这份思念"
         }
       ],
       "canonicalTitleZh": "传闻莎奈 第3话｜传达这份思念",
@@ -135842,7 +135842,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "谣命 第1话|想要得到的普通"
+          "titleZh": "谣命 第1话|想要得到的普通生活"
         }
       ],
       "canonicalTitleZh": "谣命 第1话｜想要得到的普通生活",
@@ -135887,7 +135887,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "谣命 第2话|幸福从指缝中漏下"
+          "titleZh": "谣命 第2话|幸福从手中滑落"
         }
       ],
       "canonicalTitleZh": "谣命 第2话｜幸福从手中滑落",
@@ -135932,7 +135932,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "谣命 第3话|闪闪发光"
+          "titleZh": "谣命 第3话|闪闪发亮"
         }
       ],
       "canonicalTitleZh": "谣命 第3话｜闪闪发亮",
@@ -135974,7 +135974,7 @@
           "titleZh": "传闻鹤乃 第1话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "传闻鹤乃 第1话|献给我的安魂曲"
@@ -136019,7 +136019,7 @@
           "titleZh": "传闻鹤乃 第2话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "传闻鹤乃 第2话|你消失的那一天"
@@ -136064,7 +136064,7 @@
           "titleZh": "传闻鹤乃 第3话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "传闻鹤乃 第3话|最能够安心的地方"
@@ -136103,7 +136103,7 @@
           "titleZh": "传闻鹤乃(动画ver.) 第1话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "传闻鹤乃(动画ver.) 第1话"
@@ -136111,7 +136111,7 @@
       ],
       "canonicalTitleZh": "传闻鹤乃(动画ver.) 第1话",
       "category": "魔法少女",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "charaList:1103",
       "officialIds": [
         "charaList:1103"
@@ -136137,7 +136137,7 @@
           "titleZh": "传闻鹤乃(动画ver.) 第2话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "传闻鹤乃(动画ver.) 第2话"
@@ -136145,7 +136145,7 @@
       ],
       "canonicalTitleZh": "传闻鹤乃(动画ver.) 第2话",
       "category": "魔法少女",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "charaList:1103",
       "officialIds": [
         "charaList:1103"
@@ -136171,7 +136171,7 @@
           "titleZh": "传闻鹤乃(动画ver.) 第3话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 谣鹤乃→传闻鹤乃",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "传闻鹤乃(动画ver.) 第3话"
@@ -136179,7 +136179,7 @@
       ],
       "canonicalTitleZh": "传闻鹤乃(动画ver.) 第3话",
       "category": "魔法少女",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "charaList:1103",
       "officialIds": [
         "charaList:1103"
@@ -136214,7 +136214,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "埃博妮 第1话|被迫抓住的命运"
+          "titleZh": "埃博妮 第1话|被迫接受的命运"
         }
       ],
       "canonicalTitleZh": "埃博妮 第1话｜被迫接受的命运",
@@ -136259,7 +136259,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "埃博妮 第2话|从阴影中探出的面容"
+          "titleZh": "埃博妮 第2话|从阴影中窥视的面孔"
         }
       ],
       "canonicalTitleZh": "埃博妮 第2话｜从阴影中窥视的面孔",
@@ -136304,7 +136304,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "埃博妮 第3话|没有其他道路"
+          "titleZh": "埃博妮 第3话|已无他路可选"
         }
       ],
       "canonicalTitleZh": "埃博妮 第3话｜已无他路可选",
@@ -136484,7 +136484,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "奥尔加 第1话|忍耐的每日"
+          "titleZh": "奥尔加 第1话|忍耐的岁月"
         }
       ],
       "canonicalTitleZh": "奥尔加 第1话｜忍耐的岁月",
@@ -136619,7 +136619,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "冈希尔德 第1话|心怀同样的梦想"
+          "titleZh": "冈希尔德 第1话|做着同一个梦"
         }
       ],
       "canonicalTitleZh": "冈希尔德 第1话｜做着同一个梦",
@@ -136889,7 +136889,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "椎 第2话|无论是睡是醒"
+          "titleZh": "椎 第2话|无论梦中醒来"
         }
       ],
       "canonicalTitleZh": "椎 第2话｜无论梦中醒来",
@@ -136934,7 +136934,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "椎 第3话|扭曲地连结起来"
+          "titleZh": "椎 第3话|扭曲着相连"
         }
       ],
       "canonicalTitleZh": "椎 第3话｜扭曲着相连",
@@ -137216,7 +137216,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "台与 第1话|爱吐舌头的不可思议的生物"
+          "titleZh": "台与 第1话|滑溜溜的神秘生物"
         }
       ],
       "canonicalTitleZh": "台与 第1话｜滑溜溜的神秘生物",
@@ -137261,7 +137261,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "台与 第2话|聪明又友好的搭档"
+          "titleZh": "台与 第2话|聪明又亲密的搭档"
         }
       ],
       "canonicalTitleZh": "台与 第2话｜聪明又亲密的搭档",
@@ -137306,7 +137306,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "台与 第3话|会记住我的存在"
+          "titleZh": "台与 第3话|仍会记得自己的存在"
         }
       ],
       "canonicalTitleZh": "台与 第3话｜仍会记得自己的存在",
@@ -137537,7 +137537,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "赫露迦 第1话|于尼姑庵"
+          "titleZh": "赫露迦 第1话|在修道院中"
         }
       ],
       "canonicalTitleZh": "赫露迦 第1话｜在修道院中",
@@ -137582,7 +137582,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "赫露迦 第2话|少女们的叛乱"
+          "titleZh": "赫露迦 第2话|少女们的反抗"
         }
       ],
       "canonicalTitleZh": "赫露迦 第2话｜少女们的反抗",
@@ -137672,7 +137672,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佩尔内勒 第1话|大小姐的私人委托"
+          "titleZh": "佩尔内勒 第1话|千金小姐的私人委托"
         }
       ],
       "canonicalTitleZh": "佩尔内勒 第1话｜千金小姐的私人委托",
@@ -137717,7 +137717,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佩尔内勒 第2话|某次实验的记录"
+          "titleZh": "佩尔内勒 第2话|某项实验记录"
         }
       ],
       "canonicalTitleZh": "佩尔内勒 第2话｜某项实验记录",
@@ -137762,7 +137762,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佩尔内勒 第3话|心之居所"
+          "titleZh": "佩尔内勒 第3话|心之所在"
         }
       ],
       "canonicalTitleZh": "佩尔内勒 第3话｜心之所在",
@@ -138449,7 +138449,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "夕 第1话|愈是对话"
+          "titleZh": "夕 第1话|越是对话"
         }
       ],
       "canonicalTitleZh": "夕 第1话｜越是对话",
@@ -138494,7 +138494,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "夕 第2话|愈是交错"
+          "titleZh": "夕 第2话|越是交错"
         }
       ],
       "canonicalTitleZh": "夕 第2话｜越是交错",
@@ -138539,7 +138539,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "夕 第3话|愈是侵蚀"
+          "titleZh": "夕 第3话|越是侵蚀"
         }
       ],
       "canonicalTitleZh": "夕 第3话｜越是侵蚀",
@@ -138629,7 +138629,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "拉皮努 第2话|心生狐疑"
+          "titleZh": "拉皮努 第2话|疑惑苏醒"
         }
       ],
       "canonicalTitleZh": "拉皮努 第2话｜疑惑苏醒",
@@ -138674,7 +138674,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "拉皮努 第3话|崩溃的未来的形态"
+          "titleZh": "拉皮努 第3话|破灭的未来形态"
         }
       ],
       "canonicalTitleZh": "拉皮努 第3话｜破灭的未来形态",
@@ -138854,7 +138854,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "莉薇娅·梅黛洛斯 第1话|不会轻易告诉别人"
+          "titleZh": "莉薇娅·梅黛洛斯 第1话|不会轻易开口"
         }
       ],
       "canonicalTitleZh": "莉薇娅·梅黛洛斯 第1话｜不会轻易开口",
@@ -138899,7 +138899,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "莉薇娅·梅黛洛斯 第2话|关于跟在身边的人们"
+          "titleZh": "莉薇娅·梅黛洛斯 第2话|关于随行之人"
         }
       ],
       "canonicalTitleZh": "莉薇娅·梅黛洛斯 第2话｜关于随行之人",
@@ -138944,7 +138944,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "莉薇娅·梅黛洛斯 第3话|想告诉你知道的事情"
+          "titleZh": "莉薇娅·梅黛洛斯 第3话|希望你先听我说"
         }
       ],
       "canonicalTitleZh": "莉薇娅·梅黛洛斯 第3话｜希望你先听我说",
@@ -139652,7 +139652,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "七濑幸佳 第1话|一直以来多有叨扰"
+          "titleZh": "七濑幸佳 第1话|每次都给大家添麻烦了"
         }
       ],
       "canonicalTitleZh": "七濑幸佳 第1话｜每次都给大家添麻烦了",
@@ -139697,7 +139697,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "七濑幸佳 第2话|沟通不足"
+          "titleZh": "七濑幸佳 第2话|沟通障碍"
         }
       ],
       "canonicalTitleZh": "七濑幸佳 第2话｜沟通障碍",
@@ -139742,7 +139742,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "七濑幸佳 第3话|连结起来的瞬间"
+          "titleZh": "七濑幸佳 第3话|相连的瞬间"
         }
       ],
       "canonicalTitleZh": "七濑幸佳 第3话｜相连的瞬间",
@@ -139784,7 +139784,7 @@
           "titleZh": "万年樱的传闻 第1话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "万年樱的传闻 第1话|出生时的故事"
@@ -139829,7 +139829,7 @@
           "titleZh": "万年樱的传闻 第2话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "万年樱的传闻 第2话|在三日月别墅体验日常生活"
@@ -139874,7 +139874,7 @@
           "titleZh": "万年樱的传闻 第3话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "万年樱的传闻 第3话|枯燥乏味的校园生活"
@@ -139913,7 +139913,7 @@
           "titleZh": "万年樱的传闻(泳装ver.) 第1话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "万年樱的传闻(泳装ver.) 第1话"
@@ -139921,7 +139921,7 @@
       ],
       "canonicalTitleZh": "万年樱的传闻(泳装ver.) 第1话",
       "category": "魔法少女",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "charaList:3043",
       "officialIds": [
         "charaList:3043"
@@ -139947,7 +139947,7 @@
           "titleZh": "万年樱的传闻(泳装ver.) 第2话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "万年樱的传闻(泳装ver.) 第2话"
@@ -139955,7 +139955,7 @@
       ],
       "canonicalTitleZh": "万年樱的传闻(泳装ver.) 第2话",
       "category": "魔法少女",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "charaList:3043",
       "officialIds": [
         "charaList:3043"
@@ -139981,7 +139981,7 @@
           "titleZh": "万年樱的传闻(泳装ver.) 第3话"
         },
         {
-          "detail": "existing Call V26 title/rule result; canonical names 万年樱之谣→万年樱的传闻",
+          "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
           "titleZh": "万年樱的传闻(泳装ver.) 第3话"
@@ -139989,7 +139989,7 @@
       ],
       "canonicalTitleZh": "万年樱的传闻(泳装ver.) 第3话",
       "category": "魔法少女",
-      "changedFromPrevious": true,
+      "changedFromPrevious": false,
       "detail": "charaList:3043",
       "officialIds": [
         "charaList:3043"
@@ -140159,7 +140159,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "三浦旭 第1话|新人的真实面貌"
+          "titleZh": "三浦旭 第1话|新人的真面目"
         }
       ],
       "canonicalTitleZh": "三浦旭 第1话｜新人的真面目",
@@ -140204,7 +140204,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "三浦旭 第2话|鬼婆婆骚动"
+          "titleZh": "三浦旭 第2话|恶婆婆风波"
         }
       ],
       "canonicalTitleZh": "三浦旭 第2话｜恶婆婆风波",
@@ -140294,7 +140294,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "三穗野星罗 第1话|没有许愿的梦想"
+          "titleZh": "三穗野星罗 第1话|从未许下的梦"
         }
       ],
       "canonicalTitleZh": "三穗野星罗 第1话｜从未许下的梦",
@@ -140384,7 +140384,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "三穗野星罗 第3话|曾经怀揣的梦想"
+          "titleZh": "三穗野星罗 第3话|将曾经见过的梦"
         }
       ],
       "canonicalTitleZh": "三穗野星罗 第3话｜将曾经见过的梦",
@@ -140474,7 +140474,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "三轮光音 第2话|拭去污垢"
+          "titleZh": "三轮光音 第2话|拭去污秽"
         }
       ],
       "canonicalTitleZh": "三轮光音 第2话｜拭去污秽",
@@ -140519,7 +140519,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "三轮光音 第3话|被隐瞒的事情"
+          "titleZh": "三轮光音 第3话|曾被隐藏的事物"
         }
       ],
       "canonicalTitleZh": "三轮光音 第3话｜曾被隐藏的事物",
@@ -140834,7 +140834,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "井之上泷奈 第1话|Just keep going."
+          "titleZh": "井之上泷奈 第1话|继续前行。"
         }
       ],
       "canonicalTitleZh": "井之上泷奈 第1话｜继续前行。",
@@ -140879,7 +140879,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "井之上泷奈 第2话|Be kind. Be honest."
+          "titleZh": "井之上泷奈 第2话|心怀善意,坦诚待人。"
         }
       ],
       "canonicalTitleZh": "井之上泷奈 第2话｜心怀善意,坦诚待人。",
@@ -140924,7 +140924,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "井之上泷奈 第3话|Keep it fun."
+          "titleZh": "井之上泷奈 第3话|乐在其中。"
         }
       ],
       "canonicalTitleZh": "井之上泷奈 第3话｜乐在其中。",
@@ -140969,7 +140969,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "伊并满 第1话|就算在梦里也是"
+          "titleZh": "伊并满 第1话|即使在梦中"
         }
       ],
       "canonicalTitleZh": "伊并满 第1话｜即使在梦中",
@@ -141014,7 +141014,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "伊并满 第2话|循着记忆找去"
+          "titleZh": "伊并满 第2话|追寻记忆"
         }
       ],
       "canonicalTitleZh": "伊并满 第2话｜追寻记忆",
@@ -141059,7 +141059,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "伊并满 第3话|不断逃避的每日"
+          "titleZh": "伊并满 第3话|不断逃避的日子"
         }
       ],
       "canonicalTitleZh": "伊并满 第3话｜不断逃避的日子",
@@ -141680,7 +141680,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佐和月出里 第1话|这是反省过后的姿态"
+          "titleZh": "佐和月出里 第1话|这是反省后的模样"
         }
       ],
       "canonicalTitleZh": "佐和月出里 第1话｜这是反省后的模样",
@@ -141725,7 +141725,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佐和月出里 第2话|沾染污秽的5秒前"
+          "titleZh": "佐和月出里 第2话|距离被弄脏还有五秒"
         }
       ],
       "canonicalTitleZh": "佐和月出里 第2话｜距离被弄脏还有五秒",
@@ -141770,7 +141770,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佐和月出里 第3话|恢复洁净的可能性"
+          "titleZh": "佐和月出里 第3话|有望恢复洁净"
         }
       ],
       "canonicalTitleZh": "佐和月出里 第3话｜有望恢复洁净",
@@ -141917,7 +141917,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佐鸟笼目 第1话|往昔的追忆"
+          "titleZh": "佐鸟笼目 第1话|对往昔的追忆"
         }
       ],
       "canonicalTitleZh": "佐鸟笼目 第1话｜对往昔的追忆",
@@ -141962,7 +141962,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佐鸟笼目 第2话|意外总是突然到来"
+          "titleZh": "佐鸟笼目 第2话|意外总是突如其来"
         }
       ],
       "canonicalTitleZh": "佐鸟笼目 第2话｜意外总是突如其来",
@@ -142007,7 +142007,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "佐鸟笼目 第3话|今后也一直要"
+          "titleZh": "佐鸟笼目 第3话|从今往后也永远如此"
         }
       ],
       "canonicalTitleZh": "佐鸟笼目 第3话｜从今往后也永远如此",
@@ -142424,7 +142424,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "八神疾风 第1话|小疾风变多了"
+          "titleZh": "八神疾风 第1话|好多疾风"
         }
       ],
       "canonicalTitleZh": "八神疾风 第1话｜好多疾风",
@@ -142469,7 +142469,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "八神疾风 第2话|小疾风的手作料理"
+          "titleZh": "八神疾风 第2话|疾风的亲手料理"
         }
       ],
       "canonicalTitleZh": "八神疾风 第2话｜疾风的亲手料理",
@@ -142514,7 +142514,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "八神疾风 第3话|小疾风的答案"
+          "titleZh": "八神疾风 第3话|疾风的答案"
         }
       ],
       "canonicalTitleZh": "八神疾风 第3话｜疾风的答案",
@@ -142604,7 +142604,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "八云御影 第2话|寻找“姐姐”"
+          "titleZh": "八云御影 第2话|追寻“姐姐”"
         }
       ],
       "canonicalTitleZh": "八云御影 第2话｜追寻“姐姐”",
@@ -142649,7 +142649,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "八云御影 第3话|置身巨浪之中"
+          "titleZh": "八云御影 第3话|在巨浪之中"
         }
       ],
       "canonicalTitleZh": "八云御影 第3话｜在巨浪之中",
@@ -143600,7 +143600,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "千鹤 第1话|完成了使命的盗贼之女"
+          "titleZh": "千鹤 第1话|完成使命的义贼之女"
         }
       ],
       "canonicalTitleZh": "千鹤 第1话｜完成使命的义贼之女",
@@ -143645,7 +143645,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "千鹤 第2话|偷学了泰党技术的女人"
+          "titleZh": "千鹤 第2话|窃取泰党技艺的女子"
         }
       ],
       "canonicalTitleZh": "千鹤 第2话｜窃取泰党技艺的女子",
@@ -143690,7 +143690,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "千鹤 第3话|恐怖,害怕,做不到!"
+          "titleZh": "千鹤 第3话|好可怕、不要、做不到!"
         }
       ],
       "canonicalTitleZh": "千鹤 第3话｜好可怕、不要、做不到!",
@@ -143735,7 +143735,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "南津凉子 第1话|单纯的血统"
+          "titleZh": "南津凉子 第1话|不过是血脉"
         }
       ],
       "canonicalTitleZh": "南津凉子 第1话｜不过是血脉",
@@ -143780,7 +143780,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "南津凉子 第2话|擦肩而过的血脉"
+          "titleZh": "南津凉子 第2话|错身而过的血缘"
         }
       ],
       "canonicalTitleZh": "南津凉子 第2话｜错身而过的血缘",
@@ -143870,7 +143870,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "古町美仓 第1话|意料之外的假说"
+          "titleZh": "古町美仓 第1话|突如其来的假说"
         }
       ],
       "canonicalTitleZh": "古町美仓 第1话｜突如其来的假说",
@@ -143960,7 +143960,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "古町美仓 第3话|答案的最终稿"
+          "titleZh": "古町美仓 第3话|答案的终稿"
         }
       ],
       "canonicalTitleZh": "古町美仓 第3话｜答案的终稿",
@@ -144230,7 +144230,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "吉良手鞠 第3话|需要夺回的日常"
+          "titleZh": "吉良手鞠 第3话|应当夺回的岁月"
         }
       ],
       "canonicalTitleZh": "吉良手鞠 第3话｜应当夺回的岁月",
@@ -144749,7 +144749,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "土岐沙绪 第1话|投身喧闹之中"
+          "titleZh": "土岐沙绪 第1话|奔赴喧嚣之中"
         }
       ],
       "canonicalTitleZh": "土岐沙绪 第1话｜奔赴喧嚣之中",
@@ -144794,7 +144794,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "土岐沙绪 第2话|擦肩而过的往昔"
+          "titleZh": "土岐沙绪 第2话|错身而过的过去"
         }
       ],
       "canonicalTitleZh": "土岐沙绪 第2话｜错身而过的过去",
@@ -144839,7 +144839,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "土岐沙绪 第3话|只要能三人一起"
+          "titleZh": "土岐沙绪 第3话|只要三个人在一起"
         }
       ],
       "canonicalTitleZh": "土岐沙绪 第3话｜只要三个人在一起",
@@ -145019,7 +145019,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "大庭树里 第1话|发端于终结的苦楚"
+          "titleZh": "大庭树里 第1话|自结局而来的痛苦"
         }
       ],
       "canonicalTitleZh": "大庭树里 第1话｜自结局而来的痛苦",
@@ -145064,7 +145064,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "大庭树里 第2话|积攒起的火焰的意义"
+          "titleZh": "大庭树里 第2话|积蓄火焰的意义"
         }
       ],
       "canonicalTitleZh": "大庭树里 第2话｜积蓄火焰的意义",
@@ -145109,7 +145109,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "大庭树里 第3话|命中注定的离别"
+          "titleZh": "大庭树里 第3话|注定的离别"
         }
       ],
       "canonicalTitleZh": "大庭树里 第3话｜注定的离别",
@@ -145619,7 +145619,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "奏遥香 第1话|可靠的大姐姐"
+          "titleZh": "奏遥香 第1话|可靠的姐姐"
         }
       ],
       "canonicalTitleZh": "奏遥香 第1话｜可靠的姐姐",
@@ -145664,7 +145664,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "奏遥香 第2话|痛苦的共感"
+          "titleZh": "奏遥香 第2话|痛苦的共鸣"
         }
       ],
       "canonicalTitleZh": "奏遥香 第2话｜痛苦的共鸣",
@@ -145709,7 +145709,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "奏遥香 第3话|谁都不知道的妹妹的惩罚"
+          "titleZh": "奏遥香 第3话|无人知晓的妹妹之罚"
         }
       ],
       "canonicalTitleZh": "奏遥香 第3话｜无人知晓的妹妹之罚",
@@ -145889,7 +145889,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "安积育梦 第1话|想要获得幸福的女孩子"
+          "titleZh": "安积育梦 第1话|渴望幸福的女孩"
         }
       ],
       "canonicalTitleZh": "安积育梦 第1话｜渴望幸福的女孩",
@@ -145934,7 +145934,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "安积育梦 第2话|找到的玻璃鞋却"
+          "titleZh": "安积育梦 第2话|终于找到的玻璃鞋"
         }
       ],
       "canonicalTitleZh": "安积育梦 第2话｜终于找到的玻璃鞋",
@@ -145979,7 +145979,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "安积育梦 第3话|应声破碎"
+          "titleZh": "安积育梦 第3话|已经破碎了"
         }
       ],
       "canonicalTitleZh": "安积育梦 第3话｜已经破碎了",
@@ -146024,7 +146024,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "宫尾时雨 第1话|犹豫不定的日常"
+          "titleZh": "宫尾时雨 第1话|犹豫不决的日子"
         }
       ],
       "canonicalTitleZh": "宫尾时雨 第1话｜犹豫不决的日子",
@@ -146069,7 +146069,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "宫尾时雨 第2话|第一个理解者"
+          "titleZh": "宫尾时雨 第2话|第一位理解者"
         }
       ],
       "canonicalTitleZh": "宫尾时雨 第2话｜第一位理解者",
@@ -146114,7 +146114,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "宫尾时雨 第3话|相信着被给予的希望"
+          "titleZh": "宫尾时雨 第3话|相信被赐予的希望"
         }
       ],
       "canonicalTitleZh": "宫尾时雨 第3话｜相信被赐予的希望",
@@ -146204,7 +146204,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "小丘比 第2话|实录!奔跑于夜晚城市的谜之身影"
+          "titleZh": "小丘比 第2话|实录!夜城中飞驰的神秘身影"
         }
       ],
       "canonicalTitleZh": "小丘比 第2话｜实录!夜城中飞驰的神秘身影",
@@ -147422,7 +147422,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "惠萌花 第2话|多管闲事的三名少女"
+          "titleZh": "惠萌花 第2话|爱管闲事的三位少女"
         }
       ],
       "canonicalTitleZh": "惠萌花 第2话｜爱管闲事的三位少女",
@@ -147467,7 +147467,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "惠萌花 第3话|拼命找出的解决方法"
+          "titleZh": "惠萌花 第3话|竭尽全力的解决方案"
         }
       ],
       "canonicalTitleZh": "惠萌花 第3话｜竭尽全力的解决方案",
@@ -147512,7 +147512,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "恶魔焰 第1话|Act I"
+          "titleZh": "恶魔焰 第1话|第一幕"
         }
       ],
       "canonicalTitleZh": "恶魔焰 第1话｜第一幕",
@@ -147557,7 +147557,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "恶魔焰 第2话|Act II"
+          "titleZh": "恶魔焰 第2话|第二幕"
         }
       ],
       "canonicalTitleZh": "恶魔焰 第2话｜第二幕",
@@ -147602,7 +147602,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "恶魔焰 第3话|Act III"
+          "titleZh": "恶魔焰 第3话|第三幕"
         }
       ],
       "canonicalTitleZh": "恶魔焰 第3话｜第三幕",
@@ -147647,7 +147647,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "恶魔小焰 第1话|恶魔般的欲望化身"
+          "titleZh": "恶魔小焰 第1话|恶魔欲望的化身"
         }
       ],
       "canonicalTitleZh": "恶魔小焰 第1话｜恶魔欲望的化身",
@@ -147692,7 +147692,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "恶魔小焰 第2话|恶魔般地不是滋味的一天"
+          "titleZh": "恶魔小焰 第2话|恶魔般坐立不安的一天"
         }
       ],
       "canonicalTitleZh": "恶魔小焰 第2话｜恶魔般坐立不安的一天",
@@ -147737,7 +147737,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "恶魔小焰 第3话|恶魔般地涌上心头的感情"
+          "titleZh": "恶魔小焰 第3话|恶魔般涌上心头的感情"
         }
       ],
       "canonicalTitleZh": "恶魔小焰 第3话｜恶魔般涌上心头的感情",
@@ -147782,7 +147782,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "爱生眩 第1话|循环的日常"
+          "titleZh": "爱生眩 第1话|循环往复的日常"
         }
       ],
       "canonicalTitleZh": "爱生眩 第1话｜循环往复的日常",
@@ -147827,7 +147827,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "爱生眩 第2话|缺少的拼图"
+          "titleZh": "爱生眩 第2话|缺失的拼图"
         }
       ],
       "canonicalTitleZh": "爱生眩 第2话｜缺失的拼图",
@@ -147872,7 +147872,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "爱生眩 第3话|阳光洒落的雨后初晴"
+          "titleZh": "爱生眩 第3话|雨后透进的光"
         }
       ],
       "canonicalTitleZh": "爱生眩 第3话｜雨后透进的光",
@@ -148142,7 +148142,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "日向茉莉 第3话|垂钓的权利→???"
+          "titleZh": "日向茉莉 第3话|钓鱼权利→???"
         }
       ],
       "canonicalTitleZh": "日向茉莉 第3话｜钓鱼权利→???",
@@ -148322,7 +148322,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "昴和美 第1话|Ciao,昴和美"
+          "titleZh": "昴和美 第1话|再见,昴和美"
         }
       ],
       "canonicalTitleZh": "昴和美 第1话｜再见,昴和美",
@@ -148367,7 +148367,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "昴和美 第2话|翌檜点餐"
+          "titleZh": "昴和美 第2话|翌桧风味拼盘"
         }
       ],
       "canonicalTitleZh": "昴和美 第2话｜翌桧风味拼盘",
@@ -148457,7 +148457,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "时女静香 第1话|尚未知晓的愿望的含义"
+          "titleZh": "时女静香 第1话|尚未知晓的愿望之意"
         }
       ],
       "canonicalTitleZh": "时女静香 第1话｜尚未知晓的愿望之意",
@@ -148502,7 +148502,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "时女静香 第2话|被明码标价的愿望"
+          "titleZh": "时女静香 第2话|被出卖的愿望"
         }
       ],
       "canonicalTitleZh": "时女静香 第2话｜被出卖的愿望",
@@ -148547,7 +148547,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "时女静香 第3话|知晓自己的愿望后背负起的觉悟"
+          "titleZh": "时女静香 第3话|知晓自身愿望后背负一切的觉悟"
         }
       ],
       "canonicalTitleZh": "时女静香 第3话｜知晓自身愿望后背负一切的觉悟",
@@ -148694,7 +148694,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "智珠兰华 第1话|喘不过气的日常"
+          "titleZh": "智珠兰华 第1话|令人窒息的日常"
         }
       ],
       "canonicalTitleZh": "智珠兰华 第1话｜令人窒息的日常",
@@ -148739,7 +148739,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "智珠兰华 第2话|无法填平的沟壑"
+          "titleZh": "智珠兰华 第2话|无法填平的鸿沟"
         }
       ],
       "canonicalTitleZh": "智珠兰华 第2话｜无法填平的鸿沟",
@@ -148784,7 +148784,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "智珠兰华 第3话|不会选择的未来"
+          "titleZh": "智珠兰华 第3话|不作选择的未来"
         }
       ],
       "canonicalTitleZh": "智珠兰华 第3话｜不作选择的未来",
@@ -149541,7 +149541,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "有爱丽 第1话|我也能做到的!"
+          "titleZh": "有爱丽 第1话|俺也能做到!"
         }
       ],
       "canonicalTitleZh": "有爱丽 第1话｜俺也能做到!",
@@ -149586,7 +149586,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "有爱丽 第2话|已经无法回头了……"
+          "titleZh": "有爱丽 第2话|因为已经回不去了……"
         }
       ],
       "canonicalTitleZh": "有爱丽 第2话｜因为已经回不去了……",
@@ -149631,7 +149631,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "有爱丽 第3话|所以只能前进啊"
+          "titleZh": "有爱丽 第3话|只能继续前进"
         }
       ],
       "canonicalTitleZh": "有爱丽 第3话｜只能继续前进",
@@ -150011,7 +150011,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "枇枇木巡 第1话|围绕着魔法少女的秘密"
+          "titleZh": "枇枇木巡 第1话|围绕魔法少女的秘密"
         }
       ],
       "canonicalTitleZh": "枇枇木巡 第1话｜围绕魔法少女的秘密",
@@ -150056,7 +150056,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "枇枇木巡 第2话|围绕着巡的武打戏"
+          "titleZh": "枇枇木巡 第2话|围绕巡的精彩大活剧"
         }
       ],
       "canonicalTitleZh": "枇枇木巡 第2话｜围绕巡的精彩大活剧",
@@ -150101,7 +150101,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "枇枇木巡 第3话|朝着梦想,从这里翻开一页!"
+          "titleZh": "枇枇木巡 第3话|从这里开始,朝梦想巡回前进!"
         }
       ],
       "canonicalTitleZh": "枇枇木巡 第3话｜从这里开始,朝梦想巡回前进!",
@@ -150326,7 +150326,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "柚希步鸟 第2话|我难道做不到吗"
+          "titleZh": "柚希步鸟 第2话|难道我做不到吗"
         }
       ],
       "canonicalTitleZh": "柚希步鸟 第2话｜难道我做不到吗",
@@ -150371,7 +150371,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "柚希步鸟 第3话|我得去救她……!"
+          "titleZh": "柚希步鸟 第3话|我必须救她……!"
         }
       ],
       "canonicalTitleZh": "柚希步鸟 第3话｜我必须救她……!",
@@ -150416,7 +150416,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "柚希理音 第1话|步鸟鸟是我的东西"
+          "titleZh": "柚希理音 第1话|小穗香是我的"
         }
       ],
       "canonicalTitleZh": "柚希理音 第1话｜小穗香是我的",
@@ -150461,7 +150461,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "柚希理音 第2话|表达喜爱的100种方法"
+          "titleZh": "柚希理音 第2话|传达爱意的一百种方法"
         }
       ],
       "canonicalTitleZh": "柚希理音 第2话｜传达爱意的一百种方法",
@@ -150506,7 +150506,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "柚希理音 第3话|直率的心情"
+          "titleZh": "柚希理音 第3话|坦率的心意"
         }
       ],
       "canonicalTitleZh": "柚希理音 第3话｜坦率的心意",
@@ -150641,7 +150641,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "栗栖亚历山德拉 第3话|初恋与诀别"
+          "titleZh": "栗栖亚历山德拉 第3话|向初恋告别"
         }
       ],
       "canonicalTitleZh": "栗栖亚历山德拉 第3话｜向初恋告别",
@@ -150686,7 +150686,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "桐野纱枝 第1话|只有我知道的结局"
+          "titleZh": "桐野纱枝 第1话|只有我知晓的结局"
         }
       ],
       "canonicalTitleZh": "桐野纱枝 第1话｜只有我知晓的结局",
@@ -150731,7 +150731,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "桐野纱枝 第2话|不足的觉悟"
+          "titleZh": "桐野纱枝 第2话|欠缺的觉悟"
         }
       ],
       "canonicalTitleZh": "桐野纱枝 第2话｜欠缺的觉悟",
@@ -150776,7 +150776,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "桐野纱枝 第3话|被忘却的傍晚"
+          "titleZh": "桐野纱枝 第3话|被遗忘的黄昏"
         }
       ],
       "canonicalTitleZh": "桐野纱枝 第3话｜被遗忘的黄昏",
@@ -151568,7 +151568,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "水名露 第2话|让我来吧,铁火起请!"
+          "titleZh": "水名露 第2话|来举行铁火起请吧!"
         }
       ],
       "canonicalTitleZh": "水名露 第2话｜来举行铁火起请吧!",
@@ -151613,7 +151613,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "水名露 第3话|已然消逝的千鹤的心情"
+          "titleZh": "水名露 第3话|千鹤消失的心意"
         }
       ],
       "canonicalTitleZh": "水名露 第3话｜千鹤消失的心意",
@@ -151658,7 +151658,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "水树垒 第1话|暴露―Disclose―"
+          "titleZh": "水树垒 第1话|露见―Disclose―"
         }
       ],
       "canonicalTitleZh": "水树垒 第1话｜露见―Disclose―",
@@ -152030,7 +152030,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "冰室拉比 第1话|纵然覆水难收"
+          "titleZh": "冰室拉比 第1话|即使覆水无法收回"
         }
       ],
       "canonicalTitleZh": "冰室拉比 第1话｜即使覆水无法收回",
@@ -152075,7 +152075,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "冰室拉比 第2话|其为晴天霹雳"
+          "titleZh": "冰室拉比 第2话|那是晴天霹雳"
         }
       ],
       "canonicalTitleZh": "冰室拉比 第2话｜那是晴天霹雳",
@@ -152120,7 +152120,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "冰室拉比 第3话|宛如蝴蝶之梦"
+          "titleZh": "冰室拉比 第3话|恍若庄周梦蝶"
         }
       ],
       "canonicalTitleZh": "冰室拉比 第3话｜恍若庄周梦蝶",
@@ -152537,7 +152537,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "濑奈命 第1话|意外相遇的两人"
+          "titleZh": "濑奈命 第1话|不该相遇却相遇的两人"
         }
       ],
       "canonicalTitleZh": "濑奈命 第1话｜不该相遇却相遇的两人",
@@ -152582,7 +152582,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "濑奈命 第2话|在假象之中"
+          "titleZh": "濑奈命 第2话|身处虚假之中"
         }
       ],
       "canonicalTitleZh": "濑奈命 第2话｜身处虚假之中",
@@ -152627,7 +152627,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "濑奈命 第3话|夜幕降临之前"
+          "titleZh": "濑奈命 第3话|在夜幕降临之前"
         }
       ],
       "canonicalTitleZh": "濑奈命 第3话｜在夜幕降临之前",
@@ -152777,7 +152777,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "无限大小彩羽 第2话|转圈无限大"
+          "titleZh": "无限大小彩羽 第2话|旋转无限大"
         }
       ],
       "canonicalTitleZh": "无限大小彩羽 第2话｜旋转无限大",
@@ -152867,7 +152867,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "煌里光 第1话|打不起精神的孩子"
+          "titleZh": "煌里光 第1话|无法认真起来的孩子"
         }
       ],
       "canonicalTitleZh": "煌里光 第1话｜无法认真起来的孩子",
@@ -152912,7 +152912,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "煌里光 第2话|快速发展的日常"
+          "titleZh": "煌里光 第2话|开始奔跑的日常"
         }
       ],
       "canonicalTitleZh": "煌里光 第2话｜开始奔跑的日常",
@@ -153995,7 +153995,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "由良萤 第2话|只要有心就能振作起来"
+          "titleZh": "由良萤 第2话|真想做时也能精神抖擞"
         }
       ],
       "canonicalTitleZh": "由良萤 第2话｜真想做时也能精神抖擞",
@@ -154085,7 +154085,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "由贵真里爱 第1话|真里爱大人不会看漏"
+          "titleZh": "由贵真里爱 第1话|真里爱大人绝不会错过"
         }
       ],
       "canonicalTitleZh": "由贵真里爱 第1话｜真里爱大人绝不会错过",
@@ -154919,7 +154919,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "真井灯 第3话|无论是哪个我都……"
+          "titleZh": "真井灯 第3话|无论哪一个我……"
         }
       ],
       "canonicalTitleZh": "真井灯 第3话｜无论哪一个我……",
@@ -155099,7 +155099,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "神乐灿 第1话|发现神明的那一刻"
+          "titleZh": "神乐灿 第1话|察觉到神明之时"
         }
       ],
       "canonicalTitleZh": "神乐灿 第1话｜察觉到神明之时",
@@ -155144,7 +155144,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "神乐灿 第2话|再也不会依赖奇迹了"
+          "titleZh": "神乐灿 第2话|不再依赖奇迹"
         }
       ],
       "canonicalTitleZh": "神乐灿 第2话｜不再依赖奇迹",
@@ -155189,7 +155189,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "神乐灿 第3话|即便失去一切"
+          "titleZh": "神乐灿 第3话|即使失去一切"
         }
       ],
       "canonicalTitleZh": "神乐灿 第3话｜即使失去一切",
@@ -155369,7 +155369,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "究极小圆前辈 第1话|究极力量"
+          "titleZh": "究极小圆前辈 第1话|究极之力"
         }
       ],
       "canonicalTitleZh": "究极小圆前辈 第1话｜究极之力",
@@ -155414,7 +155414,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "究极小圆前辈 第2话|动真格的比试"
+          "titleZh": "究极小圆前辈 第2话|认真的较量"
         }
       ],
       "canonicalTitleZh": "究极小圆前辈 第2话｜认真的较量",
@@ -155459,7 +155459,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "究极小圆前辈 第3话|战斗的结果"
+          "titleZh": "究极小圆前辈 第3话|战斗之后"
         }
       ],
       "canonicalTitleZh": "究极小圆前辈 第3话｜战斗之后",
@@ -155876,7 +155876,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "笠音青 第1话|旋转轮盘"
+          "titleZh": "笠音青 第1话|转动的轮盘"
         }
       ],
       "canonicalTitleZh": "笠音青 第1话｜转动的轮盘",
@@ -155966,7 +155966,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "笠音青 第3话|线路选择的前方"
+          "titleZh": "笠音青 第3话|路线选择的彼端"
         }
       ],
       "canonicalTitleZh": "笠音青 第3话｜路线选择的彼端",
@@ -156011,7 +156011,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "篠目夜鹤 第1话|观察对象:夜鹤"
+          "titleZh": "篠目夜鹤 第1话|观察对象:约鹤"
         }
       ],
       "canonicalTitleZh": "篠目夜鹤 第1话｜观察对象:约鹤",
@@ -156056,7 +156056,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "篠目夜鹤 第2话|对话者:夜鹤"
+          "titleZh": "篠目夜鹤 第2话|对话者:约鹤"
         }
       ],
       "canonicalTitleZh": "篠目夜鹤 第2话｜对话者:约鹤",
@@ -156101,7 +156101,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "篠目夜鹤 第3话|主演:夜鹤"
+          "titleZh": "篠目夜鹤 第3话|主演:约鹤"
         }
       ],
       "canonicalTitleZh": "篠目夜鹤 第3话｜主演:约鹤",
@@ -156326,7 +156326,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "红晴结菜 第2话|革命的背后"
+          "titleZh": "红晴结菜 第2话|革命背后"
         }
       ],
       "canonicalTitleZh": "红晴结菜 第2话｜革命背后",
@@ -156371,7 +156371,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "红晴结菜 第3话|往日已在遥远彼岸"
+          "titleZh": "红晴结菜 第3话|逝去的岁月已然遥远"
         }
       ],
       "canonicalTitleZh": "红晴结菜 第3话｜逝去的岁月已然遥远",
@@ -157559,7 +157559,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "美琴椿 第1话|不断积累友爱"
+          "titleZh": "美琴椿 第1话|不断累积的亲爱"
         }
       ],
       "canonicalTitleZh": "美琴椿 第1话｜不断累积的亲爱",
@@ -157604,7 +157604,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "美琴椿 第2话|不断积累青春"
+          "titleZh": "美琴椿 第2话|不断累积的青春"
         }
       ],
       "canonicalTitleZh": "美琴椿 第2话｜不断累积的青春",
@@ -157649,7 +157649,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "美琴椿 第3话|不再积累后悔"
+          "titleZh": "美琴椿 第3话|不再累积后悔"
         }
       ],
       "canonicalTitleZh": "美琴椿 第3话｜不再累积后悔",
@@ -157829,7 +157829,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "若菜纺 第1话|我是食评家纺!"
+          "titleZh": "若菜纺 第1话|我是美食评论家纺希!"
         }
       ],
       "canonicalTitleZh": "若菜纺 第1话｜我是美食评论家纺希!",
@@ -157874,7 +157874,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "若菜纺 第2话|食评修行的奇妙旅途"
+          "titleZh": "若菜纺 第2话|美食评论修行奇旅"
         }
       ],
       "canonicalTitleZh": "若菜纺 第2话｜美食评论修行奇旅",
@@ -157919,7 +157919,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "若菜纺 第3话|为了一直吃下去"
+          "titleZh": "若菜纺 第3话|为了能一直吃下去"
         }
       ],
       "canonicalTitleZh": "若菜纺 第3话｜为了能一直吃下去",
@@ -157964,7 +157964,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "蓝家姬奈 第1话|思绪郁结的忧伤"
+          "titleZh": "蓝家姬奈 第1话|一厢情愿的忧郁"
         }
       ],
       "canonicalTitleZh": "蓝家姬奈 第1话｜一厢情愿的忧郁",
@@ -158009,7 +158009,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "蓝家姬奈 第2话|连结起的心灵"
+          "titleZh": "蓝家姬奈 第2话|相连的心灵"
         }
       ],
       "canonicalTitleZh": "蓝家姬奈 第2话｜相连的心灵",
@@ -158054,7 +158054,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "蓝家姬奈 第3话|好姐妹不要离开"
+          "titleZh": "蓝家姬奈 第3话|别离开我,我的伙伴"
         }
       ],
       "canonicalTitleZh": "蓝家姬奈 第3话｜别离开我,我的伙伴",
@@ -158504,7 +158504,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "游狩美由利 第1话|美由与灿大人的邂逅"
+          "titleZh": "游狩美由利 第1话|美由与灿大人的相识"
         }
       ],
       "canonicalTitleZh": "游狩美由利 第1话｜美由与灿大人的相识",
@@ -158594,7 +158594,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "游狩美由利 第3话|美由的神明大人"
+          "titleZh": "游狩美由利 第3话|美由的神明"
         }
       ],
       "canonicalTitleZh": "游狩美由利 第3话｜美由的神明",
@@ -158879,7 +158879,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "里见那由他 第1话|唯一的侧面"
+          "titleZh": "里见那由他 第1话|唯一的一面"
         }
       ],
       "canonicalTitleZh": "里见那由他 第1话｜唯一的一面",
@@ -159014,7 +159014,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "铃鹿朔夜 第1话|苦恼的跑者"
+          "titleZh": "铃鹿朔夜 第1话|苦恼的短跑选手"
         }
       ],
       "canonicalTitleZh": "铃鹿朔夜 第1话｜苦恼的短跑选手",
@@ -159059,7 +159059,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "铃鹿朔夜 第2话|朋友送来的一阵顺风"
+          "titleZh": "铃鹿朔夜 第2话|朋友送来的顺风"
         }
       ],
       "canonicalTitleZh": "铃鹿朔夜 第2话｜朋友送来的顺风",
@@ -159104,7 +159104,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "铃鹿朔夜 第3话|东山再起与加速"
+          "titleZh": "铃鹿朔夜 第3话|重新振作与加速"
         }
       ],
       "canonicalTitleZh": "铃鹿朔夜 第3话｜重新振作与加速",
@@ -159149,7 +159149,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "锦木千束 第1话|Like attracts like."
+          "titleZh": "锦木千束 第1话|物以类聚。"
         }
       ],
       "canonicalTitleZh": "锦木千束 第1话｜物以类聚。",
@@ -159194,7 +159194,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "锦木千束 第2话|Seize the day."
+          "titleZh": "锦木千束 第2话|把握当下。"
         }
       ],
       "canonicalTitleZh": "锦木千束 第2话｜把握当下。",
@@ -159239,7 +159239,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "锦木千束 第3话|Life is short."
+          "titleZh": "锦木千束 第3话|人生苦短。"
         }
       ],
       "canonicalTitleZh": "锦木千束 第3话｜人生苦短。",
@@ -159542,7 +159542,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "青叶知花 第1话|不自然的警戒心"
+          "titleZh": "青叶知花 第1话|不自然的戒心"
         }
       ],
       "canonicalTitleZh": "青叶知花 第1话｜不自然的戒心",
@@ -159587,7 +159587,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "青叶知花 第2话|险峻的道路"
+          "titleZh": "青叶知花 第2话|崎岖的道路"
         }
       ],
       "canonicalTitleZh": "青叶知花 第2话｜崎岖的道路",
@@ -159632,7 +159632,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "青叶知花 第3话|回到的家"
+          "titleZh": "青叶知花 第3话|回到家中"
         }
       ],
       "canonicalTitleZh": "青叶知花 第3话｜回到家中",
@@ -159857,7 +159857,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "饰利润 第2话|金壶"
+          "titleZh": "饰利润 第2话|金色壶"
         }
       ],
       "canonicalTitleZh": "饰利润 第2话｜金色壶",
@@ -159902,7 +159902,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "饰利润 第3话|明天见"
+          "titleZh": "饰利润 第3话|明天再见"
         }
       ],
       "canonicalTitleZh": "饰利润 第3话｜明天再见",
@@ -159947,7 +159947,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "香春优奈 第1话|车到山前必有路"
+          "titleZh": "香春优奈 第1话|与其担心,不如动手"
         }
       ],
       "canonicalTitleZh": "香春优奈 第1话｜与其担心,不如动手",
@@ -159992,7 +159992,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "香春优奈 第2话|失败是成功之母"
+          "titleZh": "香春优奈 第2话|失败乃成功之母"
         }
       ],
       "canonicalTitleZh": "香春优奈 第2话｜失败乃成功之母",
@@ -160082,7 +160082,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "高町奈叶 第1话|Make a little wish"
+          "titleZh": "高町奈叶 第1话|许下小小愿望"
         }
       ],
       "canonicalTitleZh": "高町奈叶 第1话｜许下小小愿望",
@@ -160127,7 +160127,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "高町奈叶 第2话|Standby, Ready"
+          "titleZh": "高町奈叶 第2话|准备就绪"
         }
       ],
       "canonicalTitleZh": "高町奈叶 第2话｜准备就绪",
@@ -160172,7 +160172,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "高町奈叶 第3话|Wisdom&Tactics"
+          "titleZh": "高町奈叶 第3话|智慧与战术"
         }
       ],
       "canonicalTitleZh": "高町奈叶 第3话｜智慧与战术",
@@ -160718,7 +160718,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "黑江 第1话|致为他人而在的神明大人"
+          "titleZh": "黑江 第1话|致为他人而生的神明"
         }
       ],
       "canonicalTitleZh": "黑江 第1话｜致为他人而生的神明",
@@ -160763,7 +160763,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "黑江 第2话|致不愿帮助我的神明大人"
+          "titleZh": "黑江 第2话|致不会伸出援手的神明"
         }
       ],
       "canonicalTitleZh": "黑江 第2话｜致不会伸出援手的神明",
@@ -160808,7 +160808,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "黑江 第3话|将最后的问候致以神明"
+          "titleZh": "黑江 第3话|向神明献上最后的问候"
         }
       ],
       "canonicalTitleZh": "黑江 第3话｜向神明献上最后的问候",
@@ -160853,7 +160853,7 @@
           "detail": "existing Call V26 title/rule result",
           "rank": 100,
           "source": "llm-fallback",
-          "titleZh": "黑江 第4话|黑江的Doppel"
+          "titleZh": "黑江 第4话|黑江的魔女化身"
         }
       ],
       "canonicalTitleZh": "黑江 第4话｜黑江的魔女化身",
@@ -160993,7 +160993,7 @@
       "LLM/rule fallback"
     ]
   },
-  "generatedAt": "2026-08-24T21:12:01+00:00",
+  "generatedAt": "2026-08-25T14:13:06+00:00",
   "release": "canonical-title-authority-v1",
   "schemaVersion": 1,
   "sourceByCategory": {
@@ -166872,10 +166872,9 @@
     "callCategoryTitlePairs": 5826,
     "canonicalNameAliases": 15,
     "changedBySource": {
-      "llm-fallback": 4,
-      "official-cn": 694
+      "official-cn": 660
     },
-    "changedFromPrevious": 698,
+    "changedFromPrevious": 660,
     "explicitOldNameAliasesRemaining": 0,
     "officialTables": {
       "rows": {

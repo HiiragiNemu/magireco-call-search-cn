@@ -33,14 +33,14 @@
     "suffixes": "suffixes.json",
     "titles": "titles.json"
   },
-  "generatedAt": "2026-08-24T21:12:01+00:00",
+  "generatedAt": "2026-08-25T14:13:06+00:00",
   "release": "canonical-title-authority-v1",
   "schemaVersion": 1,
   "sha256": {
     "parents": "b9bb35622ddb13afc8432adb62ed0c0ba191997b2e258160899440838f16f680",
-    "provenance": "bfa5937dab5214552b8bc559b01635b74aa1bc442d26f95d9944b6dcb54832db",
-    "reader-links": "64c6f498ea529165ff09007f6e2763ed73a6fbfb437167882e402fb84ac3ecfa",
-    "sources": "a2bf1e46804a2b9aca33b54aeeb7f997c9caf428ff57abc7f3a475a397ddb2e2",
+    "provenance": "c23568eee125c7abc0929c38d3918944adaa2fdf69ef9613727ae3b39f3d0c8a",
+    "reader-links": "96b88e6303d56570d690fc496bc23eaad3f5da84d020c435671630849a073602",
+    "sources": "67d394cb7f362232db4a0b7b8f2bf33024b36df0bbc9e829e2eb38e9bb2a6281",
     "suffixes": "222a1b2c70d2af10a2b7d3e91456502c88b89683bf10f58fe152cddef2a599f4",
     "titles": "f5e657bb40274b2764bd73286a7c851f5740b1e161ebd2a88b4cde5695fdd47c"
   },

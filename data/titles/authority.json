@@ -15,7 +15,7 @@
       "LLM/rule fallback"
     ]
   },
-  "generatedAt": "2026-08-24T21:12:01+00:00",
+  "generatedAt": "2026-08-25T14:13:06+00:00",
   "parentByCategory": {
     "scene0": {
       "Film.0": "Film.0",
@@ -1319,10 +1319,10 @@
   "sourceRelease": "Call/Reader canonical title linkage v1",
   "sourceStates": {
     "call": {
-      "branch": "",
+      "branch": "main",
       "dirty": true,
-      "head": "2f727779bb084fbf65285c970b79aa9d10e4c1aa",
-      "path": "D:\\magia\\MyProducts\\magireco_character_story_CNandGL_search"
+      "head": "f601ea8374fc3b71f352641e39b9bfc5cd9f43e3",
+      "path": "D:\\magia\\MyProducts\\magireco-call-search-cn-v26-candidate"
     },
     "officialCn": {
       "branch": "main",
@@ -1333,7 +1333,7 @@
     "reader": {
       "branch": "main",
       "dirty": false,
-      "head": "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0",
+      "head": "bad94aa371dc9e6aed16ccf6d144106b31643f28",
       "path": "D:\\magia\\MyProducts\\magi-reader"
     },
     "wiki": {

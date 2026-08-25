@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "bridgeRevision": 1,
+  "entry": "./",
+  "canonicalQueryOrder": [
+    "characterId",
+    "story",
+    "scenario",
+    "variant",
+    "renderer",
+    "animation",
+    "character"
+  ],
+  "parameters": {
+    "characterId": "kyu unit ID as an unpadded decimal string",
+    "story": "V26 story-title group_id; optional context for the sprite viewer",
+    "scenario": "V26 raw source title; optional context for the sprite viewer",
+    "variant": "exact kyu variant ID such as 100100_r",
+    "renderer": "cocos2d",
+    "animation": "exact CocoStudio movement name such as wait",
+    "character": "optional NFC text fallback when characterId is unavailable"
+  },
+  "configuration": {
+    "viewerBase": "search-page-only target base URL; absolute, root-relative, or document-relative",
+    "spriteCatalogUrl": "viewer deployment override via window.MAGIRECO_SPRITE_CATALOG_URL or meta[name=sprite-catalog-url]"
+  },
+  "encoding": {
+    "format": "URLSearchParams query string",
+    "textNormalization": "NFC",
+    "unicode": "UTF-8 percent encoding",
+    "spaces": "+",
+    "hashFallback": "the same key=value form is accepted when query values are absent"
+  },
+  "legacyAliases": {
+    "characterId": ["character_id", "unitId", "unit"],
+    "story": ["storyId", "groupId"],
+    "scenario": ["storyTitle", "title"],
+    "variant": ["skin"],
+    "renderer": ["render"],
+    "animation": ["motion"],
+    "character": ["characterName", "chara", "gname"]
+  },
+  "messages": {
+    "open": "magireco.sprite.open",
+    "legacyOpen": "magireco.viewer.open",
+    "ready": "magireco.sprite.ready",
+    "change": "magireco.sprite.change",
+    "searchOutbound": "magireco.story.open-sprite"
+  },
+  "messageShape": {
+    "inputContext": "flat canonical/legacy fields, or a payload/context object; payload takes precedence over context and flat fields",
+    "outputContext": "flat canonical fields only",
+    "trust": "host validates event.source, exact event.origin, type, and bridgeRevision=1"
+  }
+}

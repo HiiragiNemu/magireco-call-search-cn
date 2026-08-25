@@ -6,7 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE = "canonical-title-authority-v1"
-READER_REVISION = "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0"
+READER_REVISION = "bad94aa371dc9e6aed16ccf6d144106b31643f28"
+AIO_ROUTER_BASE = "https://callsearch.magireco.top/aio/"
 KANA = re.compile(r"[\u3040-\u30ff]")
 
 
@@ -29,6 +30,8 @@ localization = load("public/data/story-v7/localization.json")
 reader_links = load("public/data/titles/reader-links.json")
 title_sources = load("public/data/titles/sources.json")
 story_router = load("public/data/story-router-v1.json")
+aio_router = load("public/aio/story-routes.json")
+build_info = load("public/build-info.json")
 
 assert manifest["release"] == RELEASE
 assert manifest["dataArchitecture"] == "plain-json"
@@ -50,9 +53,16 @@ assert title_sources["canonicalNameAliases"]["八云美玉"] == "八云御魂"
 assert story_router["targets"]["reader"]["readerRevision"] == READER_REVISION
 assert story_router["targets"]["reader"]["indexEntries"] == 3017
 assert story_router["targets"]["adv"]["handoffReady"] is False
-assert len(story_router["routes"]) == 5327
-assert sum(route["reader"] is not None for route in story_router["routes"]) == 5327
-assert sum(route["adv"] is not None for route in story_router["routes"]) == 5036
+assert len(story_router["routes"]) == 9535
+assert sum(route["reader"] is not None for route in story_router["routes"]) == 9535
+assert sum(route["adv"] is not None for route in story_router["routes"]) == 8076
+assert aio_router["catalogRevision"] == story_router["catalogRevision"]
+assert aio_router["targets"]["reader"]["readerRevision"] == READER_REVISION
+assert aio_router["targets"]["adv"]["handoffReady"] is False
+assert len(aio_router["routes"]) == 9535
+assert build_info["storyRouterRouteCount"] == 9535
+assert build_info["storyRouterReaderRevision"] == READER_REVISION
+assert build_info["aioRouterBase"] == AIO_ROUTER_BASE
 
 for category, pairs in titles["titleByCategory"].items():
     for source, target in pairs.items():
@@ -80,6 +90,9 @@ assert "v25-title-delta" not in runtime
 assert "magireco-story-title-overrides:" in runtime
 assert "v26-converged-20260822" in story
 assert "story-route-bridge-v1.js" in story
+assert f'<meta name="magireco-aio-router" content="{AIO_ROUTER_BASE}">' in story
+assert (ROOT / "public/edge-functions/aio/open.js").is_file()
+assert (ROOT / "public/edge-functions/aio/_runtime/story-router.js").is_file()
 assert "v26-converged-20260822" in editor
 assert "story-title-runtime-v2.js?v=20260825-canonical-title-v1" in story
 assert "story-title-runtime-v2.js?v=20260825-canonical-title-v1" in editor

@@ -14369,11 +14369,11 @@
       "LLM/rule fallback"
     ]
   },
-  "generatedAt": "2026-08-24T21:12:01+00:00",
+  "generatedAt": "2026-08-25T14:13:06+00:00",
   "reader": {
     "branch": "main",
     "dirty": false,
-    "head": "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0",
+    "head": "bad94aa371dc9e6aed16ccf6d144106b31643f28",
     "path": "D:\\magia\\MyProducts\\magi-reader"
   },
   "release": "canonical-title-authority-v1",

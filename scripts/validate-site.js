@@ -21,7 +21,8 @@ requireFile(buildInfoPath);
 const buildInfo = JSON.parse(read(buildInfoPath));
 const release = String(buildInfo.release || '');
 const TITLE_RELEASE = 'canonical-title-authority-v1';
-const READER_REVISION = '35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0';
+const READER_REVISION = 'bad94aa371dc9e6aed16ccf6d144106b31643f28';
+const AIO_ROUTER_BASE = 'https://callsearch.magireco.top/aio/';
 const RELEASES = Object.freeze({
   V2: 'layout-correction-v2-20260816',
   V3: 'neo11-mobile-interaction-v3-20260816',
@@ -49,6 +50,7 @@ const isV2Family = release === RELEASES.V2 || isV3;
 
 if (!Object.values(RELEASES).includes(release)) fail(`unexpected release identifier: ${release}`);
 if (buildInfo.deploymentTarget !== 'magireco-call-search-cn.pages.dev') fail(`unexpected deployment target: ${buildInfo.deploymentTarget}`);
+if (buildInfo.storyRouterRouteCount !== 9535 || buildInfo.storyRouterReaderRevision !== READER_REVISION || buildInfo.aioRouterBase !== AIO_ROUTER_BASE) fail('story routing build metadata mismatch');
 
 function validateHtml(file, expectedRelease = null) {
   requireFile(file);
@@ -94,16 +96,21 @@ if (isV26) {
   const routeBridgePath = path.join('public', 'myfile', 'story-route-bridge-v1.js');
   const readerLinksPath = path.join('public', 'data', 'titles', 'reader-links.json');
   const storyRouterPath = path.join('public', 'data', 'story-router-v1.json');
+  const aioRouterPath = path.join('public', 'aio', 'story-routes.json');
+  const aioEdgeFunctionPath = path.join('public', 'edge-functions', 'aio', 'open.js');
   const menuScript = './myfile/hamburger-menu-v23.js?v=20260822-v26-final3';
-  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath, routeBridgePath, readerLinksPath, storyRouterPath]) requireFile(file);
+  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath, routeBridgePath, readerLinksPath, storyRouterPath, aioRouterPath, aioEdgeFunctionPath]) requireFile(file);
   const manifest = JSON.parse(read(manifestPath));
   if (manifest.release !== TITLE_RELEASE || manifest.dataArchitecture !== 'plain-json') fail('V26 title manifest mismatch.');
   if (manifest.counts?.groupCount !== 2166 || manifest.counts?.mappedTitles !== 5826) fail('V26 title counts mismatch.');
   const readerLinks = JSON.parse(read(readerLinksPath));
   const storyRouter = JSON.parse(read(storyRouterPath));
+  const aioRouter = JSON.parse(read(aioRouterPath));
   if (readerLinks.release !== TITLE_RELEASE || readerLinks.reader?.head !== READER_REVISION || readerLinks.summary?.entries !== 1196) fail('Reader title linkage mismatch.');
-  if (storyRouter.targets?.reader?.readerRevision !== READER_REVISION || storyRouter.routes?.length !== 5327) fail('Reader story router mismatch.');
+  if (storyRouter.targets?.reader?.readerRevision !== READER_REVISION || storyRouter.routes?.length !== 9535) fail('Reader story router mismatch.');
   if (storyRouter.targets?.adv?.handoffReady !== false) fail('ADV route must remain fail-closed before production handoff.');
+  if (aioRouter.catalogRevision !== storyRouter.catalogRevision || aioRouter.targets?.reader?.readerRevision !== READER_REVISION || aioRouter.routes?.length !== 9535) fail('Published AIO route manifest mismatch.');
+  if (!read(aioEdgeFunctionPath).includes("./_runtime/story-router.js")) fail('Nested AIO Edge Function import is invalid.');
   if (html.includes('navtext-container')) fail('V26 legacy top title node is still present.');
   if (!html.includes(menuScript)) fail('V26 hamburger behavior script is not loaded.');
   for (const file of [storyPath, editorPath]) {
@@ -120,6 +127,7 @@ if (isV26) {
   if (runtime.includes('DecompressionStream') || runtime.includes('v25-title-delta')) fail('V26 runtime still contains V25 compressed loading.');
   if (!runtime.includes('magireco-story-title-overrides:')) fail('V26 release-scoped local storage key is missing.');
   if (!read(storyPath).includes('story-route-bridge-v1.js')) fail('Story route bridge is not loaded.');
+  if (!read(storyPath).includes(`<meta name="magireco-aio-router" content="${AIO_ROUTER_BASE}">`)) fail('Stable AIO router endpoint is not configured.');
   for (const forbidden of ['public/__acceptance.html', 'public/json_open_old.html', 'public/oldfile']) {
     if (fs.existsSync(forbidden)) fail(`V26 public legacy path still exists: ${forbidden}`);
   }

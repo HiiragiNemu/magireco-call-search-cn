@@ -31,5 +31,7 @@ jobs:
           node --check public/myfile/story-app-v7.js
           node --check public/myfile/story-title-editor-v2.js
           node --check public/myfile/hamburger-menu-v23.js
+          node --check public/edge-functions/aio/open.js
           node tests/story-sprite-bridge-v1.test.mjs
           node --test tests/story-route-bridge-v1.test.mjs
+          node --test tests/aio-edge-function.test.mjs

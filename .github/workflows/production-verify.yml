@@ -48,6 +48,17 @@ jobs:
                       raise RuntimeError(f"{path}: HTML instead of data")
                   return raw
 
+              def get_text(path):
+                  req = urllib.request.Request(
+                      f"{base}/{path}?verify={nonce}",
+                      headers={
+                          "Cache-Control": "no-cache, no-store",
+                          "User-Agent": "V26-production-verify",
+                      },
+                  )
+                  with urllib.request.urlopen(req, timeout=60) as response:
+                      return response.read().decode("utf-8")
+
               try:
                   manifest = json.loads(get("data/titles/manifest.json"))
                   assert manifest["release"] == "canonical-title-authority-v1"
@@ -57,14 +68,66 @@ jobs:
                   titles = json.loads(get("data/titles/titles.json"))
                   assert sum(len(v) for v in titles["titleByCategory"].values()) == 5826
                   reader_links = json.loads(get("data/titles/reader-links.json"))
-                  assert reader_links["reader"]["head"] == "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0"
+                  assert reader_links["reader"]["head"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
                   assert reader_links["summary"]["entries"] == 1196
                   story_router = json.loads(get("data/story-router-v1.json"))
-                  assert story_router["targets"]["reader"]["readerRevision"] == "35944c2ba0ae7bdaf3b0f05ff01c972b247c3fb0"
+                  assert story_router["targets"]["reader"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
                   assert story_router["targets"]["adv"]["handoffReady"] is False
-                  assert len(story_router["routes"]) == 5327
+                  assert len(story_router["routes"]) == 9535
+                  aio_router = json.loads(get("aio/story-routes.json"))
+                  assert aio_router["catalogRevision"] == story_router["catalogRevision"]
+                  assert aio_router["targets"]["reader"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
+                  assert aio_router["targets"]["adv"]["handoffReady"] is False
+                  assert len(aio_router["routes"]) == 9535
                   get("myfile/story-route-bridge-v1.js")
+                  story_html = get_text("story.html")
+                  assert '<meta name="magireco-aio-router" content="https://callsearch.magireco.top/aio/">' in story_html
                   print("Production V26 endpoints passed.")
+                  break
+              except Exception:
+                  if attempt == 119:
+                      raise
+                  time.sleep(5)
+          PY
+      - name: Wait for EdgeOne Call and AIO routes
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          base = "https://callsearch.magireco.top"
+
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+
+          opener = urllib.request.build_opener(NoRedirect)
+
+          for attempt in range(120):
+              nonce = str(time.time_ns())
+              try:
+                  with urllib.request.urlopen(
+                      f"{base}/aio/story-routes.json?verify={nonce}", timeout=60
+                  ) as response:
+                      manifest = json.load(response)
+                  assert len(manifest["routes"]) == 9535
+                  assert manifest["targets"]["reader"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
+                  source = urllib.parse.quote(manifest["routes"][0]["sourceKey"], safe="")
+                  try:
+                      opener.open(f"{base}/aio/open?source={source}&target=reader", timeout=60)
+                      raise AssertionError("Reader route did not redirect")
+                  except urllib.error.HTTPError as response:
+                      assert response.code == 302
+                      assert response.headers["Location"].startswith("https://magireader.pages.dev/")
+                  try:
+                      opener.open(f"{base}/aio/open?source={source}&target=adv", timeout=60)
+                      raise AssertionError("ADV route did not remain gated")
+                  except urllib.error.HTTPError as response:
+                      assert response.code == 409
+                  print("EdgeOne Call/AIO endpoints passed.")
                   break
               except Exception:
                   if attempt == 119:
