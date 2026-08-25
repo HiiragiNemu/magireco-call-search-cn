@@ -44,10 +44,10 @@ test('preserves story-v6 source identity and direct Reader destination', async (
   assert.match(links.reader, new RegExp(`/reader/${route.reader.storyId}(?:[?#]|$)`));
   assert.equal(links.adv, '');
   assert.equal(links.advAvailable, route.adv !== null);
-  assert.equal(links.advReady, false);
+  assert.equal(links.advReady, route.adv !== null);
 });
 
-test('uses the AIO router when configured without bypassing the ADV gate', async () => {
+test('uses the AIO router for both Reader and verified ADV destinations', async () => {
   const bridge = loadBridge('?aioBase=https%3A%2F%2Faio.example%2F');
   await bridge.initialize(searchManifest);
   const links = bridge.links('character', 0);
@@ -56,7 +56,11 @@ test('uses the AIO router when configured without bypassing the ADV gate', async
   assert.equal(reader.pathname, '/open');
   assert.equal(reader.searchParams.get('source'), links.sourceKey);
   assert.equal(reader.searchParams.get('target'), 'reader');
-  assert.equal(links.adv, '');
+  const adv = new URL(links.adv);
+  assert.equal(adv.origin, 'https://aio.example');
+  assert.equal(adv.pathname, '/open');
+  assert.equal(adv.searchParams.get('source'), links.sourceKey);
+  assert.equal(adv.searchParams.get('target'), 'adv');
 });
 
 test('unknown source rows do not create guessed links', async () => {

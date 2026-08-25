@@ -131,7 +131,12 @@ async function testStory(browser) {
       rows: document.querySelectorAll('#storyResultsBody .story-row-v7').length,
       tableCount: document.querySelectorAll('#storyResultsBody table').length,
       japaneseChipCount: chipNames.filter((name) => /[ぁ-んァ-ヶ]/u.test(name)).length,
-      fallbackCount: row.querySelectorAll('.story-cast-fallback-v7').length
+      fallbackCount: row.querySelectorAll('.story-cast-fallback-v7').length,
+      spriteLinks: row.querySelectorAll('.story-sprite-link-v1, a[href*="kyu.gay"]').length,
+      clippedNames: chips.filter((chip) => {
+        const label = chip.querySelector('span:last-child');
+        return label && label.scrollWidth > label.clientWidth + 1;
+      }).map((chip) => chip.textContent.trim())
     };
   });
   assert(result.title.includes('神滨SPA大冒险 席卷沙滩的恶魔怨叹') && result.original.includes('神浜スパアドベンチャー'),
@@ -142,6 +147,8 @@ async function testStory(browser) {
   assert(result.uniqueChips === result.chipNames.length && result.brokenImages === 0,
     'story cast is deduplicated and never shows a broken image icon', result);
   assert(result.japaneseChipCount === 0, 'known story cast names are localized to Chinese', result);
+  assert(result.spriteLinks === 0, 'story cast labels do not navigate to the unrelated sprite viewer', result);
+  assert(result.clippedNames.length === 0, 'story cast names are fully visible instead of ellipsized', result);
   assert(fatal(errors).length === 0, 'story V7 has no fatal JavaScript errors', errors);
   await page.screenshot({ path: '/tmp/story-ui-v7-mobile.png', fullPage: false });
   await page.close();

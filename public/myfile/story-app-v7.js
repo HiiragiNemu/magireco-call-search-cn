@@ -4,7 +4,6 @@
 
   const Tools = global.MagiToolsV7;
   if (!Tools?.loadLocalizationV7) return;
-  const SpriteBridge = global.MagirecoStorySpriteBridge || null;
   const RouteBridge = global.MagirecoStoryRouteBridge || null;
 
   const MANIFEST_URL = './data/story-v6/manifest.json';
@@ -17,8 +16,6 @@
   let manifest = null;
   let localization = null;
   let variantFamilies = new Map();
-  let spriteCharacterIds = {};
-  let storyGroupIds = new Map();
   let routeReady = Promise.resolve(null);
   let attributeController = null;
   let searchSerial = 0;
@@ -38,41 +35,6 @@
 
   function categoryLabel(key) {
     return localization?.categoryLabels?.[key] || categoryMeta(key)?.label || Tools.storyLabel(key);
-  }
-
-  function buildStoryGroupIndex() {
-    const index = new Map();
-    for (const group of localization?.storyTitleGroupsV1?.groups || []) {
-      for (const child of group.children || []) {
-        const scenario = String(child.source_title || '').trim();
-        if (scenario) index.set(`${group.category}\u0000${scenario}`, String(group.group_id || ''));
-      }
-    }
-    storyGroupIds = index;
-  }
-
-  function storyBridgeContext(storyType, row) {
-    const scenario = String(row?.[0] || '').trim();
-    const story = storyGroupIds.get(`${storyType}\u0000${scenario}`) || '';
-    return { story, scenario, renderer: 'cocos2d' };
-  }
-
-  function baseCharacterName(resolved) {
-    return String(resolved?.variantOf || resolved?.jp || resolved?.raw || '')
-      .replace(/[（(][^）)]*[）)]$/u, '')
-      .trim();
-  }
-
-  function characterBridgeContext(resolved, storyContext) {
-    const base = baseCharacterName(resolved);
-    const catalogEntry = catalog.find((entry) => entry.jp === base || entry.jp === resolved?.jp) || null;
-    const mapped = spriteCharacterIds[base] || spriteCharacterIds[resolved?.jp] || null;
-    return {
-      ...storyContext,
-      characterId: mapped?.characterId || '',
-      variant: mapped?.variant || '',
-      character: catalogEntry?.roman || resolved?.jp || resolved?.raw || resolved?.zh || ''
-    };
   }
 
   function orderedCategories() {
@@ -327,7 +289,7 @@
     return `https://www.google.com/search?q=${encodeURIComponent(`魔法纪录 ${query}`)}`;
   }
 
-  async function renderCast(cast, storyContext) {
+  async function renderCast(cast) {
     const host = document.createElement('div');
     host.className = 'story-cast-v7';
     const seen = new Set();
@@ -339,9 +301,7 @@
       if (seen.has(key)) continue;
       seen.add(key);
       const chip = Tools.createCastChipV7(resolved);
-      host.appendChild(SpriteBridge
-        ? SpriteBridge.wrapChip(chip, characterBridgeContext(resolved, storyContext))
-        : chip);
+      host.appendChild(chip);
     }
     if (!host.childElementCount) host.textContent = '—';
     return host;
@@ -418,7 +378,7 @@
           }
           title.appendChild(actions);
         }
-        item.append(title, await renderCast(row?.[1], storyBridgeContext(storyType, row)));
+        item.append(title, await renderCast(row?.[1]));
         if (showSpoiler) {
           const summary = document.createElement('div');
           summary.className = 'story-summary-v7';
@@ -519,17 +479,10 @@
     cacheNodes();
     Tools.renderNav('story');
     try {
-      const spriteMapPromise = SpriteBridge
-        ? SpriteBridge.loadCharacterMap().catch((error) => {
-            console.error('战斗精灵角色映射不可用；链接继续使用角色名。', error);
-            return {};
-          })
-        : Promise.resolve({});
-      [catalog, manifest, localization, spriteCharacterIds] = await Promise.all([
+      [catalog, manifest, localization] = await Promise.all([
         Tools.loadCatalog(),
         Tools.fetchJson(MANIFEST_URL, { cache: 'no-cache' }, 30000),
-        Tools.loadLocalizationV7(),
-        spriteMapPromise
+        Tools.loadLocalizationV7()
       ]);
       if (!manifest?.categories?.length || manifest.totalRows < 10000) throw new Error('故事数据不完整。');
       routeReady = RouteBridge
@@ -540,7 +493,6 @@
         : Promise.resolve(null);
       const variants = await Tools.fetchJson(VARIANT_URL, { cache: 'no-cache' }, 30000);
       variantFamilies = new Map(Object.entries(variants?.families || {}));
-      buildStoryGroupIndex();
       renderStoryTypes();
       renderCharacters();
       bindEvents();

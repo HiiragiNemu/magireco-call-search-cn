@@ -108,7 +108,7 @@ if (isV26) {
   const aioRouter = JSON.parse(read(aioRouterPath));
   if (readerLinks.release !== TITLE_RELEASE || readerLinks.reader?.head !== READER_REVISION || readerLinks.summary?.entries !== 1196) fail('Reader title linkage mismatch.');
   if (storyRouter.targets?.reader?.readerRevision !== READER_REVISION || storyRouter.routes?.length !== 9535) fail('Reader story router mismatch.');
-  if (storyRouter.targets?.adv?.handoffReady !== false) fail('ADV route must remain fail-closed before production handoff.');
+  if (storyRouter.targets?.adv?.handoffReady !== true) fail('ADV production handoff marker is missing.');
   if (aioRouter.catalogRevision !== storyRouter.catalogRevision || aioRouter.targets?.reader?.readerRevision !== READER_REVISION || aioRouter.routes?.length !== 9535) fail('Published AIO route manifest mismatch.');
   if (!read(aioEdgeFunctionPath).includes("./_runtime/story-router.js")) fail('Nested AIO Edge Function import is invalid.');
   if (html.includes('navtext-container')) fail('V26 legacy top title node is still present.');
@@ -127,6 +127,8 @@ if (isV26) {
   if (runtime.includes('DecompressionStream') || runtime.includes('v25-title-delta')) fail('V26 runtime still contains V25 compressed loading.');
   if (!runtime.includes('magireco-story-title-overrides:')) fail('V26 release-scoped local storage key is missing.');
   if (!read(storyPath).includes('story-route-bridge-v1.js')) fail('Story route bridge is not loaded.');
+  if (read(storyPath).includes('story-sprite-bridge-v1.js')) fail('Story results must not load the Kyu sprite bridge.');
+  if (read(storyPath).includes('story-sprite-link-v1') || read('public/myfile/story-app-v7.js').includes('SpriteBridge.wrapChip')) fail('Story cast chips must remain non-navigating labels.');
   if (!read(storyPath).includes(`<meta name="magireco-aio-router" content="${AIO_ROUTER_BASE}">`)) fail('Stable AIO router endpoint is not configured.');
   for (const forbidden of ['public/__acceptance.html', 'public/json_open_old.html', 'public/oldfile']) {
     if (fs.existsSync(forbidden)) fail(`V26 public legacy path still exists: ${forbidden}`);

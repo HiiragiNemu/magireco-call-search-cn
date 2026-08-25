@@ -15,7 +15,7 @@
     },
     "adv": {
       "target": "magiaexedralive2dviewer",
-      "handoffReady": false,
+      "handoffReady": true,
       "readerRepository": "HiiragiNemu/magi-reader",
       "readerRevision": "65f221f2aaa5a9fe161ed32e03e4dfbb93d4746d",
       "readerIndexPath": "website/public/story_index.json",

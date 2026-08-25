@@ -7422,7 +7422,7 @@
     }
   ],
   "advReaderRevision": "65f221f2aaa5a9fe161ed32e03e4dfbb93d4746d",
-  "advHandoffReady": false,
+  "advHandoffReady": true,
   "unmappedPlayableRows": 10,
   "unmappedTargetedRows": 3066,
   "unmappedCandidateRows": 2934,
