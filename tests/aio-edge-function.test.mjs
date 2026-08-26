@@ -36,7 +36,7 @@ test('routes Reader and requires both ADV production gates', async () => {
   assert.equal(location.searchParams.get('bridge'), '1');
   assert.equal(location.searchParams.get('story'), '310371');
   assert.equal(location.searchParams.get('section'), '310371-1');
-  assert.equal(location.searchParams.get('readerRevision'), '65f221f2aaa5a9fe161ed32e03e4dfbb93d4746d');
+  assert.equal(location.searchParams.get('readerRevision'), 'bad94aa371dc9e6aed16ccf6d144106b31643f28');
 });
 
 test('routes initial and rerun editions to their distinct Reader and ADV targets', async () => {

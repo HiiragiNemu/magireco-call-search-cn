@@ -10,8 +10,8 @@
   "invalidPlayableRows": 10,
   "invalidTargetedRows": 158,
   "mappedRows": 12443,
-  "exactSectionMappedRows": 9089,
-  "storyParentMappedRows": 3354,
+  "exactSectionMappedRows": 9104,
+  "storyParentMappedRows": 3339,
   "readerMappedPlayableRows": 5327,
   "readerMappedTargetedRows": 12443,
   "titleEvidenceRoutes": 3286,
@@ -35,7 +35,7 @@
     "total": 0
   },
   "advUnavailableRows": [],
-  "advReaderRevision": "65f221f2aaa5a9fe161ed32e03e4dfbb93d4746d",
+  "advReaderRevision": "bad94aa371dc9e6aed16ccf6d144106b31643f28",
   "advHandoffReady": true,
   "unmappedPlayableRows": 0,
   "unmappedTargetedRows": 0,
@@ -793,8 +793,8 @@
       "invalid": 0,
       "advMapped": 411,
       "routingScope": "exact-title-evidence",
-      "exactSectionMapped": 386,
-      "storyParentMapped": 25
+      "exactSectionMapped": 394,
+      "storyParentMapped": 17
     },
     {
       "slug": "costume",
@@ -829,8 +829,8 @@
       "invalid": 0,
       "advMapped": 44,
       "routingScope": "exact-title-evidence",
-      "exactSectionMapped": 37,
-      "storyParentMapped": 7
+      "exactSectionMapped": 44,
+      "storyParentMapped": 0
     },
     {
       "slug": "scene0",

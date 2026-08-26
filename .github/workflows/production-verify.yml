@@ -73,6 +73,7 @@ jobs:
                   story_router = json.loads(get("data/story-router-v1.json"))
                   assert story_router["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
                   assert story_router["targets"]["adv"]["handoffReady"] is True
+                  assert story_router["targets"]["adv"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
                   assert len(story_router["routes"]) == 12443
                   edition_routes = [route for route in story_router["routes"] if "variants" in route]
                   assert len(edition_routes) == 1187
@@ -83,6 +84,7 @@ jobs:
                   assert aio_router["catalogRevision"] == story_router["catalogRevision"]
                   assert aio_router["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
                   assert aio_router["targets"]["adv"]["handoffReady"] is True
+                  assert aio_router["targets"]["adv"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
                   assert aio_router == story_router
                   assert len(aio_router["routes"]) == 12443
                   aio_report = json.loads(get("aio/story-routes.report.json"))
@@ -141,6 +143,7 @@ jobs:
                       assert response.code == 302
                       assert response.headers["Location"].startswith("https://magiaexedralive2dviewer.pages.dev/")
                       assert "advRenderer=pixi-v2&bridge=1" in response.headers["Location"]
+                      assert "readerRevision=bad94aa371dc9e6aed16ccf6d144106b31643f28" in response.headers["Location"]
                   edition_route = next(route for route in manifest["routes"] if "variants" in route)
                   edition_source = urllib.parse.quote(edition_route["sourceKey"], safe="")
                   locations = []
