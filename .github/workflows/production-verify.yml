@@ -136,9 +136,11 @@ jobs:
                       assert response.headers["Location"].startswith("https://magireader.pages.dev/")
                   try:
                       opener.open(f"{base}/aio/open?source={source}&target=adv", timeout=60)
-                      raise AssertionError("ADV route did not remain gated")
+                      raise AssertionError("ADV route did not redirect")
                   except urllib.error.HTTPError as response:
-                      assert response.code == 409
+                      assert response.code == 302
+                      assert response.headers["Location"].startswith("https://magiaexedralive2dviewer.pages.dev/")
+                      assert "advRenderer=pixi-v2&bridge=1" in response.headers["Location"]
                   edition_route = next(route for route in manifest["routes"] if "variants" in route)
                   edition_source = urllib.parse.quote(edition_route["sourceKey"], safe="")
                   locations = []
