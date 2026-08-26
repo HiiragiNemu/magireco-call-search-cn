@@ -68,17 +68,29 @@ jobs:
                   titles = json.loads(get("data/titles/titles.json"))
                   assert sum(len(v) for v in titles["titleByCategory"].values()) == 5826
                   reader_links = json.loads(get("data/titles/reader-links.json"))
-                  assert reader_links["reader"]["head"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
+                  assert reader_links["reader"]["head"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
                   assert reader_links["summary"]["entries"] == 1196
                   story_router = json.loads(get("data/story-router-v1.json"))
-                  assert story_router["targets"]["reader"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
-                  assert story_router["targets"]["adv"]["handoffReady"] is False
-                  assert len(story_router["routes"]) == 9535
+                  assert story_router["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
+                  assert story_router["targets"]["adv"]["handoffReady"] is True
+                  assert len(story_router["routes"]) == 12443
+                  edition_routes = [route for route in story_router["routes"] if "variants" in route]
+                  assert len(edition_routes) == 1187
+                  assert sum(len(route["variants"]) for route in edition_routes) == 2374
+                  assert all({variant["edition"] for variant in route["variants"]} == {"initial", "rerun"} for route in edition_routes)
+                  assert all(variant["adv"] is not None for route in edition_routes for variant in route["variants"])
                   aio_router = json.loads(get("aio/story-routes.json"))
                   assert aio_router["catalogRevision"] == story_router["catalogRevision"]
-                  assert aio_router["targets"]["reader"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
-                  assert aio_router["targets"]["adv"]["handoffReady"] is False
-                  assert len(aio_router["routes"]) == 9535
+                  assert aio_router["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
+                  assert aio_router["targets"]["adv"]["handoffReady"] is True
+                  assert aio_router == story_router
+                  assert len(aio_router["routes"]) == 12443
+                  aio_report = json.loads(get("aio/story-routes.report.json"))
+                  assert aio_report["exactSectionMappedRows"] + aio_report["storyParentMappedRows"] == 12443
+                  assert all(
+                      item["exactSectionMapped"] + item["storyParentMapped"] == item["mapped"]
+                      for item in aio_report["categories"]
+                  )
                   get("myfile/story-route-bridge-v1.js")
                   story_html = get_text("story.html")
                   assert '<meta name="magireco-aio-router" content="https://callsearch.magireco.top/aio/">' in story_html
@@ -113,8 +125,8 @@ jobs:
                       f"{base}/aio/story-routes.json?verify={nonce}", timeout=60
                   ) as response:
                       manifest = json.load(response)
-                  assert len(manifest["routes"]) == 9535
-                  assert manifest["targets"]["reader"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
+                  assert len(manifest["routes"]) == 12443
+                  assert manifest["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
                   source = urllib.parse.quote(manifest["routes"][0]["sourceKey"], safe="")
                   try:
                       opener.open(f"{base}/aio/open?source={source}&target=reader", timeout=60)
@@ -127,6 +139,17 @@ jobs:
                       raise AssertionError("ADV route did not remain gated")
                   except urllib.error.HTTPError as response:
                       assert response.code == 409
+                  edition_route = next(route for route in manifest["routes"] if "variants" in route)
+                  edition_source = urllib.parse.quote(edition_route["sourceKey"], safe="")
+                  locations = []
+                  for edition in ("initial", "rerun"):
+                      try:
+                          opener.open(f"{base}/aio/open?source={edition_source}&target=reader&edition={edition}", timeout=60)
+                          raise AssertionError(f"{edition} Reader route did not redirect")
+                      except urllib.error.HTTPError as response:
+                          assert response.code == 302
+                          locations.append(response.headers["Location"])
+                  assert locations[0] != locations[1]
                   print("EdgeOne Call/AIO endpoints passed.")
                   break
               except Exception:

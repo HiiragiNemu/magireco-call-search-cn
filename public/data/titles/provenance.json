@@ -15,7 +15,7 @@
       "LLM/rule fallback"
     ]
   },
-  "generatedAt": "2026-08-25T14:13:06+00:00",
+  "generatedAt": "2026-08-26T14:59:11+00:00",
   "method": "deterministic build from data/titles/authority.json",
   "release": "canonical-title-authority-v1",
   "schemaVersion": 1,

@@ -183,6 +183,36 @@
   gap: 4px;
   margin-top: 5px;
 }
+.story-route-variant-v1 {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  padding: 2px 3px;
+  border: 1px solid #ead4df;
+  border-radius: 8px;
+  background: #fffafb;
+}
+.story-route-edition-v1,
+.story-route-status-v1,
+.story-route-precision-v1 {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-size: .62rem;
+  font-weight: 750;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.story-route-edition-v1.initial { color: #694158; background: #f1e4eb; }
+.story-route-edition-v1.rerun { color: #285b6a; background: #e4f1f4; }
+.story-route-status-v1 { color: #66515c; background: #f3edf0; }
+.story-route-precision-v1.story-parent { color: #6b4b22; background: #f8e9cf; }
+.story-route-status-v1.ai-unreviewed { color: #845915; background: #fff0c9; }
+.story-route-status-v1.ai-human-reviewed { color: #25613b; background: #dff3e6; }
 .story-route-link-v1 {
   display: inline-flex;
   align-items: center;

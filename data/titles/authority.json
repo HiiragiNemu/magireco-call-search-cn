@@ -15,7 +15,7 @@
       "LLM/rule fallback"
     ]
   },
-  "generatedAt": "2026-08-25T14:13:06+00:00",
+  "generatedAt": "2026-08-26T14:59:11+00:00",
   "parentByCategory": {
     "scene0": {
       "Film.0": "Film.0",
@@ -1321,7 +1321,7 @@
     "call": {
       "branch": "main",
       "dirty": true,
-      "head": "f601ea8374fc3b71f352641e39b9bfc5cd9f43e3",
+      "head": "38d3e1c0a8726846bc39e0f5ee530761366b4fcd",
       "path": "D:\\magia\\MyProducts\\magireco-call-search-cn-v26-candidate"
     },
     "officialCn": {
@@ -1333,7 +1333,7 @@
     "reader": {
       "branch": "main",
       "dirty": false,
-      "head": "bad94aa371dc9e6aed16ccf6d144106b31643f28",
+      "head": "cd78e9b7d4fa6dcb029c3c7edc788298de03da94",
       "path": "D:\\magia\\MyProducts\\magi-reader"
     },
     "wiki": {

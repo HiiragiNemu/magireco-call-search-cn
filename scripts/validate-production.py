@@ -6,8 +6,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE = "canonical-title-authority-v1"
-READER_REVISION = "bad94aa371dc9e6aed16ccf6d144106b31643f28"
+READER_REVISION = "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
 AIO_ROUTER_BASE = "https://callsearch.magireco.top/aio/"
+STORY_ROUTE_COUNT = 12443
+EDITION_VARIANT_ROUTES = 1187
+EDITION_VARIANT_TARGETS = 2374
 KANA = re.compile(r"[\u3040-\u30ff]")
 
 
@@ -31,6 +34,7 @@ reader_links = load("public/data/titles/reader-links.json")
 title_sources = load("public/data/titles/sources.json")
 story_router = load("public/data/story-router-v1.json")
 aio_router = load("public/aio/story-routes.json")
+aio_report = load("public/aio/story-routes.report.json")
 build_info = load("public/build-info.json")
 
 assert manifest["release"] == RELEASE
@@ -53,14 +57,40 @@ assert title_sources["canonicalNameAliases"]["八云美玉"] == "八云御魂"
 assert story_router["targets"]["reader"]["readerRevision"] == READER_REVISION
 assert story_router["targets"]["reader"]["indexEntries"] == 3017
 assert story_router["targets"]["adv"]["handoffReady"] is True
-assert len(story_router["routes"]) == 9535
-assert sum(route["reader"] is not None for route in story_router["routes"]) == 9535
-assert sum(route["adv"] is not None for route in story_router["routes"]) == 8076
+assert len(story_router["routes"]) == STORY_ROUTE_COUNT
+assert sum(route["reader"] is not None for route in story_router["routes"]) == STORY_ROUTE_COUNT
+assert sum(route["adv"] is not None for route in story_router["routes"]) == STORY_ROUTE_COUNT
 assert aio_router["catalogRevision"] == story_router["catalogRevision"]
 assert aio_router["targets"]["reader"]["readerRevision"] == READER_REVISION
 assert aio_router["targets"]["adv"]["handoffReady"] is True
-assert len(aio_router["routes"]) == 9535
-assert build_info["storyRouterRouteCount"] == 9535
+assert aio_router == story_router
+assert len(aio_router["routes"]) == STORY_ROUTE_COUNT
+edition_routes = [route for route in story_router["routes"] if "variants" in route]
+edition_targets = [variant for route in edition_routes for variant in route["variants"]]
+assert len(edition_routes) == EDITION_VARIANT_ROUTES
+assert len(edition_targets) == EDITION_VARIANT_TARGETS
+assert all(variant["reader"] is not None and variant["adv"] is not None for variant in edition_targets)
+assert all(
+    len(route["variants"]) == 2
+    and {variant["edition"] for variant in route["variants"]} == {"initial", "rerun"}
+    for route in edition_routes
+)
+assert aio_report["mappedRows"] == STORY_ROUTE_COUNT
+assert aio_report["advMappedTargetedRows"] == STORY_ROUTE_COUNT
+assert aio_report["editionVariantRoutes"] == EDITION_VARIANT_ROUTES
+assert aio_report["editionVariantTargets"] == EDITION_VARIANT_TARGETS
+assert aio_report["editionVariantAdvUnavailable"] == 0
+assert aio_report["exactSectionMappedRows"] + aio_report["storyParentMappedRows"] == STORY_ROUTE_COUNT
+assert all(
+    item["exactSectionMapped"] + item["storyParentMapped"] == item["mapped"]
+    for item in aio_report["categories"]
+)
+assert build_info["storyRouterRouteCount"] == STORY_ROUTE_COUNT
+assert build_info["storyRouterExactSectionRoutes"] == aio_report["exactSectionMappedRows"]
+assert build_info["storyRouterStoryParentRoutes"] == aio_report["storyParentMappedRows"]
+assert build_info["storyRouterEditionVariantRoutes"] == EDITION_VARIANT_ROUTES
+assert build_info["storyRouterEditionVariantTargets"] == EDITION_VARIANT_TARGETS
+assert build_info["storyRouterEditionVariantAdvUnavailable"] == 0
 assert build_info["storyRouterReaderRevision"] == READER_REVISION
 assert build_info["aioRouterBase"] == AIO_ROUTER_BASE
 

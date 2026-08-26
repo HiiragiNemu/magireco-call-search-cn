@@ -61,6 +61,87 @@ function optionalNfcText(value, label, maxLength) {
     }
     return normalized;
 }
+function parseTranslationStatus(value, label) {
+    if (!isRecord(value))
+        throw new Error(`${label} 必须是对象`);
+    const code = value['code'];
+    if (code !== 'human-baseline' && code !== 'ai-unreviewed' && code !== 'ai-human-reviewed') {
+        throw new Error(`${label}.code 无效`);
+    }
+    const statusLabel = optionalNfcText(value['label'], `${label}.label`, 64);
+    if (statusLabel === undefined)
+        throw new Error(`${label}.label 无效`);
+    return { code, label: statusLabel };
+}
+function parseStoryRouteVariant(value, routeIndex, variantIndex) {
+    const context = `routes[${routeIndex}].variants[${variantIndex}]`;
+    if (!isRecord(value))
+        throw new Error(`${context} 必须是对象`);
+    const label = optionalNfcText(value['label'], `${context}.label`, 64);
+    if (label === undefined)
+        throw new Error(`${context}.label 无效`);
+    const edition = value['edition'];
+    if (edition !== 'initial' && edition !== 'rerun')
+        throw new Error(`${context}.edition 无效`);
+    const precision = value['precision'];
+    if (precision !== 'exact-section' && precision !== 'story-parent') {
+        throw new Error(`${context}.precision 无效`);
+    }
+    const translationStatus = parseTranslationStatus(value['translationStatus'], `${context}.translationStatus`);
+    if (!isRecord(value['reader']))
+        throw new Error(`${context}.reader 必须是对象`);
+    const storyId = requireString(value['reader']['storyId'], `${context}.reader.storyId`, STORY_ID_RE, 256);
+    const readerSectionValue = value['reader']['section'];
+    let readerSection;
+    if (readerSectionValue !== undefined) {
+        if (typeof readerSectionValue !== 'string'
+            || readerSectionValue.length === 0
+            || readerSectionValue.length > 512
+            || CONTROL_RE.test(readerSectionValue)) {
+            throw new Error(`${context}.reader.section 无效`);
+        }
+        readerSection = readerSectionValue;
+    }
+    let adv = null;
+    if (value['adv'] !== null) {
+        if (!isRecord(value['adv']))
+            throw new Error(`${context}.adv 必须是对象或 null`);
+        const chapterId = requireString(value['adv']['chapterId'], `${context}.adv.chapterId`, STORY_ID_RE, 256);
+        const section = optionalNfcText(value['adv']['section'], `${context}.adv.section`, 512);
+        if (section === undefined)
+            throw new Error(`${context}.adv.section 无效`);
+        const advPrecision = value['adv']['precision'];
+        if (advPrecision !== 'exact-section' && advPrecision !== 'story-parent') {
+            throw new Error(`${context}.adv.precision 无效`);
+        }
+        const readerRawIdValue = value['adv']['readerRawId'];
+        const readerRawId = readerRawIdValue === undefined
+            ? undefined
+            : requireString(readerRawIdValue, `${context}.adv.readerRawId`, STORY_ID_RE, 256);
+        if (chapterId !== storyId && readerRawId !== chapterId) {
+            throw new Error(`${context} 的 Reader 与 ADV 没有使用同一剧情身份`);
+        }
+        if (chapterId === storyId && readerRawId !== undefined) {
+            throw new Error(`${context}.adv.readerRawId 仅可用于跨 Reader 版本身份桥接`);
+        }
+        if (readerSection !== undefined && section !== readerSection && advPrecision !== 'story-parent') {
+            throw new Error(`${context} 的 Reader 与 ADV 没有使用同一章节`);
+        }
+        if (advPrecision !== precision)
+            throw new Error(`${context} 的路由精度与 ADV 精度不一致`);
+        adv = readerRawId === undefined
+            ? { chapterId, section, precision: advPrecision }
+            : { chapterId, section, precision: advPrecision, readerRawId };
+    }
+    return {
+        label,
+        edition,
+        precision,
+        translationStatus,
+        reader: readerSection === undefined ? { storyId } : { storyId, section: readerSection },
+        adv,
+    };
+}
 function firstStorySpriteValue(input, key) {
     for (const alias of STORY_SPRITE_ALIASES[key]) {
         const value = input[alias];
@@ -109,6 +190,7 @@ function parseRoute(value, index) {
     if (match !== 'exact-character-episode'
         && match !== 'exact-main-episode'
         && match !== 'exact-reader-group'
+        && match !== 'exact-title-evidence'
         && match !== 'explicit-title'
         && match !== 'manual') {
         throw new Error(`routes[${index}].match 无效`);
@@ -127,6 +209,17 @@ function parseRoute(value, index) {
         }
         readerSection = readerSectionValue;
     }
+    const precisionValue = value['precision'];
+    let precision;
+    if (precisionValue === undefined) {
+        precision = readerSection === undefined ? 'story-parent' : 'exact-section';
+    }
+    else if (precisionValue === 'exact-section' || precisionValue === 'story-parent') {
+        precision = precisionValue;
+    }
+    else {
+        throw new Error(`routes[${index}].precision 无效`);
+    }
     let adv = null;
     if (value['adv'] !== null) {
         if (!isRecord(value['adv']))
@@ -139,13 +232,76 @@ function parseRoute(value, index) {
             CONTROL_RE.test(section)) {
             throw new Error(`routes[${index}].adv.section 无效`);
         }
-        if (chapterId !== storyId) {
+        const advPrecisionValue = value['adv']['precision'];
+        let advPrecision;
+        if (advPrecisionValue === undefined) {
+            advPrecision = precision;
+        }
+        else if (advPrecisionValue === 'exact-section' || advPrecisionValue === 'story-parent') {
+            advPrecision = advPrecisionValue;
+        }
+        else {
+            throw new Error(`routes[${index}].adv.precision 无效`);
+        }
+        const readerRawIdValue = value['adv']['readerRawId'];
+        let readerRawId;
+        if (readerRawIdValue !== undefined) {
+            readerRawId = requireString(readerRawIdValue, `routes[${index}].adv.readerRawId`, STORY_ID_RE, 256);
+        }
+        if (chapterId !== storyId && readerRawId !== chapterId) {
             throw new Error(`routes[${index}] 的 Reader 与 ADV 没有使用同一剧情编号`);
         }
-        if (readerSection !== undefined && section !== readerSection) {
+        if (chapterId === storyId && readerRawId !== undefined) {
+            throw new Error(`routes[${index}].adv.readerRawId 仅可用于跨 Reader 版本身份桥接`);
+        }
+        if (readerSection !== undefined && section !== readerSection && advPrecision !== 'story-parent') {
             throw new Error(`routes[${index}] 的 Reader 与 ADV 没有使用同一章节`);
         }
-        adv = { chapterId, section };
+        if (advPrecision !== precision) {
+            throw new Error(`routes[${index}] 的路由精度与 ADV 精度不一致`);
+        }
+        adv = readerRawId === undefined
+            ? { chapterId, section, precision: advPrecision }
+            : { chapterId, section, precision: advPrecision, readerRawId };
+    }
+    const editionValue = value['edition'];
+    let edition;
+    if (editionValue !== undefined) {
+        if (editionValue !== 'initial' && editionValue !== 'rerun') {
+            throw new Error(`routes[${index}].edition 无效`);
+        }
+        edition = editionValue;
+    }
+    const translationStatus = value['translationStatus'] === undefined
+        ? undefined
+        : parseTranslationStatus(value['translationStatus'], `routes[${index}].translationStatus`);
+    const variantsValue = value['variants'];
+    let variants;
+    if (variantsValue !== undefined) {
+        if (!Array.isArray(variantsValue) || variantsValue.length !== 2) {
+            throw new Error(`routes[${index}].variants 必须包含初回版与复刻版`);
+        }
+        const parsed = variantsValue.map((variant, variantIndex) => (parseStoryRouteVariant(variant, index, variantIndex)));
+        if (new Set(parsed.map((variant) => variant.edition)).size !== 2) {
+            throw new Error(`routes[${index}].variants 版本重复`);
+        }
+        if (edition === undefined || translationStatus === undefined) {
+            throw new Error(`routes[${index}] 的版本变体缺少主版本元数据`);
+        }
+        const primary = parsed.find((variant) => variant.edition === edition);
+        if (primary === undefined
+            || primary.reader.storyId !== storyId
+            || primary.reader.section !== readerSection
+            || primary.precision !== precision
+            || primary.translationStatus.code !== translationStatus.code
+            || primary.translationStatus.label !== translationStatus.label
+            || primary.adv?.chapterId !== adv?.chapterId
+            || primary.adv?.section !== adv?.section
+            || primary.adv?.precision !== adv?.precision
+            || primary.adv?.readerRawId !== adv?.readerRawId) {
+            throw new Error(`routes[${index}] 的主版本与版本变体不一致`);
+        }
+        variants = parsed;
     }
     if (canonicalStoryId !== `magireco:${storyId}`) {
         throw new Error(`routes[${index}].canonicalStoryId 与 Reader 编号不一致`);
@@ -154,6 +310,10 @@ function parseRoute(value, index) {
         sourceKey,
         canonicalStoryId,
         match,
+        precision,
+        ...(edition === undefined ? {} : { edition }),
+        ...(translationStatus === undefined ? {} : { translationStatus }),
+        ...(variants === undefined ? {} : { variants }),
         reader: readerSection === undefined ? { storyId } : { storyId, section: readerSection },
         adv,
     };
@@ -392,12 +552,14 @@ export function resolveStoryTargetUrl(route, target, origins) {
     }
     return buildAdvTargetUrl(origins.advBaseUrl, route.adv.chapterId, route.adv.section, origins.advReaderRevision, origins.advRenderer);
 }
-export function buildRouterUrl(endpoint, sourceKey, target) {
+export function buildRouterUrl(endpoint, sourceKey, target, edition) {
     if (!SOURCE_KEY_RE.test(sourceKey))
         throw new Error('sourceKey 无效');
     const url = parseBaseUrl(endpoint, 'Story Router endpoint');
     url.searchParams.set('source', sourceKey);
     url.searchParams.set('target', target);
+    if (edition !== undefined)
+        url.searchParams.set('edition', edition);
     return url.toString();
 }
 function storySpriteParameterValue(parameters, key) {
@@ -555,13 +717,14 @@ export function handleStoryRouterRequest(request, index, origins) {
     const url = new URL(request.url);
     const sources = url.searchParams.getAll('source');
     const targets = url.searchParams.getAll('target');
+    const editions = url.searchParams.getAll('edition');
     if (targets.length !== 1) {
         return errorResponse(400, 'bad_request', 'target 必须出现一次', head);
     }
     const target = targets[0];
     if (target === 'sprite') {
-        if (sources.length !== 0) {
-            return errorResponse(400, 'bad_request', 'Sprite 路由不接受 source', head);
+        if (sources.length !== 0 || editions.length !== 0) {
+            return errorResponse(400, 'bad_request', 'Sprite 路由不接受 source 或 edition', head);
         }
         let context;
         try {
@@ -589,12 +752,22 @@ export function handleStoryRouterRequest(request, index, origins) {
         return errorResponse(400, 'bad_request', 'source 必须出现一次', head);
     }
     const sourceKey = sources[0] ?? '';
+    if (editions.length > 1 || (editions.length === 1 && editions[0] !== 'initial' && editions[0] !== 'rerun')) {
+        return errorResponse(400, 'bad_request', 'edition 只接受 initial 或 rerun', head);
+    }
     if (!SOURCE_KEY_RE.test(sourceKey) || (target !== 'reader' && target !== 'adv')) {
         return errorResponse(400, 'bad_request', 'source 或 target 格式错误', head);
     }
-    const route = resolveStoryRoute(index, sourceKey);
-    if (route === null) {
+    const routeRecord = resolveStoryRoute(index, sourceKey);
+    if (routeRecord === null) {
         return errorResponse(404, 'route_not_found', '该搜索结果尚未登记剧情路由', head);
+    }
+    const requestedEdition = editions[0];
+    const route = requestedEdition === undefined
+        ? routeRecord
+        : routeRecord.variants?.find((variant) => variant.edition === requestedEdition) ?? null;
+    if (route === null) {
+        return errorResponse(404, 'edition_not_available', '该搜索结果没有所选初回/复刻版本', head);
     }
     if (target === 'adv' && route.adv === null) {
         return errorResponse(404, 'target_not_available', '该搜索行尚无经过验证的 ADV 精确章节', head);

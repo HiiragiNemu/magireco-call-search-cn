@@ -43,7 +43,7 @@
     return base ? new URL('story-routes.json', base.endsWith('/') ? base : `${base}/`).toString() : LOCAL_MANIFEST_URL;
   }
 
-  function routerUrl(sourceKey, target) {
+  function routerUrl(sourceKey, target, edition) {
     const base = aioBase();
     if (!base) return '';
     const url = absoluteBase(base);
@@ -54,6 +54,7 @@
     url.hash = '';
     url.searchParams.set('source', sourceKey);
     url.searchParams.set('target', target);
+    if (edition === 'initial' || edition === 'rerun') url.searchParams.set('edition', edition);
     return url.toString();
   }
 
@@ -133,9 +134,30 @@
     if (!route) return null;
     const routedReader = routerUrl(key, 'reader');
     const advReady = route.adv && state.payload.targets?.adv?.handoffReady === true;
+    const variants = Array.isArray(route.variants)
+      ? route.variants.map((variant) => {
+          const edition = variant?.edition;
+          const variantAdvReady = variant?.adv && state.payload.targets?.adv?.handoffReady === true;
+          return Object.freeze({
+            label: text(variant?.label),
+            edition,
+            storyId: text(variant?.reader?.storyId),
+            precision: text(variant?.precision),
+            translationStatus: variant?.translationStatus || null,
+            reader: routerUrl(key, 'reader', edition) || directReaderUrl(variant),
+            adv: variantAdvReady ? routerUrl(key, 'adv', edition) : '',
+            advAvailable: Boolean(variant?.adv),
+            advReady: Boolean(variantAdvReady)
+          });
+        })
+      : [];
     return Object.freeze({
       sourceKey: key,
       storyId: route.reader.storyId,
+      edition: route.edition || '',
+      precision: route.precision || '',
+      translationStatus: route.translationStatus || null,
+      variants: Object.freeze(variants),
       reader: routedReader || directReaderUrl(route),
       adv: advReady ? routerUrl(key, 'adv') : '',
       advAvailable: Boolean(route.adv),

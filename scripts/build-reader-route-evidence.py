@@ -40,6 +40,72 @@ PUELLA_EVENT_PREFIXES = {
     "パクス・ロマーナの恋人編": "5196",
 }
 
+# Exact event-family identities audited against Reader folders.  The first
+# prefix is the default/initial Reader edition; explicit ``復刻`` families point
+# at the rerun folder.  Longer/more-specific prefixes are evaluated first.
+CURATED_EVENT_FAMILY_PREFIXES = [
+    ("復刻 みかづき荘のSummer Vacation", "5058"),
+    ("復刻 そしてアザレアの花咲く", "51005"),
+    ("復刻 駆け出しメイド十七夜", "5081"),
+    ("復刻 サマトレ！", "5098"),
+    ("復刻 君と綴る日記", "51003"),
+    ("復刻 CROSS CONNECTION", "5072"),
+    ("Angels on the Road ～トナカイサンタ繁盛記～", "5119"),
+    ("神浜スパアドベンチャー ビーチに渦巻く悪魔の怨嗟", "5161"),
+    ("想いを継ぐものたち ～魔法少女たると☆マギカ～", "5159"),
+    ("伝説の終わり、光の果て", "5102"),
+    ("ウワサアクアリウムへようこそ", "5107"),
+    ("聖夜に刻む１ページ～君と、ここから～", "5080"),
+    ("トリック☆トラブル☆学園祭", "5099"),
+    ("みたまの特訓 ほむら眼鏡ver編", "5029"),
+    ("みたまの特訓 ななか編", "5048"),
+    ("神浜レアリティースター", "5056"),
+    ("バイバイ、また明日", "5017"),
+    ("始まりと永遠と", "5049"),
+    ("灰色の革命", "5156"),
+    ("Little Bird's Star", "5160"),
+    ("Another Daze ～魔法少女かずみ☆マギカ～", "51008"),
+    ("Magia Clash!!", "5063"),
+    ("Rumors in Disguise", "5075"),
+    ("サヨナラ・ストレージ", "5173"),
+    ("神浜MVD 環いろはの事件簿", "5189"),
+    ("あしたの幸せに花束を", "5193"),
+    ("かごめの百怪波瀾～炎夏の宴～", "5197"),
+]
+
+# Reader keeps both the initial and rerun script trees for these exact event
+# identities.  The pair order is authoritative for the user-facing edition
+# label; generation additionally requires both folders to have the same Reader
+# title before exposing them as alternatives.
+EVENT_EDITION_PAIRS = [
+    ("5119", "5151"),
+    ("51008", "5109"),
+    ("5023", "5072"),
+    ("5160", "5185"),
+    ("5063", "5096"),
+    ("5075", "5122"),
+    ("5173", "5204"),
+    ("5032", "5058"),
+    ("5193", "5209"),
+    ("5102", "5158"),
+    ("5028", "5081"),
+    ("5080", "5117"),
+    ("5034", "5133"),
+    ("5159", "5182"),
+    ("5107", "5127"),
+    ("5040", "5213"),
+    ("5189", "5211"),
+    ("5161", "5188"),
+    ("5197", "5218"),
+    ("5059", "51005"),
+    ("5049", "5083"),
+]
+EVENT_EDITION_BY_PREFIX = {
+    prefix: ("initial" if prefix == initial else "rerun", initial, rerun)
+    for initial, rerun in EVENT_EDITION_PAIRS
+    for prefix in (initial, rerun)
+}
+
 # These are exact story identities, not translated-title guesses.  The numeric
 # prefix is the Reader folder/source identity and is stable across its shards.
 SPECIAL_PARENT_PREFIXES = {
@@ -105,7 +171,29 @@ def write_json(path: Path, value: Any) -> None:
 def plain_title(value: Any) -> str:
     if not isinstance(value, str):
         return ""
-    return html.unescape(re.sub(r"<[^>]*>", "", value)).strip()
+    # Call's older special-story rows append a date/event badge in a
+    # ``specialTime`` span.  It is presentation metadata, not part of the
+    # story title, so remove the whole span before stripping the remaining
+    # markup.  Keep BR as a word boundary instead of concatenating titles.
+    def special_time(match: re.Match[str]) -> str:
+        inner = html.unescape(re.sub(r"<[^>]*>", " ", match.group(1)))
+        inner = re.sub(r"\s+", " ", inner).strip()
+        # Dates and limited-mission badges are presentation metadata.  Some
+        # newer rows reuse the same span for a genuine subtitle, which must be
+        # preserved as part of the stable story identity.
+        if re.match(r"^20\d{2}(?:\b|\D)", inner) or inner == "期間限定ミッション":
+            return " "
+        return f" {inner} " if inner else " "
+
+    text = re.sub(
+        r"<span\b[^>]*class\s*=\s*['\"]specialTime['\"][^>]*>(.*?)</span>",
+        special_time,
+        value,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    text = re.sub(r"<br\s*/?>", " ", text, flags=re.IGNORECASE)
+    text = html.unescape(re.sub(r"<[^>]*>", " ", text))
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def exact_key(value: Any) -> str:
@@ -116,6 +204,30 @@ def identity(value: Any) -> str:
     text = unicodedata.normalize("NFKC", str(value or "")).casefold()
     text = text.replace("話", "话").replace("臺", "台").replace("黃", "黄")
     return "".join(char for char in text if char.isalnum())
+
+
+def excluded_catalog_row(slug: str, row_index: int, row: Any, title: str) -> bool:
+    if (
+        isinstance(row, list)
+        and re.fullmatch(r"未命名记录\s+\d+", title) is not None
+        and all(value in (None, "", []) for value in row[1:])
+    ):
+        return True
+    summary = str(row[2] or "") if isinstance(row, list) and len(row) > 2 else ""
+    if slug in {"event", "puella-historia"} and "チャレンジ" in title and "クエスト時台詞" in summary:
+        return True
+    if (
+        slug == "event"
+        and row_index == 3746
+        and title == "神浜レアリティースター 18話"
+        and summary == "いろはちゃんが巨大化する。"
+    ):
+        return True
+    if slug == "event" and title == "ミラーズランキング序" and summary == "動画":
+        return True
+    if slug == "event" and title == "殲滅戦 魔女たちのパラドクス" and not summary:
+        return True
+    return False
 
 
 def folder_prefix(folder: str) -> str:
@@ -219,6 +331,7 @@ class Route:
     reader_id: str
     section: str | None
     evidence: str
+    precision: str | None = None
 
     def json(self) -> dict[str, Any]:
         value: dict[str, Any] = {
@@ -229,6 +342,8 @@ class Route:
         }
         if self.section is not None:
             value["section"] = self.section
+        if self.precision is not None:
+            value["precision"] = self.precision
         return value
 
 
@@ -249,6 +364,7 @@ class RouteSet:
         reader_id: str,
         section: str | None,
         evidence: str,
+        precision: str | None = None,
     ) -> None:
         title = exact_key(source_title)
         if not title:
@@ -256,13 +372,201 @@ class RouteSet:
         candidates = self.actual_titles.get(slug, {}).get(identity(title), ())
         for actual_title in candidates:
             key = (slug, actual_title)
-            route = Route(slug, actual_title, reader_id, section, evidence)
+            route = Route(slug, actual_title, reader_id, section, evidence, precision)
             previous = self.routes.get(key)
             if previous is not None and previous != route:
                 raise EvidenceBuildError(
                     f"conflicting route evidence for {slug}/{actual_title}"
                 )
             self.routes[key] = route
+
+
+def route_entry(reader: ReaderCatalog, reader_id: str) -> dict[str, Any] | None:
+    exact = reader.by_id.get(reader_id, ())
+    if len(exact) == 1:
+        return exact[0]
+    if exact:
+        return None
+    return nested_equivalent(reader.by_raw.get(reader_id, ()))
+
+
+def ordered_folder_sections(reader: ReaderCatalog, folder: str) -> list[str]:
+    sections = {
+        section
+        for entry in reader.by_folder.get(folder, ())
+        for section in entry["sections"]
+    }
+
+    def order(section: str) -> tuple[Any, ...]:
+        source = source_part(section)
+        numbers = tuple(int(value) for value in re.findall(r"\d+", source))
+        return numbers, source, section_number(section) or -1, section
+
+    return sorted(sections, key=order)
+
+
+def entry_containing_section(
+    reader: ReaderCatalog,
+    folder: str,
+    section: str,
+) -> dict[str, Any] | None:
+    candidates = [
+        entry for entry in reader.by_folder.get(folder, ())
+        if section in entry["sections"]
+    ]
+    if not candidates:
+        return None
+    return sorted(candidates, key=lambda entry: (len(entry["sections"]), str(entry["id"])))[0]
+
+
+def translation_status(
+    reader: ReaderCatalog,
+    reader_id: str,
+    machine_entries: dict[str, dict[str, Any]],
+) -> dict[str, str]:
+    entry = route_entry(reader, reader_id)
+    candidate_ids = {reader_id}
+    if entry is not None:
+        candidate_ids.add(str(entry["id"]))
+        raw_id = str(entry.get("raw_id") or "")
+        if raw_id:
+            candidate_ids.add(raw_id)
+            candidate_ids.update(str(item["id"]) for item in reader.by_raw.get(raw_id, ()))
+    records = [machine_entries[value] for value in candidate_ids if value in machine_entries]
+    if any(record.get("manual_human_verified") is True for record in records):
+        return {"code": "ai-human-reviewed", "label": "AI翻译·人工校对"}
+    if records:
+        return {"code": "ai-unreviewed", "label": "AI翻译·待人工校对"}
+    return {"code": "human-baseline", "label": "既有人工译本"}
+
+
+def event_route_variants(
+    route: Route,
+    reader: ReaderCatalog,
+    machine_entries: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    if route.slug != "event":
+        return []
+    primary_entry = route_entry(reader, route.reader_id)
+    if primary_entry is None:
+        return []
+    primary_folder = str(primary_entry["folder"])
+    primary_prefix = folder_prefix(primary_folder)
+    edition = EVENT_EDITION_BY_PREFIX.get(primary_prefix)
+    if edition is None:
+        return []
+    _, initial_prefix, rerun_prefix = edition
+    initial_folder = reader.one_folder("event_story", initial_prefix)
+    rerun_folder = reader.one_folder("event_story", rerun_prefix)
+    if (
+        initial_folder is None
+        or rerun_folder is None
+        or folder_title(initial_folder) != folder_title(rerun_folder)
+    ):
+        return []
+
+    primary_sections = ordered_folder_sections(reader, primary_folder)
+    source_position = (
+        primary_sections.index(route.section)
+        if route.section is not None and route.section in primary_sections
+        else None
+    )
+    primary_raw_id = str(primary_entry.get("raw_id") or "")
+    primary_entry_sections = list(primary_entry["sections"])
+    primary_entry_position = (
+        primary_entry_sections.index(route.section)
+        if route.section is not None and route.section in primary_entry_sections
+        else None
+    )
+    variants: list[dict[str, Any]] = []
+    for variant_edition, prefix, folder in (
+        ("initial", initial_prefix, initial_folder),
+        ("rerun", rerun_prefix, rerun_folder),
+    ):
+        target_section: str | None = None
+        target_entry: dict[str, Any] | None = None
+        mapped_raw_id = (
+            prefix + primary_raw_id[len(primary_prefix):]
+            if primary_raw_id.startswith(primary_prefix)
+            else ""
+        )
+        if mapped_raw_id:
+            target_entry = nested_equivalent(
+                entry
+                for entry in reader.by_raw.get(mapped_raw_id, ())
+                if entry["folder"] == folder
+            )
+        if target_entry is not None and route.section is not None:
+            if route.section in target_entry["sections"]:
+                # Rerun child entries can retain the initial source filename;
+                # preserve that stable section identity while routing through
+                # the rerun Reader id.
+                target_section = route.section
+            else:
+                source = source_part(route.section)
+                mapped_source = (
+                    prefix + source[len(primary_prefix):]
+                    if source.startswith(primary_prefix)
+                    else ""
+                )
+                mapped_descriptor = (
+                    mapped_source + route.section[len(source):]
+                    if mapped_source
+                    else ""
+                )
+                if mapped_descriptor in target_entry["sections"]:
+                    target_section = mapped_descriptor
+                elif (
+                    primary_entry_position is not None
+                    and len(target_entry["sections"]) == len(primary_entry_sections)
+                ):
+                    target_section = target_entry["sections"][primary_entry_position]
+        target_sections = ordered_folder_sections(reader, folder)
+        if (
+            target_entry is None
+            and source_position is not None
+            and len(target_sections) == len(primary_sections)
+            and source_position < len(target_sections)
+        ):
+            target_section = target_sections[source_position]
+            target_entry = entry_containing_section(reader, folder, target_section)
+        if target_entry is None:
+            target_entry = aggregate_entry(reader, folder) or first_folder_entry(reader, folder)
+            target_section = None
+        if target_entry is None:
+            continue
+        target_id = reader.route_id(target_entry)
+        variant: dict[str, Any] = {
+            "label": "初回版" if variant_edition == "initial" else "复刻版",
+            "edition": variant_edition,
+            "readerId": target_id,
+            "precision": "exact-section" if target_section is not None else "story-parent",
+            "translationStatus": translation_status(reader, target_id, machine_entries),
+        }
+        if target_section is not None:
+            variant["section"] = target_section
+        variants.append(variant)
+    return variants
+
+
+def route_json(
+    route: Route,
+    reader: ReaderCatalog,
+    machine_entries: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    value = route.json()
+    value["translationStatus"] = translation_status(reader, route.reader_id, machine_entries)
+    edition = EVENT_EDITION_BY_PREFIX.get(
+        folder_prefix(str(route_entry(reader, route.reader_id).get("folder", "")))
+        if route_entry(reader, route.reader_id) is not None
+        else ""
+    )
+    if edition is not None:
+        value["edition"] = edition[0]
+    variants = event_route_variants(route, reader, machine_entries)
+    if len(variants) > 1:
+        value["variants"] = variants
+    return value
 
 
 def title_groups() -> dict[tuple[str, str], tuple[dict[str, Any], dict[str, Any]]]:
@@ -305,6 +609,66 @@ def aggregate_entry(reader: ReaderCatalog, folder: str) -> dict[str, Any] | None
     return sorted(candidates, key=lambda entry: str(entry["id"]))[0] if candidates else None
 
 
+def first_folder_entry(reader: ReaderCatalog, folder: str) -> dict[str, Any] | None:
+    """Return the deterministic first playable story inside a Reader folder.
+
+    Reader event folders commonly aggregate several story IDs and therefore do
+    not expose a synthetic folder-level ID.  A Call row whose exact child
+    boundary is not encoded can still safely open the containing event at its
+    first story; callers mark this as parent precision instead of claiming an
+    exact section.
+    """
+    entries = reader.canonical_raw_entries(reader.by_folder[folder])
+    if not entries:
+        return None
+    return sorted(entries, key=lambda entry: str(entry.get("raw_id") or entry["id"]))[0]
+
+
+def ordinal_event_sections(
+    group: dict[str, Any],
+    reader: ReaderCatalog,
+    folder: str,
+) -> dict[str, tuple[dict[str, Any], str]]:
+    """Map a complete sequential episode family to Reader sections.
+
+    This is used only when the Call family is exactly ``1..N`` (optionally with
+    one prologue) and the Reader folder contains the same number of ordered
+    sections.  It avoids guessing across partial or duplicated episode sets.
+    """
+    numbered: dict[int, str] = {}
+    prologue: str | None = None
+    for child in group.get("children", ()):
+        title = str(child.get("source_title") or "")
+        suffix = str(child.get("source_suffix") or "").strip()
+        match = re.fullmatch(r"第?(\d+)[話话]?", suffix)
+        if match:
+            numbered[int(match.group(1))] = title
+        elif suffix in {"序", "序章", "Prologue", "プロローグ"}:
+            prologue = title
+    if not numbered or set(numbered) != set(range(1, len(numbered) + 1)):
+        return {}
+
+    # Reader exposes both aggregate entries and their child entries for this
+    # family.  Count each physical source section once, then choose the
+    # smallest entry that contains it so an exact deep link is retained.
+    flattened: list[tuple[dict[str, Any], str]] = []
+    for section in ordered_folder_sections(reader, folder):
+        entry = entry_containing_section(reader, folder, section)
+        if entry is None:
+            return {}
+        flattened.append((entry, section))
+
+    offset = 1 if prologue is not None else 0
+    if len(flattened) != len(numbered) + offset:
+        return {}
+    result: dict[str, tuple[dict[str, Any], str]] = {}
+    if prologue is not None:
+        result[exact_key(prologue)] = flattened[0]
+    for number, title in numbered.items():
+        result[exact_key(title)] = flattened[number - 1 + offset]
+    return result
+
+
 def entry_for_sources(
     reader: ReaderCatalog,
     folder: str,
@@ -328,6 +692,13 @@ def event_folder_for_group(
     reader: ReaderCatalog,
     prefixes: list[tuple[str, str]],
 ) -> tuple[str | None, str]:
+    source_base = exact_key(group.get("source_base"))
+    for family, prefix in CURATED_EVENT_FAMILY_PREFIXES:
+        if identity(source_base).startswith(identity(family)):
+            folder = reader.one_folder("event_story", prefix)
+            if folder is not None:
+                return folder, "curated-exact-event-family"
+
     first_title = exact_key(group["children"][0]["source_title"])
     entry = provenance.get((group["category"], first_title), {})
     official = [
@@ -355,7 +726,14 @@ def event_folder_for_group(
             if len(candidates) == 1:
                 return candidates[0], "reader-audited-title-prefix"
 
-    keys = [identity(group.get("approved_translation")), identity(group.get("source_base"))]
+    # ``current_translation`` is the Reader-authoritative Chinese parent title
+    # for groups that were normalized after the original approved title was
+    # recorded.  It is exact evidence, not a fuzzy translation guess.
+    keys = [
+        identity(group.get("current_translation")),
+        identity(group.get("approved_translation")),
+        identity(group.get("source_base")),
+    ]
     keys = [key for key in keys if len(key) >= 3]
     exact = [
         folder
@@ -404,6 +782,8 @@ def map_events(
             continue
         prefix = folder_prefix(folder)
         aggregate = aggregate_entry(reader, folder)
+        parent = aggregate or first_folder_entry(reader, folder)
+        ordinal_sections = ordinal_event_sections(group, reader, folder)
         for child in group["children"]:
             title = child["source_title"]
             suffix = str(child.get("source_suffix") or "").strip()
@@ -423,7 +803,17 @@ def map_events(
                 if len(labels) == 1:
                     sources = labels
                     source_evidence = "reader-exact-section-label"
-            if not sources:
+            selected = entry_for_sources(reader, folder, sources) if sources else None
+            if selected is None:
+                selected = ordinal_sections.get(exact_key(title))
+                if selected is not None:
+                    source_evidence = "reader-complete-family-ordinal"
+            # A complete 1..N family spanning multiple Reader source IDs is a
+            # stronger boundary than a per-file section number.  Only use the
+            # latter when no complete-family ordinal exists; otherwise, for
+            # example, episode 16 can collide with episode 30 after numbering
+            # restarts in the second source file.
+            if selected is None and not sources:
                 number = re.fullmatch(r"第?(\d+)[話话]?", suffix)
                 if number:
                     target = int(number.group(1))
@@ -446,7 +836,7 @@ def map_events(
                     if len(numbered) == 1:
                         sources = numbered
                         source_evidence = "reader-unique-prologue"
-            selected = entry_for_sources(reader, folder, sources) if sources else None
+                selected = entry_for_sources(reader, folder, sources) if sources else None
             if selected is not None:
                 entry, section = selected
                 routes.add(
@@ -456,13 +846,13 @@ def map_events(
                     section,
                     f"{parent_evidence}+{source_evidence}",
                 )
-            elif aggregate is not None:
+            elif parent is not None:
                 routes.add(
                     "event",
                     title,
-                    reader.route_id(aggregate),
+                    reader.route_id(parent),
                     None,
-                    f"{parent_evidence}+reader-exact-folder-aggregate",
+                    f"{parent_evidence}+reader-containing-story-parent",
                 )
 
 
@@ -527,6 +917,22 @@ def map_costumes(
         raise EvidenceBuildError(
             f"costume structural contract changed: mapped={mapped}, noStory={sorted(no_story)}"
         )
+
+    # This costume vignette is embedded in the SPA event rather than stored as
+    # a standalone Reader costume_story.  Its containing initial-edition event
+    # identity is stable; use parent precision as requested by the product
+    # fallback contract.
+    embedded_title = "まどか先輩 鹿目アロハ"
+    if embedded_title in {exact_key(row[0]) for row in rows if row}:
+        entry = nested_equivalent(reader.by_raw.get("516101", ()))
+        if entry is not None:
+            routes.add(
+                "costume",
+                embedded_title,
+                reader.route_id(entry),
+                None,
+                "audited containing SPA event identity",
+            )
 
 
 def map_mirrors(routes: RouteSet, titles: Iterable[str], reader: ReaderCatalog) -> None:
@@ -593,11 +999,124 @@ def map_battle_museum(
             )
 
 
+def map_mirror_event_stories(
+    routes: RouteSet,
+    titles: Iterable[str],
+    reader: ReaderCatalog,
+) -> None:
+    """Map narrative mirror/battle specials catalogued under Call events."""
+    for title in titles:
+        raw_id: str | None = None
+        exact_section = False
+        if title == "キモチ戦特別編 アリナ・イブ":
+            raw_id, exact_section = "420191", True
+        elif title.startswith("殲滅戦 魔女たちのパラドクス (1回目)"):
+            raw_id = "420091"
+        elif title.startswith("殲滅戦 魔女たちのパラドクス (2回目)"):
+            raw_id, exact_section = "420111", True
+        if raw_id is None:
+            continue
+        entry = nested_equivalent(reader.by_raw.get(raw_id, ()))
+        if entry is None:
+            continue
+        section = entry["sections"][0] if exact_section and len(entry["sections"]) == 1 else None
+        routes.add(
+            "event",
+            title,
+            reader.route_id(entry),
+            section,
+            "curated exact mirror-event story identity",
+        )
+
+
 def map_scene0(
     routes: RouteSet,
     titles: Iterable[str],
     reader: ReaderCatalog,
 ) -> None:
+    title_set = set(titles)
+    exact_section_routes = {
+        "(DAY.10)": (
+            "scene0_main_902110_030-050_af52fe6e",
+            "902110-050 Section 050",
+            "exact-section",
+        ),
+        # The Call title groups six consecutive records, while the first
+        # visual-only boundary (060) is absent from Reader.  Open the first
+        # readable section for that group but keep the product label honest:
+        # this is a containing-story target, not an exact child assertion.
+        "Film.1 DAY.17": (
+            "scene0_main_913117_030-090_12ab8eba",
+            "913117-070 Section 070",
+            "story-parent",
+        ),
+    }
+    for title, (reader_identity, section, precision) in exact_section_routes.items():
+        if title not in title_set:
+            continue
+        by_id = reader.by_id.get(reader_identity, ())
+        entry = by_id[0] if len(by_id) == 1 else None
+        if entry is not None and section in entry["sections"]:
+            routes.add(
+                "scene0",
+                title,
+                reader.route_id(entry),
+                section,
+                "audited Scene0 film/day readable section identity",
+                precision,
+            )
+
+    audited_parent_ids = {
+        "Film.12 DAY.1": "913101",
+        "Film.12 DAY.5": "913105",
+        "Film.12 DAY.6": "913106",
+        "Film.12 DAY.7": "913107",
+        "Film.12 DAY.15": "913115",
+        "Film.12 DAY.16": "913116",
+        "Film.12 DAY.17": "scene0_main_913117_030-090_12ab8eba",
+        **{f"Film.12 MTDAY.??-{number}": f"91300{number}" for number in range(1, 9)},
+        "Film.1 MTDAY.1": "913201",
+        "Film.1 MTDAY.2": "913202",
+        "Film.1 MTDAY.9": "913209",
+        "Film.1 MTDAY.16": "913216",
+        "Film.1 MTDAY.17": "913217",
+        "Film.1 DAY.1(2回目)": "902401",
+        "Film.12 DAY.17(2回目)": "scene0_main_913117_100-120_9fb2483e",
+        "Film.12 DAY.32": "913132",
+    }
+    for title, reader_identity in audited_parent_ids.items():
+        if title not in title_set:
+            continue
+        by_id = reader.by_id.get(reader_identity, ())
+        entry = by_id[0] if len(by_id) == 1 else nested_equivalent(reader.by_raw.get(reader_identity, ()))
+        if entry is not None:
+            routes.add(
+                "scene0",
+                title,
+                reader.route_id(entry),
+                None,
+                "audited exact Scene0 film/day parent identity",
+            )
+
+    side_title = "サイドストーリー Film.2 10 (黃)"
+    if side_title in title_set:
+        candidates = reader.by_id.get("scene0_sub_903106_010-040_1666ed6a", ())
+        entry = candidates[0] if len(candidates) == 1 else None
+        if entry is not None:
+            sections = [
+                section
+                for section in entry["sections"]
+                if source_part(section) == "903106-010_mami"
+            ]
+            if len(sections) == 1:
+                routes.add(
+                    "scene0",
+                    side_title,
+                    reader.route_id(entry),
+                    sections[0],
+                    "audited exact Scene0 side section identity",
+                )
+
     main_by_film: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
     for entry in reader.by_category.get("scene0_main", ()):
         raw_id = str(entry.get("raw_id") or "")
@@ -680,6 +1199,30 @@ def map_puella(
     reader_titles: dict[str, str],
 ) -> None:
     title_set = set(titles)
+    # These catalogue records are genuine stories but do not expose an episode
+    # suffix.  Their Reader parent IDs are unique; use parent precision rather
+    # than manufacturing a child boundary.
+    parent_only = {
+        "神浜の戦神子編 序": "518310",
+        "チベットのラクシャーシー編": "519110",
+        "邪馬台国の跡目編": "519410",
+        "パクス・ロマーナの恋人編": "519601",
+        **{f"Pillar of Tomorrow {number}": "519810" for number in range(1, 10)},
+        "Pillar of Tomorrow エピローグ": "519810",
+    }
+    for title, raw_id in parent_only.items():
+        if title not in title_set:
+            continue
+        entry = nested_equivalent(reader.by_raw.get(raw_id, ()))
+        if entry is not None:
+            routes.add(
+                "puella-historia",
+                title,
+                reader.route_id(entry),
+                None,
+                "curated exact Puella parent identity",
+            )
+
     modern = {"現代神浜編 Prologue": "103401"}
     modern.update({f"現代神浜編 {number}話": f"10340{number + 1}" for number in range(1, 7)})
     for title, raw_id in modern.items():
@@ -758,6 +1301,34 @@ def map_puella(
                     section,
                     "exact Reader Pillar character section title",
                 )
+        # The seven late Pillar labels have stable ordinal sections even when
+        # titles.json lacks a usable Japanese alias.
+        late_pillar = {
+            "千鶴": 12,
+            "エボニー": 13,
+            "オルガ": 14,
+            "ガンヒルト": 15,
+            "ヘルカ": 16,
+            "トヨ": 17,
+            "アマリュリス": 18,
+        }
+        for label, number in late_pillar.items():
+            title = f"Pillar of Tomorrow {label}"
+            if title not in title_set:
+                continue
+            candidates = [
+                section
+                for section in pillar_entry["sections"]
+                if section_number(section) == number
+            ]
+            if len(candidates) == 1:
+                routes.add(
+                    "puella-historia",
+                    title,
+                    reader.route_id(pillar_entry),
+                    candidates[0],
+                    "curated exact Pillar section ordinal",
+                )
 
 
 def one_prefix_entry(reader: ReaderCatalog, category: str, prefix: str) -> dict[str, Any] | None:
@@ -766,6 +1337,48 @@ def one_prefix_entry(reader: ReaderCatalog, category: str, prefix: str) -> dict[
         return None
     entries = reader.canonical_raw_entries(reader.by_folder[folder])
     return entries[0] if len(entries) == 1 else None
+
+
+def normalized_special_child_title(child: dict[str, Any]) -> str:
+    # The grouped-title artefact predates removal of ``specialTime`` markup and
+    # therefore stores the badge text as a plain trailing ``20xx ...`` suffix.
+    # Remove the same metadata so it joins the normalized story-v6 title.
+    return re.sub(
+        r"\s+(?:20\d{2}.*|期間限定ミッション.*)$",
+        "",
+        exact_key(child.get("source_title")),
+    ).strip()
+
+
+def legacy_special_route(
+    title: str,
+    reader: ReaderCatalog,
+) -> tuple[dict[str, Any], str] | None:
+    """Exact routes for early event stories catalogued under Special."""
+    exact_reader_id: str | None = None
+    target_section: int | None = None
+    key = identity(title)
+    if key.startswith(identity("みたまの撮影会 前編")):
+        exact_reader_id, target_section = "502001", 1
+    elif key.startswith(identity("みたまの撮影会 後編")):
+        exact_reader_id, target_section = "502001", 2
+    elif key.startswith(identity("バレンタインエール 1話")):
+        exact_reader_id, target_section = "501411", 1
+    elif key.startswith(identity("神浜しあわせ宅配便 1話")):
+        exact_reader_id, target_section = "501011", 1
+    elif key == identity("Kamihama Kawaii Collection Ep.1(英語版)"):
+        exact_reader_id, target_section = "619001", 1
+    elif key.startswith(identity("お願い!水名のかみさま!")):
+        number = re.search(r"(\d+)[話话]", title)
+        if number:
+            exact_reader_id, target_section = "501108", int(number.group(1))
+    if exact_reader_id is None or target_section is None:
+        return None
+    entry = nested_equivalent(reader.by_raw.get(exact_reader_id, ()))
+    if entry is None:
+        return None
+    sections = [value for value in entry["sections"] if section_number(value) == target_section]
+    return (entry, sections[0]) if len(sections) == 1 else None
 
 
 def map_special(
@@ -790,7 +1403,18 @@ def map_special(
         prefix = parent_prefixes.get(identity(base))
         entry = one_prefix_entry(reader, "login_story", prefix) if prefix else None
         for child in group["children"]:
-            title = exact_key(child["source_title"])
+            title = normalized_special_child_title(child)
+            legacy = legacy_special_route(title, reader)
+            if legacy is not None:
+                target, section = legacy
+                routes.add(
+                    "special",
+                    title,
+                    reader.route_id(target),
+                    section,
+                    "curated exact early-special Reader identity",
+                )
+                continue
             full_prefix = full_title_prefixes.get(identity(title))
             target = one_prefix_entry(reader, "login_story", full_prefix) if full_prefix else entry
             if target is None:
@@ -803,6 +1427,9 @@ def map_special(
                     for value in target["sections"]
                     if section_number(value) == int(number.group(1))
                 ]
+                primary = [value for value in candidates if " - Branch " not in value]
+                if primary:
+                    candidates = primary
                 if len(candidates) != 1:
                     continue
                 section = candidates[0]
@@ -827,6 +1454,14 @@ def build(reader_root: Path, official_libs: Path) -> dict[str, Any]:
     reader_entries = read_json(reader_root / "website" / "public" / "story_index.json")
     reader_titles = read_json(reader_root / "titles.json")
     reader = ReaderCatalog(reader_entries)
+    machine_document = read_json(
+        reader_root / "website" / "public" / "data" / "machine_translation_manifest.generated.json"
+    )
+    machine_entries = {
+        str(entry["story_id"]): entry
+        for entry in machine_document.get("entries", ())
+        if isinstance(entry, dict) and isinstance(entry.get("story_id"), str)
+    }
     official_rows = read_json(official_libs / "eventStoryList.json")
     official_map = event_story_map(official_rows, reader)
 
@@ -842,12 +1477,27 @@ def build(reader_root: Path, official_libs: Path) -> dict[str, Any]:
 
     routes = RouteSet(titles_by_slug)
     map_events(routes, group_index, provenance, localization, official_map, reader)
+    map_mirror_event_stories(routes, titles_by_slug["event"], reader)
     map_costumes(routes, rows_by_slug["costume"], reader)
     map_mirrors(routes, titles_by_slug["mirrors"], reader)
     map_battle_museum(routes, group_index, reader)
     map_scene0(routes, titles_by_slug["scene0"], reader)
     map_puella(routes, titles_by_slug["puella-historia"], reader, reader_titles)
     map_special(routes, group_index, reader)
+
+    # If every occurrence of a normalized title is an explicitly excluded
+    # blank/challenge/battle/mirror row, do not emit stale title evidence for
+    # it.  Mixed titles remain routable for their genuine story occurrences.
+    occurrences: dict[tuple[str, str], list[bool]] = defaultdict(list)
+    for slug, rows in rows_by_slug.items():
+        for row_index, row in enumerate(rows):
+            title = exact_key(row[0]) if isinstance(row, list) and row else ""
+            occurrences[(slug, title)].append(
+                excluded_catalog_row(slug, row_index, row, title)
+            )
+    for key, excluded in occurrences.items():
+        if excluded and all(excluded):
+            routes.routes.pop(key, None)
 
     route_keys = set(routes.routes)
     category_summary = []
@@ -909,7 +1559,7 @@ def build(reader_root: Path, official_libs: Path) -> dict[str, Any]:
             "categories": category_summary,
         },
         "routes": [
-            route.json()
+            route_json(route, reader, machine_entries)
             for _, route in sorted(routes.routes.items(), key=lambda item: item[0])
         ],
     }

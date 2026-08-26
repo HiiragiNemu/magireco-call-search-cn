@@ -63,9 +63,40 @@ test('uses the AIO router for both Reader and verified ADV destinations', async 
   assert.equal(adv.searchParams.get('target'), 'adv');
 });
 
+test('exposes distinct initial and rerun Reader/ADV targets with review status', async () => {
+  const route = manifest.routes.find((entry) => Array.isArray(entry.variants) && entry.variants.length === 2);
+  assert.ok(route);
+  const [, , slug, rawIndex] = route.sourceKey.split(':');
+  const bridge = loadBridge('?aioBase=https%3A%2F%2Faio.example%2F');
+  await bridge.initialize(searchManifest);
+  const links = bridge.links(slug, Number(rawIndex));
+  assert.deepEqual(Array.from(links.variants, (variant) => variant.edition), ['initial', 'rerun']);
+  assert.ok(links.variants.every((variant) => variant.translationStatus?.label));
+  for (const variant of links.variants) {
+    const reader = new URL(variant.reader);
+    const adv = new URL(variant.adv);
+    assert.equal(reader.searchParams.get('edition'), variant.edition);
+    assert.equal(reader.searchParams.get('target'), 'reader');
+    assert.equal(adv.searchParams.get('edition'), variant.edition);
+    assert.equal(adv.searchParams.get('target'), 'adv');
+  }
+});
+
 test('unknown source rows do not create guessed links', async () => {
   const bridge = loadBridge();
   await bridge.initialize(searchManifest);
   assert.equal(bridge.links('character', 999999), null);
   assert.equal(bridge.links('../character', 0), null);
+});
+
+test('propagates audited parent precision without changing its section target', async () => {
+  const route = manifest.routes.find((entry) => entry.sourceKey.endsWith(':scene0:277'));
+  assert.ok(route);
+  const bridge = loadBridge('?aioBase=https%3A%2F%2Faio.example%2F');
+  await bridge.initialize(searchManifest);
+  const links = bridge.links('scene0', 277);
+  assert.equal(links.precision, 'story-parent');
+  assert.equal(links.storyId, 'scene0_main_913117_030-090_12ab8eba');
+  assert.equal(new URL(links.reader).searchParams.get('source'), route.sourceKey);
+  assert.equal(new URL(links.adv).searchParams.get('source'), route.sourceKey);
 });

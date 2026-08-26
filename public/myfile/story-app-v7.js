@@ -307,6 +307,64 @@
     return host;
   }
 
+  function routeAnchor(label, href, className, title) {
+    const anchor = document.createElement('a');
+    anchor.className = `story-route-link-v1 ${className}`;
+    anchor.href = href;
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+    anchor.textContent = label;
+    anchor.title = title;
+    return anchor;
+  }
+
+  function routeStatusBadge(status) {
+    if (!status?.label) return null;
+    const badge = document.createElement('span');
+    badge.className = `story-route-status-v1 ${status.code || ''}`;
+    badge.textContent = status.label;
+    return badge;
+  }
+
+  function routePrecisionBadge(precision) {
+    if (precision !== 'story-parent') return null;
+    const badge = document.createElement('span');
+    badge.className = 'story-route-precision-v1 story-parent';
+    badge.textContent = '剧情上级';
+    badge.title = '此记录缺少可证明的独立子章节边界，链接打开已审定的包含剧情或首个可读章节';
+    return badge;
+  }
+
+  function appendRouteTarget(actions, route, label) {
+    const group = document.createElement('span');
+    group.className = 'story-route-variant-v1';
+    if (label) {
+      const edition = document.createElement('strong');
+      edition.className = `story-route-edition-v1 ${route.edition || ''}`;
+      edition.textContent = label;
+      group.appendChild(edition);
+    }
+    group.appendChild(routeAnchor(
+      'Reader',
+      route.reader,
+      'reader',
+      `在 Reader 打开${label ? `${label} ` : ''}剧情 ${route.storyId}`
+    ));
+    if (route.adv) {
+      group.appendChild(routeAnchor(
+        'ADV',
+        route.adv,
+        'adv',
+        `在 ADV 播放${label ? `${label} ` : ''}剧情章节`
+      ));
+    }
+    const precision = routePrecisionBadge(route.precision);
+    if (precision) group.appendChild(precision);
+    const status = routeStatusBadge(route.translationStatus);
+    if (status) group.appendChild(status);
+    actions.appendChild(group);
+  }
+
   async function renderResults(grouped, types, showSpoiler, totalMatches) {
     const wrapper = document.createElement('div');
     let rendered = 0;
@@ -348,33 +406,15 @@
         if (routeLinks?.reader) {
           const actions = document.createElement('div');
           actions.className = 'story-route-actions-v1';
-          const reader = document.createElement('a');
-          reader.className = 'story-route-link-v1 reader';
-          reader.href = routeLinks.reader;
-          reader.target = '_blank';
-          reader.rel = 'noopener noreferrer';
-          reader.textContent = 'Reader';
-          reader.title = `在 Reader 打开剧情 ${routeLinks.storyId}`;
-          actions.appendChild(reader);
-          if (routeLinks.adv) {
-            const adv = document.createElement('a');
-            adv.className = 'story-route-link-v1 adv';
-            adv.href = routeLinks.adv;
-            adv.target = '_blank';
-            adv.rel = 'noopener noreferrer';
-            adv.textContent = 'ADV';
-            adv.title = '在 ADV 播放该剧情章节';
-            actions.appendChild(adv);
+          if (routeLinks.variants?.length > 1) {
+            for (const variant of routeLinks.variants) {
+              appendRouteTarget(actions, variant, variant.label);
+            }
+          } else {
+            appendRouteTarget(actions, routeLinks, '');
           }
           if (sourceHref && sourceHref !== routeLinks.reader) {
-            const source = document.createElement('a');
-            source.className = 'story-route-link-v1 source';
-            source.href = sourceHref;
-            source.target = '_blank';
-            source.rel = 'noopener noreferrer';
-            source.textContent = '来源';
-            source.title = '打开原始资料来源';
-            actions.appendChild(source);
+            actions.appendChild(routeAnchor('来源', sourceHref, 'source', '打开原始资料来源'));
           }
           title.appendChild(actions);
         }

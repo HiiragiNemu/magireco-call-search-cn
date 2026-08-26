@@ -21,8 +21,11 @@ requireFile(buildInfoPath);
 const buildInfo = JSON.parse(read(buildInfoPath));
 const release = String(buildInfo.release || '');
 const TITLE_RELEASE = 'canonical-title-authority-v1';
-const READER_REVISION = 'bad94aa371dc9e6aed16ccf6d144106b31643f28';
+const READER_REVISION = 'cd78e9b7d4fa6dcb029c3c7edc788298de03da94';
 const AIO_ROUTER_BASE = 'https://callsearch.magireco.top/aio/';
+const STORY_ROUTE_COUNT = 12443;
+const EDITION_VARIANT_ROUTES = 1187;
+const EDITION_VARIANT_TARGETS = 2374;
 const RELEASES = Object.freeze({
   V2: 'layout-correction-v2-20260816',
   V3: 'neo11-mobile-interaction-v3-20260816',
@@ -50,7 +53,14 @@ const isV2Family = release === RELEASES.V2 || isV3;
 
 if (!Object.values(RELEASES).includes(release)) fail(`unexpected release identifier: ${release}`);
 if (buildInfo.deploymentTarget !== 'magireco-call-search-cn.pages.dev') fail(`unexpected deployment target: ${buildInfo.deploymentTarget}`);
-if (buildInfo.storyRouterRouteCount !== 9535 || buildInfo.storyRouterReaderRevision !== READER_REVISION || buildInfo.aioRouterBase !== AIO_ROUTER_BASE) fail('story routing build metadata mismatch');
+if (
+  buildInfo.storyRouterRouteCount !== STORY_ROUTE_COUNT
+  || buildInfo.storyRouterEditionVariantRoutes !== EDITION_VARIANT_ROUTES
+  || buildInfo.storyRouterEditionVariantTargets !== EDITION_VARIANT_TARGETS
+  || buildInfo.storyRouterEditionVariantAdvUnavailable !== 0
+  || buildInfo.storyRouterReaderRevision !== READER_REVISION
+  || buildInfo.aioRouterBase !== AIO_ROUTER_BASE
+) fail('story routing build metadata mismatch');
 
 function validateHtml(file, expectedRelease = null) {
   requireFile(file);
@@ -97,19 +107,59 @@ if (isV26) {
   const readerLinksPath = path.join('public', 'data', 'titles', 'reader-links.json');
   const storyRouterPath = path.join('public', 'data', 'story-router-v1.json');
   const aioRouterPath = path.join('public', 'aio', 'story-routes.json');
+  const aioReportPath = path.join('public', 'aio', 'story-routes.report.json');
   const aioEdgeFunctionPath = path.join('public', 'edge-functions', 'aio', 'open.js');
   const menuScript = './myfile/hamburger-menu-v23.js?v=20260822-v26-final3';
-  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath, routeBridgePath, readerLinksPath, storyRouterPath, aioRouterPath, aioEdgeFunctionPath]) requireFile(file);
+  for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath, routeBridgePath, readerLinksPath, storyRouterPath, aioRouterPath, aioReportPath, aioEdgeFunctionPath]) requireFile(file);
   const manifest = JSON.parse(read(manifestPath));
   if (manifest.release !== TITLE_RELEASE || manifest.dataArchitecture !== 'plain-json') fail('V26 title manifest mismatch.');
   if (manifest.counts?.groupCount !== 2166 || manifest.counts?.mappedTitles !== 5826) fail('V26 title counts mismatch.');
   const readerLinks = JSON.parse(read(readerLinksPath));
   const storyRouter = JSON.parse(read(storyRouterPath));
   const aioRouter = JSON.parse(read(aioRouterPath));
+  const aioReport = JSON.parse(read(aioReportPath));
   if (readerLinks.release !== TITLE_RELEASE || readerLinks.reader?.head !== READER_REVISION || readerLinks.summary?.entries !== 1196) fail('Reader title linkage mismatch.');
-  if (storyRouter.targets?.reader?.readerRevision !== READER_REVISION || storyRouter.routes?.length !== 9535) fail('Reader story router mismatch.');
+  if (
+    storyRouter.targets?.reader?.readerRevision !== READER_REVISION
+    || storyRouter.routes?.length !== STORY_ROUTE_COUNT
+    || storyRouter.routes.some((route) => !route.reader || !route.adv)
+  ) fail('Reader story router mismatch.');
   if (storyRouter.targets?.adv?.handoffReady !== true) fail('ADV production handoff marker is missing.');
-  if (aioRouter.catalogRevision !== storyRouter.catalogRevision || aioRouter.targets?.reader?.readerRevision !== READER_REVISION || aioRouter.routes?.length !== 9535) fail('Published AIO route manifest mismatch.');
+  if (
+    aioRouter.catalogRevision !== storyRouter.catalogRevision
+    || aioRouter.targets?.reader?.readerRevision !== READER_REVISION
+    || aioRouter.routes?.length !== STORY_ROUTE_COUNT
+    || read(aioRouterPath) !== read(storyRouterPath)
+  ) fail('Published AIO route manifest mismatch.');
+  const editionRoutes = storyRouter.routes.filter((route) => Array.isArray(route.variants));
+  const editionTargets = editionRoutes.flatMap((route) => route.variants);
+  if (
+    editionRoutes.length !== EDITION_VARIANT_ROUTES
+    || editionTargets.length !== EDITION_VARIANT_TARGETS
+    || editionTargets.some((variant) => !variant.reader || !variant.adv)
+    || editionRoutes.some((route) => (
+      route.variants.length !== 2
+      || new Set(route.variants.map((variant) => variant.edition)).size !== 2
+      || !route.variants.some((variant) => variant.edition === 'initial')
+      || !route.variants.some((variant) => variant.edition === 'rerun')
+    ))
+  ) fail('Initial/rerun story route variants are incomplete.');
+  if (
+    aioReport.mappedRows !== STORY_ROUTE_COUNT
+    || aioReport.advMappedTargetedRows !== STORY_ROUTE_COUNT
+    || aioReport.editionVariantRoutes !== EDITION_VARIANT_ROUTES
+    || aioReport.editionVariantTargets !== EDITION_VARIANT_TARGETS
+    || aioReport.editionVariantAdvUnavailable !== 0
+    || aioReport.exactSectionMappedRows + aioReport.storyParentMappedRows !== STORY_ROUTE_COUNT
+    || aioReport.categories.some((item) => (
+      item.exactSectionMapped + item.storyParentMapped !== item.mapped
+    ))
+  ) fail('Published AIO route report mismatch.');
+  if (
+    buildInfo.storyRouterExactSectionRoutes !== aioReport.exactSectionMappedRows
+    || buildInfo.storyRouterStoryParentRoutes !== aioReport.storyParentMappedRows
+  ) fail('Story route precision build metadata mismatch.');
+  if (!read('public/myfile/story-app-v7.js').includes('剧情上级')) fail('Story parent precision badge is missing.');
   if (!read(aioEdgeFunctionPath).includes("./_runtime/story-router.js")) fail('Nested AIO Edge Function import is invalid.');
   if (html.includes('navtext-container')) fail('V26 legacy top title node is still present.');
   if (!html.includes(menuScript)) fail('V26 hamburger behavior script is not loaded.');
