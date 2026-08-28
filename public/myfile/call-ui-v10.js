@@ -111,43 +111,54 @@
       }
     }
 
+    const cancelSelection = () => {
+      const reset = document.getElementById('mgreset');
+      if (reset && !reset.disabled) {
+        reset.click();
+        return;
+      }
+      if (typeof global.girlReset === 'function') global.girlReset();
+    };
+
     const definitions = [
-      ['↑', '页面顶部', () => global.scrollTo({ top: 0, behavior: 'smooth' })],
-      ['角', '选择角色', () => openAndScroll('.call-selection-panel-v8', '.call-selection-panel-v8')],
-      ['筛', '搜索条件', () => openAndScroll('.call-search-panel-v8', '.call-search-panel-v8')],
-      ['属', '属性筛选', () => openAndScroll('.call-attribute-panel-v8', '.call-attribute-panel-v8')],
-      ['搜', '执行称呼搜索', () => {
+      ['顶部', '跳到页面顶部', () => global.scrollTo({ top: 0, behavior: 'smooth' })],
+      ['选人', '选择角色', () => openAndScroll('.call-selection-panel-v8', '.call-selection-panel-v8')],
+      ['筛选', '搜索条件', () => openAndScroll('.call-search-panel-v8', '.call-search-panel-v8')],
+      ['属性', '属性筛选', () => openAndScroll('.call-attribute-panel-v8', '.call-attribute-panel-v8')],
+      ['搜索', '执行称呼搜索', () => {
         detailsOpen('.call-result-details-v8');
         if (typeof global.drawAndJump === 'function') global.drawAndJump();
       }],
-      ['图', '关系图', () => {
+      ['关系', '关系图', () => {
         detailsOpen('.call-result-details-v8');
         if (typeof global.toggleHeightView === 'function') global.toggleHeightView(false);
         global.requestAnimationFrame(() => scrollToTarget('#canvasflame'));
       }],
-      ['表', '称呼关系表', () => {
+      ['表格', '称呼关系表', () => {
         detailsOpen('.call-result-details-v8');
         detailsOpen('.call-table-details-v10');
         if (typeof global.toggleHeightView === 'function') global.toggleHeightView(false);
         global.requestAnimationFrame(() => scrollToTarget('.call-table-details-v10'));
       }],
-      ['高', '身高图', () => {
+      ['取消', '取消已选角色并清空关系结果', cancelSelection, 'cancel'],
+      ['身高', '身高图', () => {
         detailsOpen('.call-result-details-v8');
         const selected = Boolean(document.querySelector('input.MagicalChk[name="chara"]:checked'));
         if (typeof global.displayHeightChart === 'function') global.displayHeightChart(selected ? 'selected' : 'global');
       }],
-      ['↓', '页面底部', () => global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })]
+      ['底部', '跳到页面底部', () => global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })]
     ];
 
     const rail = document.createElement('aside');
     rail.className = 'call-quick-rail-v10';
     rail.setAttribute('aria-label', '称呼与身高快捷操作');
-    for (const [glyph, label, action] of definitions) {
+    for (const [caption, label, action, actionName] of definitions) {
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = glyph;
+      button.textContent = caption;
       button.title = label;
       button.setAttribute('aria-label', label);
+      if (actionName) button.dataset.action = actionName;
       button.addEventListener('click', action);
       rail.appendChild(button);
     }

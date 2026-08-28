@@ -104,17 +104,23 @@
 .call-quick-rail-v10 button {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  padding: 0;
+  width: 50px;
+  min-height: 34px;
+  padding: .32rem .24rem;
   border: 2px solid #fff;
-  border-radius: 11px;
+  border-radius: 10px;
   background: rgba(243, 77, 167, .94);
   color: #fff;
   box-shadow: 0 3px 10px rgba(74, 18, 49, .24);
-  font: 800 .95rem/1 sans-serif;
+  font: 800 .78rem/1.05 sans-serif;
+  letter-spacing: .02em;
+  white-space: nowrap;
   cursor: pointer;
   pointer-events: auto;
+}
+
+.call-quick-rail-v10 button[data-action="cancel"] {
+  background: rgba(112, 58, 88, .92);
 }
 
 .call-quick-rail-v10 button:hover,
@@ -175,10 +181,11 @@
   }
 
   .call-quick-rail-v10 button {
-    width: 31px;
-    height: 31px;
+    width: 42px;
+    min-height: 30px;
+    padding: .20rem .14rem;
     border-radius: 8px;
-    font-size: .76rem;
-    opacity: .84;
+    font-size: .67rem;
+    opacity: .92;
   }
 }
