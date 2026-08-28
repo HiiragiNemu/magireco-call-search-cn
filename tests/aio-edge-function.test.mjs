@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-import onRequest from '../public/edge-functions/aio/open.js';
+import onRequest from '../functions/aio/open.js';
 
 const manifest = JSON.parse(fs.readFileSync(new URL('../public/aio/story-routes.json', import.meta.url), 'utf8'));
 const route = manifest.routes.find((entry) => entry.sourceKey.endsWith(':character:411'));

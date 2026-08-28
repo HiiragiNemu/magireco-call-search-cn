@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "public/**"
+      - "functions/**"
       - "scripts/validate-production.py"
       - "scripts/browser-smoke.py"
       - ".github/workflows/production-verify.yml"
@@ -28,6 +29,8 @@ jobs:
           python - <<'PY'
           import json
           import time
+          import urllib.error
+          import urllib.parse
           import urllib.request
 
           base = "https://magireco-call-search-cn.pages.dev"
@@ -93,6 +96,28 @@ jobs:
                       item["exactSectionMapped"] + item["storyParentMapped"] == item["mapped"]
                       for item in aio_report["categories"]
                   )
+                  class NoRedirect(urllib.request.HTTPRedirectHandler):
+                      def redirect_request(self, req, fp, code, msg, headers, newurl):
+                          return None
+
+                  redirect_opener = urllib.request.build_opener(NoRedirect)
+                  source = urllib.parse.quote(story_router["routes"][0]["sourceKey"], safe="")
+                  for target, expected_origin in (
+                      ("reader", "https://magireader.pages.dev/"),
+                      ("adv", "https://magiaexedralive2dviewer.pages.dev/"),
+                  ):
+                      try:
+                          redirect_opener.open(
+                              f"{base}/aio/open?source={source}&target={target}", timeout=60
+                          )
+                          raise AssertionError(f"Pages {target} route did not redirect")
+                      except urllib.error.HTTPError as response:
+                          assert response.code == 302
+                          location = response.headers["Location"]
+                          assert location.startswith(expected_origin)
+                          if target == "adv":
+                              assert "advRenderer=pixi-v2&bridge=1" in location
+                              assert "readerRevision=bad94aa371dc9e6aed16ccf6d144106b31643f28" in location
                   get("myfile/story-route-bridge-v1.js")
                   story_html = get_text("story.html")
                   assert '<meta name="magireco-aio-router" content="https://callsearch.magireco.top/aio/">' in story_html
