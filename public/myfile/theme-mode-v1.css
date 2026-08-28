@@ -1,0 +1,101 @@
+:root[data-call-theme="dark"] {
+  color-scheme: dark;
+  --call-night-bg: #10171f;
+  --call-night-surface: #18242e;
+  --call-night-surface-raised: #20313e;
+  --call-night-text: #eaf2f7;
+  --call-night-muted: #b9c8d1;
+  --call-night-border: #456173;
+  --call-night-accent: #ff63ad;
+  --call-night-accent-strong: #ff8fc7;
+  --call-night-focus: #8cdbff;
+}
+
+:root[data-call-theme="dark"],
+:root[data-call-theme="dark"] body {
+  background: var(--call-night-bg) !important;
+  color: var(--call-night-text) !important;
+}
+
+:root[data-call-theme="dark"] :where(main, header, nav, section, article, aside, details, fieldset, .suite-shell, .suite-panel, .suite-hero, .suite-nav, .suite-card, .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10, #wrapper, #callResultSection, #at_result) {
+  color: var(--call-night-text);
+  border-color: var(--call-night-border) !important;
+}
+
+:root[data-call-theme="dark"] :where(.suite-shell, .suite-panel, .suite-hero, .suite-nav, .suite-card, .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10, #wrapper, #callResultSection, #at_result, details, fieldset) {
+  background-color: var(--call-night-surface) !important;
+}
+
+:root[data-call-theme="dark"] :where(h1, h2, h3, h4, p, span, label, legend, summary, dt, dd, li, .suite-status, .suite-notice, .call-help-toggle-v10, .height-export-status-v10) {
+  color: inherit;
+}
+
+:root[data-call-theme="dark"] :where(a, .suite-link, .story-result-title) {
+  color: var(--call-night-accent-strong);
+}
+
+:root[data-call-theme="dark"] :where(input, select, textarea, button, .suite-button, .call-help-toggle-v10) {
+  color: var(--call-night-text);
+  background-color: var(--call-night-surface-raised);
+  border-color: var(--call-night-border);
+}
+
+:root[data-call-theme="dark"] :where(input::placeholder, textarea::placeholder) {
+  color: var(--call-night-muted);
+  opacity: 1;
+}
+
+:root[data-call-theme="dark"] :where(button:hover, button:focus-visible, .suite-button:hover, .suite-button:focus-visible) {
+  border-color: var(--call-night-focus);
+}
+
+:root[data-call-theme="dark"] :where(table, th, td, tr) {
+  color: var(--call-night-text);
+  border-color: var(--call-night-border) !important;
+}
+
+:root[data-call-theme="dark"] :where(th, tr:nth-child(even) td) {
+  background-color: rgba(83, 121, 141, .18) !important;
+}
+
+:root[data-call-theme="dark"] :where(#mynetwork, #canvasflame) {
+  border-color: var(--call-night-border) !important;
+}
+
+.call-theme-toggle-v1 {
+  position: fixed;
+  right: max(.6rem, env(safe-area-inset-right));
+  bottom: max(.65rem, env(safe-area-inset-bottom));
+  z-index: 2200;
+  min-width: 3.4rem;
+  min-height: 2.25rem;
+  padding: .42rem .58rem;
+  border: 1px solid rgba(113, 61, 94, .38);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  color: #702044;
+  box-shadow: 0 4px 14px rgba(33, 20, 29, .22);
+  font: 800 .82rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.call-theme-toggle-v1:hover,
+.call-theme-toggle-v1:focus-visible {
+  outline: 3px solid rgba(255, 99, 173, .32);
+  outline-offset: 2px;
+}
+
+:root[data-call-theme="dark"] .call-theme-toggle-v1 {
+  border-color: var(--call-night-focus);
+  background: #1c3441;
+  color: var(--call-night-text);
+}
+
+@media (max-width: 760px) {
+  .call-theme-toggle-v1 {
+    min-width: 3rem;
+    min-height: 2rem;
+    padding: .32rem .46rem;
+    font-size: .72rem;
+  }
+}
