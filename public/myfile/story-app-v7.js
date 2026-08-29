@@ -8,12 +8,14 @@
 
   const MANIFEST_URL = './data/story-v6/manifest.json';
   const VARIANT_URL = './data/story-v6/variant-map.json';
+  const MEMORIA_WIKI_LINKS_URL = './data/story-v6/memoria-wiki-links-v1.json';
   const STORAGE_KEY = 'magireco-story-search-v7';
   const MAX_RENDERED_ROWS = 1800;
   const nodes = {};
   const categoryCache = new Map();
   let catalog = [];
   let manifest = null;
+  let memoriaWikiLinksPromise = null;
   let localization = null;
   let variantFamilies = new Map();
   let routeReady = Promise.resolve(null);
@@ -242,15 +244,38 @@
     return keywordTerms.every((term) => haystack.includes(term));
   }
 
+  function loadMemoriaWikiLinks() {
+    if (!memoriaWikiLinksPromise) {
+      memoriaWikiLinksPromise = Tools.fetchJson(MEMORIA_WIKI_LINKS_URL, { cache: 'force-cache' }, 30000)
+        .then((data) => {
+          if (!data || data.count !== 1038 || !data.links || typeof data.links !== 'object') {
+            throw new Error('记忆结晶官方链接清单无效。');
+          }
+          return data.links;
+        })
+        .catch((error) => {
+          console.warn('记忆结晶官方链接清单不可用，保留原始来源链接。', error);
+          return null;
+        });
+    }
+    return memoriaWikiLinksPromise;
+  }
+
   async function loadCategory(key) {
     if (!categoryCache.has(key)) {
       const meta = categoryMeta(key);
       if (!meta) throw new Error(`故事分类不存在：${key}`);
-      categoryCache.set(key, Tools.fetchJson(`./data/story-v6/${meta.file}`, { cache: 'force-cache' }, 45000)
-        .then((data) => {
-          if (!data || data.key !== key || !Array.isArray(data.rows)) throw new Error(`${key} 数据无效。`);
-          return data.rows.map((row, rowIndex) => ({ row, rowIndex }));
+      categoryCache.set(key, Promise.all([
+        Tools.fetchJson(`./data/story-v6/${meta.file}`, { cache: 'force-cache' }, 45000),
+        key === 'メモリア' ? loadMemoriaWikiLinks() : Promise.resolve(null)
+      ]).then(([data, memoriaLinks]) => {
+        if (!data || data.key !== key || !Array.isArray(data.rows)) throw new Error(`${key} 数据无效。`);
+        return data.rows.map((row, rowIndex) => ({
+          row,
+          rowIndex,
+          sourceHref: key === 'メモリア' ? memoriaLinks?.[String(rowIndex)]?.url || null : null
         }));
+      }));
     }
     return categoryCache.get(key);
   }
@@ -280,7 +305,9 @@
     return exact?.zh || suffix;
   }
 
-  function storyLink(storyType, row, displayTitle, originalTitle) {
+  function storyLink(storyType, row, displayTitle, originalTitle, canonicalSource) {
+    const canonical = String(canonicalSource || '').trim();
+    if (canonical) return canonical;
     const source = String(row?.[3] || '').trim();
     if (/^https?:\/\//i.test(source)) return source;
     if (/^[A-Za-z0-9_-]{11}(?:[?&].*)?$/.test(source)) return `https://www.youtube.com/watch?v=${source}`;
@@ -386,7 +413,7 @@
         const rowIndex = tagged.rowIndex;
         const titleInfo = localizeTitle(storyType, row?.[0]);
         const routeLinks = RouteBridge?.links(categoryMeta(storyType)?.slug, rowIndex) || null;
-        const sourceHref = storyLink(storyType, row, titleInfo.display, titleInfo.original);
+        const sourceHref = storyLink(storyType, row, titleInfo.display, titleInfo.original, tagged.sourceHref);
         const item = document.createElement('article');
         item.className = 'story-row-v7';
         const title = document.createElement('div');
@@ -403,9 +430,9 @@
           original.textContent = titleInfo.original;
           title.appendChild(original);
         }
+        const actions = document.createElement('div');
+        actions.className = 'story-route-actions-v1';
         if (routeLinks?.reader) {
-          const actions = document.createElement('div');
-          actions.className = 'story-route-actions-v1';
           if (routeLinks.variants?.length > 1) {
             for (const variant of routeLinks.variants) {
               appendRouteTarget(actions, variant, variant.label);
@@ -413,11 +440,13 @@
           } else {
             appendRouteTarget(actions, routeLinks, '');
           }
-          if (sourceHref && sourceHref !== routeLinks.reader) {
-            actions.appendChild(routeAnchor('来源', sourceHref, 'source', '打开原始资料来源'));
-          }
-          title.appendChild(actions);
         }
+        // Non-scenario catalogues (for example Memoria) have no auditable Reader/ADV target,
+        // but their original source must remain reachable.
+        if (sourceHref && sourceHref !== routeLinks?.reader) {
+          actions.appendChild(routeAnchor('来源', sourceHref, 'source', '打开原始资料来源'));
+        }
+        if (actions.childElementCount) title.appendChild(actions);
         item.append(title, await renderCast(row?.[1]));
         if (showSpoiler) {
           const summary = document.createElement('div');
