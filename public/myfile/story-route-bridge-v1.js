@@ -108,18 +108,28 @@
     return Object.freeze({ payload, routes });
   }
 
-  function initialize(searchManifest) {
-    if (!statePromise) {
-      statePromise = fetch(manifestUrl(), { cache: 'no-cache' })
-        .then((response) => {
-          if (!response.ok) throw new Error(`Story Router HTTP ${response.status}`);
-          return response.json();
-        })
-        .then((payload) => {
-          state = parseManifest(payload, searchManifest);
-          return state;
-        });
+  function localManifestUrl() {
+    return new URL(LOCAL_MANIFEST_URL, global.document?.baseURI || global.location?.href || 'http://localhost/').toString();
+  }
+
+  async function loadManifest(searchManifest) {
+    const candidates = [...new Set([manifestUrl(), localManifestUrl()])];
+    let lastError = null;
+    for (const url of candidates) {
+      try {
+        const response = await fetch(url, { cache: 'no-cache' });
+        if (!response.ok) throw new Error(`Story Router HTTP ${response.status}`);
+        state = parseManifest(await response.json(), searchManifest);
+        return state;
+      } catch (error) {
+        lastError = error;
+      }
     }
+    throw lastError || new Error('Story Router 清单不可用');
+  }
+
+  function initialize(searchManifest) {
+    if (!statePromise) statePromise = loadManifest(searchManifest);
     return statePromise;
   }
 

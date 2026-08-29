@@ -8,7 +8,7 @@ const source = await readFile(new URL('public/myfile/story-route-bridge-v1.js', 
 const manifest = JSON.parse(await readFile(new URL('public/data/story-router-v1.json', root), 'utf8'));
 const searchManifest = JSON.parse(await readFile(new URL('public/data/story-v6/manifest.json', root), 'utf8'));
 
-function loadBridge(search = '') {
+function loadBridge(search = '', fetchImpl = null) {
   const context = {
     URL,
     URLSearchParams,
@@ -26,7 +26,7 @@ function loadBridge(search = '') {
         return null;
       }
     },
-    fetch: async () => ({ ok: true, status: 200, json: async () => manifest })
+    fetch: fetchImpl || (async () => ({ ok: true, status: 200, json: async () => manifest }))
   };
   context.window = context;
   vm.runInNewContext(source, context, { filename: 'story-route-bridge-v1.js' });
@@ -99,4 +99,20 @@ test('propagates audited parent precision without changing its section target', 
   assert.equal(links.storyId, 'scene0_main_913117_030-090_12ab8eba');
   assert.equal(new URL(links.reader).searchParams.get('source'), route.sourceKey);
   assert.equal(new URL(links.adv).searchParams.get('source'), route.sourceKey);
+});
+
+
+test('falls back to the co-deployed static router after a transient AIO router failure', async () => {
+  const fetched = [];
+  const bridge = loadBridge('?aioBase=https%3A%2F%2Faio.example%2F', async (url) => {
+    fetched.push(String(url));
+    if (String(url).startsWith('https://aio.example/')) return { ok: false, status: 503 };
+    return { ok: true, status: 200, json: async () => manifest };
+  });
+  await bridge.initialize(searchManifest);
+  assert.deepEqual(fetched, [
+    'https://aio.example/story-routes.json',
+    'https://call.example/data/story-router-v1.json'
+  ]);
+  assert.ok(bridge.links('character', 0)?.reader);
 });
