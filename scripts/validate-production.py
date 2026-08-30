@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE = "canonical-title-authority-v1"
 READER_REVISION = "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
-AIO_ROUTER_BASE = "https://callsearch.magireco.top/aio/"
+AIO_ROUTER_BASE = "https://magireco-aio-router.pages.dev/"
 STORY_ROUTE_COUNT = 12443
 EDITION_VARIANT_ROUTES = 1187
 EDITION_VARIANT_TARGETS = 2374

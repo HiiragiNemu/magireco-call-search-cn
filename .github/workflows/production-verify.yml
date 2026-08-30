@@ -120,7 +120,7 @@ jobs:
                               assert "readerRevision=bad94aa371dc9e6aed16ccf6d144106b31643f28" in location
                   get("myfile/story-route-bridge-v1.js")
                   story_html = get_text("story.html")
-                  assert '<meta name="magireco-aio-router" content="https://callsearch.magireco.top/aio/">' in story_html
+                  assert '<meta name="magireco-aio-router" content="https://magireco-aio-router.pages.dev/">' in story_html
                   print("Production V26 endpoints passed.")
                   break
               except Exception:

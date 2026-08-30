@@ -13,20 +13,20 @@ assert.ok(editionRoute);
 
 test('routes Reader and requires both ADV production gates', async () => {
   const reader = await onRequest({
-    request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(source)}&target=reader`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(source)}&target=reader`),
     env: {},
   });
   assert.equal(reader.status, 302);
   assert.match(reader.headers.get('location'), /^https:\/\/magireader\.pages\.dev\//u);
 
   const adv = await onRequest({
-    request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(source)}&target=adv`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(source)}&target=adv`),
     env: {},
   });
   assert.equal(adv.status, 409);
 
   const enabledAdv = await onRequest({
-    request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(source)}&target=adv`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(source)}&target=adv`),
     env: { AIO_ADV_HANDOFF_ENABLED: '1' },
   });
   assert.equal(enabledAdv.status, 302);
@@ -46,7 +46,7 @@ test('routes initial and rerun editions to their distinct Reader and ADV targets
     const expected = editionRoute.variants.find((variant) => variant.edition === edition);
     assert.ok(expected);
     const reader = await onRequest({
-      request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(editionRoute.sourceKey)}&target=reader&edition=${edition}`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(editionRoute.sourceKey)}&target=reader&edition=${edition}`),
       env: {},
     });
     assert.equal(reader.status, 302);
@@ -55,7 +55,7 @@ test('routes initial and rerun editions to their distinct Reader and ADV targets
     readerLocations.push(readerLocation.toString());
 
     const adv = await onRequest({
-      request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(editionRoute.sourceKey)}&target=adv&edition=${edition}`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(editionRoute.sourceKey)}&target=adv&edition=${edition}`),
       env: { AIO_ADV_HANDOFF_ENABLED: '1' },
     });
     assert.equal(adv.status, 302);
@@ -85,7 +85,7 @@ test('preserves audited SPA, English-special and Scene0 section targets', async 
     assert.equal(expected.precision, precision, suffix);
 
     const reader = await onRequest({
-      request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(expected.sourceKey)}&target=reader`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(expected.sourceKey)}&target=reader`),
       env: {},
     });
     assert.equal(reader.status, 302, suffix);
@@ -95,7 +95,7 @@ test('preserves audited SPA, English-special and Scene0 section targets', async 
     assert.equal(readerLocation.hash, `#${readerAnchor}`, suffix);
 
     const adv = await onRequest({
-      request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(expected.sourceKey)}&target=adv`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(expected.sourceKey)}&target=adv`),
       env: { AIO_ADV_HANDOFF_ENABLED: '1' },
     });
     assert.equal(adv.status, 302, suffix);
@@ -126,7 +126,7 @@ test('preserves audited cross-volume and initial/rerun event sections', async ()
     assert.equal(variants.rerun.reader.section, rerunSection, suffix);
 
     const reader = await onRequest({
-      request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(expected.sourceKey)}&target=reader&edition=rerun`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(expected.sourceKey)}&target=reader&edition=rerun`),
       env: {},
     });
     assert.equal(reader.status, 302, suffix);
@@ -134,7 +134,7 @@ test('preserves audited cross-volume and initial/rerun event sections', async ()
     assert.equal(decodeURIComponent(readerLocation.pathname), `/reader/${rerunStoryId}`, suffix);
 
     const adv = await onRequest({
-      request: new Request(`https://callsearch.magireco.top/aio/open?source=${encodeURIComponent(expected.sourceKey)}&target=adv&edition=rerun`),
+    request: new Request(`https://magireco-aio-router.pages.dev/open?source=${encodeURIComponent(expected.sourceKey)}&target=adv&edition=rerun`),
       env: { AIO_ADV_HANDOFF_ENABLED: '1' },
     });
     assert.equal(adv.status, 302, suffix);

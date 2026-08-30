@@ -20,7 +20,7 @@
   "storyRouterEditionVariantAdvUnavailable": 0,
   "storyRouterReaderRevision": "cd78e9b7d4fa6dcb029c3c7edc788298de03da94",
   "storyRouterAdvReaderRevision": "bad94aa371dc9e6aed16ccf6d144106b31643f28",
-  "aioRouterBase": "https://callsearch.magireco.top/aio/",
+  "aioRouterBase": "https://magireco-aio-router.pages.dev/",
   "rollbackBeforeLayoutCorrectionV2": "rollback/pre-layout-correction-v2-20260816",
   "rollbackRejectedMobileOverhaul": "rollback/rejected-mobile-overhaul-20260816",
   "acceptedLayoutCommit": "a0eb4a28402a24bdabf3379727c26c93c7df7738",
