@@ -12,10 +12,10 @@
 
   function syncQuickRail() {
     const buttons = [...document.querySelectorAll('.call-quick-rail-v10 button')];
-    const top = buttons.find((button) => button.getAttribute('aria-label') === '页面顶部');
-    const bottom = buttons.find((button) => button.getAttribute('aria-label') === '页面底部');
-    if (top && top.textContent !== '↑') top.textContent = '↑';
-    if (bottom && bottom.textContent !== '↓') bottom.textContent = '↓';
+    const top = buttons.find((button) => button.getAttribute('aria-label') === '跳到页面顶部');
+    const bottom = buttons.find((button) => button.getAttribute('aria-label') === '跳到页面底部');
+    if (top && top.textContent !== '顶部') top.textContent = '顶部';
+    if (bottom && bottom.textContent !== '底部') bottom.textContent = '底部';
     for (const id of ['pagetop', 'pagemdl', 'pagebtm']) {
       const legacy = document.getElementById(id);
       if (legacy) { legacy.hidden = true; legacy.setAttribute('aria-hidden', 'true'); }

@@ -74,6 +74,13 @@ def canonicalize_cn_visible(value: str) -> str:
     # The abbreviation is 新玛; the complete organization name remains
     # Neo-Magius.  The negative look-ahead prevents corrupting the full name.
     result = re.sub(r"Neo[- ]?Magi(?!us)", "新玛", result, flags=re.IGNORECASE)
+    # ``椎`` is an obsolete Chinese rendering only when it is the visible name
+    # of シィ.  Keep this contextual rather than replacing the common kanji in
+    # arbitrary prose, paths or technical source identities.
+    if result == "椎":
+        result = "思"
+    result = re.sub(r"^椎(?=\s*第\s*\d+\s*[话話])", "思", result)
+    result = re.sub(r"^(#\s*227\s+)椎(?=$|[｜|])", r"\1思", result)
     return result
 
 
@@ -113,6 +120,8 @@ def _self_test() -> None:
         "新玛吉斯与Neo-Magi": "Neo-Magius与新玛",
         "日之本": "日出之国",
         "志切思惟": "思惟",
+        "椎 第1话｜正义的魔法少女": "思 第1话｜正义的魔法少女",
+        "#227 椎": "#227 思",
         "小圆前辈·小伊吕波与谣莎奈": "小圆前辈·小彩羽与传闻莎奈",
     }
     for source, expected in cases.items():

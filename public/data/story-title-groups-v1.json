@@ -42044,7 +42044,7 @@
       "category": "シール図鑑",
       "category_label": "贴纸图鉴",
       "source_base": "#227 シィ",
-      "current_translation": "#227 椎",
+      "current_translation": "#227 思",
       "approved_translation": "",
       "status": "待校对",
       "note": "",
@@ -42062,7 +42062,7 @@
           "source_joiner": "",
           "localized_suffix": "",
           "localized_joiner": "",
-          "current_full_translation": "#227 椎",
+          "current_full_translation": "#227 思",
           "occurrences": 1,
           "grouping_rule": "singleton"
         }
@@ -90050,7 +90050,7 @@
       "category": "魔法少女",
       "category_label": "魔法少女个人故事",
       "source_base": "シィ",
-      "current_translation": "椎",
+      "current_translation": "思",
       "approved_translation": "",
       "status": "待校对",
       "note": "",
@@ -90068,7 +90068,7 @@
           "source_joiner": " ",
           "localized_suffix": "第1话|正义的魔法少女",
           "localized_joiner": " ",
-          "current_full_translation": "椎 第1话|正义的魔法少女",
+          "current_full_translation": "思 第1话|正义的魔法少女",
           "occurrences": 3,
           "grouping_rule": "episode"
         },
@@ -90078,7 +90078,7 @@
           "source_joiner": " ",
           "localized_suffix": "第2话|无论是睡是醒",
           "localized_joiner": " ",
-          "current_full_translation": "椎 第2话|无论是睡是醒",
+          "current_full_translation": "思 第2话|无论是睡是醒",
           "occurrences": 2,
           "grouping_rule": "episode"
         },
@@ -90088,7 +90088,7 @@
           "source_joiner": " ",
           "localized_suffix": "第3话|扭曲地连结起来",
           "localized_joiner": " ",
-          "current_full_translation": "椎 第3话|扭曲地连结起来",
+          "current_full_translation": "思 第3话|扭曲地连结起来",
           "occurrences": 6,
           "grouping_rule": "episode"
         }

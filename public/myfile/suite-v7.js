@@ -284,27 +284,38 @@
     if (tool === 'call' && ['pagetop', 'pagemdl', 'pagebtm'].every((id) => document.getElementById(id))) return;
     const definitions = tool === 'story'
       ? [
-          ['↑','顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
-          ['筛','搜索条件',() => scrollToTarget('#story-options-title')],
-          ['人','角色列表',() => scrollToTarget('#story-character-title')],
-          ['搜','执行搜索',() => document.getElementById('storySearchButton')?.click()],
-          ['表','搜索结果',() => scrollToTarget('#storyResults')],
-          ['↓','页面底部',() => global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
+          ['顶部','跳到页面顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
+          ['筛选','搜索条件',() => scrollToTarget('#story-options-title')],
+          ['角色','角色列表',() => scrollToTarget('#story-character-title')],
+          ['搜索','执行搜索',() => document.getElementById('storySearchButton')?.click()],
+          ['结果','搜索结果',() => scrollToTarget('#storyResults')],
+          ['取消','取消筛选与角色选择',() => document.getElementById('storyResetButton')?.click()],
+          ['底部','跳到页面底部',() => global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
         ]
       : tool === 'attendance'
         ? [
-            ['↑','顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
-            ['筛','筛选角色',() => scrollToTarget('#attendance-character-title')],
-            ['人','角色列表',() => scrollToTarget('#attendanceGrid')],
-            ['表','排行结果',() => scrollToTarget('#attendanceResults')],
-            ['↓','页面底部',() => global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
+            ['顶部','跳到页面顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
+            ['筛选','筛选角色',() => scrollToTarget('#attendance-character-title')],
+            ['角色','角色列表',() => scrollToTarget('#attendanceGrid')],
+            ['表格','排行结果',() => scrollToTarget('#attendanceResults')],
+            ['取消','取消筛选与角色选择',() => {
+              document.querySelector('#attendanceAttributeFilterV7 [data-attribute-reset]')?.click();
+              const filter = document.getElementById('attendanceFilter');
+              if (filter) {
+                filter.value = '';
+                filter.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              document.getElementById('attendanceClear')?.click();
+            }],
+            ['底部','跳到页面底部',() => global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
           ]
         : [
-            ['↑','顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
-            ['人','角色列表',() => scrollToTarget('#girltop')],
-            ['搜','称呼搜索',() => typeof global.drawAndJump === 'function' && global.drawAndJump()],
-            ['表','称呼结果',() => scrollToTarget('#callResultSection')],
-            ['↓','页面底部',() => global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
+            ['顶部','跳到页面顶部',() => global.scrollTo({top:0,behavior:'smooth'})],
+            ['角色','角色列表',() => scrollToTarget('#girltop')],
+            ['搜索','称呼搜索',() => typeof global.drawAndJump === 'function' && global.drawAndJump()],
+            ['表格','称呼结果',() => scrollToTarget('#callResultSection')],
+            ['取消','取消角色选择',() => document.getElementById('mgreset')?.click()],
+            ['底部','跳到页面底部',() => global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
           ];
     const rail = document.createElement('aside');
     rail.className = 'suite-quick-rail-v7';

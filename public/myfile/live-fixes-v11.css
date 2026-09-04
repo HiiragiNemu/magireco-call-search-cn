@@ -49,7 +49,7 @@ body:not(.suite-page) .suite-nav {
   font-size: 12px !important;
   line-height: 13px !important;
   font-weight: 500 !important;
-  min-height: 26px;
+  min-height: 0;
   display: grid !important;
   place-items: start center;
   overflow: hidden;
@@ -82,6 +82,40 @@ label.girlbox.is-selected-v11 {
   z-index: 3;
 }
 
+/* Keep the original call directory as dense as the suite directories.  The
+   legacy checkbox is already the avatar, so the first BR only adds a blank
+   line and must not reserve another text row. */
+body:not(.suite-page) div.magicalgirl {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, 68px) !important;
+  grid-auto-columns: 68px;
+  align-items: start !important;
+  align-content: start;
+  justify-content: start !important;
+  gap: 1px !important;
+  padding: 2px !important;
+}
+body:not(.suite-page) label.girlbox,
+body:not(.suite-page) label.girlbox.leftm {
+  width: 68px !important;
+  min-width: 68px !important;
+  max-width: 68px !important;
+  min-height: 0 !important;
+  height: max-content !important;
+  align-self: start !important;
+  margin: 0 !important;
+  padding: 1px !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+body:not(.suite-page) label.girlbox > input.MagicalChk {
+  display: block !important;
+  width: 60px !important;
+  height: 60px !important;
+  margin: 0 auto !important;
+}
+body:not(.suite-page) label.girlbox > input.MagicalChk + br { display: none; }
+
 /* A short selected-character chart should end at its own right ruler. Wide charts
    still use the viewport as a normal horizontal scroller. */
 .height-selected-viewport-v11 {
@@ -97,23 +131,51 @@ label.girlbox.is-selected-v11 {
 .height-selection-summary-v11[data-kind="success"] { background: #effcf6; border-color: #62b48d; }
 
 .call-quick-rail-v10 button:first-child,
-.call-quick-rail-v10 button:last-child { font-size: 1.35rem; }
+.call-quick-rail-v10 button:last-child { font-size: .82rem; }
 
 @media (max-width: 720px) {
   .suite-character-grid,
   #storyCharacterGrid,
   #attendanceGrid {
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-    grid-auto-columns: auto;
+    grid-template-columns: repeat(auto-fill, 60px) !important;
+    grid-auto-columns: 60px;
     width: 100%;
-    gap: 0 !important;
-    padding: 0 !important;
+    justify-content: start !important;
+    gap: 1px !important;
+    padding: 2px !important;
   }
   .suite-character-card {
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    border-radius: 0 !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    grid-template-rows: 56px auto !important;
+    align-self: start !important;
+    height: max-content !important;
+    border-radius: 2px !important;
   }
-  .suite-character-card img { width: min(60px, 100%) !important; }
+  .suite-character-card img {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  .suite-character-card strong {
+    font-size: 11px !important;
+    line-height: 12px !important;
+  }
+
+  body:not(.suite-page) div.magicalgirl {
+    grid-template-columns: repeat(auto-fill, 60px) !important;
+    grid-auto-columns: 60px;
+  }
+  body:not(.suite-page) label.girlbox,
+  body:not(.suite-page) label.girlbox.leftm {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    font-size: 11px !important;
+    line-height: 12px !important;
+  }
+  body:not(.suite-page) label.girlbox > input.MagicalChk {
+    width: 56px !important;
+    height: 56px !important;
+  }
 }

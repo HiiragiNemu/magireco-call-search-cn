@@ -1517,7 +1517,7 @@
     "aliases": []
   },
   {
-    "zh": "椎",
+    "zh": "思",
     "jp": "シィ",
     "roman": "Shi",
     "kana": "しぃ",
@@ -1527,7 +1527,9 @@
       "girlbox",
       "otherColor"
     ],
-    "aliases": []
+    "aliases": [
+      "椎"
+    ]
   },
   {
     "zh": "雪野加奈惠",

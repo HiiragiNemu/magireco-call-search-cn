@@ -308,7 +308,7 @@
   display: grid;
   pointer-events: auto;
   place-items: center;
-  width: 44px;
+  width: 52px;
   height: 44px;
   padding: 0;
   border: 2px solid #fff;
@@ -316,7 +316,7 @@
   color: #fff;
   background: rgba(243, 77, 167, .93);
   box-shadow: 0 3px 10px rgba(74, 18, 49, .24);
-  font: 800 1.15rem/1 sans-serif;
+  font: 800 .88rem/1 sans-serif;
   cursor: pointer;
 }
 .suite-quick-rail-v7 button:hover,
@@ -341,7 +341,7 @@
   .story-summary-v7 { padding: 6px 8px; }
   .story-cast-chip-v7 { max-width: 100%; }
   .suite-quick-rail-v7 { right: 1px; gap: 2px; }
-  .suite-quick-rail-v7 button { width: 32px; height: 32px; border-radius: 9px; font-size: .86rem; opacity: .82; }
+  .suite-quick-rail-v7 button { width: 42px; height: 34px; border-radius: 9px; font-size: .74rem; opacity: .88; }
 }
 
 @media (max-width: 390px) {

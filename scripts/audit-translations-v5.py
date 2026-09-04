@@ -31,6 +31,7 @@ ALIASES: dict[str, list[str]] = {
     "名小姐": ["名字", "ナマエ"],
     "水树垒": ["水树塁", "水樹塁"],
     "晓美焰-眼镜ver": ["晓美焰(眼镜ver)", "晓美焰(眼镜ver.)"],
+    "思": ["椎"],
 }
 
 EXPECTED_ATTRIBUTE_LABELS: dict[str, str] = {
@@ -73,6 +74,7 @@ IMAGE_ALIASES = {
     "晓美焰(眼镜ver.)": "晓美焰-眼镜ver",
     "名字": "名小姐",
     "水树塁": "水树垒",
+    "思": "椎",
 }
 
 
