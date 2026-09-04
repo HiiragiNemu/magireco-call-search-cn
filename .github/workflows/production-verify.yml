@@ -102,15 +102,27 @@ jobs:
                           return None
 
                   redirect_opener = urllib.request.build_opener(NoRedirect)
+
+                  def open_redirect(url):
+                      # Cloudflare may challenge urllib's default Python user agent
+                      # even though the public route itself is healthy. Exercise the
+                      # same browser-facing endpoint with a normal browser identity.
+                      req = urllib.request.Request(
+                          url,
+                          headers={
+                              "Cache-Control": "no-cache, no-store",
+                              "User-Agent": "Mozilla/5.0 V26-production-verify",
+                          },
+                      )
+                      return redirect_opener.open(req, timeout=60)
+
                   source = urllib.parse.quote(story_router["routes"][0]["sourceKey"], safe="")
                   for target, expected_origin in (
                       ("reader", "https://magireader.pages.dev/"),
                       ("adv", "https://magiaexedralive2dviewer.pages.dev/"),
                   ):
                       try:
-                          redirect_opener.open(
-                              f"{base}/aio/open?source={source}&target={target}", timeout=60
-                          )
+                          open_redirect(f"{base}/aio/open?source={source}&target={target}")
                           raise AssertionError(f"Pages {target} route did not redirect")
                       except urllib.error.HTTPError as response:
                           assert response.code == 302
