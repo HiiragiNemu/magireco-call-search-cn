@@ -626,7 +626,7 @@
     },
     "character_story/1018 - 天音月夜（天音 月夜）/310182_1-4": {
       "detail": "sectionList:310182 via Reader character_story/1018 - 天音月夜（天音 月夜）/310182_1-4",
-      "displayTitle": "第2话 绝不能遇见的人 会ってはいけない子",
+      "displayTitle": "第2话 不该相见的孩子 会ってはいけない子",
       "fileStem": "310182_1-4",
       "officialId": "sectionList:310182",
       "rawId": "310182",
@@ -634,11 +634,11 @@
       "source": "official-cn",
       "titleJa": "会ってはいけない子",
       "titleSuffix": "会ってはいけない子",
-      "titleZh": "第2话 绝不能遇见的人"
+      "titleZh": "第2话 不该相见的孩子"
     },
     "character_story/1018 - 天音月夜（天音 月夜）/310183_1-4": {
       "detail": "sectionList:310183 via Reader character_story/1018 - 天音月夜（天音 月夜）/310183_1-4",
-      "displayTitle": "第3话 蜕变 そしてまっさらになる",
+      "displayTitle": "第3话 而后归于纯白 そしてまっさらになる",
       "fileStem": "310183_1-4",
       "officialId": "sectionList:310183",
       "rawId": "310183",
@@ -646,7 +646,7 @@
       "source": "official-cn",
       "titleJa": "そしてまっさらになる",
       "titleSuffix": "そしてまっさらになる",
-      "titleZh": "第3话 蜕变"
+      "titleZh": "第3话 而后归于纯白"
     },
     "character_story/1019 - 天音月咲（天音 月咲）/310191_1-4": {
       "detail": "sectionList:310191 via Reader character_story/1019 - 天音月咲（天音 月咲）/310191_1-4",
@@ -1178,7 +1178,7 @@
     },
     "character_story/1034 - 三浦旭（三浦 旭）/310341_1-4": {
       "detail": "sectionList:310341 via Reader character_story/1034 - 三浦旭（三浦 旭）/310341_1-4",
-      "displayTitle": "第1话 新人的真面目 新入りの素顔",
+      "displayTitle": "第1话 新人的真实面貌 新入りの素顔",
       "fileStem": "310341_1-4",
       "officialId": "sectionList:310341",
       "rawId": "310341",
@@ -1186,7 +1186,7 @@
       "source": "official-cn",
       "titleJa": "新入りの素顔",
       "titleSuffix": "新入りの素顔",
-      "titleZh": "第1话 新人的真面目"
+      "titleZh": "第1话 新人的真实面貌"
     },
     "character_story/1034 - 三浦旭（三浦 旭）/310342_1-4": {
       "detail": "sectionList:310342 via Reader character_story/1034 - 三浦旭（三浦 旭）/310342_1-4",
@@ -1394,7 +1394,7 @@
     },
     "character_story/1040 - 篠目夜鹤（篠目 ヨヅル）/310401_1-4": {
       "detail": "sectionList:310401 via Reader character_story/1040 - 篠目夜鹤（篠目 ヨヅル）/310401_1-4",
-      "displayTitle": "第1话 观察对象:约鹤 観察対象：ヨヅル",
+      "displayTitle": "第1话 观察对象:夜鹤 観察対象：ヨヅル",
       "fileStem": "310401_1-4",
       "officialId": "sectionList:310401",
       "rawId": "310401",
@@ -1402,11 +1402,11 @@
       "source": "official-cn",
       "titleJa": "観察対象：ヨヅル",
       "titleSuffix": "観察対象：ヨヅル",
-      "titleZh": "第1话 观察对象:约鹤"
+      "titleZh": "第1话 观察对象:夜鹤"
     },
     "character_story/1040 - 篠目夜鹤（篠目 ヨヅル）/310402_1-4": {
       "detail": "sectionList:310402 via Reader character_story/1040 - 篠目夜鹤（篠目 ヨヅル）/310402_1-4",
-      "displayTitle": "第2话 对话者:约鹤 対話者：ヨヅル",
+      "displayTitle": "第2话 对话者:夜鹤 対話者：ヨヅル",
       "fileStem": "310402_1-4",
       "officialId": "sectionList:310402",
       "rawId": "310402",
@@ -1414,11 +1414,11 @@
       "source": "official-cn",
       "titleJa": "対話者：ヨヅル",
       "titleSuffix": "対話者：ヨヅル",
-      "titleZh": "第2话 对话者:约鹤"
+      "titleZh": "第2话 对话者:夜鹤"
     },
     "character_story/1040 - 篠目夜鹤（篠目 ヨヅル）/310403_1-4": {
       "detail": "sectionList:310403 via Reader character_story/1040 - 篠目夜鹤（篠目 ヨヅル）/310403_1-4",
-      "displayTitle": "第3话 主演:约鹤 主演：ヨヅル",
+      "displayTitle": "第3话 主演:夜鹤 主演：ヨヅル",
       "fileStem": "310403_1-4",
       "officialId": "sectionList:310403",
       "rawId": "310403",
@@ -1426,7 +1426,7 @@
       "source": "official-cn",
       "titleJa": "主演：ヨヅル",
       "titleSuffix": "主演：ヨヅル",
-      "titleZh": "第3话 主演:约鹤"
+      "titleZh": "第3话 主演:夜鹤"
     },
     "character_story/1041 - 莉薇娅·梅黛洛斯（リヴィア・メディロス）/310411_1-4": {
       "detail": "sectionList:310411 via Reader character_story/1041 - 莉薇娅·梅黛洛斯（リヴィア・メディロス）/310411_1-4",
@@ -1622,7 +1622,7 @@
     },
     "character_story/1046 - 千鹤（千鶴）/310461_1-5": {
       "detail": "sectionList:310461 via Reader character_story/1046 - 千鹤（千鶴）/310461_1-5",
-      "displayTitle": "第1话 完成使命的义贼之女 使命を遂げし賊の娘",
+      "displayTitle": "第1话 完成使命的盗贼之女 使命を遂げし賊の娘",
       "fileStem": "310461_1-5",
       "officialId": "sectionList:310461",
       "rawId": "310461",
@@ -1630,7 +1630,7 @@
       "source": "official-cn",
       "titleJa": "使命を遂げし賊の娘",
       "titleSuffix": "使命を遂げし賊の娘",
-      "titleZh": "第1话 完成使命的义贼之女"
+      "titleZh": "第1话 完成使命的盗贼之女"
     },
     "character_story/1046 - 千鹤（千鶴）/310462_1-4": {
       "detail": "sectionList:310462 via Reader character_story/1046 - 千鹤（千鶴）/310462_1-4",
@@ -2162,7 +2162,7 @@
     },
     "character_story/1108 - 圣阿莉娜（ホーリーアリナ）/311081_1-4": {
       "detail": "sectionList:311081 via Reader character_story/1108 - 圣阿莉娜（ホーリーアリナ）/311081_1-4",
-      "displayTitle": "第1话 breeding的理由 ブリーディングの理由",
+      "displayTitle": "第1话 培育的理由 ブリーディングの理由",
       "fileStem": "311081_1-4",
       "officialId": "sectionList:311081",
       "rawId": "311081",
@@ -2170,11 +2170,11 @@
       "source": "official-cn",
       "titleJa": "ブリーディングの理由",
       "titleSuffix": "ブリーディングの理由",
-      "titleZh": "第1话 breeding的理由"
+      "titleZh": "第1话 培育的理由"
     },
     "character_story/1108 - 圣阿莉娜（ホーリーアリナ）/311082_1-4": {
       "detail": "sectionList:311082 via Reader character_story/1108 - 圣阿莉娜（ホーリーアリナ）/311082_1-4",
-      "displayTitle": "第2话 深处的roots 奥底のルーツ",
+      "displayTitle": "第2话 深处的根源 奥底のルーツ",
       "fileStem": "311082_1-4",
       "officialId": "sectionList:311082",
       "rawId": "311082",
@@ -2182,7 +2182,7 @@
       "source": "official-cn",
       "titleJa": "奥底のルーツ",
       "titleSuffix": "奥底のルーツ",
-      "titleZh": "第2话 深处的roots"
+      "titleZh": "第2话 深处的根源"
     },
     "character_story/1108 - 圣阿莉娜（ホーリーアリナ）/311083_1-5": {
       "detail": "sectionList:311083 via Reader character_story/1108 - 圣阿莉娜（ホーリーアリナ）/311083_1-5",
@@ -2390,7 +2390,7 @@
     },
     "character_story/1117 - 八云御魂（晴着ver.）（八雲 みたま（晴着ver.））/311172_1-4": {
       "detail": "sectionList:311172 via Reader character_story/1117 - 八云御魂（晴着ver.）（八雲 みたま（晴着ver.））/311172_1-4",
-      "displayTitle": "第2话 新年期间的重头戏 年末年始のアクセント",
+      "displayTitle": "第2话 年末年初的点缀 年末年始のアクセント",
       "fileStem": "311172_1-4",
       "officialId": "sectionList:311172",
       "rawId": "311172",
@@ -2398,7 +2398,7 @@
       "source": "official-cn",
       "titleJa": "年末年始のアクセント",
       "titleSuffix": "年末年始のアクセント",
-      "titleZh": "第2话 新年期间的重头戏"
+      "titleZh": "第2话 年末年初的点缀"
     },
     "character_story/1117 - 八云御魂（晴着ver.）（八雲 みたま（晴着ver.））/311173_1-4": {
       "detail": "sectionList:311173 via Reader character_story/1117 - 八云御魂（晴着ver.）（八雲 みたま（晴着ver.））/311173_1-4",
@@ -3026,7 +3026,7 @@
     },
     "character_story/1302 - 七海八千代（动画ver.）（七海 やちよ（アニメver.））/313021_1-4": {
       "detail": "sectionList:313021 via Reader character_story/1302 - 七海八千代（动画ver.）（七海 やちよ（アニメver.））/313021_1-4",
-      "displayTitle": "第1话 七海八千代:警戒的记忆 七海やちよ 戒めの記憶",
+      "displayTitle": "第1话 七海八千代:警醒的记忆 七海やちよ 戒めの記憶",
       "fileStem": "313021_1-4",
       "officialId": "sectionList:313021",
       "rawId": "313021",
@@ -3034,7 +3034,7 @@
       "source": "official-cn",
       "titleJa": "七海やちよ 戒めの記憶",
       "titleSuffix": "七海やちよ 戒めの記憶",
-      "titleZh": "第1话 七海八千代:警戒的记忆"
+      "titleZh": "第1话 七海八千代:警醒的记忆"
     },
     "character_story/1302 - 七海八千代（动画ver.）（七海 やちよ（アニメver.））/313022_1-4": {
       "detail": "sectionList:313022 via Reader character_story/1302 - 七海八千代（动画ver.）（七海 やちよ（アニメver.））/313022_1-4",
@@ -3230,7 +3230,7 @@
     },
     "character_story/1501 - 环彩羽（动画ver.）（環 いろは（アニメver.））/315013_1-4": {
       "detail": "sectionList:315013 via Reader character_story/1501 - 环彩羽（动画ver.）（環 いろは（アニメver.））/315013_1-4",
-      "displayTitle": "第3话 环彩羽残酷的记忆 環いろはの残酷な記憶",
+      "displayTitle": "第3话 环彩羽的残酷记忆 環いろはの残酷な記憶",
       "fileStem": "315013_1-4",
       "officialId": "sectionList:315013",
       "rawId": "315013",
@@ -3238,7 +3238,7 @@
       "source": "official-cn",
       "titleJa": "環いろはの残酷な記憶",
       "titleSuffix": "環いろはの残酷な記憶",
-      "titleZh": "第3话 环彩羽残酷的记忆"
+      "titleZh": "第3话 环彩羽的残酷记忆"
     },
     "character_story/1502 - 七海八千代（历史ver.）（七海 やちよ（ヒストリアver.））/315021_1-4": {
       "detail": "sectionList:315021 via Reader character_story/1502 - 七海八千代（历史ver.）（七海 やちよ（ヒストリアver.））/315021_1-4",
@@ -3302,7 +3302,7 @@
     },
     "character_story/1601 - ∞彩羽（∞いろは）/316013_1-4": {
       "detail": "sectionList:316013 via Reader character_story/1601 - ∞彩羽（∞いろは）/316013_1-4",
-      "displayTitle": "第3话 前方是自在的无色透明 先は自在の無色透明",
+      "displayTitle": "第3话 未来是自由自在的无色透明 先は自在の無色透明",
       "fileStem": "316013_1-4",
       "officialId": "sectionList:316013",
       "rawId": "316013",
@@ -3310,7 +3310,7 @@
       "source": "official-cn",
       "titleJa": "先は自在の無色透明",
       "titleSuffix": "先は自在の無色透明",
-      "titleZh": "第3话 前方是自在的无色透明"
+      "titleZh": "第3话 未来是自由自在的无色透明"
     },
     "character_story/1701 - 无限大小彩羽（無限大いろはちゃん）/317011_1-2": {
       "detail": "sectionList:317011 via Reader character_story/1701 - 无限大小彩羽（無限大いろはちゃん）/317011_1-2",
@@ -3830,7 +3830,7 @@
     },
     "character_story/2104 - 圆·彩羽（まどか・いろは）/321042_1-4": {
       "detail": "sectionList:321042 via Reader character_story/2104 - 圆·彩羽（まどか・いろは）/321042_1-4",
-      "displayTitle": "第2话 在见泷原市开住宿会! 見滝原市でお泊まり会！",
+      "displayTitle": "第2话 在见泷原市办留宿会! 見滝原市でお泊まり会！",
       "fileStem": "321042_1-4",
       "officialId": "sectionList:321042",
       "rawId": "321042",
@@ -3838,7 +3838,7 @@
       "source": "official-cn",
       "titleJa": "見滝原市でお泊まり会！",
       "titleSuffix": "見滝原市でお泊まり会！",
-      "titleZh": "第2话 在见泷原市开住宿会!"
+      "titleZh": "第2话 在见泷原市办留宿会!"
     },
     "character_story/2104 - 圆·彩羽（まどか・いろは）/321043_1-4": {
       "detail": "sectionList:321043 via Reader character_story/2104 - 圆·彩羽（まどか・いろは）/321043_1-4",
@@ -3926,7 +3926,7 @@
     },
     "character_story/2107 - 小圆前辈·小彩羽（まどか先輩・いろはちゃん）/321071_1-2": {
       "detail": "sectionList:321071 via Reader character_story/2107 - 小圆前辈·小彩羽（まどか先輩・いろはちゃん）/321071_1-2",
-      "displayTitle": "第1话 这才是正宗本家的底力 これぞ本家の底力",
+      "displayTitle": "第1话 这才是本家的底力 これぞ本家の底力",
       "fileStem": "321071_1-2",
       "officialId": "sectionList:321071",
       "rawId": "321071",
@@ -3934,11 +3934,11 @@
       "source": "official-cn",
       "titleJa": "これぞ本家の底力",
       "titleSuffix": "これぞ本家の底力",
-      "titleZh": "第1话 这才是正宗本家的底力"
+      "titleZh": "第1话 这才是本家的底力"
     },
     "character_story/2107 - 小圆前辈·小彩羽（まどか先輩・いろはちゃん）/321072_1-2": {
       "detail": "sectionList:321072 via Reader character_story/2107 - 小圆前辈·小彩羽（まどか先輩・いろはちゃん）/321072_1-2",
-      "displayTitle": "第2话 出发,正宗神滨观光 いざ本家神浜観光へ",
+      "displayTitle": "第2话 出发,前往本家神滨观光 いざ本家神浜観光へ",
       "fileStem": "321072_1-2",
       "officialId": "sectionList:321072",
       "rawId": "321072",
@@ -3946,7 +3946,7 @@
       "source": "official-cn",
       "titleJa": "いざ本家神浜観光へ",
       "titleSuffix": "いざ本家神浜観光へ",
-      "titleZh": "第2话 出发,正宗神滨观光"
+      "titleZh": "第2话 出发,前往本家神滨观光"
     },
     "character_story/2107 - 小圆前辈·小彩羽（まどか先輩・いろはちゃん）/321073_1-2": {
       "detail": "sectionList:321073 via Reader character_story/2107 - 小圆前辈·小彩羽（まどか先輩・いろはちゃん）/321073_1-2",
@@ -4106,7 +4106,7 @@
     },
     "character_story/2300 - 晓美焰（泳装ver.）（暁美 ほむら（水着ver.））/323004_1-1": {
       "detail": "sectionList:323004 via Reader character_story/2300 - 晓美焰（泳装ver.）（暁美 ほむら（水着ver.））/323004_1-1",
-      "displayTitle": "第4话 焰的魔女化身 ほむらのドッペル",
+      "displayTitle": "第4话 小焰的魔女化身 ほむらのドッペル",
       "fileStem": "323004_1-1",
       "officialId": "sectionList:323004",
       "rawId": "323004",
@@ -4114,7 +4114,7 @@
       "source": "official-cn",
       "titleJa": "ほむらのドッペル",
       "titleSuffix": "ほむらのドッペル",
-      "titleZh": "第4话 焰的魔女化身"
+      "titleZh": "第4话 小焰的魔女化身"
     },
     "character_story/2301 - 晓美焰（scene0 ver.）（暁美 ほむら（scene0 ver.））/323011_1-5": {
       "detail": "sectionList:323011 via Reader character_story/2301 - 晓美焰（scene0 ver.）（暁美 ほむら（scene0 ver.））/323011_1-5",
@@ -4418,7 +4418,7 @@
     },
     "character_story/2600 - 佐仓杏子（泳装ver.）（佐倉 杏子（水着ver.））/326002_1-4": {
       "detail": "sectionList:326002 via Reader character_story/2600 - 佐仓杏子（泳装ver.）（佐倉 杏子（水着ver.））/326002_1-4",
-      "displayTitle": "第2话 努力加油的身影 頑張ってるアイツ",
+      "displayTitle": "第2话 那个努力的家伙 頑張ってるアイツ",
       "fileStem": "326002_1-4",
       "officialId": "sectionList:326002",
       "rawId": "326002",
@@ -4426,7 +4426,7 @@
       "source": "official-cn",
       "titleJa": "頑張ってるアイツ",
       "titleSuffix": "頑張ってるアイツ",
-      "titleZh": "第2话 努力加油的身影"
+      "titleZh": "第2话 那个努力的家伙"
     },
     "character_story/2600 - 佐仓杏子（泳装ver.）（佐倉 杏子（水着ver.））/326003_1-4": {
       "detail": "sectionList:326003 via Reader character_story/2600 - 佐仓杏子（泳装ver.）（佐倉 杏子（水着ver.））/326003_1-4",
@@ -5714,7 +5714,7 @@
     },
     "character_story/3032 - 梢麻友（梢 麻友）/330323_1-4": {
       "detail": "sectionList:330323 via Reader character_story/3032 - 梢麻友（梢 麻友）/330323_1-4",
-      "displayTitle": "第3话 所谓端正是? しゃんとする、って？",
+      "displayTitle": "第3话 所谓“振作起来”? しゃんとする、って？",
       "fileStem": "330323_1-4",
       "officialId": "sectionList:330323",
       "rawId": "330323",
@@ -5722,7 +5722,7 @@
       "source": "official-cn",
       "titleJa": "しゃんとする、って？",
       "titleSuffix": "しゃんとする、って？",
-      "titleZh": "第3话 所谓端正是?"
+      "titleZh": "第3话 所谓“振作起来”?"
     },
     "character_story/3033 - 史乃沙优希（史乃 沙優希）/330331_1-4": {
       "detail": "sectionList:330331 via Reader character_story/3033 - 史乃沙优希（史乃 沙優希）/330331_1-4",
@@ -6301,13 +6301,13 @@
       "titleZh": "第3话 果然还是懒懒散散……"
     },
     "character_story/3049 - 雪野加奈惠（雪野 かなえ）/330491_1-4": {
-      "detail": "sectionList:330491 via Reader character_story/3049 - 雪野加奈惠（雪野 かなえ）/330491_1-4",
+      "detail": "Reader character_story/3049 - 雪野加奈惠（雪野 かなえ）/330491_1-4",
       "displayTitle": "第1话 邂逅 Encounter",
       "fileStem": "330491_1-4",
-      "officialId": "sectionList:330491",
+      "officialId": "",
       "rawId": "330491",
       "readerId": "330491",
-      "source": "official-cn",
+      "source": "reader",
       "titleJa": "Encounter",
       "titleSuffix": "Encounter",
       "titleZh": "第1话 邂逅"
@@ -7238,7 +7238,7 @@
     },
     "character_story/4021 - 塔鲁特（タルト）/340211_1-4": {
       "detail": "sectionList:340211 via Reader character_story/4021 - 塔鲁特（タルト）/340211_1-4",
-      "displayTitle": "第1话 不能放置不理 放ってはおけません",
+      "displayTitle": "第1话 不能坐视不管 放ってはおけません",
       "fileStem": "340211_1-4",
       "officialId": "sectionList:340211",
       "rawId": "340211",
@@ -7246,7 +7246,7 @@
       "source": "official-cn",
       "titleJa": "放ってはおけません",
       "titleSuffix": "放ってはおけません",
-      "titleZh": "第1话 不能放置不理"
+      "titleZh": "第1话 不能坐视不管"
     },
     "character_story/4021 - 塔鲁特（タルト）/340212_1-4": {
       "detail": "sectionList:340212 via Reader character_story/4021 - 塔鲁特（タルト）/340212_1-4",
@@ -8196,6 +8196,18 @@
       "titleSuffix": "パティシエ",
       "titleZh": "佐仓杏子(佐倉杏子) ·"
     },
+    "exedra:6_Reaction:cv_101002": {
+      "detail": "Reader exedra:6_Reaction:cv_101002",
+      "displayTitle": "由比鹤乃(由比鶴乃) · ウワサ",
+      "fileStem": "cv_101002",
+      "officialId": "",
+      "rawId": "cv_101002",
+      "readerId": "exedra_reaction_cv_101002_8bbd3aa855",
+      "source": "reader",
+      "titleJa": "ウワサ",
+      "titleSuffix": "ウワサ",
+      "titleZh": "由比鹤乃(由比鶴乃) ·"
+    },
     "exedra:6_Reaction:cv_108602": {
       "detail": "Reader exedra:6_Reaction:cv_108602",
       "displayTitle": "绫野梨花(綾野梨花) · クリスマス",
@@ -8942,7 +8954,7 @@
     },
     "general_voice/102203": {
       "detail": "sectionList:102203 via Reader general_voice/102203",
-      "displayTitle": "追逐梦想的少女们 ひかる） · 煌里光_成年_魔法少女（煌里 ひかる(大人_魔法少女)） · 已汉化 0/0 条语音",
+      "displayTitle": "追梦的少女们 ひかる） · 煌里光_成年_魔法少女（煌里 ひかる(大人_魔法少女)） · 已汉化 0/0 条语音",
       "fileStem": "102203",
       "officialId": "sectionList:102203",
       "rawId": "102203",
@@ -8950,7 +8962,7 @@
       "source": "official-cn",
       "titleJa": "ひかる） · 煌里光_成年_魔法少女（煌里 ひかる(大人_魔法少女)） · 已汉化 0/0 条语音",
       "titleSuffix": "ひかる） · 煌里光_成年_魔法少女（煌里 ひかる(大人_魔法少女)） · 已汉化 0/0 条语音",
-      "titleZh": "追逐梦想的少女们"
+      "titleZh": "追梦的少女们"
     },
     "general_voice/102250": {
       "detail": "Reader general_voice/102250",
@@ -9002,7 +9014,7 @@
     },
     "general_voice/102502": {
       "detail": "sectionList:102502 via Reader general_voice/102502",
-      "displayTitle": "反复重现的那段时光 时女静香_虎（時女　静香(とら)） · 已汉化 0/43 条语音",
+      "displayTitle": "往复的那时 时女静香_虎（時女　静香(とら)） · 已汉化 0/43 条语音",
       "fileStem": "102502",
       "officialId": "sectionList:102502",
       "rawId": "102502",
@@ -9010,7 +9022,7 @@
       "source": "official-cn",
       "titleJa": "时女静香_虎（時女　静香(とら)） · 已汉化 0/43 条语音",
       "titleSuffix": "时女静香_虎（時女　静香(とら)） · 已汉化 0/43 条语音",
-      "titleZh": "反复重现的那段时光"
+      "titleZh": "往复的那时"
     },
     "general_voice/102600": {
       "detail": "Reader general_voice/102600",
@@ -9026,7 +9038,7 @@
     },
     "general_voice/102602": {
       "detail": "sectionList:102602 via Reader general_voice/102602",
-      "displayTitle": "活下来的证明 ちはる） · 广江千春_鸟（広江 ちはる（とり）） · 已汉化 25/43 条语音",
+      "displayTitle": "存活下来的证明 ちはる） · 广江千春_鸟（広江 ちはる（とり）） · 已汉化 25/43 条语音",
       "fileStem": "102602",
       "officialId": "sectionList:102602",
       "rawId": "102602",
@@ -9034,7 +9046,7 @@
       "source": "official-cn",
       "titleJa": "ちはる） · 广江千春_鸟（広江 ちはる（とり）） · 已汉化 25/43 条语音",
       "titleSuffix": "ちはる） · 广江千春_鸟（広江 ちはる（とり）） · 已汉化 25/43 条语音",
-      "titleZh": "活下来的证明"
+      "titleZh": "存活下来的证明"
     },
     "general_voice/102650": {
       "detail": "Reader general_voice/102650",
@@ -11846,26 +11858,26 @@
     },
     "general_voice/390200": {
       "detail": "Reader general_voice/390200",
-      "displayTitle": "390200 · 椎（シィ） · 椎（シィ） · 已汉化 0/39 条语音",
+      "displayTitle": "390200 · 思（シィ） · 思（シィ） · 已汉化 0/39 条语音",
       "fileStem": "390200",
       "officialId": "",
       "rawId": "390200",
       "readerId": "voice_390200",
       "source": "reader",
-      "titleJa": "椎（シィ） · 椎（シィ） · 已汉化 0/39 条语音",
-      "titleSuffix": "椎（シィ） · 椎（シィ） · 已汉化 0/39 条语音",
+      "titleJa": "思（シィ） · 思（シィ） · 已汉化 0/39 条语音",
+      "titleSuffix": "思（シィ） · 思（シィ） · 已汉化 0/39 条语音",
       "titleZh": "390200 ·"
     },
     "general_voice/390201": {
       "detail": "Reader general_voice/390201",
-      "displayTitle": "390201 · 椎（シィ） · 椎_变身前减色（シィ_変身前_減色） · 已汉化 0/39 条语音",
+      "displayTitle": "390201 · 思（シィ） · 思_变身前减色（シィ_変身前_減色） · 已汉化 0/39 条语音",
       "fileStem": "390201",
       "officialId": "",
       "rawId": "390201",
       "readerId": "voice_390201",
       "source": "reader",
-      "titleJa": "椎（シィ） · 椎_变身前减色（シィ_変身前_減色） · 已汉化 0/39 条语音",
-      "titleSuffix": "椎（シィ） · 椎_变身前减色（シィ_変身前_減色） · 已汉化 0/39 条语音",
+      "titleJa": "思（シィ） · 思_变身前减色（シィ_変身前_減色） · 已汉化 0/39 条语音",
+      "titleSuffix": "思（シィ） · 思_变身前减色（シィ_変身前_減色） · 已汉化 0/39 条语音",
       "titleZh": "390201 ·"
     },
     "general_voice/400200": {
@@ -12854,7 +12866,7 @@
     },
     "main_story/1020-10 - 第I部 第10章/102002_1-15": {
       "detail": "sectionList:102002 via Reader main_story/1020-10 - 第I部 第10章/102002_1-15",
-      "displayTitle": "第2话 幽寂光明 幽かな光明",
+      "displayTitle": "第2话 微弱之光 幽かな光明",
       "fileStem": "102002_1-15",
       "officialId": "sectionList:102002",
       "rawId": "102002",
@@ -12862,7 +12874,7 @@
       "source": "official-cn",
       "titleJa": "幽かな光明",
       "titleSuffix": "幽かな光明",
-      "titleZh": "第2话 幽寂光明"
+      "titleZh": "第2话 微弱之光"
     },
     "main_story/1020-10 - 第I部 第10章/102003_1-11": {
       "detail": "sectionList:102003 via Reader main_story/1020-10 - 第I部 第10章/102003_1-11",
@@ -12890,7 +12902,7 @@
     },
     "main_story/1021-11 - 第II部 序章 - 集結の百禍編/102101_1-8": {
       "detail": "sectionList:102101 via Reader main_story/1021-11 - 第II部 序章 - 集結の百禍編/102101_1-8",
-      "displayTitle": "第1话 两条道路 ふたつの歩み",
+      "displayTitle": "第1话 两步走 ふたつの歩み",
       "fileStem": "102101_1-8",
       "officialId": "sectionList:102101",
       "rawId": "102101",
@@ -12898,7 +12910,7 @@
       "source": "official-cn",
       "titleJa": "ふたつの歩み",
       "titleSuffix": "ふたつの歩み",
-      "titleZh": "第1话 两条道路"
+      "titleZh": "第1话 两步走"
     },
     "main_story/1022-12 - 第II部 第1章 - 集結の百禍編/102201_1-15": {
       "detail": "sectionList:102201 via Reader main_story/1022-12 - 第II部 第1章 - 集結の百禍編/102201_1-15",
@@ -12926,7 +12938,7 @@
     },
     "main_story/1022-12 - 第II部 第1章 - 集結の百禍編/102203_1-19": {
       "detail": "sectionList:102203 via Reader main_story/1022-12 - 第II部 第1章 - 集結の百禍編/102203_1-19",
-      "displayTitle": "第3话 追逐梦想的少女们 夢追いの少女たち",
+      "displayTitle": "第3话 追梦的少女们 夢追いの少女たち",
       "fileStem": "102203_1-19",
       "officialId": "sectionList:102203",
       "rawId": "102203",
@@ -12934,11 +12946,11 @@
       "source": "official-cn",
       "titleJa": "夢追いの少女たち",
       "titleSuffix": "夢追いの少女たち",
-      "titleZh": "第3话 追逐梦想的少女们"
+      "titleZh": "第3话 追梦的少女们"
     },
     "main_story/1022-12 - 第II部 第1章 - 集結の百禍編/102204_1-17": {
       "detail": "sectionList:102204 via Reader main_story/1022-12 - 第II部 第1章 - 集結の百禍編/102204_1-17",
-      "displayTitle": "第4话 记录的少女 記す少女",
+      "displayTitle": "第4话 记事的少女 記す少女",
       "fileStem": "102204_1-17",
       "officialId": "sectionList:102204",
       "rawId": "102204",
@@ -12946,11 +12958,11 @@
       "source": "official-cn",
       "titleJa": "記す少女",
       "titleSuffix": "記す少女",
-      "titleZh": "第4话 记录的少女"
+      "titleZh": "第4话 记事的少女"
     },
     "main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102301_1-20": {
       "detail": "sectionList:102301 via Reader main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102301_1-20",
-      "displayTitle": "第1话 各怀心思的哞哞牧场 思惑モーモーファーム",
+      "displayTitle": "第1话 思惑哞哞农场 思惑モーモーファーム",
       "fileStem": "102301_1-20",
       "officialId": "sectionList:102301",
       "rawId": "102301",
@@ -12958,11 +12970,11 @@
       "source": "official-cn",
       "titleJa": "思惑モーモーファーム",
       "titleSuffix": "思惑モーモーファーム",
-      "titleZh": "第1话 各怀心思的哞哞牧场"
+      "titleZh": "第1话 思惑哞哞农场"
     },
     "main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102302_1-23": {
       "detail": "sectionList:102302 via Reader main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102302_1-23",
-      "displayTitle": "第2话 敌人环伺 アラウンドエネミー",
+      "displayTitle": "第2话 Around Enemy アラウンドエネミー",
       "fileStem": "102302_1-23",
       "officialId": "sectionList:102302",
       "rawId": "102302",
@@ -12970,7 +12982,7 @@
       "source": "official-cn",
       "titleJa": "アラウンドエネミー",
       "titleSuffix": "アラウンドエネミー",
-      "titleZh": "第2话 敌人环伺"
+      "titleZh": "第2话 Around Enemy"
     },
     "main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102303_1-23": {
       "detail": "sectionList:102303 via Reader main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102303_1-23",
@@ -12986,19 +12998,19 @@
     },
     "main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102304_1-21": {
       "detail": "sectionList:102304 via Reader main_story/1023-13 - 第II部 第2章 - 集結の百禍編/102304_1-21",
-      "displayTitle": "第4话 寻找父亲…… 父を探して…",
+      "displayTitle": "第4话 寻找父亲… … 父を探して…",
       "fileStem": "102304_1-21",
       "officialId": "sectionList:102304",
       "rawId": "102304",
       "readerId": "102304",
       "source": "official-cn",
-      "titleJa": "父を探して…",
-      "titleSuffix": "父を探して…",
-      "titleZh": "第4话 寻找父亲……"
+      "titleJa": "… 父を探して…",
+      "titleSuffix": "… 父を探して…",
+      "titleZh": "第4话 寻找父亲…"
     },
     "main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102401_1-22": {
       "detail": "sectionList:102401 via Reader main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102401_1-22",
-      "displayTitle": "第1话 线索交汇 手がかりは交差して",
+      "displayTitle": "第1话 线索的交错 手がかりは交差して",
       "fileStem": "102401_1-22",
       "officialId": "sectionList:102401",
       "rawId": "102401",
@@ -13006,7 +13018,7 @@
       "source": "official-cn",
       "titleJa": "手がかりは交差して",
       "titleSuffix": "手がかりは交差して",
-      "titleZh": "第1话 线索交汇"
+      "titleZh": "第1话 线索的交错"
     },
     "main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102402_1-25": {
       "detail": "sectionList:102402 via Reader main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102402_1-25",
@@ -13022,7 +13034,7 @@
     },
     "main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102403_1-22": {
       "detail": "sectionList:102403 via Reader main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102403_1-22",
-      "displayTitle": "第3话 自古传承的矜持 古より連なる矜持",
+      "displayTitle": "第3话 自古传承的荣耀 古より連なる矜持",
       "fileStem": "102403_1-22",
       "officialId": "sectionList:102403",
       "rawId": "102403",
@@ -13030,11 +13042,11 @@
       "source": "official-cn",
       "titleJa": "古より連なる矜持",
       "titleSuffix": "古より連なる矜持",
-      "titleZh": "第3话 自古传承的矜持"
+      "titleZh": "第3话 自古传承的荣耀"
     },
     "main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102404_1-12": {
       "detail": "sectionList:102404 via Reader main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102404_1-12",
-      "displayTitle": "第4话 地下墓地的叹息 地下墓地の嘆き",
+      "displayTitle": "第4话 地下墓地的悲叹 地下墓地の嘆き",
       "fileStem": "102404_1-12",
       "officialId": "sectionList:102404",
       "rawId": "102404",
@@ -13042,11 +13054,11 @@
       "source": "official-cn",
       "titleJa": "地下墓地の嘆き",
       "titleSuffix": "地下墓地の嘆き",
-      "titleZh": "第4话 地下墓地的叹息"
+      "titleZh": "第4话 地下墓地的悲叹"
     },
     "main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102405_1-9": {
       "detail": "sectionList:102405 via Reader main_story/1024-14 - 第II部 第3章 - 集結の百禍編/102405_1-9",
-      "displayTitle": "第5话 回首便见光芒 振り返れば光",
+      "displayTitle": "第5话 回首可见光亮 振り返れば光",
       "fileStem": "102405_1-9",
       "officialId": "sectionList:102405",
       "rawId": "102405",
@@ -13054,11 +13066,11 @@
       "source": "official-cn",
       "titleJa": "振り返れば光",
       "titleSuffix": "振り返れば光",
-      "titleZh": "第5话 回首便见光芒"
+      "titleZh": "第5话 回首可见光亮"
     },
     "main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102501_1-13": {
       "detail": "sectionList:102501 via Reader main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102501_1-13",
-      "displayTitle": "第1话 最后的赌注 最後の賭け",
+      "displayTitle": "第1话 最后的赌博 最後の賭け",
       "fileStem": "102501_1-13",
       "officialId": "sectionList:102501",
       "rawId": "102501",
@@ -13066,11 +13078,11 @@
       "source": "official-cn",
       "titleJa": "最後の賭け",
       "titleSuffix": "最後の賭け",
-      "titleZh": "第1话 最后的赌注"
+      "titleZh": "第1话 最后的赌博"
     },
     "main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102502_1-11": {
       "detail": "sectionList:102502 via Reader main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102502_1-11",
-      "displayTitle": "第2话 反复重现的那段时光 繰り返すあの頃",
+      "displayTitle": "第2话 往复的那时 繰り返すあの頃",
       "fileStem": "102502_1-11",
       "officialId": "sectionList:102502",
       "rawId": "102502",
@@ -13078,11 +13090,11 @@
       "source": "official-cn",
       "titleJa": "繰り返すあの頃",
       "titleSuffix": "繰り返すあの頃",
-      "titleZh": "第2话 反复重现的那段时光"
+      "titleZh": "第2话 往复的那时"
     },
     "main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102503_1-18": {
       "detail": "sectionList:102503 via Reader main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102503_1-18",
-      "displayTitle": "第3话 走向决裂的倒计时 決裂へのカウントダウン",
+      "displayTitle": "第3话 迈向决裂的倒计时 決裂へのカウントダウン",
       "fileStem": "102503_1-18",
       "officialId": "sectionList:102503",
       "rawId": "102503",
@@ -13090,7 +13102,7 @@
       "source": "official-cn",
       "titleJa": "決裂へのカウントダウン",
       "titleSuffix": "決裂へのカウントダウン",
-      "titleZh": "第3话 走向决裂的倒计时"
+      "titleZh": "第3话 迈向决裂的倒计时"
     },
     "main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102504_1-18": {
       "detail": "sectionList:102504 via Reader main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102504_1-18",
@@ -13106,7 +13118,7 @@
     },
     "main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102505_1-12": {
       "detail": "sectionList:102505 via Reader main_story/1025-15 - 第II部 第4章 - 集結の百禍編/102505_1-12",
-      "displayTitle": "第5话 由离别缔结的羁绊 別れが結んだ繋がり",
+      "displayTitle": "第5话 由别离连结的纽带 別れが結んだ繋がり",
       "fileStem": "102505_1-12",
       "officialId": "sectionList:102505",
       "rawId": "102505",
@@ -13114,7 +13126,7 @@
       "source": "official-cn",
       "titleJa": "別れが結んだ繋がり",
       "titleSuffix": "別れが結んだ繋がり",
-      "titleZh": "第5话 由离别缔结的羁绊"
+      "titleZh": "第5话 由别离连结的纽带"
     },
     "main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102601_1-18": {
       "detail": "sectionList:102601 via Reader main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102601_1-18",
@@ -13130,7 +13142,7 @@
     },
     "main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102602_1-15": {
       "detail": "sectionList:102602 via Reader main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102602_1-15",
-      "displayTitle": "第2话 活下来的证明 生き抜いた証",
+      "displayTitle": "第2话 存活下来的证明 生き抜いた証",
       "fileStem": "102602_1-15",
       "officialId": "sectionList:102602",
       "rawId": "102602",
@@ -13138,11 +13150,11 @@
       "source": "official-cn",
       "titleJa": "生き抜いた証",
       "titleSuffix": "生き抜いた証",
-      "titleZh": "第2话 活下来的证明"
+      "titleZh": "第2话 存活下来的证明"
     },
     "main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102603_1-18": {
       "detail": "sectionList:102603 via Reader main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102603_1-18",
-      "displayTitle": "第3话 狱中的呐喊 獄中の叫び",
+      "displayTitle": "第3话 狱中的叫喊 獄中の叫び",
       "fileStem": "102603_1-18",
       "officialId": "sectionList:102603",
       "rawId": "102603",
@@ -13150,11 +13162,11 @@
       "source": "official-cn",
       "titleJa": "獄中の叫び",
       "titleSuffix": "獄中の叫び",
-      "titleZh": "第3话 狱中的呐喊"
+      "titleZh": "第3话 狱中的叫喊"
     },
     "main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102604_1-22": {
       "detail": "sectionList:102604 via Reader main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102604_1-22",
-      "displayTitle": "第4话 心为一体,灵魂亦为一体 心は一つ、魂も一つ",
+      "displayTitle": "第4话 心为一,魂亦为一 心は一つ、魂も一つ",
       "fileStem": "102604_1-22",
       "officialId": "sectionList:102604",
       "rawId": "102604",
@@ -13162,11 +13174,11 @@
       "source": "official-cn",
       "titleJa": "心は一つ、魂も一つ",
       "titleSuffix": "心は一つ、魂も一つ",
-      "titleZh": "第4话 心为一体,灵魂亦为一体"
+      "titleZh": "第4话 心为一,魂亦为一"
     },
     "main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102605_1-17": {
       "detail": "sectionList:102605 via Reader main_story/1026-16 - 第II部 第5章 - 集結の百禍編/102605_1-17",
-      "displayTitle": "第5话 镜子深处映出的事物 鏡の奥に映るもの",
+      "displayTitle": "第5话 镜的深处所映之物 鏡の奥に映るもの",
       "fileStem": "102605_1-17",
       "officialId": "sectionList:102605",
       "rawId": "102605",
@@ -13174,7 +13186,7 @@
       "source": "official-cn",
       "titleJa": "鏡の奥に映るもの",
       "titleSuffix": "鏡の奥に映るもの",
-      "titleZh": "第5话 镜子深处映出的事物"
+      "titleZh": "第5话 镜的深处所映之物"
     },
     "main_story/1027-17 - 第II部 第6章 - 集結の百禍編/102701_1-16": {
       "detail": "sectionList:102701 via Reader main_story/1027-17 - 第II部 第6章 - 集結の百禍編/102701_1-16",
@@ -13910,7 +13922,7 @@
     },
     "main_story/2071 - 支线剧情(AS) 第II部 第1章/207101_1-3": {
       "detail": "sectionList:207101 via Reader main_story/2071 - 支线剧情(AS) 第II部 第1章/207101_1-3",
-      "displayTitle": "第1话 平静的终结始于袭击 平穏の終わりは襲撃から",
+      "displayTitle": "第1话 被袭击终结的平静 平穏の終わりは襲撃から",
       "fileStem": "207101_1-3",
       "officialId": "sectionList:207101",
       "rawId": "207101",
@@ -13918,11 +13930,11 @@
       "source": "official-cn",
       "titleJa": "平穏の終わりは襲撃から",
       "titleSuffix": "平穏の終わりは襲撃から",
-      "titleZh": "第1话 平静的终结始于袭击"
+      "titleZh": "第1话 被袭击终结的平静"
     },
     "main_story/2071 - 支线剧情(AS) 第II部 第1章/207102_1-7": {
       "detail": "sectionList:207102 via Reader main_story/2071 - 支线剧情(AS) 第II部 第1章/207102_1-7",
-      "displayTitle": "第2话 即使迷惘,也要凭自己的意志…… 惑っても自分の意思で…",
+      "displayTitle": "第2话 就算困惑也要按自己的想法… 惑っても自分の意思で…",
       "fileStem": "207102_1-7",
       "officialId": "sectionList:207102",
       "rawId": "207102",
@@ -13930,11 +13942,11 @@
       "source": "official-cn",
       "titleJa": "惑っても自分の意思で…",
       "titleSuffix": "惑っても自分の意思で…",
-      "titleZh": "第2话 即使迷惘,也要凭自己的意志……"
+      "titleZh": "第2话 就算困惑也要按自己的想法…"
     },
     "main_story/2071 - 支线剧情(AS) 第II部 第1章/207103_1-3": {
       "detail": "sectionList:207103 via Reader main_story/2071 - 支线剧情(AS) 第II部 第1章/207103_1-3",
-      "displayTitle": "第3话 为了重要的人们 大切な人たちのために",
+      "displayTitle": "第3话 为了自己珍爱的人们 大切な人たちのために",
       "fileStem": "207103_1-3",
       "officialId": "sectionList:207103",
       "rawId": "207103",
@@ -13942,11 +13954,11 @@
       "source": "official-cn",
       "titleJa": "大切な人たちのために",
       "titleSuffix": "大切な人たちのために",
-      "titleZh": "第3话 为了重要的人们"
+      "titleZh": "第3话 为了自己珍爱的人们"
     },
     "main_story/2072 - 支线剧情(AS) 第II部 第2章/207201_1-3": {
       "detail": "sectionList:207201 via Reader main_story/2072 - 支线剧情(AS) 第II部 第2章/207201_1-3",
-      "displayTitle": "第1话 乡愁与纠葛 望郷と葛藤",
+      "displayTitle": "第1话 思乡与纠葛 望郷と葛藤",
       "fileStem": "207201_1-3",
       "officialId": "sectionList:207201",
       "rawId": "207201",
@@ -13954,11 +13966,11 @@
       "source": "official-cn",
       "titleJa": "望郷と葛藤",
       "titleSuffix": "望郷と葛藤",
-      "titleZh": "第1话 乡愁与纠葛"
+      "titleZh": "第1话 思乡与纠葛"
     },
     "main_story/2072 - 支线剧情(AS) 第II部 第2章/207202_1-5": {
       "detail": "sectionList:207202 via Reader main_story/2072 - 支线剧情(AS) 第II部 第2章/207202_1-5",
-      "displayTitle": "第2话 所求的是惩罚 求めるは罰",
+      "displayTitle": "第2话 追求是惩罚 求めるは罰",
       "fileStem": "207202_1-5",
       "officialId": "sectionList:207202",
       "rawId": "207202",
@@ -13966,11 +13978,11 @@
       "source": "official-cn",
       "titleJa": "求めるは罰",
       "titleSuffix": "求めるは罰",
-      "titleZh": "第2话 所求的是惩罚"
+      "titleZh": "第2话 追求是惩罚"
     },
     "main_story/2072 - 支线剧情(AS) 第II部 第2章/207203_1-4": {
       "detail": "sectionList:207203 via Reader main_story/2072 - 支线剧情(AS) 第II部 第2章/207203_1-4",
-      "displayTitle": "第3话 羁绊萌芽 繋がりの芽生え",
+      "displayTitle": "第3话 羁绊的萌芽 繋がりの芽生え",
       "fileStem": "207203_1-4",
       "officialId": "sectionList:207203",
       "rawId": "207203",
@@ -13978,11 +13990,11 @@
       "source": "official-cn",
       "titleJa": "繋がりの芽生え",
       "titleSuffix": "繋がりの芽生え",
-      "titleZh": "第3话 羁绊萌芽"
+      "titleZh": "第3话 羁绊的萌芽"
     },
     "main_story/2073 - 支线剧情(AS) 第II部 第3章/207301_1-4": {
       "detail": "sectionList:207301 via Reader main_story/2073 - 支线剧情(AS) 第II部 第3章/207301_1-4",
-      "displayTitle": "第1话 追寻那份温柔 追いかけた優しさ",
+      "displayTitle": "第1话 追逐着的温柔 追いかけた優しさ",
       "fileStem": "207301_1-4",
       "officialId": "sectionList:207301",
       "rawId": "207301",
@@ -13990,7 +14002,7 @@
       "source": "official-cn",
       "titleJa": "追いかけた優しさ",
       "titleSuffix": "追いかけた優しさ",
-      "titleZh": "第1话 追寻那份温柔"
+      "titleZh": "第1话 追逐着的温柔"
     },
     "main_story/2073 - 支线剧情(AS) 第II部 第3章/207302_1-4": {
       "detail": "sectionList:207302 via Reader main_story/2073 - 支线剧情(AS) 第II部 第3章/207302_1-4",
@@ -14006,7 +14018,7 @@
     },
     "main_story/2073 - 支线剧情(AS) 第II部 第3章/207303_1-4": {
       "detail": "sectionList:207303 via Reader main_story/2073 - 支线剧情(AS) 第II部 第3章/207303_1-4",
-      "displayTitle": "第3话 想要传达的心意 伝えたい想い",
+      "displayTitle": "第3话 想要传达的想法 伝えたい想い",
       "fileStem": "207303_1-4",
       "officialId": "sectionList:207303",
       "rawId": "207303",
@@ -14014,11 +14026,11 @@
       "source": "official-cn",
       "titleJa": "伝えたい想い",
       "titleSuffix": "伝えたい想い",
-      "titleZh": "第3话 想要传达的心意"
+      "titleZh": "第3话 想要传达的想法"
     },
     "main_story/2074 - 支线剧情(AS) 第II部 第4章/207401_1-3": {
       "detail": "sectionList:207401 via Reader main_story/2074 - 支线剧情(AS) 第II部 第4章/207401_1-3",
-      "displayTitle": "第1话 翌晨的伤痕 翌朝の傷跡",
+      "displayTitle": "第1话 翌朝的伤迹 翌朝の傷跡",
       "fileStem": "207401_1-3",
       "officialId": "sectionList:207401",
       "rawId": "207401",
@@ -14026,11 +14038,11 @@
       "source": "official-cn",
       "titleJa": "翌朝の傷跡",
       "titleSuffix": "翌朝の傷跡",
-      "titleZh": "第1话 翌晨的伤痕"
+      "titleZh": "第1话 翌朝的伤迹"
     },
     "main_story/2074 - 支线剧情(AS) 第II部 第4章/207402_1-3": {
       "detail": "sectionList:207402 via Reader main_story/2074 - 支线剧情(AS) 第II部 第4章/207402_1-3",
-      "displayTitle": "第2话 咨询所的烦恼 相談所のお悩み",
+      "displayTitle": "第2话 相谈所的烦恼 相談所のお悩み",
       "fileStem": "207402_1-3",
       "officialId": "sectionList:207402",
       "rawId": "207402",
@@ -14038,11 +14050,11 @@
       "source": "official-cn",
       "titleJa": "相談所のお悩み",
       "titleSuffix": "相談所のお悩み",
-      "titleZh": "第2话 咨询所的烦恼"
+      "titleZh": "第2话 相谈所的烦恼"
     },
     "main_story/2074 - 支线剧情(AS) 第II部 第4章/207403_1-3": {
       "detail": "sectionList:207403 via Reader main_story/2074 - 支线剧情(AS) 第II部 第4章/207403_1-3",
-      "displayTitle": "第3话 无可奈何的清算 どうしようもない清算",
+      "displayTitle": "第3话 无能为力的了结 どうしようもない清算",
       "fileStem": "207403_1-3",
       "officialId": "sectionList:207403",
       "rawId": "207403",
@@ -14050,7 +14062,7 @@
       "source": "official-cn",
       "titleJa": "どうしようもない清算",
       "titleSuffix": "どうしようもない清算",
-      "titleZh": "第3话 无可奈何的清算"
+      "titleZh": "第3话 无能为力的了结"
     },
     "main_story/2074 - 支线剧情(AS) 第II部 第4章/207404_1-3": {
       "detail": "sectionList:207404 via Reader main_story/2074 - 支线剧情(AS) 第II部 第4章/207404_1-3",
@@ -14369,11 +14381,11 @@
       "LLM/rule fallback"
     ]
   },
-  "generatedAt": "2026-08-26T14:59:11+00:00",
+  "generatedAt": "2026-09-04T16:10:31+00:00",
   "reader": {
     "branch": "main",
     "dirty": false,
-    "head": "cd78e9b7d4fa6dcb029c3c7edc788298de03da94",
+    "head": "b66e732956c46f0d350e57f97b6f00599080b575",
     "path": "D:\\magia\\MyProducts\\magi-reader"
   },
   "release": "canonical-title-authority-v1",
@@ -14385,8 +14397,8 @@
     "LLM/rule fallback"
   ],
   "summary": {
-    "entries": 1196,
-    "officialCn": 871,
-    "reader": 325
+    "entries": 1197,
+    "officialCn": 870,
+    "reader": 327
   }
 }

@@ -3,8 +3,8 @@
     "groupCount": 2166,
     "kanaInChineseDisplayFields": 0,
     "mappedTitles": 5826,
-    "parentOverrides": 1266,
-    "readerLinks": 1196,
+    "parentOverrides": 2149,
+    "readerLinks": 1197,
     "sourceEntries": 5826,
     "translatedSuffixes": 494
   },
@@ -33,16 +33,16 @@
     "suffixes": "suffixes.json",
     "titles": "titles.json"
   },
-  "generatedAt": "2026-08-26T14:59:11+00:00",
+  "generatedAt": "2026-09-04T16:10:31+00:00",
   "release": "canonical-title-authority-v1",
   "schemaVersion": 1,
   "sha256": {
-    "parents": "b9bb35622ddb13afc8432adb62ed0c0ba191997b2e258160899440838f16f680",
-    "provenance": "5a6648083be54ed821b20beaf5b7cb4c3efc14ff3635da896844621ac8be378e",
-    "reader-links": "182a669efe924946eb88c6ed8e0c489a1dcd7a6f06b68f07f3f9d6d3b767a52f",
-    "sources": "9cf6d719c89ae7599bd3d434bed97edd163a6b13fbc1dd3269c54ba46bd12df6",
+    "parents": "71d2a1ce5273b318364864f9aeae0c28bcb0973dc0a63d21b5770792deaeacde",
+    "provenance": "15ef01646072429d634dcc2236ed6a44b3c9a9266897c61ed87b35c0df047b65",
+    "reader-links": "91b22ba01f2f799695850a1572b3948ed04c38acd4fadc06859aea4cb6659123",
+    "sources": "eec6faf807f0822cd8f9308e1cdb934f05daffeaf64bc6718cc42d658338c95e",
     "suffixes": "222a1b2c70d2af10a2b7d3e91456502c88b89683bf10f58fe152cddef2a599f4",
-    "titles": "f5e657bb40274b2764bd73286a7c851f5740b1e161ebd2a88b4cde5695fdd47c"
+    "titles": "97533a7b17f6aaf42dc918a75269d6dab205b3d3d3d907c414a5c919fca6e93f"
   },
   "sourceRelease": "Call/Reader canonical title linkage v1"
 }

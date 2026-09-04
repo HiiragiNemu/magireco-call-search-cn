@@ -25,6 +25,8 @@ import subprocess
 import unicodedata
 from typing import Any, Iterable
 
+from cn_terminology import canonicalize_cn_visible
+
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORITY_PATH = ROOT / "data" / "titles" / "authority.json"
@@ -67,14 +69,23 @@ MEMORIA_RE = re.compile(r"^No\.(?P<number>\d+)\s+", re.IGNORECASE)
 
 # Explicit user-approved canonical character names.  The dynamically discovered
 # Reader-over-Wiki aliases below extend this list for the same JP character,
-# but these six spellings are hard invariants for every fallback title.
+# but these spellings are hard invariants for every fallback title.
 EXPLICIT_NAME_ALIASES = {
+    "小圆前辈·小伊吕波": "小圆前辈·小彩羽",
+    "无限大小伊吕波": "无限大小彩羽",
+    "伊吕波·黑江": "彩羽·黑江",
+    "圆·伊吕波": "圆·彩羽",
+    "∞伊吕波": "∞彩羽",
+    "万年樱之谣": "万年樱的传闻",
     "常盘七夏": "常盘七香",
     "环伊吕波": "环彩羽",
+    "小伊吕波": "小彩羽",
     "毬子彩花": "毬子亚弥华",
     "伊萨博": "伊莎贝拉",
     "八云美玉": "八云御魂",
     "环羽衣": "环忧",
+    "谣莎奈": "传闻莎奈",
+    "谣鹤乃": "传闻鹤乃",
 }
 
 
@@ -764,6 +775,10 @@ def canonicalize_candidate_names(
         if old in value:
             value = value.replace(old, new)
             applied.append(f"{old}→{new}")
+    terminology_value = canonicalize_cn_visible(value)
+    if terminology_value != value:
+        value = terminology_value
+        applied.append("Reader authority terminology")
     if value == candidate.value:
         return candidate
     return Candidate(
@@ -794,6 +809,10 @@ def canonicalize_reader_catalog_names(
             if old in canonical:
                 canonical = canonical.replace(old, new)
                 applied.append(f"{old}→{new}")
+        terminology_value = canonicalize_cn_visible(canonical)
+        if terminology_value != canonical:
+            canonical = terminology_value
+            applied.append("Reader authority terminology")
         if canonical == title_zh:
             continue
         suffix = str(record.get("titleSuffix") or record.get("titleJa") or "").strip()
@@ -823,6 +842,50 @@ def longest_name_candidate(
     return max(matches, key=lambda item: (len(item[0]), item[1].rank, item[0]))
 
 
+def canonical_parent_from_child(
+    full_value: str,
+    group: dict[str, Any],
+    child: dict[str, Any],
+) -> str:
+    """Remove one child's structural suffix without leaving a bare ``第``.
+
+    Older Call rows often stored ``10话`` while the canonical title correctly
+    normalized it to ``第10话``.  Removing only the older suffix used to leave
+    a bogus trailing ``第`` in parent labels.
+    """
+
+    full = clean(full_value)
+    source_suffix = clean(child.get("source_suffix"))
+    if not source_suffix:
+        return full
+
+    old_parent = clean(group.get("current_translation"))
+    old_full = clean(child.get("current_full_translation"))
+    localized_suffix = clean(child.get("localized_suffix"))
+    suffixes: set[str] = {
+        value for value in (source_suffix, localized_suffix) if value
+    }
+    if old_parent and old_full.startswith(old_parent):
+        remainder = clean(old_full[len(old_parent) :])
+        if remainder:
+            suffixes.add(remainder)
+
+    expanded = set(suffixes)
+    for suffix in suffixes:
+        # Grouping metadata is source-derived and therefore often retains
+        # Japanese ``話`` even when the canonical Chinese child ends in
+        # ``第N话``.  Compare both visible-script variants before stripping.
+        visible_suffix = suffix.replace("話", "话")
+        expanded.add(visible_suffix)
+        if re.match(r"^\d+\s*(?:話|话|章|天|日|幕|部)", visible_suffix):
+            expanded.add("第" + visible_suffix)
+
+    for suffix in sorted(expanded, key=len, reverse=True):
+        if suffix and full.endswith(suffix):
+            return full[: -len(suffix)].rstrip()
+    return full
+
+
 def compose_parent_candidate(
     group: dict[str, Any],
     child: dict[str, Any],
@@ -831,7 +894,10 @@ def compose_parent_candidate(
 ) -> Candidate:
     old_parent = clean(group.get("current_translation"))
     child_current = clean(child.get("current_full_translation")) or current
-    if old_parent and child_current.startswith(old_parent):
+    current_parent = canonical_parent_from_child(current, group, child)
+    if current_parent and current.startswith(current_parent):
+        value = parent.value + current[len(current_parent):]
+    elif old_parent and child_current.startswith(old_parent):
         value = parent.value + child_current[len(old_parent):]
     elif old_parent and current.startswith(old_parent):
         value = parent.value + current[len(old_parent):]
@@ -865,7 +931,7 @@ def compose_name_component_candidate(
         return compose_parent_candidate(group, child, current, candidate)
     if not key(source_base).startswith(source_name_key):
         return None
-    old_parent = clean(group.get("current_translation"))
+    old_parent = canonical_parent_from_child(current, group, child)
     replacement_source = next(
         (
             clean(value)
@@ -876,9 +942,11 @@ def compose_name_component_candidate(
     )
     if not replacement_source:
         return None
-    new_parent = candidate.value + old_parent[len(replacement_source) :]
-    parent = Candidate(
-        clean(new_parent),
+    new_value = candidate.value + old_parent[len(replacement_source) :]
+    if current.startswith(old_parent):
+        new_value += current[len(old_parent) :]
+    return Candidate(
+        clean(new_value),
         candidate.source,
         candidate.detail,
         candidate.rank,
@@ -888,7 +956,6 @@ def compose_name_component_candidate(
         candidate.official_ids,
         candidate.wiki_keys,
     )
-    return compose_parent_candidate(group, child, current, parent)
 
 
 def source_title_candidates(
@@ -1023,7 +1090,7 @@ def source_title_candidates(
 
     # A unique exact Chinese bridge records Wiki/official event provenance
     # without pretending that a translated-title fuzzy match proves identity.
-    current_parent = clean(group.get("current_translation"))
+    current_parent = canonical_parent_from_child(current, group, child)
     normalized_parent = cn_key(current_parent)
     wiki_keys = wiki.event_chapters_by_zh.get(normalized_parent, ())
     if category == "イベント" and len(wiki_keys) == 1:
@@ -1236,17 +1303,8 @@ def build(
         )
         if not entry:
             continue
-        canonical_full = entry["canonicalTitleZh"]
-        old_full = clean(children[0].get("current_full_translation"))
-        old_parent = clean(group.get("current_translation"))
-        canonical_parent = (
-            canonical_full[: -len(old_full[len(old_parent) :])].strip()
-            if old_parent
-            and old_full.startswith(old_parent)
-            and canonical_full.endswith(old_full[len(old_parent) :])
-            else canonical_full
-            if clean(children[0].get("source_suffix")) == ""
-            else ""
+        canonical_parent = canonical_parent_from_child(
+            entry["canonicalTitleZh"], group, children[0]
         )
         if canonical_parent:
             parent_map.setdefault(category, {})[source_base] = canonical_parent

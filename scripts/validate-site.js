@@ -21,7 +21,7 @@ requireFile(buildInfoPath);
 const buildInfo = JSON.parse(read(buildInfoPath));
 const release = String(buildInfo.release || '');
 const TITLE_RELEASE = 'canonical-title-authority-v1';
-const READER_REVISION = 'cd78e9b7d4fa6dcb029c3c7edc788298de03da94';
+const READER_REVISION = 'b66e732956c46f0d350e57f97b6f00599080b575';
 const AIO_ROUTER_BASE = 'https://magireco-aio-router.pages.dev/';
 const STORY_ROUTE_COUNT = 12443;
 const EDITION_VARIANT_ROUTES = 1187;
@@ -118,7 +118,7 @@ if (isV26) {
   const storyRouter = JSON.parse(read(storyRouterPath));
   const aioRouter = JSON.parse(read(aioRouterPath));
   const aioReport = JSON.parse(read(aioReportPath));
-  if (readerLinks.release !== TITLE_RELEASE || readerLinks.reader?.head !== READER_REVISION || readerLinks.summary?.entries !== 1196) fail('Reader title linkage mismatch.');
+  if (readerLinks.release !== TITLE_RELEASE || readerLinks.reader?.head !== READER_REVISION || readerLinks.summary?.entries !== 1197 || readerLinks.summary?.officialCn !== 870 || readerLinks.summary?.reader !== 327) fail('Reader title linkage mismatch.');
   if (
     storyRouter.targets?.reader?.readerRevision !== READER_REVISION
     || storyRouter.routes?.length !== STORY_ROUTE_COUNT

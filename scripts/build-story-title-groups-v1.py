@@ -22,6 +22,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from cn_terminology import canonicalize_cn_visible
+
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "public/data/story-v6/manifest.json"
 LOCALIZATION_PATH = ROOT / "public/data/story-v7/localization.json"
@@ -304,7 +306,7 @@ def build_groups() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
                 "source_suffix": parsed.suffix,
                 "source_joiner": parsed.joiner,
                 "grouping_rule": parsed.rule,
-                "current_full_translation": text_from_markup(translated),
+                "current_full_translation": canonicalize_cn_visible(text_from_markup(translated)),
                 "occurrences": occurrences,
             })
 
@@ -335,12 +337,14 @@ def build_groups() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     seen_full_keys: set[tuple[str, str]] = set()
     for (category, source_base), items in sorted(grouped.items(), key=lambda pair: (pair[0][0], pair[0][1])):
         items.sort(key=lambda item: item["source_title"])
-        localized_base = choose_localized_base(items, source_base)
+        localized_base = canonicalize_cn_visible(choose_localized_base(items, source_base))
         source_sha256 = stable_group_hash(category, source_base)
         slug = category_slug(category, manifest_by_key.get(category))
         group_id = f"{slug}:{source_sha256[:16]}"
         override = overrides_by_id.get(group_id, {})
-        approved = str(override.get("approved_translation", "")).strip()
+        approved = canonicalize_cn_visible(
+            str(override.get("approved_translation", "")).strip()
+        )
         status = str(override.get("status", "已校对" if approved else "待校对"))
         if status not in STATUS_OPTIONS:
             status = "已校对" if approved else "待校对"
@@ -485,7 +489,12 @@ def write_csv(groups_data: dict[str, Any], path: Path) -> None:
         "子剧情数量", "出现次数", "source_sha256", "children_sha256",
     ]
     with path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=headers, extrasaction="ignore")
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=headers,
+            extrasaction="ignore",
+            lineterminator="\n",
+        )
         writer.writeheader()
         for group in groups_data["groups"]:
             writer.writerow({

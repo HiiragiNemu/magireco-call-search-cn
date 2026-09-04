@@ -17,6 +17,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: |
+          python scripts/cn_terminology.py
+          python scripts/canonicalize-cn-artifacts.py --check
+          python scripts/build-aio-edge-route-index.py --check
           python scripts/build-title-data.py --check
           python scripts/validate-production.py
           node scripts/validate-site.js

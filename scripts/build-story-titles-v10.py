@@ -24,6 +24,8 @@ import re
 import unicodedata
 from typing import Any, Iterable
 
+from cn_terminology import canonicalize_cn_visible
+
 KANA_RE = re.compile(r"[ぁ-んァ-ヶ]")
 CJK_RE = re.compile(r"[一-龠々〆ヶ]")
 EPISODE_RE = re.compile(r"(?P<number>\d+)話")
@@ -115,13 +117,35 @@ def parse_table_rows(path: Path | None) -> list[list[str]]:
 
 def add_pair(mapping: dict[str, str], source_map: dict[str, str], japanese: str, chinese: str, source: str) -> None:
     japanese = normalize(japanese)
-    chinese = normalize(chinese)
+    chinese = canonicalize_cn_visible(normalize(chinese))
     if not japanese or not chinese or japanese == chinese or has_kana(chinese):
         return
     mapping.setdefault(japanese, chinese)
     mapping.setdefault(key_normalize(japanese), chinese)
     source_map.setdefault(japanese, source)
     source_map.setdefault(key_normalize(japanese), source)
+
+
+def extract_pairs_from_memoria_json(path: Path | None, source: str) -> tuple[dict[str, str], dict[str, str]]:
+    """Read exact JP/CN memoria names from the local Wiki data export."""
+
+    mapping: dict[str, str] = {}
+    sources: dict[str, str] = {}
+    if not path or not path.exists():
+        return mapping, sources
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        return mapping, sources
+    for key, value in payload.items():
+        if not isinstance(value, dict):
+            continue
+        japanese = str(value.get("name_ja") or key or "").strip()
+        # Simplified Chinese is preferred when explicitly present.  name_zh is
+        # the broad Chinese Wiki fallback; name_tw is not silently converted.
+        chinese = str(value.get("name_sc") or value.get("name_zh") or "").strip()
+        if japanese and chinese:
+            add_pair(mapping, sources, japanese, chinese, source)
+    return mapping, sources
 
 
 def extract_pairs_from_rows(rows: Iterable[list[str]], source: str) -> tuple[dict[str, str], dict[str, str]]:
@@ -167,6 +191,7 @@ def character_maps(localization: dict[str, Any]) -> tuple[dict[str, str], dict[s
                 chinese = str(value).strip()
             if not chinese:
                 continue
+            chinese = canonicalize_cn_visible(chinese)
             exact.setdefault(str(key), chinese)
             normalized.setdefault(key_normalize(str(key)), chinese)
     return exact, normalized
@@ -188,6 +213,15 @@ def translate_character(value: str, exact: dict[str, str], normalized: dict[str,
 
 
 COMMON_REPLACEMENTS: list[tuple[str, str]] = [
+    ("神浜市立大付属学校の制服", "神滨市立大学附属学校校服"),
+    ("ハロウィンシアターの衣装", "万圣节剧场服装"),
+    ("大東学院の制服", "大东学院校服"), ("水名女学園の制服", "水名女学园校服"),
+    ("神浜市立大付属学校", "神滨市立大学附属学校"), ("ハロウィンシアター", "万圣节剧场"),
+    ("鹿目アロハ", "鹿目阿罗哈"), ("水名女学園", "水名女学园"), ("大東学院", "大东学院"),
+    ("アウトドアウェア", "户外装"), ("メイド服", "女仆装"), ("エプロン", "围裙"),
+    ("コック服", "厨师服"), ("ヒストリア", "历史篇"), ("ドッペル", "魔女化身"),
+    ("シスター", "修女"), ("ヴァンパイア", "吸血鬼"), ("初日の出", "元旦日出"),
+    ("波乗り", "冲浪"),
     ("エンディング", "结尾"), ("エピローグ", "尾声"), ("プロローグ", "序章"),
     ("総集編", "总集篇"), ("序", "序"), ("後編", "后篇"), ("前編", "前篇"),
     ("中編", "中篇"), ("最終話", "最终话"), ("本編", "正篇"), ("幕間", "幕间"),
@@ -236,6 +270,13 @@ def translate_common(value: str, character_exact: dict[str, str], character_norm
             result = result.replace(japanese, chinese)
     for source, target in COMMON_REPLACEMENTS + KANA_WORDS:
         result = result.replace(source, target)
+    # These short animal costume labels are translated only as a complete final
+    # token; broad replacement would corrupt words such as カメラ or トリック.
+    result = re.sub(
+        r"(?:(?<=\s)|^)(カメ|トリ|トラ)$",
+        lambda match: {"カメ": "乌龟", "トリ": "鸟", "トラ": "虎"}[match.group(1)],
+        result,
+    )
     result = re.sub(r"(\d+)話", lambda match: f"第{match.group(1)}话", result)
     result = re.sub(r"第(\d+)第(\d+)话", lambda match: f"第{match.group(1)}章第{match.group(2)}话", result)
     result = re.sub(r"(\d+)章(\d+)话", lambda match: f"第{match.group(1)}章第{match.group(2)}话", result)
@@ -470,6 +511,7 @@ def main() -> int:
     parser.add_argument("--reader-titles", required=True, type=Path)
     parser.add_argument("--wiki-events", type=Path)
     parser.add_argument("--wiki-memoria", action="append", type=Path, default=[])
+    parser.add_argument("--wiki-memoria-json", type=Path)
     parser.add_argument("--audit-md", required=True, type=Path)
     parser.add_argument("--audit-json", required=True, type=Path)
     args = parser.parse_args()
@@ -490,6 +532,12 @@ def main() -> int:
     event_pairs, event_sources = extract_pairs_from_rows(parse_table_rows(args.wiki_events), "魔法纪录中文Wiki·日服活动列表")
     memoria_pairs: dict[str, str] = {}
     memoria_sources: dict[str, str] = {}
+    json_pairs, json_sources = extract_pairs_from_memoria_json(
+        args.wiki_memoria_json,
+        "魔法纪录中文Wiki·memoria.json",
+    )
+    memoria_pairs.update(json_pairs)
+    memoria_sources.update(json_sources)
     for path in args.wiki_memoria:
         pairs, sources = extract_pairs_from_rows(parse_table_rows(path), f"魔法纪录中文Wiki·{path.name}")
         memoria_pairs.update(pairs)
@@ -504,13 +552,20 @@ def main() -> int:
         if path.name in {"manifest.json", "variant-map.json"}:
             continue
         payload = json.loads(path.read_text(encoding="utf-8"))
+        # Auxiliary data files (for example memoria Wiki links) share this
+        # directory but are not story-category row payloads.
+        if not isinstance(payload, dict) or "key" not in payload or not isinstance(payload.get("rows"), list):
+            continue
         category = payload["key"]
         for row in payload.get("rows", []):
             raw = normalize(row[0] if row else "")
             if raw:
                 titles_by_category[category].add(raw)
 
-    final_exact = dict(localization.get("titleExact", {}))
+    final_exact = {
+        japanese: canonicalize_cn_visible(chinese)
+        for japanese, chinese in localization.get("titleExact", {}).items()
+    }
     title_by_category: dict[str, dict[str, str]] = collections.defaultdict(dict)
     source_by_title: dict[str, dict[str, str]] = {}
     sources_by_category: dict[str, dict[str, str]] = collections.defaultdict(dict)
@@ -525,6 +580,8 @@ def main() -> int:
             else:
                 chinese = self_translate(category, raw, reader)
                 source = "assistant-self-translation"
+            chinese = canonicalize_cn_visible(chinese)
+            if source == "assistant-self-translation":
                 self_translated.append({"category": category, "original": raw, "translation": chinese})
             # The same compact source label (for example `1章1話`) appears
             # in several categories.  Keep an explicit category-aware map so the

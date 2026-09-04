@@ -4,9 +4,11 @@ import json
 import re
 from pathlib import Path
 
+from cn_terminology import find_forbidden_visible_terms
+
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE = "canonical-title-authority-v1"
-READER_REVISION = "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
+READER_REVISION = "b66e732956c46f0d350e57f97b6f00599080b575"
 AIO_ROUTER_BASE = "https://magireco-aio-router.pages.dev/"
 STORY_ROUTE_COUNT = 12443
 EDITION_VARIANT_ROUTES = 1187
@@ -50,12 +52,12 @@ assert reader_links["release"] == RELEASE
 assert reader_links["reader"]["head"] == READER_REVISION
 assert reader_links["reader"]["branch"] == "main"
 assert reader_links["reader"]["dirty"] is False
-assert reader_links["summary"] == {"entries": 1196, "officialCn": 871, "reader": 325}
-assert len(reader_links["entriesBySourceIdentity"]) == 1196
+assert reader_links["summary"] == {"entries": 1197, "officialCn": 870, "reader": 327}
+assert len(reader_links["entriesBySourceIdentity"]) == 1197
 assert title_sources["canonicalNameAliases"]["环伊吕波"] == "环彩羽"
 assert title_sources["canonicalNameAliases"]["八云美玉"] == "八云御魂"
 assert story_router["targets"]["reader"]["readerRevision"] == READER_REVISION
-assert story_router["targets"]["reader"]["indexEntries"] == 3017
+assert story_router["targets"]["reader"]["indexEntries"] == 3048
 assert story_router["targets"]["adv"]["handoffReady"] is True
 assert len(story_router["routes"]) == STORY_ROUTE_COUNT
 assert sum(route["reader"] is not None for route in story_router["routes"]) == STORY_ROUTE_COUNT
@@ -93,6 +95,35 @@ assert build_info["storyRouterEditionVariantTargets"] == EDITION_VARIANT_TARGETS
 assert build_info["storyRouterEditionVariantAdvUnavailable"] == 0
 assert build_info["storyRouterReaderRevision"] == READER_REVISION
 assert build_info["aioRouterBase"] == AIO_ROUTER_BASE
+
+
+def assert_canonical_visible(path: str, value: object) -> None:
+    if not isinstance(value, str):
+        return
+    stale = find_forbidden_visible_terms(value)
+    assert not stale, (path, stale, value)
+
+
+for category, pairs in titles["titleByCategory"].items():
+    for source, target in pairs.items():
+        assert_canonical_visible(f"titles/{category}/{source}", target)
+for raw, entry in localization.get("characters", {}).items():
+    assert_canonical_visible(f"localization/characters/{raw}", entry.get("zh"))
+for raw, target in localization.get("titleExact", {}).items():
+    assert_canonical_visible(f"localization/titleExact/{raw}", target)
+for index_value, entry in enumerate(localization.get("titlePrefixes", [])):
+    assert_canonical_visible(f"localization/titlePrefixes/{index_value}", entry.get("zh"))
+for group in groups.get("groups", []):
+    group_id = group.get("group_id", "")
+    assert_canonical_visible(f"groups/{group_id}/current", group.get("current_translation"))
+    assert_canonical_visible(f"groups/{group_id}/approved", group.get("approved_translation"))
+    for child in group.get("children", []):
+        assert_canonical_visible(
+            f"groups/{group_id}/{child.get('source_title', '')}",
+            child.get("current_full_translation"),
+        )
+for identity, entry in reader_links.get("entriesBySourceIdentity", {}).items():
+    assert_canonical_visible(f"reader-links/{identity}", entry.get("titleZh"))
 
 for category, pairs in titles["titleByCategory"].items():
     for source, target in pairs.items():

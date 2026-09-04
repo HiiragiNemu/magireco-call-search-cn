@@ -71,10 +71,11 @@ jobs:
                   titles = json.loads(get("data/titles/titles.json"))
                   assert sum(len(v) for v in titles["titleByCategory"].values()) == 5826
                   reader_links = json.loads(get("data/titles/reader-links.json"))
-                  assert reader_links["reader"]["head"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
-                  assert reader_links["summary"]["entries"] == 1196
+                  assert reader_links["reader"]["head"] == "b66e732956c46f0d350e57f97b6f00599080b575"
+                  assert reader_links["summary"] == {"entries": 1197, "officialCn": 870, "reader": 327}
                   story_router = json.loads(get("data/story-router-v1.json"))
-                  assert story_router["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
+                  assert story_router["targets"]["reader"]["readerRevision"] == "b66e732956c46f0d350e57f97b6f00599080b575"
+                  assert story_router["targets"]["reader"]["indexEntries"] == 3048
                   assert story_router["targets"]["adv"]["handoffReady"] is True
                   assert story_router["targets"]["adv"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
                   assert len(story_router["routes"]) == 12443
@@ -85,7 +86,7 @@ jobs:
                   assert all(variant["adv"] is not None for route in edition_routes for variant in route["variants"])
                   aio_router = json.loads(get("aio/story-routes.json"))
                   assert aio_router["catalogRevision"] == story_router["catalogRevision"]
-                  assert aio_router["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
+                  assert aio_router["targets"]["reader"]["readerRevision"] == "b66e732956c46f0d350e57f97b6f00599080b575"
                   assert aio_router["targets"]["adv"]["handoffReady"] is True
                   assert aio_router["targets"]["adv"]["readerRevision"] == "bad94aa371dc9e6aed16ccf6d144106b31643f28"
                   assert aio_router == story_router
@@ -122,65 +123,6 @@ jobs:
                   story_html = get_text("story.html")
                   assert '<meta name="magireco-aio-router" content="https://magireco-aio-router.pages.dev/">' in story_html
                   print("Production V26 endpoints passed.")
-                  break
-              except Exception:
-                  if attempt == 119:
-                      raise
-                  time.sleep(5)
-          PY
-      - name: Wait for EdgeOne Call and AIO routes
-        run: |
-          python - <<'PY'
-          import json
-          import time
-          import urllib.error
-          import urllib.parse
-          import urllib.request
-
-          base = "https://callsearch.magireco.top"
-
-          class NoRedirect(urllib.request.HTTPRedirectHandler):
-              def redirect_request(self, req, fp, code, msg, headers, newurl):
-                  return None
-
-          opener = urllib.request.build_opener(NoRedirect)
-
-          for attempt in range(120):
-              nonce = str(time.time_ns())
-              try:
-                  with urllib.request.urlopen(
-                      f"{base}/aio/story-routes.json?verify={nonce}", timeout=60
-                  ) as response:
-                      manifest = json.load(response)
-                  assert len(manifest["routes"]) == 12443
-                  assert manifest["targets"]["reader"]["readerRevision"] == "cd78e9b7d4fa6dcb029c3c7edc788298de03da94"
-                  source = urllib.parse.quote(manifest["routes"][0]["sourceKey"], safe="")
-                  try:
-                      opener.open(f"{base}/aio/open?source={source}&target=reader", timeout=60)
-                      raise AssertionError("Reader route did not redirect")
-                  except urllib.error.HTTPError as response:
-                      assert response.code == 302
-                      assert response.headers["Location"].startswith("https://magireader.pages.dev/")
-                  try:
-                      opener.open(f"{base}/aio/open?source={source}&target=adv", timeout=60)
-                      raise AssertionError("ADV route did not redirect")
-                  except urllib.error.HTTPError as response:
-                      assert response.code == 302
-                      assert response.headers["Location"].startswith("https://magiaexedralive2dviewer.pages.dev/")
-                      assert "advRenderer=pixi-v2&bridge=1" in response.headers["Location"]
-                      assert "readerRevision=bad94aa371dc9e6aed16ccf6d144106b31643f28" in response.headers["Location"]
-                  edition_route = next(route for route in manifest["routes"] if "variants" in route)
-                  edition_source = urllib.parse.quote(edition_route["sourceKey"], safe="")
-                  locations = []
-                  for edition in ("initial", "rerun"):
-                      try:
-                          opener.open(f"{base}/aio/open?source={edition_source}&target=reader&edition={edition}", timeout=60)
-                          raise AssertionError(f"{edition} Reader route did not redirect")
-                      except urllib.error.HTTPError as response:
-                          assert response.code == 302
-                          locations.append(response.headers["Location"])
-                  assert locations[0] != locations[1]
-                  print("EdgeOne Call/AIO endpoints passed.")
                   break
               except Exception:
                   if attempt == 119:

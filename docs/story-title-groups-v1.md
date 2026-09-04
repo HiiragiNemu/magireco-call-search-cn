@@ -1,6 +1,6 @@
 # 母故事标题翻译清单 V1
 
-- 生成时间：`2026-08-19T16:18:03+00:00`
+- 生成时间：`2026-09-04T14:29:58+00:00`
 - 底层故事记录：**14,466**
 - 分类＋完整原题：**5,826**
 - 母故事组：**2,166**
@@ -52,7 +52,7 @@
   "collapsedGroupCount": 470,
   "approvedGroupCount": 0,
   "approvedChildCount": 0,
-  "missingLocalizationCount": 891,
+  "missingLocalizationCount": 885,
   "aquariumChildCount": 21,
   "aquariumHasEpisode5": true
 }

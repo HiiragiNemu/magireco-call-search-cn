@@ -1,7 +1,7 @@
 {
   "release": "story-title-build-report-v1-20260818",
   "version": 1,
-  "generatedAt": "2026-08-19T16:18:03+00:00",
+  "generatedAt": "2026-09-04T14:29:58+00:00",
   "state": "pass",
   "checks": {
     "manifestRows": 14466,
@@ -13,7 +13,7 @@
     "collapsedGroupCount": 470,
     "approvedGroupCount": 0,
     "approvedChildCount": 0,
-    "missingLocalizationCount": 891,
+    "missingLocalizationCount": 885,
     "aquariumChildCount": 21,
     "aquariumHasEpisode5": true
   },

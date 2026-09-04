@@ -16,6 +16,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from cn_terminology import canonicalize_character_cn, canonicalize_cn_visible
+
 CATEGORY_ORDER = [
     "メイン【第1部】", "メイン【第2部】", "アナザー【第1部】", "アナザー【第2部】",
     "魔法少女", "衣装", "ミラーズ", "イベント", "バトルミュージアム",
@@ -122,11 +124,20 @@ MANUAL_CHARACTER_IMAGE_SOURCE = {
     "鶴乃・フェリシア(宅配ver)": "由比鶴乃",
 }
 
+# Source evidence that cannot be recovered from the Reader folder name alone.
+# The image key remains the visible Chinese name so the bundled PNG lookup is
+# unchanged; only the provenance label is pinned here.
+MANUAL_CHARACTER_SOURCE = {
+    "ウワサのみこと": "ma-re-data-card-11445",
+}
+
 VARIANT_REPLACEMENTS = [
     ("水着", "泳装"), ("眼鏡", "眼镜"), ("晴着", "新年和服"), ("クリスマス", "圣诞"),
     ("ハロウィン", "万圣节"), ("アニメ", "动画"), ("おとぎ話", "童话"),
     ("バレンタイン", "情人节"), ("常闇", "常暗"), ("始まり", "初始"),
     ("新春龍神", "新春龙神"), ("花嫁", "新娘"), ("浴衣", "浴衣"),
+    ("ヒストリア", "历史篇"), ("ドッペル", "魔女化身"), ("シスター", "修女"),
+    ("ヴァンパイア", "吸血鬼"), ("初日の出", "元旦日出"), ("波乗り", "冲浪"),
 ]
 
 
@@ -148,15 +159,35 @@ def load_json(path: Path) -> Any:
 
 def parse_character_folders(index: list[dict[str, Any]]) -> dict[str, str]:
     result: dict[str, str] = {}
-    pattern = re.compile(r"^\d+\s*-\s*(?P<cn>.+?)（(?P<jp>.+?)）$")
+    prefix = re.compile(r"^\d+\s*-\s*(?P<label>.+)$")
     for item in index:
         if item.get("category") != "character_story":
             continue
-        match = pattern.match(str(item.get("folder", "")))
+        match = prefix.match(str(item.get("folder", "")))
         if not match:
             continue
-        cn = match.group("cn").strip()
-        jp = re.sub(r"\s+", "", match.group("jp")).strip()
+        label = match.group("label").strip()
+        if not label.endswith("）"):
+            continue
+        # The CN and JP display names may themselves contain a variant in
+        # parentheses, e.g. ``冰室拉比（心魔ver.）（氷室 ラビ（キモチver.））``.
+        # Find the opening bracket paired with the final bracket rather than
+        # splitting on the first bracket.
+        depth = 0
+        open_at = -1
+        for offset in range(len(label) - 1, -1, -1):
+            char = label[offset]
+            if char == "）":
+                depth += 1
+            elif char == "（":
+                depth -= 1
+                if depth == 0:
+                    open_at = offset
+                    break
+        if open_at <= 0:
+            continue
+        cn = label[:open_at].strip()
+        jp = re.sub(r"\s+", "", label[open_at + 1 : -1]).strip()
         if jp and cn:
             result.setdefault(jp, cn)
             result.setdefault(norm(jp), cn)
@@ -245,6 +276,17 @@ def main() -> int:
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
 
+    # V10 enriches this file with thousands of reviewed/derived title pairs.
+    # Rebuilding the character layer must not silently discard that established
+    # title authority.  Current Reader-derived pairs below still win; the
+    # previous map is carried only as a fallback for titles not rediscovered by
+    # this narrower V7 pass.
+    previous_output: dict[str, Any] = {}
+    if args.output.exists():
+        candidate = load_json(args.output)
+        if isinstance(candidate, dict):
+            previous_output = candidate
+
     catalog = load_json(args.catalog)
     reader_index = load_json(args.reader_index)
     reader_titles = load_json(args.reader_titles)
@@ -256,7 +298,8 @@ def main() -> int:
 
     def register(raw: str, zh: str, image: str = "", source: str = "") -> None:
         raw = str(raw or "").strip()
-        zh = str(zh or "").strip()
+        zh = canonicalize_character_cn(raw, str(zh or "").strip())
+        source = MANUAL_CHARACTER_SOURCE.get(raw, source)
         if not raw or not zh:
             return
         entry = {"jp": raw, "zh": zh, "image": image, "source": source}
@@ -271,7 +314,13 @@ def main() -> int:
             register(alias, entry["zh"], entry.get("image", entry["zh"]), "character-catalog-alias")
 
     for raw, zh in folder_aliases.items():
-        base = catalog_by_jp.get(raw) or catalog_by_jp.get(re.sub(r"\s+", "", raw))
+        base_raw, _ = variant_parts(raw)
+        base = (
+            catalog_by_jp.get(raw)
+            or catalog_by_jp.get(re.sub(r"\s+", "", raw))
+            or catalog_by_jp.get(base_raw)
+            or catalog_by_jp.get(re.sub(r"\s+", "", base_raw))
+        )
         register(raw, zh, (base or {}).get("image", zh), "magi-reader-character-folder")
     for raw, zh in dictionary_aliases.items():
         base = characters.get(raw) or normalized.get(norm(raw))
@@ -312,11 +361,11 @@ def main() -> int:
         split = split_bilingual_title(value)
         if split:
             jp, cn = split
-            title_exact.setdefault(jp, cn)
+            title_exact.setdefault(jp, canonicalize_cn_visible(cn))
 
     # Add exact source title matches and verified event prefix replacements.
     title_prefixes = [
-        {"jp": jp, "zh": zh, "source": "magi-reader-event-folder"}
+        {"jp": jp, "zh": canonicalize_cn_visible(zh), "source": "magi-reader-event-folder"}
         for jp, zh in sorted(AUDITED_EVENT_PREFIXES.items(), key=lambda item: (-len(item[0]), item[0]))
     ]
 
@@ -332,13 +381,26 @@ def main() -> int:
                 continue
             for jp_prefix, zh_prefix in sorted(AUDITED_EVENT_PREFIXES.items(), key=lambda item: -len(item[0])):
                 if raw_title == jp_prefix:
-                    title_exact[raw_title] = zh_prefix
+                    title_exact[raw_title] = canonicalize_cn_visible(zh_prefix)
                     break
                 if raw_title.startswith(jp_prefix + " "):
                     suffix = raw_title[len(jp_prefix):].strip()
                     translated_suffix = title_suffix_translation(suffix, characters | normalized)
-                    title_exact[raw_title] = f"{zh_prefix} {translated_suffix}".strip()
+                    title_exact[raw_title] = canonicalize_cn_visible(
+                        f"{zh_prefix} {translated_suffix}".strip()
+                    )
                     break
+
+    for jp, cn in previous_output.get("titleExact", {}).items():
+        if not (isinstance(jp, str) and isinstance(cn, str) and jp and cn):
+            continue
+        canonical = canonicalize_cn_visible(cn)
+        # Old V10 files may contain identity fallbacks.  They are not reviewed
+        # Chinese authority and would suppress the structural translator on a
+        # later rebuild (for example Japanese costume and battle-museum labels).
+        if canonical == jp or has_japanese(canonical):
+            continue
+        title_exact.setdefault(jp, canonical)
 
     unresolved = sorted(raw for raw in cast_names if raw not in characters and norm(raw) not in normalized)
     output = {

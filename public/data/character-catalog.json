@@ -106,18 +106,18 @@
     "aliases": []
   },
   {
-    "zh": "万年樱之谣",
+    "zh": "万年樱的传闻",
     "jp": "万年桜のウワサ",
     "roman": "Eternal Sakura",
     "kana": "まんねんざくらのうわさ",
-    "image": "万年樱之谣",
+    "image": "万年樱的传闻",
     "star": true,
     "classes": [
       "girlbox",
       "umeColor"
     ],
     "aliases": [
-      "万年樱的传闻"
+      "万年樱之谣"
     ]
   },
   {
