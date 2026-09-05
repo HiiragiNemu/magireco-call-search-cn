@@ -21,8 +21,8 @@
 ## Deployment and served-file check
 - Command: `npx wrangler pages deploy public --project-name magireco-call-search-cn --branch main --commit-dirty=true`
 - Exit: `0`
-- Literal output: `Deployment complete! Take a peek over at https://ee624676.magireco-call-search-cn.pages.dev`
-- Command: `Invoke-WebRequest https://ee624676.magireco-call-search-cn.pages.dev/{story.html,?callTheme=1,myfile/theme-mode-v1.js?v=20260906}`
+- Literal output: `Deployment complete! Take a peek over at https://e40db262.magireco-call-search-cn.pages.dev`
+- Command: `Invoke-WebRequest https://e40db262.magireco-call-search-cn.pages.dev/{story.html,?callTheme=1,myfile/theme-mode-v1.js?v=20260906}`
 - Exit: `0`
 - Literal result: story `200`, root `200`, script `200`; both HTML pages reference `v20260906`; served script contains `if (document.body) {`.
 
