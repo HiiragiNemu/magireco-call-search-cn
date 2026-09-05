@@ -54,11 +54,9 @@
     apply(document.documentElement.dataset.callTheme || systemTheme());
   }
 
-  // Install as soon as the body exists.  Waiting for DOMContentLoaded lets the
-  // heavyweight Call page race the shared preference during a cross-page nav.
-  if (document.body) {
-    install();
-  } else {
+  if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', install, { once: true });
+  } else {
+    install();
   }
 })();
