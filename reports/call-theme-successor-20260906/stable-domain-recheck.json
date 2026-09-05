@@ -1,0 +1,64 @@
+{
+  "origin": "https://magireco-call-search-cn.pages.dev",
+  "htmlStatus": {
+    "story": 200,
+    "root": 200,
+    "script": 200
+  },
+  "scriptUrl": "https://magireco-call-search-cn.pages.dev/myfile/theme-mode-v1.js?v=20260906",
+  "results": [
+    {
+      "name": "desktop-1440x1000",
+      "width": 1440,
+      "height": 1000,
+      "flow": "story toggle -> root",
+      "story": {
+        "theme": "dark",
+        "stored": "dark",
+        "aria": "切换至日间模式"
+      },
+      "root": {
+        "theme": "dark",
+        "aria": "切换至日间模式"
+      },
+      "rootDataset": "dark",
+      "checks": {
+        "storyTheme": true,
+        "stored": true,
+        "rootTheme": true,
+        "rootAria": true,
+        "rootDataset": true
+      },
+      "pageErrors": [],
+      "requestFailures": [],
+      "pass": true
+    },
+    {
+      "name": "mobile-390x844",
+      "width": 390,
+      "height": 844,
+      "flow": "story toggle -> root",
+      "story": {
+        "theme": "dark",
+        "stored": "dark",
+        "aria": "切换至日间模式"
+      },
+      "root": {
+        "theme": "dark",
+        "aria": "切换至日间模式"
+      },
+      "rootDataset": "dark",
+      "checks": {
+        "storyTheme": true,
+        "stored": true,
+        "rootTheme": true,
+        "rootAria": true,
+        "rootDataset": true
+      },
+      "pageErrors": [],
+      "requestFailures": [],
+      "pass": true
+    }
+  ],
+  "pass": true
+}

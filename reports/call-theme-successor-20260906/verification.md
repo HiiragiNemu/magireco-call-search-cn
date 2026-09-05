@@ -34,3 +34,9 @@
 - Command: `powershell -NoProfile -ExecutionPolicy Bypass -File reports/call-theme-successor-20260906/rollback.ps1 -TargetRoot reports/call-theme-successor-20260906/rollback-fixture`
 - Exit: `0`
 - Literal output: `ThemeSha256=BA1CC8E3751825B998AE8FB36AA5AB7E8E6AE7034FC29FF54B9673DEA5681F3A; RestoredScriptRefs=2`.
+
+## Stable-domain command-line recheck (2026-09-06)
+- Command: `node reports/call-theme-successor-20260906/stable-domain-recheck.mjs`
+- Exit: `0`
+- Artifact: `stable-domain-recheck.json`
+- Result: `magireco-call-search-cn.pages.dev` story/root/script all HTTP 200; desktop `1440x1000` and mobile `390x844` flows both PASS with stored `dark`, root `data-call-theme=dark`, root button `aria-label=切换至日间模式`, `pageErrors=[]`, `requestFailures=[]`.
