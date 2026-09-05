@@ -722,7 +722,7 @@
   "readerIndexPath": "website/public/story_index.json",
   "readerIndexEntries": 3048,
   "playableReaderEntries": 3046,
-  "manualRoutes": 2,
+  "manualRoutes": 3,
   "categories": [
     {
       "slug": "puella-historia",
