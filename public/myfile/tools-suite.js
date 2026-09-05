@@ -4,7 +4,7 @@
 
   const CATALOG_URL = './data/character-catalog.json';
   const NAV_ITEMS = [
-    { id: 'calls', href: './index.html', icon: '↔', label: '称呼与身高' },
+    { id: 'calls', href: './index.html?callTheme=1', icon: '↔', label: '称呼与身高' },
     { id: 'story', href: './story.html', icon: '▤', label: '角色故事搜索' },
     { id: 'attendance', href: './attendance.html', icon: '▥', label: '同席次数排行' },
     { id: 'runes', href: './runes.html', icon: '⌁', label: '魔女文翻译' }
