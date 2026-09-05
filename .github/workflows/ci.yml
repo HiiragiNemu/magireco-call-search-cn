@@ -39,3 +39,4 @@ jobs:
           node tests/story-sprite-bridge-v1.test.mjs
           node --test tests/story-route-bridge-v1.test.mjs
           node --test tests/aio-edge-function.test.mjs
+          node --test tests/call-relation-target.test.mjs
