@@ -36,8 +36,8 @@
   --call-panel-shadow:inset 0 1px rgba(255,255,255,.55),0 3px 10px rgba(28,34,36,.11);
   --call-widget-shadow:0 5px 18px rgba(18,23,25,.24),inset 0 1px rgba(255,255,255,.3);
   --call-selected-shadow:0 0 5px rgba(80,105,110,.26);
-  --call-sized-lead:rgba(255,252,225,.22);
-  --call-sized-trail:rgba(53,92,154,.28);
+  --call-sized-lead:rgba(255,252,225,.50);
+  --call-sized-trail:rgba(69,154,244,.55);
   --call-ambient-glow:rgba(86,99,102,.08);
   --call-scan-opacity:.045;
   --call-day-grain-opacity:.12;
@@ -134,8 +134,8 @@
   --call-network-bg:#020501;
   --call-panel-shadow:inset 0 1px rgba(209,255,164,.07),inset 0 -1px rgba(0,0,0,.60);
   --call-widget-shadow:0 0 0 1px #879d654f,0 0 10px #a7ff5414,inset 0 1px rgba(209,255,164,.07);
-  --call-sized-lead:rgba(255,252,225,.54);
-  --call-sized-trail:rgba(153,235,213,.55);
+  --call-sized-lead:rgba(255,252,225,.50);
+  --call-sized-trail:rgba(153,235,213,.48);
   --call-ambient-glow:rgba(166,247,82,.24);
   --call-selected-shadow:
     -1.15px 0 0 rgba(255,232,82,.58),
@@ -160,8 +160,8 @@
   --call-card-bg:#100a0d;
   --call-card-text:#ffe58c;
   --call-network-bg:#050203;
-  --call-sized-lead:rgba(255,252,225,.58);
-  --call-sized-trail:rgba(246,94,40,.62);
+  --call-sized-lead:rgba(255,252,225,.50);
+  --call-sized-trail:rgba(246,94,40,.52);
   --call-ambient-glow:rgba(255,166,55,.26);
   --call-selected-shadow:
     -1.15px 0 0 rgba(255,72,34,.68),
