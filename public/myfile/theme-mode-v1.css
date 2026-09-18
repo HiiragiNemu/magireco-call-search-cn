@@ -794,3 +794,21 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
 :root[data-call-ios="true"] .call-display-root-v7{filter:none!important}
 :root[data-call-ios="true"] .call-fx-film-focus-v7{display:none!important}
 :root[data-call-ios="true"] .call-display-scroll-v7{animation:none!important}
+
+
+/* Top toolbar owns the first row; sticky tool navigation sits immediately below it. */
+:root[data-call-theme-bar-mode="top"] .call-display-scroll-v7 .suite-nav{
+  top:48px!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-display-scroll-v7 .suite-nav{
+  top:0!important;
+}
+
+/* The floating hamburger follows the measured navigation height instead of
+   leaving or occupying a fake header row. */
+:root[data-call-theme-bar-mode="top"] .call-menu-float-v7{
+  top:calc(48px + var(--suite-nav-height-v7, 0px) + 5px)!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-menu-float-v7{
+  top:calc(var(--suite-nav-height-v7, 0px) + 8px)!important;
+}
