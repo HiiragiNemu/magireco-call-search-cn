@@ -205,7 +205,8 @@ html, body { min-height: 100%; }
 .call-reader-screen-v3 {
   position: fixed;
   inset: 0;
-  z-index: 2050;
+  /* Glass / phosphor lives above every in-page control, like MagiReader's physical screen layer. */
+  z-index: 5000;
   pointer-events: none;
   user-select: none;
   overflow: hidden;
