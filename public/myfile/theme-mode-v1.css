@@ -1,101 +1,529 @@
+/* Reader-derived five-theme system for the Call/Search site.
+ * Deliberately avoids backdrop-filter, full-screen filter layers, mix-blend-mode,
+ * animated textures and fixed pseudo-element overlays so iOS Safari keeps the
+ * same compositing path as the normal page.
+ */
+:root {
+  color-scheme: light;
+  --call-bg: #f4f5f6;
+  --call-bg-pattern: none;
+  --call-surface: #ffffff;
+  --call-surface-soft: #f1f3f4;
+  --call-surface-raised: #ffffff;
+  --call-text: #20262a;
+  --call-muted: #667278;
+  --call-border: #aeb8bd;
+  --call-border-strong: #7e8c93;
+  --call-accent: #c7357e;
+  --call-accent-strong: #9c1f5f;
+  --call-accent-ink: #ffffff;
+  --call-focus: #0b74b8;
+  --call-danger: #8f385d;
+  --call-shadow: 0 6px 18px rgba(28, 34, 38, .12);
+  --call-dock-bg: rgba(255, 255, 255, .98);
+  --call-network-bg: #15191c;
+  --call-card-bg: #ffffff;
+  --call-card-text: #20262a;
+  --call-grid-line: rgba(55, 64, 68, .055);
+}
+
+:root[data-call-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-call-theme="paper"] {
+  color-scheme: light;
+  --call-bg: #eadfbd;
+  --call-bg-pattern:
+    linear-gradient(var(--call-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--call-grid-line) 1px, transparent 1px);
+  --call-surface: #f8efd2;
+  --call-surface-soft: #efe1b8;
+  --call-surface-raised: #fff7df;
+  --call-text: #342b20;
+  --call-muted: #73644f;
+  --call-border: #b9a67c;
+  --call-border-strong: #86734d;
+  --call-accent: #8c4c69;
+  --call-accent-strong: #65354d;
+  --call-accent-ink: #fff9e9;
+  --call-focus: #6c5b31;
+  --call-danger: #874d59;
+  --call-shadow: 0 7px 20px rgba(67, 50, 25, .16);
+  --call-dock-bg: rgba(248, 239, 210, .98);
+  --call-network-bg: #211d18;
+  --call-card-bg: #fff6d9;
+  --call-card-text: #342b20;
+  --call-grid-line: rgba(76, 60, 36, .055);
+}
+
+:root[data-call-theme="green"] {
+  color-scheme: light;
+  --call-bg: #dce9d3;
+  --call-bg-pattern:
+    linear-gradient(rgba(49, 91, 67, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(49, 91, 67, .035) 1px, transparent 1px);
+  --call-surface: #f2f8ed;
+  --call-surface-soft: #d6e8d5;
+  --call-surface-raised: #fbfef9;
+  --call-text: #183629;
+  --call-muted: #536d61;
+  --call-border: #95b2a2;
+  --call-border-strong: #5f8571;
+  --call-accent: #397b5e;
+  --call-accent-strong: #245a43;
+  --call-accent-ink: #ffffff;
+  --call-focus: #1d6f59;
+  --call-danger: #8b4b62;
+  --call-shadow: 0 6px 18px rgba(28, 71, 52, .14);
+  --call-dock-bg: rgba(242, 248, 237, .98);
+  --call-network-bg: #10251d;
+  --call-card-bg: #f5fbf2;
+  --call-card-text: #183629;
+}
+
 :root[data-call-theme="dark"] {
   color-scheme: dark;
-  --call-night-bg: #10171f;
-  --call-night-surface: #18242e;
-  --call-night-surface-raised: #20313e;
-  --call-night-text: #eaf2f7;
-  --call-night-muted: #b9c8d1;
-  --call-night-border: #456173;
-  --call-night-accent: #ff63ad;
-  --call-night-accent-strong: #ff8fc7;
-  --call-night-focus: #8cdbff;
+  --call-bg: #0d1512;
+  --call-bg-pattern:
+    linear-gradient(rgba(178, 239, 110, .032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(178, 239, 110, .032) 1px, transparent 1px);
+  --call-surface: #131f1a;
+  --call-surface-soft: #192820;
+  --call-surface-raised: #203228;
+  --call-text: #f0f7f2;
+  --call-muted: #aec0b4;
+  --call-border: #506a5b;
+  --call-border-strong: #789583;
+  --call-accent: #b6ef72;
+  --call-accent-strong: #d5ff9d;
+  --call-accent-ink: #14200f;
+  --call-focus: #c7ff86;
+  --call-danger: #d58aa4;
+  --call-shadow: 0 7px 20px rgba(0, 0, 0, .34);
+  --call-dock-bg: rgba(19, 31, 26, .985);
+  --call-network-bg: #070d0a;
+  --call-card-bg: #18251e;
+  --call-card-text: #f4faf5;
+  --call-grid-line: rgba(182, 239, 114, .034);
 }
 
-:root[data-call-theme="dark"],
-:root[data-call-theme="dark"] body {
-  background: var(--call-night-bg) !important;
-  color: var(--call-night-text) !important;
+:root[data-call-theme="frost"] {
+  color-scheme: dark;
+  --call-bg: #08151b;
+  --call-bg-pattern:
+    linear-gradient(rgba(127, 215, 239, .038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 215, 239, .038) 1px, transparent 1px);
+  --call-surface: #0d2028;
+  --call-surface-soft: #14303a;
+  --call-surface-raised: #183b47;
+  --call-text: #eefaff;
+  --call-muted: #adcad5;
+  --call-border: #3e6b7b;
+  --call-border-strong: #6595a7;
+  --call-accent: #8dd8ee;
+  --call-accent-strong: #c5f4ff;
+  --call-accent-ink: #08202a;
+  --call-focus: #b9efff;
+  --call-danger: #e09ab1;
+  --call-shadow: 0 7px 20px rgba(0, 0, 0, .32);
+  --call-dock-bg: rgba(13, 32, 40, .985);
+  --call-network-bg: #061116;
+  --call-card-bg: #102832;
+  --call-card-text: #f1fbff;
+  --call-grid-line: rgba(141, 216, 238, .038);
 }
 
-:root[data-call-theme="dark"] :where(main, header, nav, section, article, aside, details, fieldset, .suite-shell, .suite-panel, .suite-hero, .suite-nav, .suite-card, .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10, #wrapper, #callResultSection, #at_result) {
-  color: var(--call-night-text);
-  border-color: var(--call-night-border) !important;
+:root,
+:root body {
+  min-height: 100%;
+  background-color: var(--call-bg) !important;
+  color: var(--call-text) !important;
 }
 
-:root[data-call-theme="dark"] :where(.suite-shell, .suite-panel, .suite-hero, .suite-nav, .suite-card, .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10, #wrapper, #callResultSection, #at_result, details, fieldset) {
-  background-color: var(--call-night-surface) !important;
+body {
+  background-image: var(--call-bg-pattern) !important;
+  background-size: 24px 24px !important;
+  background-attachment: scroll !important;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-:root[data-call-theme="dark"] :where(h1, h2, h3, h4, p, span, label, legend, summary, dt, dd, li, .suite-status, .suite-notice, .call-help-toggle-v10, .height-export-status-v10) {
-  color: inherit;
+:root[data-call-theme] :where(#wrapper, main, section, article, aside, fieldset, details,
+  .suite-shell, .suite-panel, .suite-card, .suite-results,
+  .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10,
+  #callResultSection, #at_result) {
+  color: var(--call-text);
+  border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme="dark"] :where(a, .suite-link, .story-result-title) {
-  color: var(--call-night-accent-strong);
+:root[data-call-theme] :where(.suite-shell, .suite-panel, .suite-card, .suite-results,
+  .call-panel-v8, .suite-panel-details-v8, .character-grid-details-v8,
+  .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10,
+  #callResultSection, #at_result, fieldset, details) {
+  background-color: var(--call-surface) !important;
 }
 
-:root[data-call-theme="dark"] :where(input, select, textarea, button, .suite-button, .call-help-toggle-v10) {
-  color: var(--call-night-text);
-  background-color: var(--call-night-surface-raised);
-  border-color: var(--call-night-border);
+:root[data-call-theme] :where(.suite-panel-details-v8 > summary,
+  .call-panel-v8 > summary, .character-grid-details-v8 > summary,
+  details > summary) {
+  color: var(--call-text) !important;
+  background: var(--call-surface-soft) !important;
+  border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme="dark"] :where(input::placeholder, textarea::placeholder) {
-  color: var(--call-night-muted);
-  opacity: 1;
+:root[data-call-theme] :where(.suite-panel-details-v8 > summary::after,
+  .call-panel-v8 > summary::after, .character-grid-details-v8 > summary::after) {
+  color: var(--call-text) !important;
+  background: var(--call-surface-raised) !important;
+  border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme="dark"] :where(button:hover, button:focus-visible, .suite-button:hover, .suite-button:focus-visible) {
-  border-color: var(--call-night-focus);
+:root[data-call-theme] :where(h1, h2, h3, h4, h5, h6, p, li, dt, dd, legend, summary,
+  .suite-status, .suite-notice, .height-export-status-v10, .character-grid-count-v8) {
+  color: var(--call-text);
 }
 
-:root[data-call-theme="dark"] :where(table, th, td, tr) {
-  color: var(--call-night-text);
-  border-color: var(--call-night-border) !important;
+:root[data-call-theme] :where(.suite-muted, .muted, small, .hint, .help, .description) {
+  color: var(--call-muted) !important;
 }
 
-:root[data-call-theme="dark"] :where(th, tr:nth-child(even) td) {
-  background-color: rgba(83, 121, 141, .18) !important;
+:root[data-call-theme] :where(a, .suite-link, .story-result-title, .returnlink a) {
+  color: var(--call-accent-strong);
 }
 
-:root[data-call-theme="dark"] :where(#mynetwork, #canvasflame) {
-  border-color: var(--call-night-border) !important;
+:root[data-call-theme] :where(a:hover, a:focus-visible) {
+  color: var(--call-focus);
 }
 
-.call-theme-toggle-v1 {
-  position: fixed;
-  right: max(.6rem, env(safe-area-inset-right));
-  bottom: max(.65rem, env(safe-area-inset-bottom));
-  z-index: 2200;
-  min-width: 3.4rem;
-  min-height: 2.25rem;
-  padding: .42rem .58rem;
-  border: 1px solid rgba(113, 61, 94, .38);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .94);
-  color: #702044;
-  box-shadow: 0 4px 14px rgba(33, 20, 29, .22);
-  font: 800 .82rem/1 system-ui, sans-serif;
-  cursor: pointer;
+:root[data-call-theme] :where(input:not([type="checkbox"]):not([type="radio"]),
+  select, textarea, button, .suite-button, .call-help-toggle-v10) {
+  color: var(--call-text);
+  background-color: var(--call-surface-raised);
+  border-color: var(--call-border);
 }
 
-.call-theme-toggle-v1:hover,
-.call-theme-toggle-v1:focus-visible {
-  outline: 3px solid rgba(255, 99, 173, .32);
+:root[data-call-theme] :where(input::placeholder, textarea::placeholder) {
+  color: var(--call-muted) !important;
+  opacity: .92;
+}
+
+:root[data-call-theme] :where(input, select, textarea, button, a, summary):focus-visible {
+  outline: 2px solid var(--call-focus) !important;
   outline-offset: 2px;
 }
 
-:root[data-call-theme="dark"] .call-theme-toggle-v1 {
-  border-color: var(--call-night-focus);
-  background: #1c3441;
-  color: var(--call-night-text);
+:root[data-call-theme] :where(button, input[type="button"], input[type="submit"], .suite-button) {
+  touch-action: manipulation;
 }
 
-@media (max-width: 760px) {
-  .call-theme-toggle-v1 {
-    min-width: 3rem;
-    min-height: 2rem;
-    padding: .32rem .46rem;
-    font-size: .72rem;
+:root[data-call-theme] :where(input[type="checkbox"], input[type="radio"], input[type="range"]) {
+  accent-color: var(--call-accent);
+}
+
+:root[data-call-theme] :where(table, th, td, tr) {
+  color: var(--call-text);
+  border-color: var(--call-border) !important;
+}
+
+:root[data-call-theme] :where(th) {
+  background-color: var(--call-surface-soft) !important;
+}
+
+:root[data-call-theme] :where(tr:nth-child(even) td) {
+  background-color: color-mix(in srgb, var(--call-surface-soft) 72%, transparent) !important;
+}
+
+@supports not (background-color: color-mix(in srgb, white 50%, black)) {
+  :root[data-call-theme] :where(tr:nth-child(even) td) {
+    background-color: var(--call-surface-soft) !important;
+  }
+}
+
+/* Shared top navigation / hamburger surfaces. */
+:root[data-call-theme] .suite-nav,
+:root[data-call-theme] .header,
+:root[data-call-theme] .header .menu {
+  color: var(--call-text) !important;
+  background: var(--call-surface) !important;
+  border-color: var(--call-border) !important;
+}
+
+:root[data-call-theme] .suite-nav a {
+  color: var(--call-text) !important;
+  background: var(--call-surface-raised) !important;
+  border-color: var(--call-border) !important;
+}
+
+:root[data-call-theme] .suite-nav :is(a.active, a[aria-current="page"], a[data-active="true"]) {
+  color: var(--call-accent-ink) !important;
+  background: var(--call-accent) !important;
+  border-color: var(--call-accent) !important;
+}
+
+:root[data-call-theme] :where(.menu-icon, .navicon, .navicon::before, .navicon::after) {
+  border-color: var(--call-border-strong) !important;
+}
+
+:root[data-call-theme] .header .menu a,
+:root[data-call-theme] .header .menu li {
+  color: var(--call-text) !important;
+}
+
+/* Keep the relationship canvas visually integrated without adding a composited
+ * full-screen layer. vis-network still owns the canvas contents themselves.
+ */
+:root[data-call-theme] :where(#mynetwork, #canvasflame) {
+  border-color: var(--call-border) !important;
+  background-color: var(--call-network-bg) !important;
+}
+
+/* Legacy character cards used hard-coded pastel fills. In dark/frost those fills
+ * combined with inherited light text and caused the unreadable state visible on
+ * real devices. Night themes use one dark card material with category accents.
+ */
+:root[data-call-theme="dark"] :is(label.girlbox, .suite-character-card),
+:root[data-call-theme="frost"] :is(label.girlbox, .suite-character-card) {
+  color: var(--call-card-text) !important;
+  background: var(--call-card-bg) !important;
+  border-color: var(--call-border) !important;
+  box-shadow: inset 0 -3px 0 var(--call-card-accent, var(--call-accent)) !important;
+}
+
+:root[data-call-theme="dark"] :is(label.girlbox, .suite-character-card) :where(span, small, strong),
+:root[data-call-theme="frost"] :is(label.girlbox, .suite-character-card) :where(span, small, strong) {
+  color: var(--call-card-text) !important;
+}
+
+:is(label.girlbox, .suite-character-card).umeColor { --call-card-accent: #d7c65b; }
+:is(label.girlbox, .suite-character-card).hisColor { --call-card-accent: #e08bd3; }
+:is(label.girlbox, .suite-character-card).umeOtherColor { --call-card-accent: #9c9be5; }
+:is(label.girlbox, .suite-character-card).PMHQColor { --call-card-accent: #df88ad; }
+:is(label.girlbox, .suite-character-card).PMHQotherColor { --call-card-accent: #82a9d8; }
+:is(label.girlbox, .suite-character-card).otherColor { --call-card-accent: #8fc8a6; }
+:is(label.girlbox, .suite-character-card).otherColor2 { --call-card-accent: #88b7ce; }
+:is(label.girlbox, .suite-character-card).otherotherColor { --call-card-accent: #c49b79; }
+
+/* Preserve readable text on selected/disabled legacy controls. */
+:root[data-call-theme] :where(button:disabled, input:disabled, select:disabled) {
+  opacity: .58;
+}
+
+:root[data-call-theme] .mgreset:not(:disabled),
+:root[data-call-theme] .call-quick-rail-v10 button[data-action="cancel"] {
+  color: #fff !important;
+  background: var(--call-danger) !important;
+  border-color: var(--call-danger) !important;
+}
+
+/* Reader-style five-theme floating switcher. */
+.call-theme-dock-v2 {
+  position: fixed;
+  right: max(10px, env(safe-area-inset-right));
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 2200;
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid var(--call-border);
+  border-radius: 14px;
+  background: var(--call-dock-bg);
+  box-shadow: var(--call-shadow);
+  contain: layout paint;
+}
+
+.call-theme-option-v2 {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 34px;
+  min-width: 38px;
+  min-height: 34px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent !important;
+  border-radius: 9px;
+  color: var(--call-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font: 800 1.05rem/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.call-theme-option-v2:hover,
+.call-theme-option-v2:focus-visible {
+  color: var(--call-text) !important;
+  background: var(--call-surface-soft) !important;
+  border-color: var(--call-border) !important;
+}
+
+.call-theme-option-v2[aria-pressed="true"] {
+  color: var(--call-accent-ink) !important;
+  background: var(--call-accent) !important;
+  border-color: var(--call-accent) !important;
+}
+
+.call-theme-label-v2 {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Re-skin the existing Call quick rail into the same modeless floating-control
+ * language. Desktop/landscape is horizontal; portrait phones use a vertical
+ * control column next to the theme column.
+ */
+body:not(.suite-page) .call-quick-rail-v10 {
+  position: fixed !important;
+  top: auto !important;
+  right: max(10px, env(safe-area-inset-right)) !important;
+  bottom: calc(max(10px, env(safe-area-inset-bottom)) + 46px) !important;
+  z-index: 2190 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 3px !important;
+  padding: 4px !important;
+  transform: none !important;
+  border: 1px solid var(--call-border);
+  border-radius: 14px;
+  background: var(--call-dock-bg);
+  box-shadow: var(--call-shadow);
+  pointer-events: auto !important;
+  contain: layout paint;
+}
+
+body:not(.suite-page) .call-quick-rail-v10 button {
+  display: grid !important;
+  place-items: center !important;
+  width: 43px !important;
+  min-width: 43px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: .28rem .22rem !important;
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  color: var(--call-text) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font: 800 .73rem/1.05 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+}
+
+body:not(.suite-page) .call-quick-rail-v10 button:hover,
+body:not(.suite-page) .call-quick-rail-v10 button:focus-visible {
+  color: var(--call-accent-ink) !important;
+  background: var(--call-accent) !important;
+  border-color: var(--call-accent) !important;
+}
+
+body:not(.suite-page) .call-quick-rail-v10 button[data-action="cancel"] {
+  color: #fff !important;
+}
+
+/* Larger touch targets without changing the desktop visual rhythm. */
+@media (hover: none) and (pointer: coarse) {
+  .call-theme-option-v2 {
+    width: 42px;
+    height: 40px;
+    min-width: 42px;
+    min-height: 40px;
+  }
+
+  body:not(.suite-page) .call-quick-rail-v10 button {
+    width: 44px !important;
+    min-width: 44px !important;
+    min-height: 40px !important;
+  }
+
+  body:not(.suite-page) .call-quick-rail-v10 {
+    bottom: calc(max(10px, env(safe-area-inset-bottom)) + 52px) !important;
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .call-theme-dock-v2 {
+    right: max(7px, env(safe-area-inset-right));
+    bottom: max(7px, env(safe-area-inset-bottom));
+    flex-direction: column;
+    gap: 2px;
+    padding: 3px;
+  }
+
+  body:not(.suite-page) .call-quick-rail-v10 {
+    right: calc(max(7px, env(safe-area-inset-right)) + 50px) !important;
+    bottom: max(7px, env(safe-area-inset-bottom)) !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    padding: 3px !important;
+  }
+
+  body:not(.suite-page) .call-quick-rail-v10 button {
+    width: 42px !important;
+    min-width: 42px !important;
+    min-height: 34px !important;
+    padding: .18rem .12rem !important;
+    font-size: .68rem !important;
+  }
+}
+
+/* iOS Safari: keep the controls on a cheap opaque compositing path. No blur,
+ * no blend mode, no fixed texture and no animated shadow are introduced.
+ */
+@supports (-webkit-touch-callout: none) {
+  body {
+    text-rendering: auto;
+  }
+
+  .call-theme-dock-v2,
+  body:not(.suite-page) .call-quick-rail-v10 {
+    background: var(--call-surface) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .2) !important;
+    -webkit-transform: translateZ(0);
+  }
+
+  :root[data-call-theme="dark"] body,
+  :root[data-call-theme="frost"] body {
+    background-image: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto !important;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* If the script is delayed or blocked, still choose a readable first paint. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-call-theme]) {
+    color-scheme: dark;
+    --call-bg: #0d1512;
+    --call-surface: #131f1a;
+    --call-surface-soft: #192820;
+    --call-surface-raised: #203228;
+    --call-text: #f0f7f2;
+    --call-muted: #aec0b4;
+    --call-border: #506a5b;
+    --call-accent: #b6ef72;
+    --call-accent-strong: #d5ff9d;
+    --call-accent-ink: #14200f;
+    --call-focus: #c7ff86;
+    --call-danger: #d58aa4;
+    --call-dock-bg: #131f1a;
+    --call-network-bg: #070d0a;
+    --call-card-bg: #18251e;
+    --call-card-text: #f4faf5;
   }
 }
