@@ -1,334 +1,518 @@
-/* Reader-derived five-theme system for the Call/Search site.
- * Deliberately avoids backdrop-filter, full-screen filter layers, mix-blend-mode,
- * animated textures and fixed pseudo-element overlays so iOS Safari keeps the
- * same compositing path as the normal page.
+/* MagiReader optical language for magireco-call-search-cn.
+ * Five themes share one token system. Dark/Frost intentionally borrow the
+ * deployed Reader's CRT/microfilm vocabulary: phosphor ink, registration,
+ * scanlines, vignette, sparse grain and transparent instrument panels.
+ * iOS receives the same palette/panel/registration language but drops the
+ * expensive full-screen compositing layers.
  */
 :root {
   color-scheme: light;
-  --call-bg: #f4f5f6;
-  --call-bg-pattern: none;
-  --call-surface: #ffffff;
-  --call-surface-soft: #f1f3f4;
-  --call-surface-raised: #ffffff;
-  --call-text: #20262a;
-  --call-muted: #667278;
-  --call-border: #aeb8bd;
-  --call-border-strong: #7e8c93;
-  --call-accent: #c7357e;
-  --call-accent-strong: #9c1f5f;
-  --call-accent-ink: #ffffff;
-  --call-focus: #0b74b8;
-  --call-danger: #8f385d;
-  --call-shadow: 0 6px 18px rgba(28, 34, 38, .12);
-  --call-dock-bg: rgba(255, 255, 255, .98);
-  --call-network-bg: #15191c;
-  --call-card-bg: #ffffff;
-  --call-card-text: #20262a;
-  --call-grid-line: rgba(55, 64, 68, .055);
+  --call-bg: #d8d4c6;
+  --call-field:
+    radial-gradient(circle at 14% 22%, rgba(177,164,126,.16) 0, transparent 30%),
+    radial-gradient(circle at 84% 16%, rgba(139,143,126,.13) 0, transparent 28%),
+    radial-gradient(circle at 56% 84%, rgba(168,157,121,.12) 0, transparent 34%),
+    #d8d4c6;
+  --call-surface: rgba(244,245,245,.94);
+  --call-surface-soft: rgba(226,229,229,.96);
+  --call-surface-raised: rgba(255,255,255,.96);
+  --call-text: #282c2d;
+  --call-muted: #626b6d;
+  --call-border: rgba(70,78,80,.42);
+  --call-border-strong: #596466;
+  --call-accent: #566366;
+  --call-accent-strong: #343e40;
+  --call-accent-ink: #f7fafa;
+  --call-focus: #2a6f83;
+  --call-danger: #8b3c58;
+  --call-shadow: 5px 7px 13px rgba(29,32,33,.22), 2px 3px 0 rgba(29,32,33,.1);
+  --call-panel-shadow: inset 0 1px rgba(255,255,255,.5), 3px 4px 10px rgba(29,32,33,.13);
+  --call-card-bg: #f7f8f8;
+  --call-card-text: #25292a;
+  --call-network-bg: #0b0e0f;
+  --call-text-shadow: -.018em 0 .008em rgba(44,57,74,.12), .028em .008em .008em rgba(127,75,53,.16);
+  --call-inverse-shadow: .55px 0 0 rgba(255,255,255,.6);
+  --call-scan-opacity: .05;
+  --call-grain-opacity: .035;
+  --call-vignette-opacity: .08;
 }
 
-:root[data-call-theme="light"] {
-  color-scheme: light;
-}
+:root[data-call-theme="light"] { color-scheme: light; }
 
 :root[data-call-theme="paper"] {
   color-scheme: light;
-  --call-bg: #eadfbd;
-  --call-bg-pattern:
-    linear-gradient(var(--call-grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--call-grid-line) 1px, transparent 1px);
-  --call-surface: #f8efd2;
-  --call-surface-soft: #efe1b8;
-  --call-surface-raised: #fff7df;
-  --call-text: #342b20;
-  --call-muted: #73644f;
-  --call-border: #b9a67c;
-  --call-border-strong: #86734d;
-  --call-accent: #8c4c69;
-  --call-accent-strong: #65354d;
-  --call-accent-ink: #fff9e9;
-  --call-focus: #6c5b31;
-  --call-danger: #874d59;
-  --call-shadow: 0 7px 20px rgba(67, 50, 25, .16);
-  --call-dock-bg: rgba(248, 239, 210, .98);
-  --call-network-bg: #211d18;
-  --call-card-bg: #fff6d9;
-  --call-card-text: #342b20;
-  --call-grid-line: rgba(76, 60, 36, .055);
+  --call-bg: #f3eacb;
+  --call-field:
+    linear-gradient(rgba(79,62,37,.048) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,62,37,.048) 1px, transparent 1px),
+    #f3eacb;
+  --call-surface: rgba(247,238,210,.94);
+  --call-surface-soft: rgba(232,218,180,.94);
+  --call-surface-raised: rgba(255,248,226,.96);
+  --call-text: #332b20;
+  --call-muted: #71634f;
+  --call-border: rgba(75,59,35,.4);
+  --call-border-strong: #6e5a3a;
+  --call-accent: #665235;
+  --call-accent-strong: #4f402b;
+  --call-accent-ink: #fff7df;
+  --call-focus: #7a6137;
+  --call-danger: #87515e;
+  --call-shadow: 10px 13px 28px rgba(55,42,24,.18), 3px 4px 0 rgba(55,42,24,.1);
+  --call-panel-shadow: inset 0 1px rgba(255,252,236,.7), 5px 6px 14px rgba(55,42,24,.12);
+  --call-card-bg: #fff6da;
+  --call-card-text: #332b20;
+  --call-network-bg: #17130e;
+  --call-text-shadow: -.016em 0 .008em rgba(78,52,31,.12), .025em .006em .008em rgba(126,84,54,.14);
+  --call-scan-opacity: .035;
+  --call-grain-opacity: .05;
+  --call-vignette-opacity: .04;
 }
 
 :root[data-call-theme="green"] {
   color-scheme: light;
-  --call-bg: #dce9d3;
-  --call-bg-pattern:
-    linear-gradient(rgba(49, 91, 67, .035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(49, 91, 67, .035) 1px, transparent 1px);
-  --call-surface: #f2f8ed;
-  --call-surface-soft: #d6e8d5;
-  --call-surface-raised: #fbfef9;
-  --call-text: #183629;
-  --call-muted: #536d61;
-  --call-border: #95b2a2;
-  --call-border-strong: #5f8571;
-  --call-accent: #397b5e;
-  --call-accent-strong: #245a43;
-  --call-accent-ink: #ffffff;
-  --call-focus: #1d6f59;
-  --call-danger: #8b4b62;
-  --call-shadow: 0 6px 18px rgba(28, 71, 52, .14);
-  --call-dock-bg: rgba(242, 248, 237, .98);
-  --call-network-bg: #10251d;
-  --call-card-bg: #f5fbf2;
-  --call-card-text: #183629;
+  --call-bg: #d6e9c4;
+  --call-field:
+    radial-gradient(circle at 18% 14%, rgba(109,162,126,.14), transparent 29%),
+    radial-gradient(circle at 82% 76%, rgba(73,133,103,.11), transparent 31%),
+    linear-gradient(rgba(54,104,77,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(54,104,77,.03) 1px, transparent 1px),
+    #d6e9c4;
+  --call-surface: rgba(234,244,229,.94);
+  --call-surface-soft: rgba(207,228,205,.95);
+  --call-surface-raised: rgba(247,252,244,.96);
+  --call-text: #18382b;
+  --call-muted: #527062;
+  --call-border: rgba(54,96,74,.4);
+  --call-border-strong: #527d67;
+  --call-accent: #3f765b;
+  --call-accent-strong: #285641;
+  --call-accent-ink: #f5fff9;
+  --call-focus: #23684f;
+  --call-danger: #865060;
+  --call-shadow: 6px 8px 20px rgba(25,66,51,.16), 2px 3px 0 rgba(25,66,51,.09);
+  --call-panel-shadow: inset 0 1px rgba(255,255,255,.54), 4px 5px 12px rgba(25,66,51,.12);
+  --call-card-bg: #f4faef;
+  --call-card-text: #18382b;
+  --call-network-bg: #0b1712;
+  --call-text-shadow: -.016em 0 .008em rgba(38,75,57,.12), .024em .006em .008em rgba(89,121,92,.15);
+  --call-scan-opacity: .04;
+  --call-grain-opacity: .035;
+  --call-vignette-opacity: .045;
 }
 
+/* Deployed MagiReader green CRT palette. */
 :root[data-call-theme="dark"] {
   color-scheme: dark;
-  --call-bg: #0d1512;
-  --call-bg-pattern:
-    linear-gradient(rgba(178, 239, 110, .032) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(178, 239, 110, .032) 1px, transparent 1px);
-  --call-surface: #131f1a;
-  --call-surface-soft: #192820;
-  --call-surface-raised: #203228;
-  --call-text: #f0f7f2;
-  --call-muted: #aec0b4;
-  --call-border: #506a5b;
-  --call-border-strong: #789583;
-  --call-accent: #b6ef72;
-  --call-accent-strong: #d5ff9d;
-  --call-accent-ink: #14200f;
-  --call-focus: #c7ff86;
-  --call-danger: #d58aa4;
-  --call-shadow: 0 7px 20px rgba(0, 0, 0, .34);
-  --call-dock-bg: rgba(19, 31, 26, .985);
-  --call-network-bg: #070d0a;
-  --call-card-bg: #18251e;
-  --call-card-text: #f4faf5;
-  --call-grid-line: rgba(182, 239, 114, .034);
+  --call-bg: #000;
+  --call-field:
+    radial-gradient(ellipse 60vw 62vh at 51vw 46vh, #293922 0%, #1c2a17 40%, #10190c 72%, #030702 100%);
+  --call-surface: rgba(8,15,7,.34);
+  --call-surface-soft: rgba(13,24,10,.5);
+  --call-surface-raised: rgba(7,14,6,.72);
+  --call-text: #a7ff54;
+  --call-muted: #86b968;
+  --call-border: rgba(135,157,101,.62);
+  --call-border-strong: #a7d47b;
+  --call-accent: #a7ff54;
+  --call-accent-strong: #d3ff9f;
+  --call-accent-ink: #091006;
+  --call-focus: #d4ff9c;
+  --call-danger: #c97f96;
+  --call-shadow: 0 0 0 1px rgba(135,157,101,.24), inset 0 1px rgba(209,255,164,.06);
+  --call-panel-shadow: inset 0 1px rgba(209,255,164,.07), inset 0 -1px rgba(0,0,0,.5);
+  --call-card-bg: rgba(9,16,6,.84);
+  --call-card-text: #c2ff83;
+  --call-network-bg: #020501;
+  --call-text-shadow: -.55px 0 .14px rgba(255,232,82,.58), .85px 0 .16px rgba(52,249,22,.62), 0 0 3px rgba(167,255,84,.33);
+  --call-inverse-shadow: .85px 0 0 rgba(255,255,247,.75);
+  --call-scan-opacity: .30;
+  --call-grain-opacity: .18;
+  --call-vignette-opacity: .72;
 }
 
+/* Deployed MagiReader cold microfilm / phosphor palette. */
 :root[data-call-theme="frost"] {
   color-scheme: dark;
-  --call-bg: #08151b;
-  --call-bg-pattern:
-    linear-gradient(rgba(127, 215, 239, .038) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(127, 215, 239, .038) 1px, transparent 1px);
-  --call-surface: #0d2028;
-  --call-surface-soft: #14303a;
-  --call-surface-raised: #183b47;
-  --call-text: #eefaff;
-  --call-muted: #adcad5;
-  --call-border: #3e6b7b;
-  --call-border-strong: #6595a7;
-  --call-accent: #8dd8ee;
-  --call-accent-strong: #c5f4ff;
-  --call-accent-ink: #08202a;
-  --call-focus: #b9efff;
-  --call-danger: #e09ab1;
-  --call-shadow: 0 7px 20px rgba(0, 0, 0, .32);
-  --call-dock-bg: rgba(13, 32, 40, .985);
-  --call-network-bg: #061116;
-  --call-card-bg: #102832;
-  --call-card-text: #f1fbff;
-  --call-grid-line: rgba(141, 216, 238, .038);
+  --call-bg: #00070c;
+  --call-field:
+    radial-gradient(ellipse 28vw 23vh at 76vw 35vh, rgba(12,107,109,.42), transparent 78%),
+    radial-gradient(ellipse 23vw 38vh at 50vw 72vh, rgba(0,61,68,.35), transparent 76%),
+    radial-gradient(ellipse 24vw 30vh at 40vw 24vh, rgba(0,5,14,.64), transparent 84%),
+    linear-gradient(106deg, #010910 0%, #01101a 19%, #012029 45%, #012e34 74%, #001018 100%);
+  --call-surface: rgba(1,18,24,.28);
+  --call-surface-soft: rgba(7,31,37,.4);
+  --call-surface-raised: rgba(4,25,32,.64);
+  --call-text: #c3d8cd;
+  --call-muted: #91b1aa;
+  --call-border: rgba(105,140,130,.58);
+  --call-border-strong: #a0c9b9;
+  --call-accent: #9fd7c5;
+  --call-accent-strong: #d7fff3;
+  --call-accent-ink: #08231f;
+  --call-focus: #d5fff3;
+  --call-danger: #d08aa4;
+  --call-shadow: 0 0 0 1px rgba(105,140,130,.22), inset 0 1px rgba(178,215,198,.07);
+  --call-panel-shadow: inset 0 1px rgba(178,215,198,.08), inset 0 -1px rgba(0,0,0,.42);
+  --call-card-bg: rgba(1,18,24,.68);
+  --call-card-text: #d9fff4;
+  --call-network-bg: #01070a;
+  --call-text-shadow: .4px 0 rgba(128,221,200,.32), 0 0 3px rgba(197,228,208,.22);
+  --call-inverse-shadow: .65px 0 0 rgba(240,255,250,.76);
+  --call-scan-opacity: .17;
+  --call-grain-opacity: .14;
+  --call-vignette-opacity: .55;
 }
 
-:root,
-:root body {
+html,
+body {
   min-height: 100%;
-  background-color: var(--call-bg) !important;
+}
+
+:root[data-call-theme],
+:root[data-call-theme] body {
+  background: var(--call-bg) !important;
   color: var(--call-text) !important;
 }
 
-body {
-  background-image: var(--call-bg-pattern) !important;
-  background-size: 24px 24px !important;
-  background-attachment: scroll !important;
+:root[data-call-theme] body {
+  background: var(--call-field) !important;
+  background-attachment: fixed !important;
+  background-size: auto !important;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
-:root[data-call-theme] :where(#wrapper, main, section, article, aside, fieldset, details,
-  .suite-shell, .suite-panel, .suite-card, .suite-results,
-  .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10,
-  #callResultSection, #at_result) {
-  color: var(--call-text);
+/* Reader-style optical layers. No animation: the distortion is a static material,
+ * not a continuously repainting effect.
+ */
+.call-reader-screen-v2 {
+  position: fixed;
+  inset: 0;
+  z-index: 2050;
+  display: block;
+  overflow: hidden;
+  border-radius: 18px / 13px;
+  pointer-events: none;
+  user-select: none;
+  contain: strict;
+}
+
+.call-reader-scan-v2,
+.call-reader-grain-v2,
+.call-reader-vignette-v2 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.call-reader-scan-v2 {
+  background: repeating-linear-gradient(0deg,
+    rgba(5,0,2,.50) 0 .62px,
+    transparent .62px 2px);
+  opacity: var(--call-scan-opacity);
+  mix-blend-mode: multiply;
+}
+
+.call-reader-grain-v2 {
+  background-image:
+    radial-gradient(circle at 13% 17%, rgba(255,255,255,.35) 0 .45px, transparent .65px),
+    radial-gradient(circle at 71% 43%, rgba(255,255,255,.24) 0 .5px, transparent .72px),
+    radial-gradient(circle at 31% 79%, rgba(0,0,0,.5) 0 .55px, transparent .82px),
+    radial-gradient(circle at 89% 67%, rgba(255,255,255,.2) 0 .38px, transparent .62px);
+  background-size: 11px 13px, 17px 19px, 23px 29px, 31px 37px;
+  background-position: 2px 5px, 9px 1px, 5px 13px, 17px 11px;
+  opacity: var(--call-grain-opacity);
+  mix-blend-mode: soft-light;
+}
+
+.call-reader-vignette-v2 {
+  background: radial-gradient(ellipse at 50% 47%,
+    transparent 36%,
+    rgba(0,0,0,.02) 61%,
+    rgba(0,0,0,.13) 84%,
+    rgba(0,0,0,.43) 100%);
+  opacity: var(--call-vignette-opacity);
+  box-shadow: inset 0 0 3px rgba(218,233,213,.18), inset 0 0 18px rgba(0,0,0,.5);
+}
+
+:root[data-call-theme="light"] .call-reader-screen-v2,
+:root[data-call-theme="paper"] .call-reader-screen-v2,
+:root[data-call-theme="green"] .call-reader-screen-v2 {
+  opacity: .34;
+}
+
+/* Remove legacy pink/white surfaces and let all tool pages inherit the same
+ * instrument material. This specifically fixes the unreadable story-type cards.
+ */
+:root[data-call-theme] :where(
+  #wrapper, main, section, article, aside, details, fieldset,
+  .suite-shell, .suite-panel, .suite-results, .suite-result-group,
+  .call-panel-v8, .call-panel-body-v8, .call-result-details-v8,
+  .call-table-details-v10, #callResultSection, #at_result
+) {
+  color: var(--call-text) !important;
   border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme] :where(.suite-shell, .suite-panel, .suite-card, .suite-results,
+:root[data-call-theme] :where(
+  .suite-panel, .suite-results, .suite-result-group,
   .call-panel-v8, .suite-panel-details-v8, .character-grid-details-v8,
   .call-panel-body-v8, .call-result-details-v8, .call-table-details-v10,
-  #callResultSection, #at_result, fieldset, details) {
-  background-color: var(--call-surface) !important;
+  #callResultSection, #at_result, fieldset, details
+) {
+  background: var(--call-surface) !important;
+  box-shadow: var(--call-panel-shadow) !important;
 }
 
-:root[data-call-theme] :where(.suite-panel-details-v8 > summary,
-  .call-panel-v8 > summary, .character-grid-details-v8 > summary,
-  details > summary) {
+:root[data-call-theme] :where(
+  .suite-panel-details-v8 > summary,
+  .call-panel-v8 > summary,
+  .character-grid-details-v8 > summary,
+  details > summary,
+  .suite-result-group > h3
+) {
   color: var(--call-text) !important;
   background: var(--call-surface-soft) !important;
   border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme] :where(.suite-panel-details-v8 > summary::after,
-  .call-panel-v8 > summary::after, .character-grid-details-v8 > summary::after) {
+:root[data-call-theme] :where(
+  .suite-panel-details-v8 > summary::after,
+  .call-panel-v8 > summary::after,
+  .character-grid-details-v8 > summary::after
+) {
   color: var(--call-text) !important;
   background: var(--call-surface-raised) !important;
   border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme] :where(h1, h2, h3, h4, h5, h6, p, li, dt, dd, legend, summary,
-  .suite-status, .suite-notice, .height-export-status-v10, .character-grid-count-v8) {
-  color: var(--call-text);
+:root[data-call-theme] :where(
+  h1,h2,h3,h4,h5,h6,p,li,dt,dd,label,legend,summary,strong,b,span,small,
+  .suite-status,.suite-notice,.height-export-status-v10,.character-grid-count-v8
+) {
+  color: inherit;
 }
 
-:root[data-call-theme] :where(.suite-muted, .muted, small, .hint, .help, .description) {
+:root[data-call-theme] :where(.suite-muted,.muted,.hint,.help,.description,.suite-field small) {
   color: var(--call-muted) !important;
 }
 
-:root[data-call-theme] :where(a, .suite-link, .story-result-title, .returnlink a) {
-  color: var(--call-accent-strong);
+:root[data-call-theme] :where(a,.suite-link,.story-result-title,.returnlink a,.suite-result-table a) {
+  color: var(--call-accent-strong) !important;
 }
 
-:root[data-call-theme] :where(a:hover, a:focus-visible) {
-  color: var(--call-focus);
+:root[data-call-theme] :where(a:hover,a:focus-visible) {
+  color: var(--call-focus) !important;
 }
 
-:root[data-call-theme] :where(input:not([type="checkbox"]):not([type="radio"]),
-  select, textarea, button, .suite-button, .call-help-toggle-v10) {
-  color: var(--call-text);
-  background-color: var(--call-surface-raised);
-  border-color: var(--call-border);
+/* Form plates: opaque white/pink controls were the main source of the bad
+ * screenshots. They now behave like Reader instrument keys.
+ */
+:root[data-call-theme] .suite-checks label {
+  color: var(--call-text) !important;
+  background: var(--call-surface-raised) !important;
+  border: 1px solid var(--call-border) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.18) !important;
 }
 
-:root[data-call-theme] :where(input::placeholder, textarea::placeholder) {
+:root[data-call-theme] .suite-checks label:has(input:checked) {
+  color: var(--call-text) !important;
+  background: var(--call-surface-soft) !important;
+  border-color: var(--call-border-strong) !important;
+  box-shadow: inset 3px 0 var(--call-accent), 0 0 0 1px rgba(255,255,255,.025) !important;
+}
+
+:root[data-call-theme] :where(
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,textarea,button,.suite-button,.call-help-toggle-v10
+) {
+  color: var(--call-text) !important;
+  background: var(--call-surface-raised) !important;
+  border-color: var(--call-border) !important;
+  box-shadow: none;
+}
+
+:root[data-call-theme] :where(input::placeholder,textarea::placeholder) {
   color: var(--call-muted) !important;
-  opacity: .92;
+  opacity: 1 !important;
 }
 
-:root[data-call-theme] :where(input, select, textarea, button, a, summary):focus-visible {
+:root[data-call-theme] :where(input[type="checkbox"],input[type="radio"],input[type="range"]) {
+  accent-color: var(--call-accent) !important;
+}
+
+:root[data-call-theme] :where(input,select,textarea,button,a,summary):focus-visible {
   outline: 2px solid var(--call-focus) !important;
   outline-offset: 2px;
 }
 
-:root[data-call-theme] :where(button, input[type="button"], input[type="submit"], .suite-button) {
-  touch-action: manipulation;
-}
-
-:root[data-call-theme] :where(input[type="checkbox"], input[type="radio"], input[type="range"]) {
-  accent-color: var(--call-accent);
-}
-
-:root[data-call-theme] :where(table, th, td, tr) {
-  color: var(--call-text);
+:root[data-call-theme] :where(table,th,td,tr) {
+  color: var(--call-text) !important;
   border-color: var(--call-border) !important;
 }
 
-:root[data-call-theme] :where(th) {
-  background-color: var(--call-surface-soft) !important;
+:root[data-call-theme] :where(th,.suite-result-table th) {
+  background: var(--call-surface-soft) !important;
 }
 
 :root[data-call-theme] :where(tr:nth-child(even) td) {
-  background-color: color-mix(in srgb, var(--call-surface-soft) 72%, transparent) !important;
+  background: var(--call-surface) !important;
 }
 
-@supports not (background-color: color-mix(in srgb, white 50%, black)) {
-  :root[data-call-theme] :where(tr:nth-child(even) td) {
-    background-color: var(--call-surface-soft) !important;
-  }
+:root[data-call-theme] :where(.suite-status,.suite-notice,.suite-chip,.suite-cast span,.runes-drop,.runes-preview) {
+  color: var(--call-text) !important;
+  background: var(--call-surface-soft) !important;
+  border-color: var(--call-border) !important;
 }
 
-/* Shared top navigation / hamburger surfaces. */
+:root[data-call-theme] .suite-character-grid {
+  background: var(--call-surface) !important;
+  border-color: var(--call-border) !important;
+}
+
+/* Top mode selector = cassette deck bank. */
 :root[data-call-theme] .suite-nav,
 :root[data-call-theme] .header,
 :root[data-call-theme] .header .menu {
   color: var(--call-text) !important;
   background: var(--call-surface) !important;
   border-color: var(--call-border) !important;
+  box-shadow: var(--call-panel-shadow) !important;
 }
 
 :root[data-call-theme] .suite-nav a {
   color: var(--call-text) !important;
   background: var(--call-surface-raised) !important;
   border-color: var(--call-border) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.08) !important;
 }
 
-:root[data-call-theme] .suite-nav :is(a.active, a[aria-current="page"], a[data-active="true"]) {
+:root[data-call-theme] .suite-nav :is(a.active,a[aria-current="page"],a[data-active="true"]) {
   color: var(--call-accent-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
   background: var(--call-accent) !important;
   border-color: var(--call-accent) !important;
+  text-shadow: var(--call-inverse-shadow) !important;
 }
 
-:root[data-call-theme] :where(.menu-icon, .navicon, .navicon::before, .navicon::after) {
-  border-color: var(--call-border-strong) !important;
-}
-
-:root[data-call-theme] .header .menu a,
-:root[data-call-theme] .header .menu li {
+:root[data-call-theme] .header .menu :where(a,li) {
   color: var(--call-text) !important;
 }
 
-/* Keep the relationship canvas visually integrated without adding a composited
- * full-screen layer. vis-network still owns the canvas contents themselves.
- */
-:root[data-call-theme] :where(#mynetwork, #canvasflame) {
+:root[data-call-theme] :where(#mynetwork,#canvasflame) {
+  background: var(--call-network-bg) !important;
   border-color: var(--call-border) !important;
-  background-color: var(--call-network-bg) !important;
 }
 
-/* Legacy character cards used hard-coded pastel fills. In dark/frost those fills
- * combined with inherited light text and caused the unreadable state visible on
- * real devices. Night themes use one dark card material with category accents.
+/* Night themes: deliberately flatten modern card chrome, like the Reader CRT. */
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :where(
+  .suite-nav,.suite-nav a,.suite-panel,.suite-panel-details-v8,.character-grid-details-v8,
+  .call-panel-v8,.call-table-details-v10,.suite-result-group,.suite-checks label,
+  .suite-input,.suite-select,.suite-textarea,.suite-button,input,select,textarea,button
+) {
+  border-radius: 0 !important;
+}
+
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :where(
+  button,input,textarea,select,a,span,p,h1,h2,h3,h4,h5,h6,label,legend,summary,strong,b,small,li,td,th
+) {
+  color: var(--call-text) !important;
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: var(--call-text-shadow) !important;
+}
+
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :where(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v2[aria-pressed="true"]
+),
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :where(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v2[aria-pressed="true"]
+) :where(span,strong,b) {
+  color: var(--call-accent-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  text-shadow: var(--call-inverse-shadow) !important;
+}
+
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :where(
+  .suite-panel,.suite-panel-details-v8,.character-grid-details-v8,.call-panel-v8,
+  .call-table-details-v10,.suite-result-group,.suite-character-grid
+) {
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+}
+
+/* Dark/frost checkbox and radio plates stay dark; checked state gets a phosphor
+ * stripe instead of the unreadable white-on-white treatment.
  */
-:root[data-call-theme="dark"] :is(label.girlbox, .suite-character-card),
-:root[data-call-theme="frost"] :is(label.girlbox, .suite-character-card) {
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .suite-checks label {
+  color: var(--call-text) !important;
+  background: rgba(3,10,7,.56) !important;
+  border-color: var(--call-border) !important;
+  text-shadow: var(--call-text-shadow) !important;
+}
+
+:root[data-call-theme="frost"] .suite-checks label {
+  background: rgba(1,18,24,.44) !important;
+}
+
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .suite-checks label:has(input:checked) {
+  color: var(--call-text) !important;
+  background: var(--call-surface-soft) !important;
+  border-color: var(--call-border-strong) !important;
+  box-shadow: inset 4px 0 var(--call-accent), 0 0 6px rgba(167,255,84,.11) !important;
+}
+
+/* Night character cards preserve category identity only as a signal stripe. */
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) :is(label.girlbox,.suite-character-card) {
   color: var(--call-card-text) !important;
   background: var(--call-card-bg) !important;
   border-color: var(--call-border) !important;
-  box-shadow: inset 0 -3px 0 var(--call-card-accent, var(--call-accent)) !important;
+  box-shadow: inset 0 -3px 0 var(--call-card-accent,var(--call-accent)) !important;
 }
 
-:root[data-call-theme="dark"] :is(label.girlbox, .suite-character-card) :where(span, small, strong),
-:root[data-call-theme="frost"] :is(label.girlbox, .suite-character-card) :where(span, small, strong) {
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) :is(label.girlbox,.suite-character-card) :where(span,small,strong) {
   color: var(--call-card-text) !important;
+  -webkit-text-fill-color: currentColor !important;
 }
 
-:is(label.girlbox, .suite-character-card).umeColor { --call-card-accent: #d7c65b; }
-:is(label.girlbox, .suite-character-card).hisColor { --call-card-accent: #e08bd3; }
-:is(label.girlbox, .suite-character-card).umeOtherColor { --call-card-accent: #9c9be5; }
-:is(label.girlbox, .suite-character-card).PMHQColor { --call-card-accent: #df88ad; }
-:is(label.girlbox, .suite-character-card).PMHQotherColor { --call-card-accent: #82a9d8; }
-:is(label.girlbox, .suite-character-card).otherColor { --call-card-accent: #8fc8a6; }
-:is(label.girlbox, .suite-character-card).otherColor2 { --call-card-accent: #88b7ce; }
-:is(label.girlbox, .suite-character-card).otherotherColor { --call-card-accent: #c49b79; }
+:is(label.girlbox,.suite-character-card).umeColor { --call-card-accent:#d7c65b; }
+:is(label.girlbox,.suite-character-card).hisColor { --call-card-accent:#e08bd3; }
+:is(label.girlbox,.suite-character-card).umeOtherColor { --call-card-accent:#9c9be5; }
+:is(label.girlbox,.suite-character-card).PMHQColor { --call-card-accent:#df88ad; }
+:is(label.girlbox,.suite-character-card).PMHQotherColor { --call-card-accent:#82a9d8; }
+:is(label.girlbox,.suite-character-card).otherColor { --call-card-accent:#8fc8a6; }
+:is(label.girlbox,.suite-character-card).otherColor2 { --call-card-accent:#88b7ce; }
+:is(label.girlbox,.suite-character-card).otherotherColor { --call-card-accent:#c49b79; }
 
-/* Preserve readable text on selected/disabled legacy controls. */
-:root[data-call-theme] :where(button:disabled, input:disabled, select:disabled) {
+:root[data-call-theme] :where(button:disabled,input:disabled,select:disabled) {
   opacity: .58;
 }
 
 :root[data-call-theme] .mgreset:not(:disabled),
 :root[data-call-theme] .call-quick-rail-v10 button[data-action="cancel"] {
   color: #fff !important;
+  -webkit-text-fill-color: currentColor !important;
   background: var(--call-danger) !important;
   border-color: var(--call-danger) !important;
+  text-shadow: .5px 0 rgba(255,255,255,.45) !important;
 }
 
-/* Reader-style five-theme floating switcher. */
+/* Reader utility-widget language for the Call quick actions + five themes. */
 .call-theme-dock-v2 {
   position: fixed;
-  right: max(10px, env(safe-area-inset-right));
-  bottom: max(10px, env(safe-area-inset-bottom));
+  right: max(10px,env(safe-area-inset-right));
+  bottom: max(10px,env(safe-area-inset-bottom));
   z-index: 2200;
   display: flex;
   flex-direction: row;
   gap: 3px;
   padding: 4px;
   border: 1px solid var(--call-border);
-  border-radius: 14px;
-  background: var(--call-dock-bg);
+  border-radius: 4px;
+  background: var(--call-surface-raised);
   box-shadow: var(--call-shadow);
   contain: layout paint;
 }
@@ -343,11 +527,12 @@ body {
   margin: 0;
   padding: 0;
   border: 1px solid transparent !important;
-  border-radius: 9px;
+  border-radius: 2px !important;
   color: var(--call-muted) !important;
+  -webkit-text-fill-color: currentColor !important;
   background: transparent !important;
   box-shadow: none !important;
-  font: 800 1.05rem/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font: 800 1.05rem/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   cursor: pointer;
 }
 
@@ -360,8 +545,10 @@ body {
 
 .call-theme-option-v2[aria-pressed="true"] {
   color: var(--call-accent-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
   background: var(--call-accent) !important;
   border-color: var(--call-accent) !important;
+  text-shadow: var(--call-inverse-shadow) !important;
 }
 
 .call-theme-label-v2 {
@@ -371,30 +558,26 @@ body {
   padding: 0 !important;
   margin: -1px !important;
   overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
+  clip: rect(0,0,0,0) !important;
   white-space: nowrap !important;
   border: 0 !important;
 }
 
-/* Re-skin the existing Call quick rail into the same modeless floating-control
- * language. Desktop/landscape is horizontal; portrait phones use a vertical
- * control column next to the theme column.
- */
 body:not(.suite-page) .call-quick-rail-v10 {
   position: fixed !important;
   top: auto !important;
-  right: max(10px, env(safe-area-inset-right)) !important;
-  bottom: calc(max(10px, env(safe-area-inset-bottom)) + 46px) !important;
+  right: max(10px,env(safe-area-inset-right)) !important;
+  bottom: calc(max(10px,env(safe-area-inset-bottom)) + 47px) !important;
   z-index: 2190 !important;
   display: flex !important;
   flex-direction: row !important;
   gap: 3px !important;
   padding: 4px !important;
   transform: none !important;
-  border: 1px solid var(--call-border);
-  border-radius: 14px;
-  background: var(--call-dock-bg);
-  box-shadow: var(--call-shadow);
+  border: 1px solid var(--call-border) !important;
+  border-radius: 4px !important;
+  background: var(--call-surface-raised) !important;
+  box-shadow: var(--call-shadow) !important;
   pointer-events: auto !important;
   contain: layout paint;
 }
@@ -408,11 +591,12 @@ body:not(.suite-page) .call-quick-rail-v10 button {
   margin: 0 !important;
   padding: .28rem .22rem !important;
   border: 1px solid transparent !important;
-  border-radius: 9px !important;
+  border-radius: 2px !important;
   color: var(--call-text) !important;
+  -webkit-text-fill-color: currentColor !important;
   background: transparent !important;
   box-shadow: none !important;
-  font: 800 .73rem/1.05 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font: 800 .73rem/1.05 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
   letter-spacing: 0 !important;
   opacity: 1 !important;
 }
@@ -420,16 +604,13 @@ body:not(.suite-page) .call-quick-rail-v10 button {
 body:not(.suite-page) .call-quick-rail-v10 button:hover,
 body:not(.suite-page) .call-quick-rail-v10 button:focus-visible {
   color: var(--call-accent-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
   background: var(--call-accent) !important;
   border-color: var(--call-accent) !important;
+  text-shadow: var(--call-inverse-shadow) !important;
 }
 
-body:not(.suite-page) .call-quick-rail-v10 button[data-action="cancel"] {
-  color: #fff !important;
-}
-
-/* Larger touch targets without changing the desktop visual rhythm. */
-@media (hover: none) and (pointer: coarse) {
+@media (hover:none) and (pointer:coarse) {
   .call-theme-option-v2 {
     width: 42px;
     height: 40px;
@@ -444,22 +625,22 @@ body:not(.suite-page) .call-quick-rail-v10 button[data-action="cancel"] {
   }
 
   body:not(.suite-page) .call-quick-rail-v10 {
-    bottom: calc(max(10px, env(safe-area-inset-bottom)) + 52px) !important;
+    bottom: calc(max(10px,env(safe-area-inset-bottom)) + 53px) !important;
   }
 }
 
-@media (max-width: 720px) and (orientation: portrait) {
+@media (max-width:720px) and (orientation:portrait) {
   .call-theme-dock-v2 {
-    right: max(7px, env(safe-area-inset-right));
-    bottom: max(7px, env(safe-area-inset-bottom));
+    right: max(7px,env(safe-area-inset-right));
+    bottom: max(7px,env(safe-area-inset-bottom));
     flex-direction: column;
     gap: 2px;
     padding: 3px;
   }
 
   body:not(.suite-page) .call-quick-rail-v10 {
-    right: calc(max(7px, env(safe-area-inset-right)) + 50px) !important;
-    bottom: max(7px, env(safe-area-inset-bottom)) !important;
+    right: calc(max(7px,env(safe-area-inset-right)) + 50px) !important;
+    bottom: max(7px,env(safe-area-inset-bottom)) !important;
     flex-direction: column !important;
     gap: 2px !important;
     padding: 3px !important;
@@ -474,56 +655,47 @@ body:not(.suite-page) .call-quick-rail-v10 button[data-action="cancel"] {
   }
 }
 
-/* iOS Safari: keep the controls on a cheap opaque compositing path. No blur,
- * no blend mode, no fixed texture and no animated shadow are introduced.
+/* Native iOS/WebKit performance path:
+ * - no full-viewport blend layers
+ * - no fixed background attachment
+ * - no blur/filter animation
+ * Visual identity remains through local scanlines, phosphor ink, registration,
+ * square instrument panels and signal stripes.
  */
-@supports (-webkit-touch-callout: none) {
-  body {
-    text-rendering: auto;
-  }
-
-  .call-theme-dock-v2,
-  body:not(.suite-page) .call-quick-rail-v10 {
-    background: var(--call-surface) !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, .2) !important;
-    -webkit-transform: translateZ(0);
-  }
-
-  :root[data-call-theme="dark"] body,
-  :root[data-call-theme="frost"] body {
-    background-image: none !important;
-  }
+:root[data-call-ios="true"] body {
+  background-attachment: scroll !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    scroll-behavior: auto !important;
-  }
+:root[data-call-ios="true"] .call-reader-screen-v2 {
+  display: none !important;
+}
 
+:root[data-call-ios="true"]:is([data-call-theme="dark"],[data-call-theme="frost"]) body {
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0 1px, transparent 1px 3px),
+    var(--call-field) !important;
+}
+
+:root[data-call-ios="true"]:is([data-call-theme="dark"],[data-call-theme="frost"]) :where(
+  .suite-panel,.suite-panel-details-v8,.character-grid-details-v8,.call-panel-v8,
+  .call-table-details-v10,.suite-result-group,.suite-character-grid,.suite-checks label
+) {
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px) !important;
+}
+
+:root[data-call-ios="true"][data-call-theme="dark"] {
+  --call-text-shadow: .7px 0 0 rgba(81,218,57,.46);
+}
+
+:root[data-call-ios="true"][data-call-theme="frost"] {
+  --call-text-shadow: .55px 0 0 rgba(128,221,200,.38);
+}
+
+@media (prefers-reduced-motion:reduce) {
   * {
     scroll-behavior: auto !important;
-  }
-}
-
-/* If the script is delayed or blocked, still choose a readable first paint. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-call-theme]) {
-    color-scheme: dark;
-    --call-bg: #0d1512;
-    --call-surface: #131f1a;
-    --call-surface-soft: #192820;
-    --call-surface-raised: #203228;
-    --call-text: #f0f7f2;
-    --call-muted: #aec0b4;
-    --call-border: #506a5b;
-    --call-accent: #b6ef72;
-    --call-accent-strong: #d5ff9d;
-    --call-accent-ink: #14200f;
-    --call-focus: #c7ff86;
-    --call-danger: #d58aa4;
-    --call-dock-bg: #131f1a;
-    --call-network-bg: #070d0a;
-    --call-card-bg: #18251e;
-    --call-card-text: #f4faf5;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
