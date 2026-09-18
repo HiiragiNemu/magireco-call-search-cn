@@ -871,3 +871,186 @@ body.call-screen-host-v6{
 @media(prefers-reduced-motion:reduce){
   .call-fx-night-grain-v6,.call-reader-screen-v6{animation:none!important}
 }
+
+
+/* ===== v6.1 consistency / optical emphasis pass ===== */
+:root{
+  --call-sized-lead:rgba(255,252,225,.42);
+  --call-sized-trail:rgba(53,92,154,.36);
+  --call-ambient-glow:rgba(86,99,102,.12);
+}
+:root[data-call-theme="dark"][data-call-phosphor="green"]{
+  --call-sized-lead:rgba(255,252,225,.54);
+  --call-sized-trail:rgba(153,235,213,.55);
+  --call-ambient-glow:rgba(166,247,82,.30);
+}
+:root[data-call-theme="dark"][data-call-phosphor="amber"]{
+  --call-sized-lead:rgba(255,252,225,.58);
+  --call-sized-trail:rgba(246,94,40,.62);
+  --call-ambient-glow:rgba(255,166,55,.32);
+}
+:root[data-call-theme="frost"]{
+  --call-sized-lead:rgba(214,255,245,.42);
+  --call-sized-trail:rgba(83,211,205,.46);
+  --call-ambient-glow:rgba(120,216,201,.30);
+}
+
+/* Reader-style sized ink echoes remain behind the scene-wide registration pass. */
+:root[data-call-fx-registration="true"] .call-display-root-v6 :is(
+  button,input,textarea,select,a,span,p,h1,h2,h3,h4,h5,h6,label,legend,summary,strong,b,small,li,td,th
+){
+  text-shadow:
+    clamp(-1px,calc(1.7px - .17em),0px) 0 .008em var(--call-sized-lead),
+    clamp(0px,calc(.2em - 2px),1.4px) 0 .008em var(--call-sized-trail),
+    0 0 .13em var(--call-ambient-glow)!important;
+}
+:root[data-call-theme="frost"][data-call-fx-registration="true"] .call-display-root-v6 :is(
+  button,input,textarea,select,a,span,p,h1,h2,h3,h4,h5,h6,label,legend,summary,strong,b,small,li,td,th
+){
+  text-shadow:var(--call-ink-shadow)!important;
+}
+
+/* Lit plates should visibly emit light, not only change fill colour. */
+:root[data-call-fx-bloom="true"] .call-display-root-v6 :is(
+  .suite-nav a[aria-current="page"],
+  .suite-nav a.active,
+  .suite-checks label:has(input:checked),
+  .suite-attribute-options-v7 label:has(input:checked),
+  .call-theme-option-v6[aria-pressed="true"],
+  .call-fx-segment-v6 button[aria-pressed="true"],
+  .menu .thismenu,
+  .runes-mask-toolbar-v9 [data-mask-mode].is-active
+){
+  box-shadow:var(--call-selected-shadow)!important;
+  filter:
+    drop-shadow(0 0 3px color-mix(in srgb,var(--call-accent) 70%,transparent))
+    drop-shadow(0 0 8px color-mix(in srgb,var(--call-accent) 34%,transparent))!important;
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 :is(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v6[aria-pressed="true"],
+  .call-fx-segment-v6 button[aria-pressed="true"],
+  .menu .thismenu
+){
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  text-shadow:.85px 0 rgba(255,255,255,.77)!important;
+}
+
+/* Kill native grey controls in night/frost. Unselected controls are recessed dark keys. */
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 :is(
+  button:not([aria-pressed="true"]),
+  input[type="button"],input[type="submit"],input[type="reset"],
+  input[type="file"],select,textarea
+){
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-surface-raised)!important;
+  background-color:var(--call-surface-raised)!important;
+  border:1px solid var(--call-border)!important;
+  box-shadow:none!important;
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 option{
+  color:var(--call-text)!important;
+  background:var(--call-surface-raised)!important;
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 input[type="file"]::file-selector-button{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  color:var(--call-text)!important;
+  background:var(--call-surface-soft)!important;
+  border:1px solid var(--call-border)!important;
+  box-shadow:none!important;
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 input[type="range"]{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  height:22px;
+  background:transparent!important;
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 input[type="range"]::-webkit-slider-runnable-track{
+  height:4px;background:var(--call-surface-soft);border:1px solid var(--call-border);
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:18px;margin-top:-8px;border:1px solid var(--call-border-strong);
+  border-radius:0;background:var(--call-accent);box-shadow:0 0 6px color-mix(in srgb,var(--call-accent) 46%,transparent);
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 input[type="range"]::-moz-range-track{
+  height:4px;background:var(--call-surface-soft);border:1px solid var(--call-border);
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) .call-display-root-v6 input[type="range"]::-moz-range-thumb{
+  width:14px;height:18px;border:1px solid var(--call-border-strong);border-radius:0;background:var(--call-accent);
+}
+
+/* Summary state chips are terminal keys, never browser-grey pills. */
+:root[data-call-theme] body :is(
+  .suite-panel-details-v8>summary::after,
+  .call-panel-v8>summary::after,
+  .character-grid-details-v8>summary::after,
+  .call-details-state-v10::before,
+  .runes-reference-details-v9>summary::after
+){
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  border-radius:0!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-surface-raised)!important;
+  border:1px solid var(--call-border)!important;
+  box-shadow:none!important;
+}
+
+/* Layout contract: theme controller is ALWAYS a horizontal independent strip.
+   Jump/navigation controller owns the far-right edge in both desktop and phone. */
+.call-theme-widget-v6:not(.is-positioned){
+  left:50%!important;
+  right:auto!important;
+  bottom:18px!important;
+  top:auto!important;
+  transform:translateX(-50%)!important;
+  flex-direction:row!important;
+}
+.call-theme-options-v6{flex-direction:row!important}
+.call-jump-widget-v6:not(.is-positioned){
+  right:22px!important;
+  left:auto!important;
+  top:50%!important;
+  bottom:auto!important;
+  transform:translateY(-50%)!important;
+}
+.call-jump-actions-v6,
+.call-jump-actions-v6 :is(.call-quick-rail-v10,.suite-quick-rail-v7){
+  flex-direction:column!important;
+}
+
+/* Keep controls compact enough to avoid colliding with the right jump rail. */
+@media(max-width:720px){
+  .call-theme-widget-v6:not(.is-positioned){
+    left:50%!important;
+    right:auto!important;
+    bottom:13px!important;
+    transform:translateX(-50%)!important;
+    flex-direction:row!important;
+    max-width:calc(100% - 78px)!important;
+  }
+  .call-theme-options-v6{flex-direction:row!important}
+  .call-theme-option-v6,.call-floating-utility-v6{
+    width:38px!important;min-width:38px!important;min-height:38px!important;
+  }
+  .call-floating-grip-v6{
+    width:30px!important;min-width:30px!important;min-height:38px!important;
+  }
+  .call-jump-widget-v6:not(.is-positioned){
+    right:12px!important;left:auto!important;top:50%!important;bottom:auto!important;
+    transform:translateY(-50%)!important;
+  }
+  .call-optical-scroll-v6{right:3px!important}
+}
+
+/* Old page-navigation anchors and obsolete theme widgets must never duplicate the new tools. */
+.call-display-scroll-v6 :is(#pagetop,#pagemdl,#pagebtm),
+.call-display-root-v6 :is(.call-theme-dock-v2,.call-theme-toggle-v1,.call-floating-controller-v3,.call-theme-widget-v4,.call-theme-widget-v5,.call-jump-widget-v4,.call-jump-widget-v5){
+  display:none!important;
+}
