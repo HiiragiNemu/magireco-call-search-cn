@@ -1076,3 +1076,51 @@ body.call-screen-host-v6{
     drop-shadow(.8px 0 .25px var(--call-sized-trail))
     drop-shadow(0 0 4px color-mix(in srgb,var(--call-accent) 58%,transparent));
 }
+
+
+/* Reader's dedicated film-focus pass: visible low-fi softness without destroying glyph cores. */
+:root[data-call-fx-blur="true"]:not([data-call-ios="true"]) .call-fx-film-focus-v6{
+  display:block;
+  backdrop-filter:blur(.32px) saturate(.96) contrast(.99);
+  -webkit-backdrop-filter:blur(.32px) saturate(.96) contrast(.99);
+}
+:root[data-call-theme="dark"][data-call-fx-blur="true"]:not([data-call-ios="true"]) .call-fx-film-focus-v6{
+  backdrop-filter:blur(.38px) saturate(.97) contrast(1.01);
+  -webkit-backdrop-filter:blur(.38px) saturate(.97) contrast(1.01);
+}
+
+/* Theme every native action key in all five themes; no browser-grey fallback buttons. */
+:root[data-call-theme] .call-display-root-v6 button:not([aria-pressed="true"]):not(.primary):not(.is-active),
+:root[data-call-theme] .call-display-root-v6 input[type="button"],
+:root[data-call-theme] .call-display-root-v6 input[type="submit"],
+:root[data-call-theme] .call-display-root-v6 input[type="reset"]{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-surface-raised)!important;
+  background-color:var(--call-surface-raised)!important;
+  border:1px solid var(--call-border)!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+:root[data-call-theme] .call-display-root-v6 :is(
+  button:not([aria-pressed="true"]):not(.primary):not(.is-active),
+  input[type="button"],input[type="submit"],input[type="reset"]
+):hover,
+:root[data-call-theme] .call-display-root-v6 :is(
+  button:not([aria-pressed="true"]):not(.primary):not(.is-active),
+  input[type="button"],input[type="submit"],input[type="reset"]
+):focus-visible{
+  color:var(--call-accent-strong)!important;
+  border-color:var(--call-border-strong)!important;
+  background:var(--call-surface-soft)!important;
+}
+:root[data-call-theme] .call-display-root-v6 .suite-button.primary,
+:root[data-call-theme] .call-display-root-v6 .runes-mask-toolbar-v9 [data-mask-mode].is-active{
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important;
+  border-color:var(--call-accent)!important;
+  box-shadow:var(--call-selected-shadow)!important;
+}
