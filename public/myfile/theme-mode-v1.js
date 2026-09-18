@@ -12,11 +12,11 @@
   ]);
   const VALID = new Set(THEMES.map((item) => item.key));
   const THEME_COLORS = Object.freeze({
-    light: '#f4f5f6',
-    paper: '#eadfbd',
-    green: '#dce9d3',
-    dark: '#0d1512',
-    frost: '#08151b'
+    light: '#d8d4c6',
+    paper: '#f3eacb',
+    green: '#d6e9c4',
+    dark: '#030702',
+    frost: '#001018'
   });
 
   function readStorage(key) {
@@ -43,6 +43,12 @@
     } catch (_) {
       return 'paper';
     }
+  }
+
+  function isIOSLike() {
+    const ua = navigator.userAgent || '';
+    if (/iPad|iPhone|iPod/.test(ua)) return true;
+    return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
   }
 
   function setBrowserChrome(theme) {
@@ -85,7 +91,28 @@
     return next;
   }
 
+  // Apply before body construction to prevent a bright flash on mobile Safari.
   const initialTheme = apply(storedTheme() || systemTheme(), false);
+
+  function installOpticalLayers() {
+    if (!document.body || document.querySelector('.call-reader-screen-v2')) return;
+
+    const surface = document.createElement('div');
+    surface.className = 'call-reader-screen-v2';
+    surface.setAttribute('aria-hidden', 'true');
+
+    for (const className of [
+      'call-reader-scan-v2',
+      'call-reader-grain-v2',
+      'call-reader-vignette-v2'
+    ]) {
+      const layer = document.createElement('span');
+      layer.className = className;
+      surface.appendChild(layer);
+    }
+
+    document.body.appendChild(surface);
+  }
 
   function createThemeButton(option) {
     const button = document.createElement('button');
@@ -133,18 +160,26 @@
         buttons[nextIndex].focus();
       });
     }
+
     syncDock(document.documentElement.dataset.callTheme || initialTheme);
   }
 
   function install() {
+    document.documentElement.dataset.callIos = String(isIOSLike());
+    document.documentElement.dataset.callVisualLanguage = 'reader-lofi-v2';
+    installOpticalLayers();
     installDock();
+
     window.addEventListener('storage', (event) => {
       if (event.key === STORAGE_KEY && VALID.has(event.newValue)) apply(event.newValue, false);
     });
+
     document.documentElement.dataset.callThemeReady = 'v2';
     window.__MAGIRECO_CALL_THEME__ = Object.freeze({
       version: 2,
+      visualLanguage: 'reader-lofi-v2',
       themes: THEMES.map((item) => item.key),
+      iosOptimized: isIOSLike(),
       get theme() { return document.documentElement.dataset.callTheme || initialTheme; },
       setTheme(theme) { return apply(theme, true); }
     });
