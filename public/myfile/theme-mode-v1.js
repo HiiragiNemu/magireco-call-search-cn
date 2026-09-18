@@ -430,6 +430,7 @@
     surface.className='call-reader-screen-v6';
     surface.setAttribute('aria-hidden','true');
     for(const cls of [
+      'call-fx-film-focus-v6',
       'call-fx-night-phosphor-v6','call-fx-night-grain-v6',
       'call-fx-film-grain-v6','call-fx-film-smudges-v6','call-fx-film-glass-v6','call-fx-film-wear-v6',
       'call-fx-scanlines-v6','call-fx-vignette-v6','call-fx-bezel-v6'
