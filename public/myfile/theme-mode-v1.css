@@ -1054,3 +1054,25 @@ body.call-screen-host-v6{
 .call-display-root-v6 :is(.call-theme-dock-v2,.call-theme-toggle-v1,.call-floating-controller-v3,.call-theme-widget-v4,.call-theme-widget-v5,.call-jump-widget-v4,.call-jump-widget-v5){
   display:none!important;
 }
+
+
+/* Reader-style vector glyphs: avoid ambiguous table-looking Unicode theme icons. */
+.call-theme-option-v6 svg,
+.call-floating-utility-v6 svg{
+  width:19px;height:19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:square;
+  stroke-linejoin:miter;
+  overflow:visible;
+  pointer-events:none;
+}
+.call-theme-option-v6[aria-pressed="true"] svg,
+.call-floating-utility-v6:hover svg,
+.call-floating-utility-v6:focus-visible svg{
+  filter:
+    drop-shadow(-.7px 0 .2px var(--call-sized-lead))
+    drop-shadow(.8px 0 .25px var(--call-sized-trail))
+    drop-shadow(0 0 4px color-mix(in srgb,var(--call-accent) 58%,transparent));
+}
