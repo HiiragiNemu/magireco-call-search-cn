@@ -13,6 +13,11 @@
   function scrollToTarget(target) {
     const element = typeof target === 'string' ? document.querySelector(target) : target;
     if (!element) return;
+    const optical = global.__MAGIRECO_SCROLL__;
+    if (optical?.element) {
+      optical.element(element, 'smooth');
+      return;
+    }
     const nav = document.querySelector('.suite-nav');
     const offset = (nav?.getBoundingClientRect().height || 0) + 8;
     const top = Math.max(0, global.scrollY + element.getBoundingClientRect().top - offset);
@@ -121,7 +126,7 @@
     };
 
     const definitions = [
-      ['顶部', '跳到页面顶部', () => global.scrollTo({ top: 0, behavior: 'smooth' })],
+      ['顶部', '跳到页面顶部', () => global.__MAGIRECO_SCROLL__?.to?.({ top: 0, behavior: 'smooth' }) || global.scrollTo({ top: 0, behavior: 'smooth' })],
       ['选人', '选择角色', () => openAndScroll('.call-selection-panel-v8', '.call-selection-panel-v8')],
       ['筛选', '搜索条件', () => openAndScroll('.call-search-panel-v8', '.call-search-panel-v8')],
       ['属性', '属性筛选', () => openAndScroll('.call-attribute-panel-v8', '.call-attribute-panel-v8')],
@@ -146,7 +151,7 @@
         const selected = Boolean(document.querySelector('input.MagicalChk[name="chara"]:checked'));
         if (typeof global.displayHeightChart === 'function') global.displayHeightChart(selected ? 'selected' : 'global');
       }],
-      ['底部', '跳到页面底部', () => global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })]
+      ['底部', '跳到页面底部', () => global.__MAGIRECO_SCROLL__?.to?.({ top: global.__MAGIRECO_SCROLL__.height, behavior: 'smooth' }) || global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })]
     ];
 
     const rail = document.createElement('aside');
