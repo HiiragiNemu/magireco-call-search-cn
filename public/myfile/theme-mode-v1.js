@@ -11,11 +11,11 @@
   const VIEWPORT_MARGIN = 10;
 
   const THEMES = Object.freeze([
-    { key:'light', label:'明亮', glyph:'☀' },
-    { key:'paper', label:'纸张', glyph:'▤' },
-    { key:'green', label:'护眼', glyph:'❧' },
-    { key:'dark', label:'夜间', glyph:'☾' },
-    { key:'frost', label:'冷辉', glyph:'▦' }
+    { key:'light', label:'明亮' },
+    { key:'paper', label:'纸张' },
+    { key:'green', label:'护眼' },
+    { key:'dark', label:'夜间' },
+    { key:'frost', label:'冷辉' }
   ]);
   const VALID_THEMES = new Set(THEMES.map(item => item.key));
   const EFFECT_KEYS = Object.freeze([
@@ -505,11 +505,27 @@
     b.title=`${label}；双击恢复默认位置`; b.setAttribute('aria-label',label); b.innerHTML='<span aria-hidden="true">⋮⋮</span>';
     return b;
   }
+  function themeIconSvg(key){
+    const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+    if(key === 'light') return `<svg ${common}><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"></path></svg>`;
+    if(key === 'paper') return `<svg ${common}><path d="M3.5 5.5c3.3-.8 5.8-.1 8.5 1.5v11c-2.7-1.6-5.2-2.3-8.5-1.5zM20.5 5.5c-3.3-.8-5.8-.1-8.5 1.5v11c2.7-1.6 5.2-2.3 8.5-1.5z"></path></svg>`;
+    if(key === 'green') return `<svg ${common}><path d="M19.5 4.5C12.7 4.5 7.2 7 5.4 12.2c-1 2.9.8 5.8 3.7 5.8 5.4 0 9.1-5.7 10.4-13.5Z"></path><path d="M5 20c2.1-4.3 5.4-7.4 10.2-9.4"></path></svg>`;
+    if(key === 'dark') return `<svg ${common}><path d="M18.5 15.7A7.8 7.8 0 0 1 8.3 5.5 8 8 0 1 0 18.5 15.7Z"></path></svg>`;
+    return `<svg ${common}><path d="M7 3H3v4M17 3h4v4M3 17v4h4M21 17v4h-4"></path><path d="M8 8h8v8H8z"></path></svg>`;
+  }
+  function settingsIconSvg(){
+    return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"></path></svg>';
+  }
   function createThemeButton(item){
-    const b=document.createElement('button'); b.type='button'; b.className='call-theme-option-v6'; b.dataset.callThemeOption=item.key;
-    b.title=item.label; b.setAttribute('aria-label',`切换为${item.label}主题`);
-    b.innerHTML=`<span aria-hidden="true">${item.glyph}</span><span class="call-sr-only-v6">${item.label}</span>`;
-    b.addEventListener('click',()=>setTheme(item.key,true)); return b;
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='call-theme-option-v6';
+    b.dataset.callThemeOption=item.key;
+    b.title=item.label;
+    b.setAttribute('aria-label',`切换为${item.label}主题`);
+    b.innerHTML=`${themeIconSvg(item.key)}<span class="call-sr-only-v6">${item.label}</span>`;
+    b.addEventListener('click',()=>setTheme(item.key,true));
+    return b;
   }
   function ensureFallbackRail(){
     let rail=scrollRoot?.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7') || document.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7');
@@ -547,7 +563,7 @@
     const widget=document.createElement('div'); widget.className='call-floating-widget-v6 call-theme-widget-v6'; widget.setAttribute('role','group'); widget.setAttribute('aria-label','主题与画面设置');
     const grip=createGrip('拖动主题控件');
     const themes=document.createElement('div'); themes.className='call-theme-options-v6'; for(const item of THEMES) themes.appendChild(createThemeButton(item));
-    const fx=document.createElement('button'); fx.type='button'; fx.className='call-floating-utility-v6'; fx.textContent='⚙'; fx.title='画面效果设置'; fx.setAttribute('aria-label',fx.title);
+    const fx=document.createElement('button'); fx.type='button'; fx.className='call-floating-utility-v6'; fx.innerHTML=settingsIconSvg(); fx.title='画面效果设置'; fx.setAttribute('aria-label',fx.title);
     fx.addEventListener('click',()=>{ state.fxOpen=!state.fxOpen; persistVisual(); syncFxPanel(); });
     widget.append(grip,themes,fx); displayRoot.appendChild(widget); makeDraggable(widget,grip,THEME_POS_KEY); return widget;
   }
