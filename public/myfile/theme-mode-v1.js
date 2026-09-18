@@ -407,16 +407,16 @@
     const curve=effectValue('curvature') && !isIOS;
     const bloom=effectValue('bloom') && !isIOS;
     const mobile=matchMedia?.('(max-width: 767px)').matches;
-    const baseBlur=activeTheme === 'dark' ? .35 : activeTheme === 'frost' ? .20 : .12;
-    const tubeBlur=activeTheme === 'dark' ? .18 : activeTheme === 'frost' ? .10 : .06;
+    const baseBlur=activeTheme === 'dark' ? .48 : activeTheme === 'frost' ? .30 : .12;
+    const tubeBlur=activeTheme === 'dark' ? .24 : activeTheme === 'frost' ? .14 : .06;
     opticalRefs.beam.setAttribute('stdDeviation',String(blur ? baseBlur : 0));
     opticalRefs.displacement.setAttribute('scale',String(curve ? (mobile ? 38 : 50) : 0));
     opticalRefs.tube.setAttribute('stdDeviation',String(curve ? tubeBlur : 0));
 
     let near=0,wide=0,panel=0;
     if(bloom){
-      if(activeTheme === 'dark'){ near=.32; wide=.36; panel=.38; }
-      else if(activeTheme === 'frost'){ near=.14; wide=.12; panel=.08; }
+      if(activeTheme === 'dark'){ near=.42; wide=.44; panel=.48; }
+      else if(activeTheme === 'frost'){ near=.20; wide=.17; panel=.12; }
       else { near=.04; wide=.02; panel=.015; }
     }
     opticalRefs.nearFn.setAttribute('slope',String(near));
@@ -514,17 +514,33 @@
   function ensureFallbackRail(){
     let rail=scrollRoot?.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7') || document.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7');
     if(rail) return rail;
-    if(document.body?.dataset.suiteTool === 'runes' || scrollRoot?.querySelector('body[data-suite-tool="runes"]')){
-      rail=document.createElement('aside'); rail.className='suite-quick-rail-v7 call-generated-rail-v6'; rail.setAttribute('aria-label','页面快捷操作');
-      for(const [caption,label,action] of [
-        ['顶部','跳到页面顶部',()=>scrollToRoot({top:0,behavior:'smooth'})],
-        ['底部','跳到页面底部',()=>scrollToRoot({top:rootScrollHeight(),behavior:'smooth'})]
+    if(document.body?.dataset.suiteTool === 'runes'){
+      rail=document.createElement('aside');
+      rail.className='suite-quick-rail-v7 call-generated-rail-v6';
+      rail.setAttribute('aria-label','页面快捷操作');
+      for(const [caption,label,action,actionName] of [
+        ['顶部','跳到页面顶部',()=>scrollToRoot({top:0,behavior:'smooth'}),'top'],
+        ['底部','跳到页面底部',()=>scrollToRoot({top:rootScrollHeight(),behavior:'smooth'}),'bottom']
       ]){
-        const b=document.createElement('button'); b.type='button'; b.textContent=caption; b.title=label; b.setAttribute('aria-label',label); b.addEventListener('click',action); rail.appendChild(b);
+        const b=document.createElement('button');
+        b.type='button'; b.textContent=caption; b.title=label; b.dataset.action=actionName;
+        b.setAttribute('aria-label',label); b.addEventListener('click',action); rail.appendChild(b);
       }
       scrollRoot.appendChild(rail);
     }
     return rail;
+  }
+
+  function adoptAndDedupeQuickRail(){
+    const host=displayRoot?.querySelector('.call-jump-widget-v6 [data-quick-rail-host]');
+    if(!host) return null;
+    const rails=Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7'));
+    let canonical=host.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7') || rails[0] || ensureFallbackRail();
+    if(canonical && canonical.parentElement !== host) host.appendChild(canonical);
+    for(const rail of Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7'))){
+      if(rail !== canonical) rail.remove();
+    }
+    return canonical;
   }
   function installThemeWidget(){
     displayRoot.querySelectorAll('.call-theme-widget-v5,.call-theme-dock-v2,.call-floating-controller-v3').forEach(n=>n.remove());
@@ -544,6 +560,7 @@
     collapse.addEventListener('click',()=>{ state.jumpCollapsed=!state.jumpCollapsed; persistVisual(); syncJump(); });
     widget.append(grip,host,collapse); displayRoot.appendChild(widget); makeDraggable(widget,grip,JUMP_POS_KEY);
     const rail=ensureFallbackRail(); if(rail) host.appendChild(rail);
+    adoptAndDedupeQuickRail();
     root.dataset.callControlsReady='true'; syncJump(); return widget;
   }
   function checkboxRow(key){
@@ -638,11 +655,12 @@
   }
   function observeRails(){
     if(typeof MutationObserver !== 'function') return;
+    let queued=false;
     new MutationObserver(()=>{
-      const host=displayRoot?.querySelector('.call-jump-widget-v6 [data-quick-rail-host]');
-      const rail=scrollRoot?.querySelector(':scope > .call-quick-rail-v10,:scope > .suite-quick-rail-v7');
-      if(host && rail) host.appendChild(rail);
-    }).observe(scrollRoot,{childList:true});
+      if(queued) return;
+      queued=true;
+      queueMicrotask(()=>{ queued=false; adoptAndDedupeQuickRail(); });
+    }).observe(scrollRoot,{childList:true,subtree:false});
   }
 
   function install(){
