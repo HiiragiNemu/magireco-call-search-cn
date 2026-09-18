@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1920" style="color: #dcfff5; stroke-width: .72" viewBox="0 0 1000 800" preserveAspectRatio="none">
+  <defs>
+    <filter id="wear-grit" data-glass-filter="grit" filterUnits="userSpaceOnUse" x="-10" y="-10" width="1020" height="820" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".022 .58" numOctaves="3" seed="19" result="grit" />
+      <feDisplacementMap in="SourceGraphic" in2="grit" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="worn" />
+      <feTurbulence type="fractalNoise" baseFrequency=".74 .19" numOctaves="2" seed="41" result="chipNoise" />
+      <feColorMatrix in="chipNoise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.1 1.1 1.1 0 -2.08" result="chipAlpha" />
+      <feComposite in="worn" in2="chipAlpha" operator="out" result="chipped" />
+      <feGaussianBlur in="chipped" stdDeviation=".34" />
+    </filter>
+    <filter id="glass-edge" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.085" numOctaves="1" seed="17" result="edgeNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="edgeNoise" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="warpedEdge" />
+      <feGaussianBlur in="warpedEdge" stdDeviation="0.08" />
+    </filter>
+  </defs>
+  <g data-glass-wear="chipped" filter="url(#wear-grit)" fill="none" stroke="currentColor" stroke-linecap="round">
+    <path d="M31 37l25-9m-19 6 10-2 M739 52l29-18m5-3 11-7 M778 54l7 13-2 5 M921 171l3 31m-2 5 1 9 M23 464l4-49m1-7v-9 M861 746l41-11m-30 12 16-3 M112 716l-6-17 1-9 M348 31l25 1m4 0h8" />
+    <path d="M35 129q-9 35-3 59m1 10 1 7 M960 499q9 16 1 32m-2 5-6 9 M522 778q31-9 64-3" opacity=".4" />
+    <path d="M779 40l-9 7m3-4 6-5m-4 12 4-2m-5 6 8-4m-6 9 3-1 M788 67l-4 2m-1 4 8-1m-6 4 3 2 M62 604l5-16m-2 11 5-9m-4 13 6-4m-8 9 4-3 M869 728l-7 3m-2 1-3 1m8 1 7-1m-3 4 4-1 M207 187l17-9m4-2 3-2 M219 193l8-4 M599 503l14 3m5 1 8 1 M905 392l-6-18m0-4-1-6 M171 51l4 28m0 3 1 8" stroke-width=".45" filter="url(#glass-edge)" />
+    <path d="M72 121l.6.2m47 119 .8-.2m34-131 .4.6m114 104 1-.2m133-147 .5.3m240 105 .8-.3m51 271 .6.4m99-263 .8.2m38 159 .4.7m-58 179 1-.2m-117 101 .6.4m-56 125 .8-.2m-96-70 .7.3m-225 21 .8-.3m-144-96 .6.4m-53-41 .9.3m16-199 .6-.3m-45-49 .7.2" stroke-width="1.2" opacity=".48" />
+    <path d="M721 93q-45 48-98 82l-29 21m-5 4-33 25m-4 4-17 14 M258 181q42 22 72 52l34 24m5 3 44 31 M594 367q7 45-5 89l-9 29m-2 7-7 38 M365 549q-35 45-74 64l-58 35m-7 4-39 24" stroke-width=".65" opacity=".68" />
+    <path d="M411 318q38-15 85-10l72 6m8 0 40 5 M352 342q28-11 54-10 M604 232l-18 73m-2 8-8 37 M171 458q35 19 78 22l44 2m9 0 16-1 M443 633q38-33 72-36l47-7" stroke-width=".4" opacity=".44" />
+    <path d="M607 175l-9 12m4-7-9 8m1 4 11-9 M324 235l7 9m-5-3 8 7m-4-2 5 3 M586 431l-4 12m3-7-1 10m-3 5-2 6 M293 612l-11 9m4-2-9 8m1 3 8-7 M496 597l15-6m-8 6 13-3" stroke-width=".55" opacity=".8" filter="url(#glass-edge)" />
+    <path d="M39 144q37 41 67 76l24 35m4 5 27 37 M185 377q-17 54-45 83l-34 31m-4 4-20 19 M75 593q38 22 78 62l38 41 M278 20q58-6 108 5l47 8m5 1 31 3 M652 17l59 12m6 1 25 5" stroke-width=".6" opacity=".6" />
+    <path d="M548 145q24 8 44 21l27 11m3 1 39 29m3 2 24 8" stroke-width=".47" opacity=".48"/>
+    <path d="M224 571q13 8 20 29l9 11m3 3 19 30m2 3 12 5" stroke-width=".55" opacity=".52"/>
+  </g>
+</svg>
