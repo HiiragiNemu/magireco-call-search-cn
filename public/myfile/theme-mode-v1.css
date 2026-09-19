@@ -1036,3 +1036,372 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
     min-width:39px!important;
   }
 }
+
+
+/* ===== v7.4 boot / global menu / material consistency ===== */
+
+/* Prevent legacy pink/white first paint. The Magius Link boot screen appears
+   before any page DOM is visible and is removed by theme-mode-v1.js. */
+html[data-call-preboot="true"] body{
+  opacity:0!important;
+}
+html[data-call-preboot="true"]::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:2147483646;
+  pointer-events:none;
+  background-image:
+    url('./magius-mark.svg'),
+    url('./magius-link-wordmark.svg'),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.52) 0 .7px,transparent .7px 2px),
+    url('./reader-textures/magi-lofi-grain.png'),
+    radial-gradient(ellipse at 50% 48%,rgba(29,91,67,.42),rgba(5,31,23,.88) 48%,#020b08 100%);
+  background-repeat:no-repeat,no-repeat,repeat,repeat,no-repeat;
+  background-position:
+    center calc(50% - 105px),
+    center calc(50% + 6px),
+    0 0,
+    17px 11px,
+    center;
+  background-size:
+    98px auto,
+    min(58vw,360px) auto,
+    auto,
+    256px 256px,
+    cover;
+  filter:
+    drop-shadow(-1px 0 .14px rgba(65,204,255,.62))
+    drop-shadow(1.1px 0 .14px rgba(255,57,89,.56))
+    drop-shadow(0 0 15px rgba(82,255,135,.22));
+}
+html[data-call-preboot="true"]::after{
+  content:"LOADING  ▌  数据加载中";
+  position:fixed;
+  z-index:2147483647;
+  left:50%;
+  top:calc(50% + 105px);
+  transform:translateX(-50%);
+  width:max-content;
+  max-width:82vw;
+  color:#d9fff5;
+  font:400 clamp(12px,2.2vw,18px)/1.2 var(--call-pixel-font);
+  letter-spacing:.1em;
+  text-shadow:
+    -1px 0 .15px rgba(65,204,255,.72),
+    1.1px 0 .15px rgba(255,57,89,.66),
+    0 0 7px rgba(177,255,202,.56);
+  pointer-events:none;
+}
+html[data-call-preboot="false"] body{
+  opacity:1;
+  transition:opacity .12s linear;
+}
+html[data-call-preboot="false"]::before,
+html[data-call-preboot="false"]::after{
+  content:none!important;
+}
+
+/* Legacy hamburger is hidden; v8 creates one consistent floating control on
+   every interface instead of inheriting per-page menu bugs. */
+.call-legacy-menu-hidden-v8{
+  display:none!important;
+}
+.call-global-menu-v8{
+  position:absolute;
+  z-index:2480;
+  left:12px;
+  top:58px;
+  width:44px;
+  height:44px;
+}
+.call-global-menu-button-v8{
+  display:grid!important;
+  place-items:center!important;
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  padding:0!important;
+  margin:0!important;
+  border:1px solid var(--call-border)!important;
+  border-radius:1px!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:color-mix(in srgb,var(--call-surface-raised) 96%,transparent)!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--call-accent) 7%,transparent),
+    var(--call-widget-shadow)!important;
+}
+.call-menu-glyph{
+  width:25px;
+  height:25px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2.2;
+  stroke-linecap:square;
+  stroke-linejoin:miter;
+}
+.call-menu-glyph-close{display:none}
+.call-global-menu-button-v8[aria-expanded="true"] .call-menu-glyph-open{display:none}
+.call-global-menu-button-v8[aria-expanded="true"] .call-menu-glyph-close{display:block}
+.call-global-menu-panel-v8{
+  display:none;
+  position:absolute;
+  left:0;
+  top:49px;
+  width:min(330px,calc(100vw - 28px));
+  max-height:calc(100dvh - 120px);
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding:7px;
+  border:1px solid var(--call-border);
+  background:color-mix(in srgb,var(--call-surface-raised) 97%,transparent);
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.42),
+    inset 0 0 0 1px color-mix(in srgb,var(--call-accent) 7%,transparent);
+}
+.call-global-menu-v8[data-open="true"] .call-global-menu-panel-v8{display:grid}
+.call-global-menu-label-v8{
+  padding:8px 9px 5px;
+  color:var(--call-accent-strong);
+  font-weight:800;
+  letter-spacing:.04em;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 55%,transparent);
+}
+.call-global-menu-panel-v8 a{
+  display:block;
+  padding:8px 10px;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  text-decoration:none!important;
+  border:1px solid transparent;
+  line-height:1.35;
+}
+.call-global-menu-panel-v8 a:hover,
+.call-global-menu-panel-v8 a:focus-visible{
+  background:var(--call-surface-soft)!important;
+  border-color:var(--call-border)!important;
+}
+.call-global-menu-panel-v8 a[aria-current="page"]{
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important;
+  border-color:var(--call-accent)!important;
+  box-shadow:var(--call-selected-shadow)!important;
+}
+
+/* Right utility controller: one Reader-like instrument with a shared frame.
+   Drag from frame/gaps; there is no separate handle or mystery +/- key. */
+.call-jump-widget-v7{
+  right:17px!important;
+  top:50%!important;
+  width:46px!important;
+  padding:4px 3px!important;
+  gap:0!important;
+  transform:translateY(-50%)!important;
+  border:1px solid color-mix(in srgb,var(--call-border) 92%,transparent)!important;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--call-surface-raised) 94%,transparent),
+      color-mix(in srgb,var(--call-surface-soft) 90%,transparent))!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--call-accent) 9%,transparent),
+    0 7px 24px rgba(0,0,0,.28),
+    inset 0 1px color-mix(in srgb,var(--call-accent) 8%,transparent),
+    inset 0 -1px rgba(0,0,0,.28)!important;
+  cursor:grab;
+  touch-action:none;
+}
+.call-jump-widget-v7.is-dragging{cursor:grabbing}
+.call-jump-widget-v7.is-positioned{transform:none!important}
+.call-jump-actions-v7,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7){
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:35px!important;
+  min-height:35px!important;
+  margin:0 auto!important;
+  padding:0 .05rem!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 65%,transparent)!important;
+  border-radius:0!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+  opacity:1!important;
+  font:750 .67rem/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:last-child{
+  border-bottom:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button[data-action="top"],
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button[data-action="bottom"]{
+  font:400 1.05rem/1 var(--call-pixel-font)!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:hover,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:focus-visible{
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important;
+  box-shadow:
+    inset 2px 0 color-mix(in srgb,var(--call-accent-ink) 52%,transparent),
+    0 0 8px color-mix(in srgb,var(--call-accent) 28%,transparent)!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button[data-action="cancel"]{
+  color:var(--call-muted)!important;
+}
+.call-jump-collapse-v7{display:none!important}
+
+/* Theme-aware open/close state chips. Lit chips always use dark ink. */
+:root[data-call-theme] body :is(
+  .suite-panel-details-v8>summary::after,
+  .call-panel-v8>summary::after,
+  .character-grid-details-v8>summary::after,
+  .call-details-state-v10::before,
+  .runes-reference-details-v9>summary::after
+){
+  border-radius:1px!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-surface-raised)!important;
+  border:1px solid var(--call-border)!important;
+  box-shadow:none!important;
+}
+:root[data-call-theme] body :is(
+  .suite-panel-details-v8[open]>summary::after,
+  .call-panel-v8[open]>summary::after,
+  .character-grid-details-v8[open]>summary::after,
+  .call-help-details-v10[open] .call-details-state-v10::before,
+  .call-table-details-v10[open] .call-details-state-v10::before,
+  .runes-reference-details-v9[open]>summary::after
+){
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important;
+  border-color:var(--call-accent)!important;
+  text-shadow:none!important;
+}
+
+/* All directory/grid gutters inherit theme material; no white strips between
+   dark/frost character cards and no un-themed day-mode empty blocks. */
+:root[data-call-theme] body :is(
+  .suite-character-grid,#storyCharacterGrid,#attendanceGrid,
+  div.magicalgirl,.character-grid-details-v8>.suite-character-grid
+){
+  background:var(--call-surface)!important;
+  background-color:var(--call-surface)!important;
+  border-color:var(--call-border)!important;
+}
+:root[data-call-theme] body :is(.suite-character-card,label.girlbox)[aria-pressed="true"],
+:root[data-call-theme] body label.girlbox:has(input.MagicalChk:checked),
+:root[data-call-theme] body label.girlbox.is-selected-v11{
+  outline:2px solid var(--call-accent)!important;
+  outline-offset:-2px!important;
+  box-shadow:
+    inset 0 -3px 0 var(--call-card-accent,var(--call-accent)),
+    0 0 8px color-mix(in srgb,var(--call-accent) 24%,transparent)!important;
+}
+:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :is(
+  .suite-character-card,label.girlbox,label.girlbox.leftm
+){
+  background:var(--call-card-bg)!important;
+  background-color:var(--call-card-bg)!important;
+  color:var(--call-card-text)!important;
+}
+
+/* Frost: stronger Reader cold-film glow and low-fi softness. */
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  h1,h2,h3,h4,h5,h6,a,button,label,summary,strong,b,.suite-character-card strong,label.girlbox
+){
+  text-shadow:
+    -.035em 0 .045em rgba(80,187,175,.42),
+    .035em .012em .024em rgba(112,214,212,.32),
+    0 0 .11em rgba(120,216,201,.42),
+    0 0 .28em rgba(78,224,197,.20)!important;
+}
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v7[aria-pressed="true"],
+  .call-global-menu-panel-v8 a[aria-current="page"],
+  .suite-character-card[aria-pressed="true"],
+  label.girlbox:has(input.MagicalChk:checked)
+){
+  filter:
+    drop-shadow(0 0 3px rgba(220,255,246,.38))
+    drop-shadow(0 0 10px rgba(93,232,215,.34))!important;
+}
+:root[data-call-theme="frost"][data-call-ios="false"] .call-display-scroll-v7{
+  filter:blur(.11px) saturate(.95) contrast(.99);
+}
+
+/* Selected/lit controls across every theme use the correct ink contrast. */
+:root[data-call-theme] .call-display-root-v7 :is(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v7[aria-pressed="true"],
+  .call-fx-segment-v7 button[aria-pressed="true"],
+  .call-global-menu-panel-v8 a[aria-current="page"],
+  .menu .thismenu,
+  .runes-mask-toolbar-v9 [data-mask-mode].is-active
+){
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  text-shadow:none!important;
+}
+
+/* Settings title bar is the drag surface; there is no independent drag key. */
+.call-fx-titlebar-v7{
+  grid-template-columns:minmax(0,1fr) 38px!important;
+  cursor:grab;
+  touch-action:none;
+}
+.call-fx-window-v7.is-dragging .call-fx-titlebar-v7{cursor:grabbing}
+.call-fx-grip-v7{display:none!important}
+
+/* iOS stays on static materials; Android may keep the bounded lens. */
+:root[data-call-ios="true"] .call-display-scroll-v7{
+  filter:none!important;
+}
+
+/* Mobile placement leaves the global hamburger and right instrument inside the
+   physical CRT glass and below the material overlay. */
+@media(max-width:760px){
+  .call-global-menu-v8{
+    left:8px;
+    top:54px;
+  }
+  .call-global-menu-panel-v8{
+    width:min(310px,calc(100vw - 24px));
+  }
+  .call-jump-widget-v7{
+    right:8px!important;
+    width:44px!important;
+  }
+  .call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+    width:36px!important;
+    min-width:36px!important;
+    height:35px!important;
+  }
+  :root[data-call-theme="frost"][data-call-ios="false"] .call-display-scroll-v7{
+    filter:blur(.08px) saturate(.95) contrast(.99);
+  }
+}
