@@ -34,7 +34,7 @@
     paper:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:false },
     green:{ curvature:false,scanlines:true,noise:true,pixelFont:false,registration:false },
     dark:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:true },
-    frost:{ curvature:false,scanlines:false,noise:false,pixelFont:true,registration:false }
+    frost:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:false }
   });
   const THEME_COLORS = Object.freeze({
     light:'#d8d4c6', paper:'#f3eacb', green:'#d6e9c4', dark:'#030702', frost:'#001018'
@@ -247,8 +247,8 @@
   function updateOpticalFilter(){
     if(!opticalRefs) return;
     const p=currentRegistrationProfile();
-    const filterCapable=!isIOS;
     const mobile=mobileQuery.matches;
+    const filterCapable=!isIOS && !mobile;
     const registration=filterCapable && effectValue('registration');
     const curveOn=filterCapable && effectValue('curvature');
     const night=activeTheme === 'dark';
@@ -297,7 +297,7 @@
     for(const key of EFFECT_KEYS){
       root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(effectValue(key));
     }
-    root.dataset.callOpticsActive=String(!isIOS && (effectValue('curvature') || effectValue('registration')));
+    root.dataset.callOpticsActive=String(!isIOS && !mobileQuery.matches && (effectValue('curvature') || effectValue('registration')));
     setBrowserChrome();
     updateOpticalFilter();
   }
