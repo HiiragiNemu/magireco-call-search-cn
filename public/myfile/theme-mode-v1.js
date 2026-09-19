@@ -449,11 +449,11 @@
     }
     const p=clampPoint(node,point),host=displayRoot.getBoundingClientRect();
     node.classList.add('is-positioned');
-    node.style.left=`${p.x-host.left}px`;
-    node.style.top=`${p.y-host.top}px`;
-    node.style.right='auto';
-    node.style.bottom='auto';
-    node.style.transform='none';
+    node.style.setProperty('left',`${p.x-host.left}px`,'important');
+    node.style.setProperty('top',`${p.y-host.top}px`,'important');
+    node.style.setProperty('right','auto','important');
+    node.style.setProperty('bottom','auto','important');
+    node.style.setProperty('transform','none','important');
   }
   function makeDraggable(node,handle,key,enabled=()=>true){
     let drag=null;
@@ -595,6 +595,45 @@
     makeDraggable(widget,dragGrip,THEME_POS_KEY,()=>state.themeBarMode==='floating');
   }
 
+  function railIcon(action){
+    const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+    const icons={
+      top:`<svg ${common}><path d="M5 8h14M12 18V9"/><path d="m8 13 4-4 4 4"/></svg>`,
+      bottom:`<svg ${common}><path d="M5 16h14M12 6v9"/><path d="m8 11 4 4 4-4"/></svg>`,
+      characters:`<svg ${common}><circle cx="12" cy="8" r="3"/><path d="M6 19c.8-3.5 3-5.2 6-5.2s5.2 1.7 6 5.2"/></svg>`,
+      filter:`<svg ${common}><path d="M4 6h16M7 12h10M10 18h4"/></svg>`,
+      attributes:`<svg ${common}><path d="M5 6h8M17 6h2M5 12h2M11 12h8M5 18h10M19 18h0"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg>`,
+      search:`<svg ${common}><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg>`,
+      cancel:`<svg ${common}><path d="M6 6l12 12M18 6 6 18"/></svg>`,
+      height:`<svg ${common}><path d="M8 4h8M8 20h8M12 5v14"/><path d="m9 8 3-3 3 3M9 16l3 3 3-3"/></svg>`,
+      results:`<svg ${common}><path d="M5 5h14v14H5zM8 9h8M8 13h8M8 17h5"/></svg>`
+    };
+    return icons[action] || `<svg ${common}><circle cx="12" cy="12" r="3"/></svg>`;
+  }
+  function normalizeRailButtons(rail){
+    if(!rail) return;
+    for(const button of rail.querySelectorAll('button')){
+      let action=button.dataset.action || '';
+      const label=(button.getAttribute('aria-label') || button.title || button.textContent || '').trim();
+      if(!action){
+        if(/顶部|top/i.test(label)) action='top';
+        else if(/底部|bottom/i.test(label)) action='bottom';
+        else if(/角色|选人/.test(label)) action='characters';
+        else if(/筛选|条件/.test(label)) action='filter';
+        else if(/属性/.test(label)) action='attributes';
+        else if(/搜索/.test(label)) action='search';
+        else if(/取消|清空/.test(label)) action='cancel';
+        else if(/身高/.test(label)) action='height';
+        else if(/结果/.test(label)) action='results';
+      }
+      if(action) button.dataset.action=action;
+      if(action && button.dataset.callIconized!=='true'){
+        button.innerHTML=railIcon(action);
+        button.dataset.callIconized='true';
+      }
+    }
+  }
+
   function ensureRail(){
     let rail=scrollRoot.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7');
     if(rail)return rail;
@@ -615,6 +654,7 @@
     const rails=Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7'));
     const canonical=host.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7') || rails[0] || ensureRail();
     if(canonical&&canonical.parentElement!==host)host.appendChild(canonical);
+    normalizeRailButtons(canonical);
     for(const r of Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7')))if(r!==canonical)r.remove();
   }
   function installJump(){
@@ -632,7 +672,7 @@
     const collapse=document.createElement('button');
     collapse.type='button';
     collapse.className='call-jump-collapse-v7';
-    collapse.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3.25 5.75 8l4.75 4.75"/></svg>';
+    collapse.innerHTML='<span class="call-collapse-expanded-icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M10.5 3.25 5.75 8l4.75 4.75"/></svg></span><span class="call-collapse-collapsed-icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3.5h10v9H3zM6 3.5v9M8.5 6h2.5M8.5 8h2.5M8.5 10h2.5"/></svg></span>';
     collapse.addEventListener('click',event=>{
       event.stopPropagation();
       state.jumpCollapsed=!state.jumpCollapsed;
@@ -732,31 +772,7 @@
     clearTimeout(trackingTimer);
     clearTimeout(trackingOffTimer);
     root.dataset.callTracking='false';
-    if(reducedMotion || activeTheme!=='dark' || !effectValue('noise')) return;
-
-    const delay=1800 + Math.random()*4700;
-    trackingTimer=setTimeout(()=>{
-      const roll=Math.random();
-      const mode=roll < .50 ? 'down' : (roll < .76 ? 'up' : 'converge');
-      root.dataset.callTrackingMode=mode;
-      const shiftA=-1.4 + Math.random()*2.8;
-      const shiftB=-1.2 + Math.random()*2.4;
-      root.style.setProperty('--call-tracking-shift-a',`${shiftA.toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-a-19',`${(-shiftA*.45).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-a-48',`${(shiftA*.70).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-a-73',`${(-shiftA*.28).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-a-23',`${(shiftA*.52).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-a-57',`${(-shiftA*.64).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-a-81',`${(shiftA*.25).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-b',`${shiftB.toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-duration',`${(0.72 + Math.random()*.58).toFixed(2)}s`);
-      root.dataset.callTracking='true';
-
-      trackingOffTimer=setTimeout(()=>{
-        root.dataset.callTracking='false';
-        scheduleTrackingSweep();
-      },900 + Math.random()*650);
-    },delay);
+    root.dataset.callTrackingMode='off';
   }
 
   function observeRails(){
