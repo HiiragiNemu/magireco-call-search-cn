@@ -1,10 +1,10 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'reader-terminal-v7.3-20260919';
+  const RELEASE = 'reader-terminal-v7.4-20260919';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
-  const VISUAL_KEY = 'magireco-call-visual-v7-3';
+  const VISUAL_KEY = 'magireco-call-visual-v7-4';
   const THEME_POS_KEY = 'magireco-call-theme-widget-v7-3';
   const JUMP_POS_KEY = 'magireco-call-jump-widget-v7-3';
   const FX_POS_KEY = 'magireco-call-fx-window-v7-3';
@@ -106,6 +106,19 @@
 
   const state=loadState();
   let activeTheme=storedTheme() || systemTheme();
+
+  // First-paint state: prevent the legacy pink/white page from flashing before
+  // the CRT shell is installed. The stylesheet can render the Magius boot layer
+  // immediately while the body is still being parsed.
+  normalizeThemeState(activeTheme);
+  root.dataset.callTheme=activeTheme;
+  root.dataset.callPhosphor=state.phosphor;
+  root.dataset.callThemeBarMode=state.themeBarMode;
+  root.dataset.callPreboot='true';
+  root.style.colorScheme=(activeTheme === 'dark' || activeTheme === 'frost') ? 'dark' : 'light';
+  for(const key of EFFECT_KEYS){
+    root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(Boolean(state.effects[activeTheme]?.[key]));
+  }
 
   function normalizeThemeState(theme){
     const effects=state.effects[theme] || (state.effects[theme]=cloneDefaults(theme));
@@ -309,10 +322,8 @@
     for(const b of panel.querySelectorAll('[data-themebar-mode]')) b.setAttribute('aria-pressed',String(b.dataset.themebarMode === state.themeBarMode));
   }
   function syncJump(){
-    const widget=displayRoot?.querySelector('.call-jump-widget-v7'); if(!widget) return;
-    widget.classList.toggle('is-collapsed',state.jumpCollapsed);
-    const b=widget.querySelector('[data-jump-collapse]');
-    if(b){b.textContent=state.jumpCollapsed?'＋':'－';b.title=state.jumpCollapsed?'展开跳转工具':'收起跳转工具';b.setAttribute('aria-label',b.title);}
+    const widget=displayRoot?.querySelector('.call-jump-widget-v7');
+    if(widget) widget.classList.remove('is-collapsed');
   }
   function applyAll(){applyDatasets();placeThemeBar();syncThemeButtons();syncSettings();syncJump();updateScrollbar();}
 
@@ -385,7 +396,6 @@
     restore();
     handle.addEventListener('pointerdown',e=>{
       if(!enabled()) return;
-      if(backgroundOnly && e.target !== handle) return;
       if(e.target.closest?.('button,a,input,select,textarea,summary')) return;
       if(e.pointerType==='mouse'&&e.button!==0)return;
       const r=node.getBoundingClientRect();e.preventDefault();handle.setPointerCapture?.(e.pointerId);
@@ -402,7 +412,7 @@
     };
     handle.addEventListener('pointerup',e=>end(e,true));handle.addEventListener('pointercancel',e=>end(e,false));
     handle.addEventListener('dblclick',e=>{
-      if(!enabled() || (backgroundOnly && e.target !== handle)) return;
+      if(!enabled() || e.target.closest?.('button,a,input,select,textarea,summary')) return;
       storageSet(orientationKey(key),'');applyPoint(node,null);
     });
   }
@@ -466,17 +476,85 @@
     widget.setAttribute('aria-label','页面跳转工具');
     widget.title='从边框空白处拖动；双击空白处恢复位置';
     const host=document.createElement('div');host.className='call-jump-actions-v7';host.dataset.quickRailHost='true';
-    const collapse=document.createElement('button');collapse.type='button';collapse.className='call-jump-collapse-v7';collapse.dataset.jumpCollapse='true';
-    collapse.addEventListener('click',()=>{state.jumpCollapsed=!state.jumpCollapsed;persist();syncJump();});
-    widget.append(host,collapse);displayRoot.appendChild(widget);makeDraggable(widget,widget,JUMP_POS_KEY,()=>true,true);
+    widget.append(host);displayRoot.appendChild(widget);makeDraggable(widget,widget,JUMP_POS_KEY,()=>true,true);
     const rail=ensureRail();if(rail)host.appendChild(rail);adoptRail();root.dataset.callControlsReady='true';
   }
 
+  const GLOBAL_MENU_ITEMS = Object.freeze([
+    {type:'label',label:'通用'},
+    {label:'称呼搜索',href:'./index.html'},
+    {type:'label',label:'Magia Exedra'},
+    {label:'运营时间表',href:'https://app.the-timeline.jp/2PACX-1vQSTMVQlcv7SnwCc8NZgGTKry8U5ZehODwgI-F_GPx0FWjJF0M41L_j2N3asfgtdt58NRxoIjc4NJcN'},
+    {type:'label',label:'魔法纪录'},
+    {label:'运营时间表',href:'https://app.the-timeline.jp/2PACX-1vTYF8Mj66tnTEhK2jPwzJzwKWJgtC0Y2-PQGIUwVbkO9csvt1IofUzv0LO0X_bjVpVgKCDyel4_jEry'},
+    {label:'角色故事搜索',href:'./story.html'},
+    {label:'母故事标题翻译清单（管理员）',href:'./story-title-editor.html'},
+    {label:'共同出场次数排行',href:'./attendance.html'},
+    {label:'魔女文翻译',href:'./runes.html'},
+    {label:'称呼数据',href:'https://docs.google.com/spreadsheets/d/1V0QTP3YZsoc7h5wOC8oqg7NKJpA6ZPyck9yCYfbJGlk/'},
+    {type:'label',label:'我的其他工具与动态'},
+    {label:'MagiReader 中日双语剧情存档与翻译平台',href:'https://magireader.pages.dev/'},
+    {label:'MAGIA EXEDRA Live2D Viewer',href:'https://magiaexedralive2dviewer.pages.dev/'},
+    {label:'Exedra3D 浏览器',href:'https://magius3dviewer.pages.dev/?runtimeDelivery=release'},
+    {label:'MadeInMagius / MAGIUS LINK',href:'https://hiiraginemu.github.io/madeinmagius-site/#about/profile'},
+    {label:'加入QQ交流群（928098518）',href:'https://pd.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=2oaXZG3lL1g&attaContentID=e5616861ea2047e3820bf63bb854aa8e&businessType=9&from=181074&biz=ka&mainSourceId=share&subSourceId=others&b=9'},
+    {label:'源文件（GitHub）',href:'https://github.com/HiiragiNemu/magireco-call-search-cn'}
+  ]);
+  const menuGlyph='<svg class="call-menu-glyph call-menu-glyph-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><svg class="call-menu-glyph call-menu-glyph-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>';
   function installFloatingMenu(){
-    const header=scrollRoot.querySelector('.header');
-    if(!header)return;
-    header.classList.add('call-menu-float-v7');
-    displayRoot.appendChild(header);
+    scrollRoot.querySelectorAll('.header').forEach(node=>node.classList.add('call-legacy-menu-hidden-v8'));
+    const shell=document.createElement('div');
+    shell.className='call-global-menu-v8';
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='call-global-menu-button-v8';
+    button.setAttribute('aria-label','打开导航菜单');
+    button.setAttribute('aria-expanded','false');
+    button.innerHTML=menuGlyph;
+    const panel=document.createElement('nav');
+    panel.className='call-global-menu-panel-v8';
+    panel.setAttribute('aria-label','全站导航');
+    const path=(location.pathname.split('/').pop()||'index.html').toLowerCase();
+    for(const item of GLOBAL_MENU_ITEMS){
+      if(item.type === 'label'){
+        const label=document.createElement('div');
+        label.className='call-global-menu-label-v8';
+        label.textContent='■ '+item.label;
+        panel.appendChild(label);
+        continue;
+      }
+      const a=document.createElement('a');
+      a.href=item.href;
+      a.textContent=item.label;
+      const local=/^\.\//.test(item.href);
+      if(local){
+        const target=item.href.replace('./','').split('?')[0].toLowerCase();
+        if(target === path || (path === '' && target === 'index.html')) a.setAttribute('aria-current','page');
+      }else{
+        a.target='_blank'; a.rel='noopener noreferrer';
+      }
+      panel.appendChild(a);
+    }
+    const close=()=>{
+      shell.dataset.open='false';
+      button.setAttribute('aria-expanded','false');
+      button.setAttribute('aria-label','打开导航菜单');
+    };
+    button.addEventListener('click',()=>{
+      const open=shell.dataset.open !== 'true';
+      shell.dataset.open=String(open);
+      button.setAttribute('aria-expanded',String(open));
+      button.setAttribute('aria-label',open?'关闭导航菜单':'打开导航菜单');
+    });
+    panel.addEventListener('click',event=>{
+      const link=event.target.closest('a');
+      if(link && /^\.\//.test(link.getAttribute('href')||'')){
+        root.dataset.callPreboot='true';
+      }
+      if(link) close();
+    });
+    shell.append(button,panel);
+    displayRoot.appendChild(shell);
   }
 
   function toggleRow(key){
@@ -556,6 +634,16 @@
     new MutationObserver(()=>{if(queued)return;queued=true;queueMicrotask(()=>{queued=false;adoptRail();});}).observe(scrollRoot,{childList:true,subtree:false});
   }
 
+  function finishBoot(){
+    let seen=false;
+    try{ seen=sessionStorage.getItem('magireco-call-magius-boot-v1') === '1'; }catch(_){}
+    const delay=reducedMotion ? 80 : (seen ? 260 : 820);
+    setTimeout(()=>{
+      root.dataset.callPreboot='false';
+      try{sessionStorage.setItem('magireco-call-magius-boot-v1','1');}catch(_){}
+    },delay);
+  }
+
   function install(){
     installDisplayRoot();
     installOpticalFilter();
@@ -571,9 +659,10 @@
     applyAll();
     mobileQuery.addEventListener?.('change',()=>{applyAll();scheduleScrollbar();});
     addEventListener('resize',()=>{applyAll();scheduleScrollbar();},{passive:true});
-    root.dataset.callThemeReady='v7';
+    root.dataset.callThemeReady='v7.4';
+    finishBoot();
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:7,release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'7.4',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });
