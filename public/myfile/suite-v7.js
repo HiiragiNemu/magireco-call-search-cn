@@ -302,7 +302,6 @@
             ['↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
             ['筛选','筛选角色',() => scrollToTarget('#attendance-character-title')],
             ['角色','角色列表',() => scrollToTarget('#attendanceGrid')],
-            ['表格','排行结果',() => scrollToTarget('#attendanceResults')],
             ['取消','取消筛选与角色选择',() => {
               document.querySelector('#attendanceAttributeFilterV7 [data-attribute-reset]')?.click();
               const filter = document.getElementById('attendanceFilter');
@@ -318,7 +317,6 @@
             ['↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
             ['角色','角色列表',() => scrollToTarget('#girltop')],
             ['搜索','称呼搜索',() => typeof global.drawAndJump === 'function' && global.drawAndJump()],
-            ['表格','称呼结果',() => scrollToTarget('#callResultSection')],
             ['取消','取消角色选择',() => document.getElementById('mgreset')?.click()],
             ['↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
           ];
@@ -331,6 +329,15 @@
       button.textContent = glyph;
       button.title = label;
       button.setAttribute('aria-label', label);
+      const actionName = label.includes('顶部') ? 'top'
+        : label.includes('底部') ? 'bottom'
+        : label.includes('取消') ? 'cancel'
+        : label.includes('筛选') ? 'filter'
+        : label.includes('角色') ? 'characters'
+        : label.includes('搜索') ? 'search'
+        : label.includes('结果') ? 'results'
+        : '';
+      if (actionName) button.dataset.action = actionName;
       button.addEventListener('click', action);
       rail.appendChild(button);
     }
