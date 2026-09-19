@@ -2438,3 +2438,26 @@ html[data-call-preboot="true"]::after{
     1.1px 0 .14px rgba(255,54,88,.57),
     0 0 2.6px rgba(187,255,203,.15)!important;
 }
+
+
+/* ===== v7.7d watermark-through-glass surfaces ===== */
+/* Let the large MAGIUS phosphor mark remain perceptible through the interface.
+   Controls stay denser than document panels so readability is preserved. */
+:root[data-call-theme="dark"]{
+  --call-surface:rgba(9,16,6,.82);
+  --call-surface-soft:rgba(18,32,14,.90);
+  --call-surface-raised:rgba(11,19,8,.93);
+  --call-card-bg:rgba(9,16,6,.86);
+}
+:root[data-call-theme="dark"][data-call-phosphor="amber"]{
+  --call-surface:rgba(16,10,13,.83);
+  --call-surface-soft:rgba(33,25,27,.91);
+  --call-surface-raised:rgba(21,13,16,.94);
+  --call-card-bg:rgba(16,10,13,.87);
+}
+:root[data-call-theme="frost"]{
+  --call-surface:rgba(6,26,32,.78);
+  --call-surface-soft:rgba(11,38,44,.88);
+  --call-surface-raised:rgba(7,30,37,.92);
+  --call-card-bg:rgba(8,29,35,.82);
+}
