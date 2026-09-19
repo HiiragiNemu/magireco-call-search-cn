@@ -126,7 +126,7 @@
     };
 
     const definitions = [
-      ['顶部', '跳到页面顶部', () => global.__MAGIRECO_SCROLL__?.to?.({ top: 0, behavior: 'smooth' }) || global.scrollTo({ top: 0, behavior: 'smooth' }), 'top'],
+      ['↑', '跳到页面顶部', () => global.__MAGIRECO_SCROLL__?.to?.({ top: 0, behavior: 'smooth' }) || global.scrollTo({ top: 0, behavior: 'smooth' }), 'top'],
       ['选人', '选择角色', () => openAndScroll('.call-selection-panel-v8', '.call-selection-panel-v8'), 'characters'],
       ['筛选', '搜索条件', () => openAndScroll('.call-search-panel-v8', '.call-search-panel-v8'), 'filter'],
       ['属性', '属性筛选', () => openAndScroll('.call-attribute-panel-v8', '.call-attribute-panel-v8'), 'attributes'],
@@ -134,24 +134,13 @@
         detailsOpen('.call-result-details-v8');
         if (typeof global.drawAndJump === 'function') global.drawAndJump();
       }, 'search'],
-      ['关系', '关系图', () => {
-        detailsOpen('.call-result-details-v8');
-        if (typeof global.toggleHeightView === 'function') global.toggleHeightView(false);
-        global.requestAnimationFrame(() => scrollToTarget('#canvasflame'));
-      }, 'relation'],
-      ['表格', '称呼关系表', () => {
-        detailsOpen('.call-result-details-v8');
-        detailsOpen('.call-table-details-v10');
-        if (typeof global.toggleHeightView === 'function') global.toggleHeightView(false);
-        global.requestAnimationFrame(() => scrollToTarget('.call-table-details-v10'));
-      }, 'table'],
       ['取消', '取消已选角色并清空关系结果', cancelSelection, 'cancel'],
       ['身高', '身高图', () => {
         detailsOpen('.call-result-details-v8');
         const selected = Boolean(document.querySelector('input.MagicalChk[name="chara"]:checked'));
         if (typeof global.displayHeightChart === 'function') global.displayHeightChart(selected ? 'selected' : 'global');
       }, 'height'],
-      ['底部', '跳到页面底部', () => global.__MAGIRECO_SCROLL__?.to?.({ top: global.__MAGIRECO_SCROLL__.height, behavior: 'smooth' }) || global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' }), 'bottom']
+      ['↓', '跳到页面底部', () => global.__MAGIRECO_SCROLL__?.to?.({ top: global.__MAGIRECO_SCROLL__.height, behavior: 'smooth' }) || global.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' }), 'bottom']
     ];
 
     const rail = document.createElement('aside');
