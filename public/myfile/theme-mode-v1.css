@@ -2676,3 +2676,26 @@ html[data-call-preboot="true"]::after{
     min-height:30px!important;
   }
 }
+
+
+/* ===== v7.8b Reader night palette ===== */
+/* Use MagiReader's dark terminal palette: muted olive phosphor over #101c14,
+   while keeping the selected state distinctly brighter. */
+:root[data-call-theme="dark"]:not([data-call-phosphor="amber"]){
+  --call-field:
+    radial-gradient(ellipse at 47% 38%,rgba(174,218,139,.065),transparent 75%),
+    #101c14;
+  --call-surface:rgba(16,28,20,.64);
+  --call-surface-soft:rgba(22,38,27,.76);
+  --call-surface-raised:rgba(13,24,17,.84);
+  --call-text:#b6d995;
+  --call-muted:#8fae7b;
+  --call-border:rgba(174,218,139,.32);
+  --call-border-strong:rgba(190,232,154,.56);
+  --call-accent:#b5f65f;
+  --call-accent-strong:#d3f0b4;
+  --call-accent-ink:#0b120d;
+  --call-card-bg:rgba(16,28,20,.68);
+  --call-card-text:#c6e5a7;
+  --call-network-bg:rgba(11,19,13,.42);
+}
