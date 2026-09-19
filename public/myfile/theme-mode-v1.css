@@ -1405,3 +1405,53 @@ html[data-call-preboot="false"]::after{
     filter:blur(.08px) saturate(.95) contrast(.99);
   }
 }
+
+
+/* ===== v7.4 mobile stability / frost emphasis ===== */
+/* Mobile keeps one physical curved tube, but avoids the expensive full-scene
+   SVG displacement that produced compositor seams and scroll jank. The whole
+   screen, including the right rail, shares the same safe lens transform. */
+@media(max-width:760px){
+  :root[data-call-fx-curvature="true"] .call-display-root-v7{
+    filter:none!important;
+    -webkit-filter:none!important;
+    transform:perspective(1200px) scale(.994,.988)!important;
+    -webkit-transform:perspective(1200px) scale(.994,.988)!important;
+    transform-origin:center center!important;
+    -webkit-transform-origin:center center!important;
+  }
+  :root[data-call-fx-curvature="true"] .call-reader-screen-v7{
+    border-radius:inherit!important;
+  }
+}
+
+/* Frost carries its own cold emission and exposed-film softness even when the
+   expensive desktop optics pass is unavailable. */
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  .suite-panel,.call-panel-v8,.character-grid-details-v8,.suite-result-group,
+  .call-global-menu-panel-v8,.call-jump-widget-v7
+){
+  box-shadow:
+    inset 0 0 12px rgba(78,183,177,.16),
+    inset 0 1px rgba(234,255,250,.19),
+    0 0 8px rgba(93,232,215,.08)!important;
+}
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v7[aria-pressed="true"],
+  .call-global-menu-panel-v8 a[aria-current="page"],
+  .suite-checks label:has(input:checked)
+){
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important;
+  text-shadow:none!important;
+  box-shadow:
+    inset 0 0 10px rgba(215,255,243,.26),
+    0 0 5px rgba(215,255,243,.58),
+    0 0 15px rgba(93,232,215,.38),
+    0 0 28px rgba(64,200,192,.20)!important;
+}
+:root[data-call-theme="frost"][data-call-ios="false"] .call-display-root-v7 img{
+  filter:saturate(.93) contrast(.98);
+}
