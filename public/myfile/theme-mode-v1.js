@@ -701,8 +701,16 @@
       const roll=Math.random();
       const mode=roll < .50 ? 'down' : (roll < .76 ? 'up' : 'converge');
       root.dataset.callTrackingMode=mode;
-      root.style.setProperty('--call-tracking-shift-a',`${(-1.4 + Math.random()*2.8).toFixed(2)}px`);
-      root.style.setProperty('--call-tracking-shift-b',`${(-1.2 + Math.random()*2.4).toFixed(2)}px`);
+      const shiftA=-1.4 + Math.random()*2.8;
+      const shiftB=-1.2 + Math.random()*2.4;
+      root.style.setProperty('--call-tracking-shift-a',`${shiftA.toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-a-19',`${(-shiftA*.45).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-a-48',`${(shiftA*.70).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-a-73',`${(-shiftA*.28).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-a-23',`${(shiftA*.52).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-a-57',`${(-shiftA*.64).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-a-81',`${(shiftA*.25).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-b',`${shiftB.toFixed(2)}px`);
       root.style.setProperty('--call-tracking-duration',`${(0.72 + Math.random()*.58).toFixed(2)}s`);
       root.dataset.callTracking='true';
 
