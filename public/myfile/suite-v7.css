@@ -58,7 +58,7 @@
 .suite-attribute-v7 {
   margin: 8px 0;
   border: 1px solid var(--v7-line);
-  border-radius: 9px;
+  border-radius: 0;
   background: #fffafd;
 }
 .suite-attribute-v7 > summary {
@@ -147,7 +147,7 @@
 .suite-result-group {
   margin: 8px 0;
   overflow: visible !important;
-  border-radius: 9px;
+  border-radius: 0;
 }
 .suite-result-group > h3 {
   position: sticky;
@@ -272,7 +272,7 @@
 .story-cast-fallback-v7 {
   display: grid;
   place-items: center;
-  color: #fff;
+  color: var(--call-text, #a7ff54);
   background: #a04d78;
   font-size: .68rem;
   font-weight: 800;
@@ -311,16 +311,16 @@
   width: 52px;
   height: 44px;
   padding: 0;
-  border: 2px solid #fff;
-  border-radius: 12px;
-  color: #fff;
-  background: rgba(243, 77, 167, .93);
-  box-shadow: 0 3px 10px rgba(74, 18, 49, .24);
+  border: 1px solid var(--call-border, #879d65);
+  border-radius: 0;
+  color: var(--call-text, #a7ff54);
+  background: var(--call-surface-raised, #0b1308);
+  box-shadow: none;
   font: 800 .88rem/1 sans-serif;
   cursor: pointer;
 }
 .suite-quick-rail-v7 button:hover,
-.suite-quick-rail-v7 button:focus-visible { background: #d92f8b; outline: 3px solid rgba(243,77,167,.25); }
+.suite-quick-rail-v7 button:focus-visible { background: var(--call-accent, #a7ff54); outline: 1px solid var(--call-focus, #d4ff9c); }
 
 /* Keep the sticky mode switch compact. */
 .suite-nav { margin-top: 4px; margin-bottom: 7px; }
@@ -341,7 +341,7 @@
   .story-summary-v7 { padding: 6px 8px; }
   .story-cast-chip-v7 { max-width: 100%; }
   .suite-quick-rail-v7 { right: 1px; gap: 2px; }
-  .suite-quick-rail-v7 button { width: 42px; height: 34px; border-radius: 9px; font-size: .74rem; opacity: .88; }
+  .suite-quick-rail-v7 button { width: 42px; height: 34px; border-radius: 0; font-size: .74rem; opacity: .88; }
 }
 
 @media (max-width: 390px) {
