@@ -273,7 +273,7 @@
     if(!opticalRefs) return;
     const p=currentRegistrationProfile();
     const mobile=mobileQuery.matches;
-    const filterCapable=!isIOS && !mobile;
+    const filterCapable=!isIOS;
     const registration=false;
     const curveOn=filterCapable && effectValue('curvature');
     const night=activeTheme === 'dark';
