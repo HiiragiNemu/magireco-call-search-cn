@@ -1455,3 +1455,29 @@ html[data-call-preboot="false"]::after{
 :root[data-call-theme="frost"][data-call-ios="false"] .call-display-root-v7 img{
   filter:saturate(.93) contrast(.98);
 }
+
+
+/* Integrated drag affordance: part of the Reader-style frame, never a separate button. */
+.call-jump-widget-v7::before{
+  content:"";
+  display:block;
+  width:28px;
+  height:7px;
+  margin:0 auto 2px;
+  pointer-events:none;
+  opacity:.58;
+  background:
+    radial-gradient(circle,currentColor 0 1px,transparent 1.2px) 0 0/7px 7px repeat-x;
+  color:var(--call-muted);
+}
+:root[data-call-theme-bar-mode="floating"] .call-theme-widget-v7::before{
+  content:"";
+  flex:0 0 8px;
+  width:8px;
+  align-self:stretch;
+  pointer-events:none;
+  opacity:.48;
+  background:
+    radial-gradient(circle,currentColor 0 1px,transparent 1.2px) center 2px/6px 6px repeat-y;
+  color:var(--call-muted);
+}
