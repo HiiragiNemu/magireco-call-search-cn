@@ -30,9 +30,9 @@
     registration:'全局色彩偏移（文字、图标、边框）'
   });
   const DEFAULTS = Object.freeze({
-    light:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:false },
-    paper:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:false },
-    green:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:false },
+    light:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:false },
+    paper:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:false },
+    green:{ curvature:false,scanlines:true,noise:true,pixelFont:false,registration:false },
     dark:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:true },
     frost:{ curvature:false,scanlines:false,noise:false,pixelFont:true,registration:false }
   });
@@ -234,9 +234,10 @@
   function updateOpticalFilter(){
     if(!opticalRefs) return;
     const p=currentRegistrationProfile();
-    const desktop=!mobileQuery.matches && !isIOS;
-    const registration=desktop && effectValue('registration');
-    const curveOn=desktop && effectValue('curvature');
+    const filterCapable=!isIOS;
+    const mobile=mobileQuery.matches;
+    const registration=filterCapable && effectValue('registration');
+    const curveOn=filterCapable && effectValue('curvature');
     const night=activeTheme === 'dark';
 
     opticalRefs.redShift.setAttribute('dx',String(registration ? -p.distance*.65 : 0));
@@ -247,14 +248,24 @@
     opticalRefs.registered.setAttribute('k3',String(registration ? 1-p.mix : 1));
 
     opticalRefs.beam.setAttribute('stdDeviation',String(curveOn ? (night ? .35 : activeTheme === 'frost' ? .2 : .12) : 0));
-    opticalRefs.curve.setAttribute('scale',String(curveOn ? 50 : 0));
+    opticalRefs.curve.setAttribute('scale',String(curveOn ? (mobile ? 38 : 50) : 0));
     opticalRefs.tube.setAttribute('stdDeviation',String(curveOn ? (night ? .18 : activeTheme === 'frost' ? .1 : .06) : 0));
 
     let near=0,wide=0,panel=0;
     if(curveOn){
-      if(night){near=.32;wide=.36;panel=.38;}
-      else if(activeTheme === 'frost'){near=.14;wide=.12;panel=.08;}
-      else{near=.04;wide=.02;panel=0;}
+      if(night){
+        near=mobile ? .18 : .32;
+        wide=mobile ? .14 : .36;
+        panel=mobile ? .10 : .38;
+      }else if(activeTheme === 'frost'){
+        near=mobile ? .08 : .14;
+        wide=mobile ? .06 : .12;
+        panel=mobile ? .04 : .08;
+      }else{
+        near=mobile ? .025 : .04;
+        wide=mobile ? .012 : .02;
+        panel=0;
+      }
     }
     opticalRefs.nearFn.setAttribute('slope',String(near));
     opticalRefs.wideFn.setAttribute('slope',String(wide));
@@ -273,7 +284,7 @@
     for(const key of EFFECT_KEYS){
       root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(effectValue(key));
     }
-    root.dataset.callOpticsActive=String(!mobileQuery.matches && !isIOS && (effectValue('curvature') || effectValue('registration')));
+    root.dataset.callOpticsActive=String(!isIOS && (effectValue('curvature') || effectValue('registration')));
     setBrowserChrome();
     updateOpticalFilter();
   }
@@ -303,7 +314,7 @@
     const b=widget.querySelector('[data-jump-collapse]');
     if(b){b.textContent=state.jumpCollapsed?'＋':'－';b.title=state.jumpCollapsed?'展开跳转工具':'收起跳转工具';b.setAttribute('aria-label',b.title);}
   }
-  function applyAll(){applyDatasets();syncThemeButtons();syncSettings();syncJump();updateScrollbar();}
+  function applyAll(){applyDatasets();placeThemeBar();syncThemeButtons();syncSettings();syncJump();updateScrollbar();}
 
   function setTheme(theme,persistTheme=true){
     if(!VALID_THEMES.has(theme)) return activeTheme;
@@ -320,14 +331,24 @@
     if(activeTheme === 'frost' && key === 'registration') return;
     state.effects[activeTheme][key]=Boolean(enabled);persist();applyAll();
   }
-  function setThemeBarMode(mode){
-    state.themeBarMode=mode === 'floating' ? 'floating' : 'top';persist();applyAll();
-    const widget=displayRoot?.querySelector('.call-theme-widget-v7');
-    if(state.themeBarMode === 'top' && widget){
-      storageSet(THEME_POS_KEY+':portrait','');storageSet(THEME_POS_KEY+':landscape','');
+  function placeThemeBar(){
+    const widget=document.querySelector('.call-theme-widget-v7');
+    if(!widget || !displayRoot || !scrollRoot) return;
+    if(state.themeBarMode === 'floating'){
+      if(widget.parentElement !== displayRoot) displayRoot.appendChild(widget);
+    }else{
+      storageSet(THEME_POS_KEY+':portrait','');
+      storageSet(THEME_POS_KEY+':landscape','');
       widget.classList.remove('is-positioned');
       for(const p of ['left','top','right','bottom','transform']) widget.style.removeProperty(p);
+      if(widget.parentElement !== scrollRoot) scrollRoot.insertBefore(widget,scrollRoot.firstChild);
     }
+  }
+  function setThemeBarMode(mode){
+    state.themeBarMode=mode === 'floating' ? 'floating' : 'top';
+    persist();
+    placeThemeBar();
+    applyAll();
   }
   function resetEffects(){state.effects[activeTheme]=cloneDefaults(activeTheme);normalizeThemeState(activeTheme);persist();applyAll();}
 
@@ -358,12 +379,14 @@
     const p=clampPoint(node,point),host=displayRoot.getBoundingClientRect();
     node.classList.add('is-positioned');node.style.left=`${p.x-host.left}px`;node.style.top=`${p.y-host.top}px`;node.style.right='auto';node.style.bottom='auto';node.style.transform='none';
   }
-  function makeDraggable(node,handle,key,enabled=()=>true){
+  function makeDraggable(node,handle,key,enabled=()=>true,backgroundOnly=false){
     let drag=null,frame=0;
     const restore=()=>{const p=parsePoint(storageGet(orientationKey(key)));if(p)requestAnimationFrame(()=>applyPoint(node,p));};
     restore();
     handle.addEventListener('pointerdown',e=>{
       if(!enabled()) return;
+      if(backgroundOnly && e.target !== handle) return;
+      if(e.target.closest?.('button,a,input,select,textarea,summary')) return;
       if(e.pointerType==='mouse'&&e.button!==0)return;
       const r=node.getBoundingClientRect();e.preventDefault();handle.setPointerCapture?.(e.pointerId);
       drag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};node.classList.add('is-dragging');
@@ -378,10 +401,10 @@
       if(save){const r=node.getBoundingClientRect();storageSet(orientationKey(key),JSON.stringify({x:r.left,y:r.top}));}
     };
     handle.addEventListener('pointerup',e=>end(e,true));handle.addEventListener('pointercancel',e=>end(e,false));
-    handle.addEventListener('dblclick',()=>{if(!enabled())return;storageSet(orientationKey(key),'');applyPoint(node,null);});
-  }
-  function grip(label){
-    const b=document.createElement('button');b.type='button';b.className='call-floating-grip-v7';b.title=`${label}；双击恢复默认位置`;b.setAttribute('aria-label',label);b.innerHTML='<span aria-hidden="true">⋮⋮</span>';return b;
+    handle.addEventListener('dblclick',e=>{
+      if(!enabled() || (backgroundOnly && e.target !== handle)) return;
+      storageSet(orientationKey(key),'');applyPoint(node,null);
+    });
   }
   function icon(key){
     const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
@@ -391,12 +414,15 @@
     if(key==='dark')return `<svg ${common}><path d="M18.5 15.7A7.8 7.8 0 0 1 8.3 5.5 8 8 0 1 0 18.5 15.7Z"/></svg>`;
     return `<svg ${common}><path d="M7 3H3v4M17 3h4v4M3 17v4h4M21 17v4h-4"/><path d="M8 8h8v8H8z"/></svg>`;
   }
-  const settingsIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>';
+  const settingsIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h7M15 6h5M4 12h3M11 12h9M4 18h10M18 18h2"/><rect x="11" y="4.5" width="4" height="3"/><rect x="7" y="10.5" width="4" height="3"/><rect x="14" y="16.5" width="4" height="3"/></svg>';
 
   function installThemeBar(){
-    displayRoot.querySelectorAll('.call-theme-widget-v6,.call-theme-widget-v5,.call-theme-dock-v2').forEach(n=>n.remove());
-    const widget=document.createElement('div');widget.className='call-floating-widget-v7 call-theme-widget-v7';widget.setAttribute('role','toolbar');widget.setAttribute('aria-label','主题');
-    const h=grip('拖动主题栏');h.classList.add('call-theme-grip-v7');
+    displayRoot.querySelectorAll('.call-theme-widget-v6,.call-theme-widget-v5,.call-dock-v2').forEach(n=>n.remove());
+    const widget=document.createElement('div');
+    widget.className='call-floating-widget-v7 call-theme-widget-v7';
+    widget.setAttribute('role','toolbar');
+    widget.setAttribute('aria-label','主题');
+    widget.title='悬浮模式下可从控件边框空白处拖动；双击空白处恢复位置';
     const options=document.createElement('div');options.className='call-theme-options-v7';
     for(const item of THEMES){
       const b=document.createElement('button');b.type='button';b.className='call-theme-option-v7';b.dataset.callThemeOption=item.key;b.title=item.label;b.setAttribute('aria-label',`切换为${item.label}主题`);
@@ -404,8 +430,10 @@
     }
     const fx=document.createElement('button');fx.type='button';fx.className='call-floating-utility-v7';fx.innerHTML=settingsIcon;fx.title='画面设置';fx.setAttribute('aria-label',fx.title);
     fx.addEventListener('click',()=>{state.fxOpen=!state.fxOpen;persist();syncSettings();});
-    widget.append(h,options,fx);displayRoot.appendChild(widget);
-    makeDraggable(widget,h,THEME_POS_KEY,()=>state.themeBarMode==='floating');
+    widget.append(options,fx);
+    displayRoot.appendChild(widget);
+    placeThemeBar();
+    makeDraggable(widget,widget,THEME_POS_KEY,()=>state.themeBarMode==='floating',true);
   }
 
   function ensureRail(){
@@ -414,8 +442,8 @@
     if(document.body.dataset.suiteTool==='runes'){
       rail=document.createElement('aside');rail.className='suite-quick-rail-v7 call-generated-rail-v7';rail.setAttribute('aria-label','页面快捷操作');
       for(const [caption,label,action,actionName] of [
-        ['顶部','跳到页面顶部',()=>scrollToRoot({top:0,behavior:'smooth'}),'top'],
-        ['底部','跳到页面底部',()=>scrollToRoot({top:rootHeight(),behavior:'smooth'}),'bottom']
+        ['↑','跳到页面顶部',()=>scrollToRoot({top:0,behavior:'smooth'}),'top'],
+        ['↓','跳到页面底部',()=>scrollToRoot({top:rootHeight(),behavior:'smooth'}),'bottom']
       ]){
         const b=document.createElement('button');b.type='button';b.textContent=caption;b.title=label;b.dataset.action=actionName;b.setAttribute('aria-label',label);b.addEventListener('click',action);rail.appendChild(b);
       }
@@ -432,12 +460,15 @@
   }
   function installJump(){
     displayRoot.querySelectorAll('.call-jump-widget-v6,.call-jump-widget-v5').forEach(n=>n.remove());
-    const widget=document.createElement('div');widget.className='call-floating-widget-v7 call-jump-widget-v7';widget.setAttribute('role','group');widget.setAttribute('aria-label','页面跳转工具');
-    const h=grip('拖动跳转工具');
+    const widget=document.createElement('div');
+    widget.className='call-floating-widget-v7 call-jump-widget-v7';
+    widget.setAttribute('role','group');
+    widget.setAttribute('aria-label','页面跳转工具');
+    widget.title='从边框空白处拖动；双击空白处恢复位置';
     const host=document.createElement('div');host.className='call-jump-actions-v7';host.dataset.quickRailHost='true';
     const collapse=document.createElement('button');collapse.type='button';collapse.className='call-jump-collapse-v7';collapse.dataset.jumpCollapse='true';
     collapse.addEventListener('click',()=>{state.jumpCollapsed=!state.jumpCollapsed;persist();syncJump();});
-    widget.append(h,host,collapse);displayRoot.appendChild(widget);makeDraggable(widget,h,JUMP_POS_KEY,()=>true);
+    widget.append(host,collapse);displayRoot.appendChild(widget);makeDraggable(widget,widget,JUMP_POS_KEY,()=>true,true);
     const rail=ensureRail();if(rail)host.appendChild(rail);adoptRail();root.dataset.callControlsReady='true';
   }
 
@@ -457,11 +488,10 @@
   function installSettings(){
     displayRoot.querySelectorAll('.call-fx-window-v6,.call-fx-window-v5').forEach(n=>n.remove());
     const panel=document.createElement('section');panel.className='call-floating-widget-v7 call-fx-window-v7';panel.role='dialog';panel.setAttribute('aria-label','画面与字体设置');
-    const titlebar=document.createElement('header');titlebar.className='call-fx-titlebar-v7';
-    const h=grip('拖动画面设置');h.classList.add('call-fx-grip-v7');
+    const titlebar=document.createElement('header');titlebar.className='call-fx-titlebar-v7';titlebar.title='拖动设置窗口';
     const copy=document.createElement('div');copy.className='call-fx-title-copy-v7';copy.innerHTML='<small>SYS://DISPLAY.CONFIG</small><strong>画面与字体效果</strong>';
     const close=document.createElement('button');close.type='button';close.className='call-fx-close-v7';close.textContent='×';close.setAttribute('aria-label','关闭设置');close.addEventListener('click',()=>{state.fxOpen=false;persist();syncSettings();});
-    titlebar.append(h,copy,close);
+    titlebar.append(copy,close);
 
     const body=document.createElement('div');body.className='call-fx-body-v7';
     const intro=document.createElement('p');intro.className='call-fx-intro-v7';intro.innerHTML='当前主题：<strong data-fx-theme-label></strong>。设置项与 MagiReader 对齐；夜间的曲率、扫描线、噪点与全局色散固定开启。';
@@ -478,7 +508,7 @@
 
     const placement=document.createElement('fieldset');placement.innerHTML='<legend>主题栏位置</legend>';
     const placeSeg=document.createElement('div');placeSeg.className='call-fx-segment-v7';
-    for(const [value,label] of [['top','顶部固定'],['floating','可拖拽悬浮']]){
+    for(const [value,label] of [['top','顶部随页面滚动'],['floating','可拖拽悬浮']]){
       const b=document.createElement('button');b.type='button';b.dataset.themebarMode=value;b.textContent=label;b.addEventListener('click',()=>setThemeBarMode(value));placeSeg.appendChild(b);
     }
     placement.appendChild(placeSeg);
@@ -487,7 +517,7 @@
     const reset=document.createElement('button');reset.type='button';reset.textContent='恢复本主题默认';reset.addEventListener('click',resetEffects);
     const done=document.createElement('button');done.type='button';done.textContent='关闭';done.addEventListener('click',()=>{state.fxOpen=false;persist();syncSettings();});
     footer.append(reset,done);
-    body.append(intro,phosphor,effects,placement,footer);panel.append(titlebar,body);displayRoot.appendChild(panel);makeDraggable(panel,h,FX_POS_KEY,()=>true);
+    body.append(intro,phosphor,effects,placement,footer);panel.append(titlebar,body);displayRoot.appendChild(panel);makeDraggable(panel,titlebar,FX_POS_KEY,()=>true,false);
   }
 
   function installScrollbar(){
