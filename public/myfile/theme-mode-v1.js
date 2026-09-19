@@ -598,8 +598,8 @@
   function railIcon(action){
     const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
     const icons={
-      top:`<svg ${common}><path d="M5 8h14M12 18V9"/><path d="m8 13 4-4 4 4"/></svg>`,
-      bottom:`<svg ${common}><path d="M5 16h14M12 6v9"/><path d="m8 11 4 4 4-4"/></svg>`,
+      top:'<span class="call-rail-arrow" aria-hidden="true">↑</span>',
+      bottom:'<span class="call-rail-arrow" aria-hidden="true">↓</span>',
       characters:`<svg ${common}><circle cx="12" cy="8" r="3"/><path d="M6 19c.8-3.5 3-5.2 6-5.2s5.2 1.7 6 5.2"/></svg>`,
       filter:`<svg ${common}><path d="M4 6h16M7 12h10M10 18h4"/></svg>`,
       attributes:`<svg ${common}><path d="M5 6h8M17 6h2M5 12h2M11 12h8M5 18h10M19 18h0"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg>`,
