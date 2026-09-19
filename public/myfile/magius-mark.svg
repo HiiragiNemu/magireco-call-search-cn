@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 660" role="img" aria-labelledby="title desc">
+  <title id="title">Magius emblem</title>
+  <desc id="desc">Winged lance emblem used by MadeInMagius, without the upper ray crown.</desc>
+  <g fill="#d8ffe4" stroke="#d8ffe4" stroke-width="3" stroke-linejoin="round">
+    <!-- left wing: horizontal shoulder, clipped outer corner, deep half-round lower edge -->
+    <path fill-rule="evenodd" d="
+      M108 194
+      H357
+      L349 386
+      C316 383 280 371 248 350
+      C214 329 188 300 169 242
+      L128 231
+      C116 228 108 218 108 204
+      Z
+
+      M204 223
+      C224 221 259 222 300 226
+      L235 254
+      C216 262 204 253 203 241
+      C202 232 207 227 218 225
+      Z
+
+      M236 274
+      L310 246
+      L259 311
+      C249 324 233 322 227 310
+      C222 299 225 287 236 274
+      Z
+
+      M283 292
+      L330 251
+      L307 343
+      C303 359 289 363 279 355
+      C270 348 270 335 276 321
+      Z" />
+    <!-- right wing -->
+    <path fill-rule="evenodd" d="
+      M383 194
+      H632
+      V204
+      C632 218 624 228 612 231
+      L571 242
+      C552 300 526 329 492 350
+      C460 371 424 383 391 386
+      Z
+
+      M536 223
+      C516 221 481 222 440 226
+      L505 254
+      C524 262 536 253 537 241
+      C538 232 533 227 522 225
+      Z
+
+      M504 274
+      L430 246
+      L481 311
+      C491 324 507 322 513 310
+      C518 299 515 287 504 274
+      Z
+
+      M457 292
+      L410 251
+      L433 343
+      C437 359 451 363 461 355
+      C470 348 470 335 464 321
+      Z" />
+    <!-- central lance -->
+    <path d="
+      M366 60
+      L374 60
+      L388 390
+      H352
+      Z" />
+    <path d="
+      M352 390
+      H388
+      L399 571
+      L370 594
+      L341 571
+      Z" />
+    <!-- socket and pedestal -->
+    <path d="M354 594 H386 L385 617 H355 Z" />
+    <path d="M334 617 H406 V631 H334 Z" />
+    <path d="M320 631 H420 V644 H320 Z" />
+  </g>
+  <!-- fluting cutouts on lower lance -->
+  <g fill="#07150a" opacity=".9">
+    <path d="M351 398 L359 398 L357 553 L348 553 Z"/>
+    <path d="M363 398 L369 398 L369 553 L361 553 Z"/>
+    <path d="M371 398 L377 398 L379 553 L371 553 Z"/>
+    <path d="M381 398 L389 398 L392 553 L383 553 Z"/>
+  </g>
+  <path d="M366 60 L370 45 L374 60 Z" fill="#d8ffe4"/>
+</svg>
