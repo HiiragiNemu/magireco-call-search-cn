@@ -2070,3 +2070,253 @@ html[data-call-preboot="true"]::after{
     animation:none!important;
   }
 }
+
+
+/* ===== v7.7 Reader control fidelity / frost emission ===== */
+
+/* The right controller is a single Reader instrument: one header, one drag
+   strip, one collapse key, then a continuous action stack. */
+.call-jump-widget-v7{
+  width:50px!important;
+  min-width:50px!important;
+  padding:2px!important;
+  display:grid!important;
+  grid-template-rows:23px minmax(0,1fr)!important;
+  gap:0!important;
+  border:1px solid color-mix(in srgb,var(--call-border) 88%,transparent)!important;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--call-surface-raised) 96%,transparent),
+      color-mix(in srgb,var(--call-surface-soft) 91%,transparent))!important;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.25),
+    inset 0 1px color-mix(in srgb,var(--call-accent) 9%,transparent),
+    inset 0 -1px rgba(0,0,0,.32)!important;
+  transition:width .14s ease,min-width .14s ease,opacity .14s ease!important;
+}
+.call-jump-head-v7{
+  width:100%;
+  height:23px;
+  min-height:23px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 18px;
+  align-items:stretch;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 62%,transparent);
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb,var(--call-accent) 7%,transparent),
+      transparent 52%);
+  cursor:grab;
+  touch-action:none;
+}
+.call-jump-widget-v7.is-dragging .call-jump-head-v7{cursor:grabbing}
+.call-jump-grip-v7{
+  width:auto!important;
+  min-width:0!important;
+  height:22px!important;
+  min-height:22px!important;
+  border:0!important;
+  border-right:1px solid color-mix(in srgb,var(--call-border) 52%,transparent)!important;
+  background:transparent!important;
+  letter-spacing:-.14em!important;
+}
+.call-jump-grip-v7>span{
+  transform:rotate(90deg);
+  opacity:.78;
+}
+.call-jump-collapse-v7{
+  display:grid!important;
+  place-items:center!important;
+  width:18px!important;
+  min-width:18px!important;
+  height:22px!important;
+  min-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  color:var(--call-muted)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+.call-jump-collapse-v7 svg{
+  width:12px;
+  height:12px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.6;
+  stroke-linecap:square;
+  stroke-linejoin:miter;
+  transition:transform .14s ease;
+}
+.call-jump-collapse-v7:hover,
+.call-jump-collapse-v7:focus-visible{
+  color:var(--call-accent-strong)!important;
+  background:color-mix(in srgb,var(--call-accent) 10%,transparent)!important;
+}
+.call-jump-widget-v7.is-collapsed{
+  width:27px!important;
+  min-width:27px!important;
+  padding:2px!important;
+  grid-template-rows:23px!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-head-v7{
+  grid-template-columns:1fr!important;
+  border-bottom:0!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-grip-v7{
+  display:none!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-collapse-v7{
+  width:21px!important;
+  min-width:21px!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-collapse-v7 svg{
+  transform:rotate(180deg);
+}
+.call-jump-widget-v7.is-collapsed .call-jump-actions-v7{
+  display:none!important;
+}
+
+/* Continuous stack; labels stay short and the frame carries the grouping. */
+.call-jump-actions-v7{
+  padding:0 2px 1px!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7){
+  gap:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+  width:42px!important;
+  min-width:42px!important;
+  height:33px!important;
+  min-height:33px!important;
+  margin:0!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 53%,transparent)!important;
+  background:transparent!important;
+  font-family:var(--call-pixel-font)!important;
+  font-size:.65rem!important;
+  font-weight:700!important;
+  letter-spacing:.01em!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:last-child{
+  border-bottom:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:hover,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:focus-visible{
+  color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important;
+  text-shadow:none!important;
+  box-shadow:
+    inset 2px 0 color-mix(in srgb,var(--call-accent-ink) 55%,transparent),
+    0 0 6px color-mix(in srgb,var(--call-accent) 22%,transparent)!important;
+}
+
+/* Floating theme mode gets a real grip with a usable hit target. */
+:root[data-call-theme-bar-mode="floating"] .call-theme-widget-v7{
+  padding:2px!important;
+  gap:0!important;
+  border-color:color-mix(in srgb,var(--call-border) 90%,transparent)!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-theme-grip-v7{
+  width:25px!important;
+  min-width:25px!important;
+  height:40px!important;
+  min-height:40px!important;
+  border-right:1px solid color-mix(in srgb,var(--call-border) 58%,transparent)!important;
+  background:
+    radial-gradient(circle,currentColor 0 1px,transparent 1.2px) center 7px/6px 6px repeat-y!important;
+  color:var(--call-muted)!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-theme-grip-v7>span{
+  opacity:0;
+}
+.call-theme-widget-v7.is-dragging{
+  box-shadow:
+    0 8px 26px rgba(0,0,0,.30),
+    0 0 9px color-mix(in srgb,var(--call-accent) 22%,transparent)!important;
+}
+
+/* Frost must read as cold illuminated glass, not merely teal dark mode. */
+:root[data-call-theme="frost"]{
+  --call-reader-frost-halo:
+    0 0 1px rgba(235,255,250,.96),
+    0 0 5px rgba(137,255,230,.58),
+    0 0 13px rgba(71,222,207,.34),
+    0 0 27px rgba(28,140,153,.18);
+}
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  h1,h2,h3,h4,h5,h6,
+  .suite-nav a,
+  .call-theme-option-v7,
+  .call-floating-utility-v7,
+  .call-jump-widget-v7 button,
+  .call-global-menu-panel-v8 a,
+  .call-fx-title-copy-v7 strong
+){
+  text-shadow:
+    -.45px 0 .5px rgba(112,216,209,.40),
+    .45px .12px .35px rgba(220,255,249,.40),
+    0 0 2px rgba(218,255,247,.72),
+    0 0 7px rgba(93,232,215,.46),
+    0 0 16px rgba(64,200,192,.22)!important;
+}
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v7[aria-pressed="true"],
+  .call-global-menu-panel-v8 a[aria-current="page"],
+  .call-jump-widget-v7 button:hover,
+  .call-jump-widget-v7 button:focus-visible
+){
+  box-shadow:
+    inset 0 0 9px rgba(230,255,250,.24),
+    0 0 3px rgba(230,255,250,.72),
+    0 0 11px rgba(93,232,215,.48),
+    0 0 24px rgba(46,184,184,.24)!important;
+}
+:root[data-call-theme="frost"] .call-jump-widget-v7,
+:root[data-call-theme="frost"] .call-theme-widget-v7,
+:root[data-call-theme="frost"] .call-fx-window-v7{
+  background:
+    linear-gradient(180deg,rgba(3,31,34,.90),rgba(1,17,22,.94))!important;
+  border-color:rgba(122,236,220,.42)!important;
+  box-shadow:
+    inset 0 0 14px rgba(78,183,177,.17),
+    inset 0 1px rgba(234,255,250,.24),
+    0 0 9px rgba(93,232,215,.13),
+    0 8px 28px rgba(0,0,0,.30)!important;
+}
+
+/* Avoid accidentally dragging the signal while a floating UI is being moved. */
+:root[data-call-dragging="true"] .call-display-scroll-v7{
+  animation-play-state:paused!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+
+@media(max-width:760px){
+  .call-jump-widget-v7{
+    right:7px!important;
+    width:46px!important;
+    min-width:46px!important;
+  }
+  .call-jump-widget-v7.is-collapsed{
+    width:26px!important;
+    min-width:26px!important;
+  }
+  .call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+    width:38px!important;
+    min-width:38px!important;
+    height:32px!important;
+    min-height:32px!important;
+    font-size:.61rem!important;
+  }
+  :root[data-call-theme-bar-mode="floating"] .call-theme-grip-v7{
+    width:27px!important;
+    min-width:27px!important;
+    height:40px!important;
+  }
+}
