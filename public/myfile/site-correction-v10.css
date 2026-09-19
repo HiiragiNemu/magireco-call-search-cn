@@ -107,11 +107,11 @@
   width: 50px;
   min-height: 34px;
   padding: .32rem .24rem;
-  border: 2px solid #fff;
-  border-radius: 10px;
-  background: rgba(243, 77, 167, .94);
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(74, 18, 49, .24);
+  border: 1px solid var(--call-border, #879d65);
+  border-radius: 0;
+  background: var(--call-surface-raised, #0b1308);
+  color: var(--call-text, #a7ff54);
+  box-shadow: none;
   font: 800 .78rem/1.05 sans-serif;
   letter-spacing: .02em;
   white-space: nowrap;
@@ -120,13 +120,13 @@
 }
 
 .call-quick-rail-v10 button[data-action="cancel"] {
-  background: rgba(112, 58, 88, .92);
+  background: var(--call-surface-soft, #12200e);
 }
 
 .call-quick-rail-v10 button:hover,
 .call-quick-rail-v10 button:focus-visible {
-  background: #d92f8b;
-  outline: 3px solid rgba(243, 77, 167, .24);
+  background: var(--call-accent, #a7ff54);
+  outline: 1px solid var(--call-focus, #d4ff9c);
 }
 
 /* V10 height percentage is relative to the compact 50%-of-old baseline. */
@@ -184,7 +184,7 @@
     width: 42px;
     min-height: 30px;
     padding: .20rem .14rem;
-    border-radius: 8px;
+    border-radius: 0;
     font-size: .67rem;
     opacity: .92;
   }
