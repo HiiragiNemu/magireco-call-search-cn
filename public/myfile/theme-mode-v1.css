@@ -40,7 +40,7 @@
   --call-sized-trail:rgba(69,154,244,.55);
   --call-ambient-glow:rgba(86,99,102,.08);
   --call-scan-opacity:.045;
-  --call-day-grain-opacity:.12;
+  --call-day-grain-opacity:.18;
   --call-pixel-font:'MagiCallPixelSC','MagiCallPixelJP','MS Gothic',monospace;
   --call-pixel-font-jp:'MagiCallPixelJP','MagiCallPixelSC','MS Gothic',monospace;
 
@@ -85,7 +85,7 @@
   --call-panel-shadow:inset 0 1px rgba(255,252,236,.7),0 4px 12px rgba(55,42,24,.1);
   --call-widget-shadow:0 5px 18px rgba(55,42,24,.20),inset 0 1px rgba(255,252,236,.65);
   --call-selected-shadow:0 0 7px rgba(126,99,52,.24);
-  --call-day-grain-opacity:.14;
+  --call-day-grain-opacity:.20;
 }
 :root[data-call-theme="green"]{
   --call-bg:#d5e6c6;
@@ -109,7 +109,7 @@
   --call-panel-shadow:inset 0 1px rgba(255,255,255,.52),0 4px 12px rgba(25,66,51,.1);
   --call-widget-shadow:0 5px 18px rgba(25,66,51,.20),inset 0 1px rgba(255,255,255,.42);
   --call-selected-shadow:0 0 8px rgba(63,118,91,.26);
-  --call-day-grain-opacity:.13;
+  --call-day-grain-opacity:.18;
 }
 
 /* MagiReader night green. */
@@ -811,4 +811,228 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
 }
 :root[data-call-theme-bar-mode="floating"] .call-menu-float-v7{
   top:calc(var(--suite-nav-height-v7, 0px) + 8px)!important;
+}
+
+
+/* ===== v7.3 geometry/control correction =====
+ * The default theme row is document content and scrolls away. The right rail
+ * is a grouped Reader-style instrument, not a stack of legacy pink cards.
+ */
+
+/* Remove the decorative top/bottom arcs that read as fake "curvature". */
+:root[data-call-fx-curvature="true"] .call-display-root-v7::before,
+:root[data-call-fx-curvature="true"] .call-display-root-v7::after{
+  display:none!important;
+}
+
+/* Physical CRT edge: black overscan around the entire bounded viewport. */
+:root[data-call-fx-curvature="true"] .call-display-root-v7{
+  inset:10px!important;
+  border:1px solid color-mix(in srgb,var(--call-accent) 20%,#111)!important;
+  border-radius:clamp(26px,3.3vw,56px)/clamp(21px,2.9vh,42px)!important;
+  clip-path:inset(0 round clamp(26px,3.3vw,56px)/clamp(21px,2.9vh,42px))!important;
+  box-shadow:
+    0 0 0 8px #000,
+    0 0 46px 12px #000,
+    inset 0 0 5px rgba(255,255,255,.025),
+    inset 0 0 24px rgba(0,0,0,.58)!important;
+}
+:root[data-call-fx-curvature="true"] .call-fx-vignette-v7{
+  background:
+    radial-gradient(ellipse at 50% 47%,
+      transparent 0 52%,
+      rgba(0,0,0,.09) 69%,
+      rgba(0,0,0,.34) 88%,
+      rgba(0,0,0,.72) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.34),transparent 7% 93%,rgba(0,0,0,.37))!important;
+  box-shadow:
+    inset 0 0 3px rgba(218,233,213,.16),
+    inset 0 0 22px rgba(0,0,0,.64)!important;
+}
+:root[data-call-fx-curvature="true"] .call-fx-bezel-v7{
+  box-shadow:
+    inset 0 0 0 5px rgba(0,0,0,.54),
+    inset 0 0 11px 7px rgba(0,0,0,.62),
+    inset 0 0 34px 10px rgba(0,0,0,.34)!important;
+}
+
+/* DEFAULT: a normal first row in the document. It is not sticky and not an
+   overlay; when the user scrolls down it disappears with the page. */
+:root[data-call-theme-bar-mode="top"] .call-theme-widget-v7{
+  position:relative!important;
+  inset:auto!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  width:min(430px,calc(100% - 24px))!important;
+  margin:7px auto 5px!important;
+  box-sizing:border-box;
+  justify-content:center;
+  z-index:20!important;
+}
+:root[data-call-theme-bar-mode="top"] .call-display-scroll-v7{
+  padding-top:0!important;
+}
+:root[data-call-theme-bar-mode="top"] .call-display-scroll-v7 .suite-nav{
+  top:0!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-display-scroll-v7 .suite-nav{
+  top:0!important;
+}
+
+/* Floating mode stays opt-in from Settings. */
+:root[data-call-theme-bar-mode="floating"] .call-theme-widget-v7:not(.is-positioned){
+  position:absolute!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:16px!important;
+  top:auto!important;
+  transform:translateX(-50%)!important;
+  width:max-content!important;
+  margin:0!important;
+}
+.call-theme-widget-v7{
+  flex-wrap:nowrap!important;
+  background:color-mix(in srgb,var(--call-surface-raised) 96%,transparent)!important;
+}
+.call-theme-options-v7{
+  flex-wrap:nowrap!important;
+}
+.call-theme-option-v7,
+.call-floating-utility-v7{
+  flex:0 0 39px!important;
+}
+.call-floating-grip-v7{
+  display:none!important;
+}
+
+/* Tune/sliders icon: clearly not the moon/night icon. */
+.call-floating-utility-v7 svg{
+  width:20px!important;
+  height:20px!important;
+}
+
+/* Reader-like grouped jump instrument. The frame is the drag surface; buttons
+   are separated by hairlines instead of being ten independent chunky cards. */
+.call-jump-widget-v7{
+  right:15px!important;
+  top:50%!important;
+  width:49px!important;
+  padding:3px!important;
+  gap:0!important;
+  transform:translateY(-50%)!important;
+  border:1px solid var(--call-border)!important;
+  background:color-mix(in srgb,var(--call-surface-raised) 91%,transparent)!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--call-accent) 10%,transparent),
+    0 5px 18px rgba(0,0,0,.30),
+    inset 0 0 8px color-mix(in srgb,var(--call-accent) 5%,transparent)!important;
+}
+.call-jump-widget-v7.is-positioned{
+  transform:none!important;
+}
+.call-jump-actions-v7{
+  gap:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7){
+  gap:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button,
+.call-jump-collapse-v7{
+  width:41px!important;
+  min-width:41px!important;
+  height:34px!important;
+  min-height:34px!important;
+  margin:0!important;
+  padding:.16rem .08rem!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 72%,transparent)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  box-shadow:none!important;
+  outline:none!important;
+  font:800 .68rem/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:first-child,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:last-child{
+  font-size:1.05rem!important;
+  font-family:var(--call-pixel-font)!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:hover,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:focus-visible,
+.call-jump-collapse-v7:hover,
+.call-jump-collapse-v7:focus-visible{
+  color:var(--call-accent-strong)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:color-mix(in srgb,var(--call-accent) 11%,var(--call-surface-raised))!important;
+  box-shadow:
+    inset 2px 0 var(--call-accent),
+    0 0 8px color-mix(in srgb,var(--call-accent) 22%,transparent)!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button[data-action="cancel"]{
+  color:var(--call-muted)!important;
+  background:transparent!important;
+}
+.call-jump-collapse-v7{
+  height:25px!important;
+  min-height:25px!important;
+  border-bottom:0!important;
+  color:var(--call-muted)!important;
+}
+
+/* The floating hamburger is a screen instrument and never owns page height. */
+:root[data-call-theme-bar-mode="top"] .call-menu-float-v7,
+:root[data-call-theme-bar-mode="floating"] .call-menu-float-v7{
+  top:calc(var(--suite-nav-height-v7, 48px) + 11px)!important;
+  left:10px!important;
+}
+
+/* Settings title bar itself is draggable; no separate "⋮" key. */
+.call-fx-titlebar-v7{
+  grid-template-columns:minmax(0,1fr) 38px!important;
+  cursor:move;
+}
+.call-fx-titlebar-v7 .call-fx-close-v7{
+  cursor:pointer;
+}
+
+/* Android/Chromium mobile may use the bounded single-screen Reader filter.
+   iOS remains on the static low-cost glass path. */
+@media(max-width:760px){
+  :root[data-call-ios="false"][data-call-optics-active="true"] .call-display-root-v7{
+    filter:url('#call-screen-optics-v7')!important;
+  }
+  :root[data-call-fx-curvature="true"] .call-display-root-v7{
+    inset:7px!important;
+    border-radius:clamp(24px,7.2vw,42px)/clamp(18px,3.4vh,32px)!important;
+    clip-path:inset(0 round clamp(24px,7.2vw,42px)/clamp(18px,3.4vh,32px))!important;
+    box-shadow:
+      0 0 0 6px #000,
+      0 0 34px 9px #000,
+      inset 0 0 22px rgba(0,0,0,.50)!important;
+  }
+  :root[data-call-theme-bar-mode="top"] .call-theme-widget-v7{
+    width:min(390px,calc(100% - 22px))!important;
+    margin:6px auto 4px!important;
+  }
+  .call-theme-option-v7,
+  .call-floating-utility-v7{
+    width:38px!important;
+    min-width:38px!important;
+    flex-basis:38px!important;
+  }
+  .call-jump-widget-v7{
+    right:8px!important;
+    width:47px!important;
+  }
+  .call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button,
+  .call-jump-collapse-v7{
+    width:39px!important;
+    min-width:39px!important;
+  }
 }
