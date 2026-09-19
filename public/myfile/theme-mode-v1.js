@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'reader-terminal-v7.7-20260919';
+  const RELEASE = 'reader-terminal-v7.8-20260920';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
   const VISUAL_KEY = 'magireco-call-visual-v7-5';
@@ -856,9 +856,9 @@
       console.error('[theme-mode] responsive listeners failed',error);
     }
 
-    root.dataset.callThemeReady='v7.7';
+    root.dataset.callThemeReady='v7.8';
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:'7.7',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'7.8',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });
