@@ -2461,3 +2461,218 @@ html[data-call-preboot="true"]::after{
   --call-surface-raised:rgba(7,30,37,.92);
   --call-card-bg:rgba(8,29,35,.82);
 }
+
+
+/* ===== v7.8 static Reader glass / symbolic rail / transparent results ===== */
+
+/* User-facing motion is now intentionally static. Keep phosphor texture,
+   blur, registration and curvature; remove whole-scene jitter and moving scans. */
+.call-display-scroll-v7,
+.call-fx-scanlines-v7,
+.call-fx-rolling-band-v7,
+.call-fx-tracking-v7{
+  animation:none!important;
+}
+.call-fx-rolling-band-v7,
+.call-fx-tracking-v7{
+  display:none!important;
+}
+:root[data-call-theme="dark"][data-call-fx-scanlines="true"] .call-fx-scanlines-v7{
+  display:none!important;
+}
+
+/* Match Reader night material more closely: one phosphor raster + film grain,
+   not stacked extra line fields. */
+:root[data-call-theme="dark"]{
+  --call-field:
+    radial-gradient(ellipse 76vw 82vh at 51% 46%,
+      #172013 0%,
+      #0d130a 42%,
+      #070a05 68%,
+      #020302 100%);
+  --call-network-bg:rgba(2,5,1,.54);
+}
+:root[data-call-theme="dark"][data-call-phosphor="amber"]{
+  --call-network-bg:rgba(5,2,3,.56);
+}
+:root[data-call-theme="frost"]{
+  --call-network-bg:rgba(1,7,10,.50);
+}
+:root[data-call-theme="dark"][data-call-fx-noise="true"] .call-fx-night-phosphor-v7{
+  opacity:.28!important;
+}
+:root[data-call-theme="dark"][data-call-fx-noise="true"] .call-fx-night-grain-v7{
+  opacity:.39!important;
+  animation:none!important;
+}
+:root[data-call-theme="dark"][data-call-fx-noise="true"][data-call-ios="false"] .call-fx-film-focus-v7{
+  backdrop-filter:blur(.32px) saturate(.96) contrast(.99)!important;
+  -webkit-backdrop-filter:blur(.32px) saturate(.96) contrast(.99)!important;
+}
+
+/* The relationship canvas must not punch an opaque black rectangle through
+   the MAGIUS background watermark. */
+:root[data-call-theme="dark"] body :is(#callResultSection,#canvasflame,#mynetwork),
+:root[data-call-theme="frost"] body :is(#callResultSection,#canvasflame,#mynetwork){
+  background:transparent!important;
+  background-color:transparent!important;
+}
+:root[data-call-theme="dark"] body #mynetwork{
+  background:var(--call-network-bg)!important;
+}
+:root[data-call-theme="frost"] body #mynetwork{
+  background:var(--call-network-bg)!important;
+}
+:root[data-call-theme="dark"] body #canvasflame,
+:root[data-call-theme="frost"] body #canvasflame{
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb,var(--call-border) 52%,transparent),
+    inset 0 0 28px rgba(0,0,0,.20)!important;
+}
+
+/* Fix the old dock rules overriding inline drag coordinates. Once positioned,
+   both axes belong to the drag state. */
+.call-jump-widget-v7.is-positioned,
+.call-theme-widget-v7.is-positioned,
+.call-fx-window-v7.is-positioned{
+  right:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+
+/* Reader-like compact symbolic rail. No text labels in the visible control. */
+.call-jump-widget-v7{
+  width:42px!important;
+  min-width:42px!important;
+  padding:2px!important;
+  grid-template-rows:20px minmax(0,1fr)!important;
+  z-index:2380!important;
+  background:color-mix(in srgb,var(--call-surface-raised) 84%,transparent)!important;
+  border-color:color-mix(in srgb,var(--call-border) 72%,transparent)!important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.025),
+    inset 0 -1px rgba(0,0,0,.32),
+    0 5px 18px rgba(0,0,0,.22)!important;
+}
+.call-jump-head-v7{
+  height:20px!important;
+  min-height:20px!important;
+  grid-template-columns:minmax(0,1fr) 16px!important;
+}
+.call-jump-grip-v7{
+  height:19px!important;
+  min-height:19px!important;
+  width:auto!important;
+  min-width:0!important;
+}
+.call-jump-collapse-v7{
+  width:16px!important;
+  min-width:16px!important;
+  height:19px!important;
+  min-height:19px!important;
+}
+.call-jump-collapse-v7 svg{
+  width:10px!important;
+  height:10px!important;
+}
+.call-collapse-collapsed-icon{display:none}
+.call-jump-widget-v7.is-collapsed .call-collapse-expanded-icon{display:none}
+.call-jump-widget-v7.is-collapsed .call-collapse-collapsed-icon{display:block}
+.call-jump-widget-v7.is-collapsed{
+  width:28px!important;
+  min-width:28px!important;
+  grid-template-rows:28px!important;
+  padding:1px!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-head-v7{
+  height:26px!important;
+  min-height:26px!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-collapse-v7{
+  width:26px!important;
+  min-width:26px!important;
+  height:26px!important;
+  min-height:26px!important;
+}
+.call-jump-widget-v7.is-collapsed .call-jump-collapse-v7 svg{
+  width:15px!important;
+  height:15px!important;
+  transform:none!important;
+}
+
+.call-jump-actions-v7{
+  padding:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+  width:36px!important;
+  min-width:36px!important;
+  height:31px!important;
+  min-height:31px!important;
+  margin:0!important;
+  padding:0!important;
+  color:var(--call-text)!important;
+  background:transparent!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 45%,transparent)!important;
+  font-size:0!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button svg{
+  width:16px!important;
+  height:16px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.45!important;
+  stroke-linecap:square!important;
+  stroke-linejoin:miter!important;
+  overflow:visible;
+  filter:
+    drop-shadow(-.30px 0 .06px rgba(63,197,255,.30))
+    drop-shadow(.34px 0 .06px rgba(255,54,88,.28));
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button[data-action="top"] svg,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button[data-action="bottom"] svg{
+  width:18px!important;
+  height:18px!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:hover,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:focus-visible{
+  color:var(--call-accent-ink)!important;
+  background:var(--call-accent)!important;
+  box-shadow:
+    inset 2px 0 color-mix(in srgb,var(--call-accent-ink) 52%,transparent),
+    0 0 6px color-mix(in srgb,var(--call-accent) 22%,transparent)!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:hover svg,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:focus-visible svg{
+  filter:none!important;
+}
+
+/* Make the floating rail itself look like part of the same phosphor signal. */
+:root[data-call-theme="dark"] .call-jump-widget-v7,
+:root[data-call-theme="frost"] .call-jump-widget-v7{
+  filter:blur(.08px) saturate(.97) contrast(1.01);
+}
+
+/* Keep the MAGIUS mark visible through the large result region. */
+:root[data-call-theme="dark"] .call-brand-watermark-v8{
+  opacity:.11!important;
+}
+:root[data-call-theme="frost"] .call-brand-watermark-v8{
+  opacity:.078!important;
+}
+
+@media(max-width:760px){
+  .call-jump-widget-v7{
+    width:40px!important;
+    min-width:40px!important;
+    right:6px!important;
+  }
+  .call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+    width:34px!important;
+    min-width:34px!important;
+    height:30px!important;
+    min-height:30px!important;
+  }
+}
