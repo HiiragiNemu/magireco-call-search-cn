@@ -1481,3 +1481,293 @@ html[data-call-preboot="false"]::after{
     radial-gradient(circle,currentColor 0 1px,transparent 1.2px) center 2px/6px 6px repeat-y;
   color:var(--call-muted);
 }
+
+
+/* ===== v7.5 Reader fidelity restoration =====
+ * Keep the v7.4 structure, but restore the optical intensity and the exact
+ * explicit drag-handle interaction used by MagiReader.
+ */
+:root[data-call-theme="dark"]{
+  --call-reader-text-echo:
+    clamp(-1.8px,calc(.91px - .124em),-.08px) 0 .016em rgba(255,232,82,.88),
+    clamp(.1px,calc(.16em - 1.17px),2.3px) 0 .018em rgba(52,249,22,.82),
+    0 0 .12em rgba(166,247,82,.24);
+  --call-reader-inverse-echo:
+    clamp(.08px,calc(.14em - 1.03px),1.7px) 0 .007em #fffef1,
+    clamp(.12px,calc(.21em - 1.52px),2.6px) .006em .015em #ffffd980;
+}
+:root[data-call-theme="dark"][data-call-phosphor="amber"]{
+  --call-reader-text-echo:
+    clamp(.05px,calc(.12em - .89px),1.65px) 0 0 #140a0c,
+    clamp(.08px,calc(.27em - 2px),3.6px) .007em .007em #ff410de8,
+    -.012em 0 .007em #fffad355,
+    0 0 .16em #ffa72d35;
+  --call-reader-inverse-echo:
+    0 0 .035em rgba(189,43,19,.96),
+    clamp(.08px,calc(.14em - 1.03px),1.7px) 0 .007em #fffef1,
+    clamp(.12px,calc(.21em - 1.52px),2.6px) .006em .015em #ffffd980;
+}
+:root[data-call-theme="frost"]{
+  --call-reader-text-echo:
+    clamp(-1.4px,calc(.75px - .13em),-.08px) .025em .055em #50bbaf70,
+    .04em .015em .025em #70d6d44d,
+    0 0 .11em #78d8c966,
+    0 0 3px rgba(159,243,223,.55),
+    0 0 8px rgba(78,224,197,.32);
+}
+
+/* Restore Reader's stronger phosphor ink instead of the restrained v7.4 echo. */
+:root[data-call-theme="dark"] .call-display-root-v7 :is(
+  button,input,textarea,select,a,span,p,h1,h2,h3,h4,h5,h6,label,legend,summary,strong,b,small,li,td,th
+){
+  text-shadow:var(--call-reader-text-echo)!important;
+}
+:root[data-call-theme="frost"] .call-display-root-v7 :is(
+  button,input,textarea,select,a,span,p,h1,h2,h3,h4,h5,h6,label,legend,summary,strong,b,small,li,td,th
+){
+  text-shadow:var(--call-reader-text-echo)!important;
+}
+:root[data-call-theme="dark"] .call-display-root-v7 :is(
+  .suite-nav a[aria-current="page"],
+  .call-theme-option-v7[aria-pressed="true"],
+  .call-global-menu-panel-v8 a[aria-current="page"]
+){
+  text-shadow:var(--call-reader-inverse-echo)!important;
+}
+
+/* Reader/MadeInMagius raster intensity. The grain layer itself moves on the
+   compositor instead of repainting background-position. */
+:root[data-call-theme="dark"] .call-fx-night-phosphor-v7{
+  opacity:.38!important;
+}
+:root[data-call-theme="dark"] .call-fx-night-grain-v7{
+  inset:-12px!important;
+  opacity:.23!important;
+  will-change:transform;
+  animation:call-tube-grain-drift-v75 .105s steps(2,end) infinite!important;
+}
+:root[data-call-theme="dark"][data-call-phosphor="amber"] .call-fx-night-grain-v7{
+  opacity:.25!important;
+}
+@keyframes call-tube-grain-drift-v75{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(.18px,0,0)}
+  50%{transform:translate3d(-.15px,.08px,0)}
+  75%{transform:translate3d(.08px,-.05px,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+/* Bundled low-fi film focus: visible on Android/desktop, off only on iOS. */
+:root[data-call-fx-noise="true"][data-call-ios="false"] .call-fx-film-focus-v7{
+  display:block!important;
+  backdrop-filter:blur(.18px) saturate(.98) contrast(.995)!important;
+  -webkit-backdrop-filter:blur(.18px) saturate(.98) contrast(.995)!important;
+}
+:root[data-call-theme="dark"][data-call-fx-noise="true"][data-call-ios="false"] .call-fx-film-focus-v7{
+  backdrop-filter:blur(.30px) saturate(.97) contrast(1.01)!important;
+  -webkit-backdrop-filter:blur(.30px) saturate(.97) contrast(1.01)!important;
+}
+:root[data-call-theme="frost"][data-call-ios="false"] .call-fx-film-focus-v7{
+  display:block!important;
+  backdrop-filter:blur(.26px) saturate(.95) contrast(.99)!important;
+  -webkit-backdrop-filter:blur(.26px) saturate(.95) contrast(.99)!important;
+}
+
+/* Slow roll + occasional tracking sweep, bundled with night noise. */
+:root[data-call-theme="dark"][data-call-fx-noise="true"] .call-fx-rolling-band-v7{
+  display:block;
+  left:-3%;
+  right:-3%;
+  height:16%;
+  inset-inline:-3%;
+  top:-18%;
+  opacity:.34;
+  background:linear-gradient(
+    180deg,
+    transparent 0,
+    rgba(145,255,181,.035) 30%,
+    rgba(213,255,229,.13) 47%,
+    rgba(255,255,255,.08) 50%,
+    rgba(0,0,0,.24) 54%,
+    transparent 100%
+  );
+  filter:blur(.58px);
+  -webkit-filter:blur(.58px);
+  animation:call-rolling-band-v75 3.4s linear infinite;
+}
+@keyframes call-rolling-band-v75{
+  from{transform:translate3d(0,-22vh,0)}
+  to{transform:translate3d(0,132vh,0)}
+}
+.call-fx-tracking-v7{
+  left:-3%!important;
+  right:-3%!important;
+  inset-inline:-3%!important;
+  top:-18%;
+  height:13%;
+  opacity:0;
+  background:
+    linear-gradient(180deg,
+      transparent 0,
+      rgba(216,255,229,.07) 22%,
+      rgba(255,255,255,.20) 48%,
+      rgba(0,0,0,.28) 59%,
+      transparent 100%),
+    repeating-linear-gradient(90deg,
+      rgba(65,204,255,.12) 0 2px,
+      rgba(255,57,89,.12) 2px 4px,
+      transparent 4px 12px);
+  box-shadow:
+    -2px 0 0 rgba(65,204,255,.42),
+    2px 0 0 rgba(255,57,89,.40),
+    0 2px 9px rgba(128,255,159,.12);
+  backdrop-filter:blur(.34px) brightness(1.08);
+  -webkit-backdrop-filter:blur(.34px) brightness(1.08);
+}
+:root[data-call-tracking="true"] .call-fx-tracking-v7{
+  display:block;
+  opacity:.74;
+  animation:call-tracking-sweep-v75 1.05s steps(34,end) both;
+}
+@keyframes call-tracking-sweep-v75{
+  0%{top:-18%;transform:translate3d(-.5px,0,0)}
+  18%{transform:translate3d(.2px,0,0)}
+  43%{transform:translate3d(.55px,0,0)}
+  69%{transform:translate3d(-.4px,0,0)}
+  100%{top:108%;transform:translate3d(0,0,0)}
+}
+
+/* The actual Reader drag handle: explicit, reliable pointer capture, and part
+   of the instrument frame rather than a mystery free-floating box. */
+.call-floating-grip-v7{
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  margin:0!important;
+  color:var(--call-muted)!important;
+  -webkit-text-fill-color:currentColor!important;
+  background:color-mix(in srgb,var(--call-surface-soft) 88%,transparent)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font:700 .72rem/1 var(--call-pixel-font)!important;
+  letter-spacing:-.16em;
+  cursor:grab!important;
+  touch-action:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+}
+.call-floating-widget-v7.is-dragging .call-floating-grip-v7{
+  cursor:grabbing!important;
+  background:color-mix(in srgb,var(--call-accent) 14%,var(--call-surface-soft))!important;
+}
+.call-jump-widget-v7{
+  display:grid!important;
+  grid-template-rows:18px minmax(0,1fr)!important;
+  width:48px!important;
+  padding:3px!important;
+}
+.call-jump-grip-v7{
+  width:40px!important;
+  min-width:40px!important;
+  height:17px!important;
+  min-height:17px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 60%,transparent)!important;
+}
+.call-jump-widget-v7::before{display:none!important}
+.call-jump-actions-v7{
+  min-height:0!important;
+}
+.call-theme-grip-v7{
+  width:18px!important;
+  min-width:18px!important;
+  height:38px!important;
+  min-height:38px!important;
+  border-right:1px solid color-mix(in srgb,var(--call-border) 62%,transparent)!important;
+}
+:root[data-call-theme-bar-mode="top"] .call-theme-grip-v7{
+  display:none!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-theme-grip-v7{
+  display:grid!important;
+}
+:root[data-call-theme-bar-mode="floating"] .call-theme-widget-v7::before{
+  display:none!important;
+}
+
+/* Right rail should read like a Reader utility instrument, not stacked cards. */
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button{
+  width:40px!important;
+  min-width:40px!important;
+  height:32px!important;
+  min-height:32px!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--call-border) 58%,transparent)!important;
+  background:transparent!important;
+}
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:hover,
+.call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button:focus-visible{
+  color:var(--call-accent-ink)!important;
+  background:var(--call-accent)!important;
+  box-shadow:var(--call-selected-shadow)!important;
+}
+
+/* Physical tube: the same bounded signal and bezel on all platforms. Android
+   gets the full lens; iOS uses the Reader-safe perspective fallback. */
+:root[data-call-fx-curvature="true"] .call-display-root-v7{
+  inset:10px!important;
+  border-radius:18px/13px!important;
+  clip-path:none!important;
+  box-shadow:
+    0 0 0 1px rgba(40,55,44,.50),
+    0 0 34px rgba(0,0,0,.92),
+    inset 0 0 3px rgba(218,233,213,.18),
+    inset 0 0 17px rgba(0,0,0,.68)!important;
+}
+:root[data-call-fx-curvature="true"] .call-fx-vignette-v7{
+  background:
+    radial-gradient(ellipse at 50% 47%,
+      transparent 34%,
+      rgba(0,0,0,.02) 57%,
+      rgba(0,0,0,.12) 76%,
+      rgba(0,0,0,.31) 91%,
+      rgba(0,0,0,.66) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.28),transparent 8% 92%,rgba(0,0,0,.30))!important;
+  box-shadow:
+    inset 0 0 3px rgba(218,233,213,.19),
+    inset 0 0 20px rgba(0,0,0,.66),
+    inset 0 0 56px rgba(0,0,0,.25)!important;
+}
+:root[data-call-ios="true"][data-call-fx-curvature="true"] .call-display-root-v7{
+  filter:none!important;
+  -webkit-filter:none!important;
+  transform:perspective(1200px) scale(.992,.986)!important;
+  -webkit-transform:perspective(1200px) scale(.992,.986)!important;
+  transform-origin:center center!important;
+}
+
+/* Preserve raster quality on mobile; only the expensive continuous layers are
+   reduced. This mirrors MadeInMagius rather than deleting the visual language. */
+@media(max-width:760px){
+  :root[data-call-ios="false"][data-call-optics-active="true"] .call-display-root-v7{
+    filter:url('#call-screen-optics-v7')!important;
+    -webkit-filter:url('#call-screen-optics-v7')!important;
+  }
+  :root[data-call-theme="dark"] .call-fx-night-phosphor-v7{opacity:.36!important}
+  :root[data-call-theme="dark"] .call-fx-night-grain-v7{opacity:.21!important}
+  :root[data-call-theme="dark"] .call-fx-rolling-band-v7{opacity:.29!important}
+  .call-jump-widget-v7{width:46px!important}
+  .call-jump-grip-v7{width:38px!important;min-width:38px!important}
+}
+:root[data-call-ios="true"] .call-fx-rolling-band-v7,
+:root[data-call-ios="true"] .call-fx-tracking-v7{
+  animation:none!important;
+  display:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .call-fx-night-grain-v7,
+  .call-fx-rolling-band-v7,
+  .call-fx-tracking-v7{
+    animation:none!important;
+  }
+}
