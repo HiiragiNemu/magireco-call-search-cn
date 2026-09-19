@@ -1,13 +1,13 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'reader-terminal-v7-20260919';
+  const RELEASE = 'reader-terminal-v7.3-20260919';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
-  const VISUAL_KEY = 'magireco-call-visual-v7';
-  const THEME_POS_KEY = 'magireco-call-theme-widget-v7';
-  const JUMP_POS_KEY = 'magireco-call-jump-widget-v7';
-  const FX_POS_KEY = 'magireco-call-fx-window-v7';
+  const VISUAL_KEY = 'magireco-call-visual-v7-3';
+  const THEME_POS_KEY = 'magireco-call-theme-widget-v7-3';
+  const JUMP_POS_KEY = 'magireco-call-jump-widget-v7-3';
+  const FX_POS_KEY = 'magireco-call-fx-window-v7-3';
   const VIEWPORT_MARGIN = 10;
 
   const THEMES = Object.freeze([
