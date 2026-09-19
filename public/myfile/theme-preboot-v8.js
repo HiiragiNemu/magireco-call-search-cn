@@ -46,7 +46,7 @@
 
     let state = {};
     try {
-      state = JSON.parse(get('magireco-call-visual-v7-4') || '{}') || {};
+      state = JSON.parse(get('magireco-call-visual-v7-5') || get('magireco-call-visual-v7-4') || '{}') || {};
     } catch (_) {
       state = {};
     }
