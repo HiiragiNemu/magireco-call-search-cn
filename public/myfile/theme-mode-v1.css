@@ -1964,16 +1964,16 @@ html[data-call-preboot="true"]::after{
 }
 @keyframes call-tracking-down-v76{
   0%{top:-18%;transform:translate3d(var(--call-tracking-shift-a,0),0,0)}
-  19%{transform:translate3d(calc(var(--call-tracking-shift-a,0) * -.45),0,0)}
-  48%{transform:translate3d(calc(var(--call-tracking-shift-a,0) * .70),0,0)}
-  73%{transform:translate3d(calc(var(--call-tracking-shift-a,0) * -.28),0,0)}
+  19%{transform:translate3d(var(--call-tracking-shift-a-19,0),0,0)}
+  48%{transform:translate3d(var(--call-tracking-shift-a-48,0),0,0)}
+  73%{transform:translate3d(var(--call-tracking-shift-a-73,0),0,0)}
   100%{top:108%;transform:translate3d(0,0,0)}
 }
 @keyframes call-tracking-up-v76{
   0%{bottom:-18%;transform:translate3d(var(--call-tracking-shift-a,0),0,0)}
-  23%{transform:translate3d(calc(var(--call-tracking-shift-a,0) * .52),0,0)}
-  57%{transform:translate3d(calc(var(--call-tracking-shift-a,0) * -.64),0,0)}
-  81%{transform:translate3d(calc(var(--call-tracking-shift-a,0) * .25),0,0)}
+  23%{transform:translate3d(var(--call-tracking-shift-a-23,0),0,0)}
+  57%{transform:translate3d(var(--call-tracking-shift-a-57,0),0,0)}
+  81%{transform:translate3d(var(--call-tracking-shift-a-81,0),0,0)}
   100%{bottom:108%;transform:translate3d(0,0,0)}
 }
 :root[data-call-tracking="true"][data-call-tracking-mode="converge"] .call-fx-tracking-v7{
