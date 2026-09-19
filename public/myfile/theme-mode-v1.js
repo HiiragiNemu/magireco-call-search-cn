@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'reader-terminal-v7.5-20260919';
+  const RELEASE = 'reader-terminal-v7.7-20260919';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
   const VISUAL_KEY = 'magireco-call-visual-v7-5';
@@ -349,7 +349,15 @@
   }
   function syncJump(){
     const widget=displayRoot?.querySelector('.call-jump-widget-v7');
-    if(widget) widget.classList.remove('is-collapsed');
+    if(!widget) return;
+    widget.classList.toggle('is-collapsed',Boolean(state.jumpCollapsed));
+    const collapse=widget.querySelector('.call-jump-collapse-v7');
+    if(collapse){
+      collapse.setAttribute('aria-expanded',String(!state.jumpCollapsed));
+      collapse.setAttribute('aria-label',state.jumpCollapsed?'展开页面工具':'收起页面工具');
+      collapse.title=state.jumpCollapsed?'展开页面工具':'收起页面工具';
+      collapse.dataset.state=state.jumpCollapsed?'collapsed':'expanded';
+    }
   }
   function applyAll(){applyDatasets();placeThemeBar();syncThemeButtons();syncSettings();syncJump();updateScrollbar();}
 
@@ -478,22 +486,24 @@
       observer.observe(node);
     }
 
-    handle.style.touchAction='none';
-    handle.addEventListener('pointerdown',event=>{
+    const begin=(event)=>{
       if(!enabled()) return;
       if(event.pointerType==='mouse' && event.button!==0) return;
+      const interactive=event.target?.closest?.('button,a,input,select,textarea,label,summary');
+      if(interactive && !handle.contains(interactive)) return;
       const rect=node.getBoundingClientRect();
       event.preventDefault();
       event.stopPropagation();
-      handle.setPointerCapture?.(event.pointerId);
+      node.setPointerCapture?.(event.pointerId);
       drag={
         pointerId:event.pointerId,
         offsetX:event.clientX-rect.left,
         offsetY:event.clientY-rect.top
       };
       node.classList.add('is-dragging');
-    });
-    handle.addEventListener('pointermove',event=>{
+      root.dataset.callDragging='true';
+    };
+    const move=(event)=>{
       if(!drag || drag.pointerId!==event.pointerId) return;
       event.preventDefault();
       if(frame) cancelAnimationFrame(frame);
@@ -503,19 +513,28 @@
           y:event.clientY-drag.offsetY
         });
       });
-    });
+    };
     const finish=(event,save)=>{
       if(!drag || drag.pointerId!==event.pointerId) return;
       drag=null;
       node.classList.remove('is-dragging');
-      try{handle.releasePointerCapture(event.pointerId);}catch(_){}
+      root.dataset.callDragging='false';
+      try{node.releasePointerCapture(event.pointerId);}catch(_){}
       if(save) persistPoint(currentPoint);
     };
-    handle.addEventListener('pointerup',event=>finish(event,true));
-    handle.addEventListener('pointercancel',event=>finish(event,false));
+
+    handle.style.touchAction='none';
+    handle.addEventListener('pointerdown',begin);
+    node.addEventListener('pointerdown',event=>{
+      if(event.target===node || event.target?.classList?.contains('call-jump-head-v7')) begin(event);
+    });
+    node.addEventListener('pointermove',move);
+    node.addEventListener('pointerup',event=>finish(event,true));
+    node.addEventListener('pointercancel',event=>finish(event,false));
     handle.addEventListener('dblclick',event=>{
       if(!enabled()) return;
       event.preventDefault();
+      event.stopPropagation();
       currentPoint=null;
       persistPoint(null);
       applyPoint(node,null);
@@ -597,22 +616,39 @@
     for(const r of Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7')))if(r!==canonical)r.remove();
   }
   function installJump(){
-    displayRoot.querySelectorAll('.call-jump-widget-v6,.call-jump-widget-v5').forEach(n=>n.remove());
+    displayRoot.querySelectorAll('.call-jump-widget-v6,.call-jump-widget-v5,.call-jump-widget-v7').forEach(n=>n.remove());
     const widget=document.createElement('div');
     widget.className='call-floating-widget-v7 call-jump-widget-v7';
     widget.setAttribute('role','group');
     widget.setAttribute('aria-label','页面跳转工具');
+
+    const head=document.createElement('div');
+    head.className='call-jump-head-v7';
     const dragGrip=grip('拖动页面跳转工具');
     dragGrip.classList.add('call-jump-grip-v7');
+
+    const collapse=document.createElement('button');
+    collapse.type='button';
+    collapse.className='call-jump-collapse-v7';
+    collapse.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3.25 5.75 8l4.75 4.75"/></svg>';
+    collapse.addEventListener('click',event=>{
+      event.stopPropagation();
+      state.jumpCollapsed=!state.jumpCollapsed;
+      persist();
+      syncJump();
+    });
+    head.append(dragGrip,collapse);
+
     const host=document.createElement('div');
     host.className='call-jump-actions-v7';
     host.dataset.quickRailHost='true';
-    widget.append(dragGrip,host);
+    widget.append(head,host);
     displayRoot.appendChild(widget);
     makeDraggable(widget,dragGrip,JUMP_POS_KEY,()=>true);
     const rail=ensureRail();
     if(rail) host.appendChild(rail);
     adoptRail();
+    syncJump();
     root.dataset.callControlsReady='true';
   }
 
@@ -723,7 +759,31 @@
 
   function observeRails(){
     let queued=false;
-    new MutationObserver(()=>{if(queued)return;queued=true;queueMicrotask(()=>{queued=false;adoptRail();});}).observe(scrollRoot,{childList:true,subtree:false});
+    const queueAdopt=()=>{
+      if(queued)return;
+      queued=true;
+      queueMicrotask(()=>{queued=false;adoptRail();});
+    };
+    const observer=new MutationObserver(records=>{
+      for(const record of records){
+        for(const node of record.addedNodes){
+          if(node?.nodeType!==1) continue;
+          if(node.matches?.('.call-quick-rail-v10,.suite-quick-rail-v7') ||
+             node.querySelector?.('.call-quick-rail-v10,.suite-quick-rail-v7')){
+            queueAdopt();
+            return;
+          }
+        }
+      }
+    });
+    observer.observe(document.body,{childList:true,subtree:true});
+    if(document.readyState==='loading'){
+      document.addEventListener('DOMContentLoaded',queueAdopt,{once:true});
+    }else{
+      queueAdopt();
+    }
+    setTimeout(queueAdopt,0);
+    setTimeout(queueAdopt,250);
   }
 
   function releaseBoot(reason='ready'){
