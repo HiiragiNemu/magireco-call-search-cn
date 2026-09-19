@@ -6,7 +6,9 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta name="description" content="提供一个可以搜索游戏《魔法纪录》和《魔法少女小圆 Magia Exedra》中登场角色之间如何互相称呼的工具。">
 	<base target="_top">
-<title>魔法纪录·Magia Exedra 魔法少女称呼搜索</title>\n\t<script src="./myfile/theme-preboot-v8.js?v=20260919-preboot-v8b"></script>\n\t
+<title>魔法纪录·Magia Exedra 魔法少女称呼搜索</title>
+	<script src="./myfile/theme-preboot-v8.js?v=20260919-preboot-v8b"></script>
+	
 <!-- CSS文件读取 -->
 	<link rel="stylesheet" href="./myfile/mycss.css">
 	<link rel="stylesheet" href="./myfile/charaBox_png.css">
@@ -942,7 +944,8 @@ function findMatchingParen(text, openIndex) {
 }
 
 function findCallTermStart(buffer) {
-    const delimiters = new Set(["/", "／", "。", "、", "，", ",", "；", ";", "：", ":", "|", "\n", "\r", "\t"]);
+    const delimiters = new Set(["/", "／", "。", "、", "，", ",", "；", ";", "：", ":", "|", "
+", "\r", "\t"]);
     let i = buffer.length - 1;
     let parenDepth = 0;
     let squareDepth = 0;
@@ -1069,7 +1072,8 @@ function formatNameText(fullName, displayOptions) {
 
 function formatNodeLabel(fullName, fallbackName, displayOptions) {
     const label = formatNameText(fullName, displayOptions) || fallbackName || "";
-    return String(label).replace(/\s*\(/, "\n(");
+    return String(label).replace(/\s*\(/, "
+(");
 }
 
 function getSecondPersonNodeLabel(displayOptions) {
@@ -1317,7 +1321,8 @@ function drawNet_Table() {
             if (hiragana && romajiMatch && romajiMatch[1]) {
                 const romaji = romajiMatch[1].trim(); // 'Satomi Touka'
                 // 创建新的工具提示文本（平假名+换行符+罗马字））
-                const newTooltipText = `${hiragana}\n${romaji}`;
+                const newTooltipText = `${hiragana}
+${romaji}`;
                 
                 // data-kana属性更新
                 label.dataset.kana = newTooltipText;
@@ -1349,6 +1354,7 @@ function drawNet_Table() {
   <script src="./myfile/live-fixes-v11.js?v=20260905-compact2"></script>
   <script src="./myfile/live-fixes-v12.js"></script>
   <script src="./myfile/hamburger-menu-v23.js?v=20260822-v26-final3"></script>
-  <script src="./myfile/theme-mode-v1.js?v=20260919-reader-terminal-v7-4c"></script>\n</body>
+  <script src="./myfile/theme-mode-v1.js?v=20260919-reader-terminal-v7-4c"></script>
+</body>
 
 </html>
