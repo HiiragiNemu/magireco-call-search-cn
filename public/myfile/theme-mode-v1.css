@@ -2412,3 +2412,29 @@ html[data-call-preboot="true"]::after{
     font-size:12px!important;
   }
 }
+
+
+/* ===== v7.7c scene-registration balance ===== */
+/* Desktop/Android already receive scene-wide channel separation through the
+   SVG lens. Keep only a fine glyph echo there; iOS retains the stronger CSS
+   fallback because WebKit uses the safe non-SVG curvature path. */
+:root[data-call-crt-engine="svg-lens"][data-call-theme="dark"][data-call-fx-registration="true"]
+.call-display-scroll-v7 :is(
+  h1,h2,h3,h4,legend,label,button,a,input,textarea,select,option,small,strong,b,
+  .suite-nav,.suite-nav *,[role="button"],[role="tab"],[role="menuitem"]
+){
+  text-shadow:
+    -.34px 0 .10px rgba(63,197,255,.44),
+    .38px 0 .10px rgba(255,54,88,.42),
+    0 0 2.4px rgba(187,255,203,.15)!important;
+}
+:root[data-call-crt-engine="ios-safe"][data-call-theme="dark"][data-call-fx-registration="true"]
+.call-display-scroll-v7 :is(
+  h1,h2,h3,h4,legend,label,button,a,input,textarea,select,option,small,strong,b,
+  .suite-nav,.suite-nav *,[role="button"],[role="tab"],[role="menuitem"]
+){
+  text-shadow:
+    -1.0px 0 .14px rgba(63,197,255,.60),
+    1.1px 0 .14px rgba(255,54,88,.57),
+    0 0 2.6px rgba(187,255,203,.15)!important;
+}
