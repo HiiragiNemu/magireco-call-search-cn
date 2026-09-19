@@ -115,7 +115,7 @@
   root.dataset.callTheme=activeTheme;
   root.dataset.callPhosphor=state.phosphor;
   root.dataset.callThemeBarMode=state.themeBarMode;
-  root.dataset.callPreboot='true';
+  if(!root.dataset.callPreboot) root.dataset.callPreboot='true';
   root.style.colorScheme=(activeTheme === 'dark' || activeTheme === 'frost') ? 'dark' : 'light';
   for(const key of EFFECT_KEYS){
     root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(Boolean(state.effects[activeTheme]?.[key]));
