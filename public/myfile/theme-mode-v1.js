@@ -156,11 +156,34 @@
     scrollRoot.scrollTo({top:Math.max(0,scrollRoot.scrollTop + er.top - sr.top - 10),behavior});
   }
 
+  function ensureBrandWatermark(){
+    if(!displayRoot) return null;
+    let brand=displayRoot.querySelector('.call-brand-watermark-v8');
+    if(brand) return brand;
+    brand=document.createElement('div');
+    brand.className='call-brand-watermark-v8';
+    brand.setAttribute('aria-hidden','true');
+
+    const emblem=document.createElement('img');
+    emblem.className='call-brand-emblem-v8';
+    emblem.src='./myfile/magius-mark.svg';
+    emblem.alt='';
+
+    const wordmark=document.createElement('img');
+    wordmark.className='call-brand-wordmark-v8';
+    wordmark.src='./myfile/magius-link-wordmark.svg';
+    wordmark.alt='';
+
+    brand.append(emblem,wordmark);
+    displayRoot.insertBefore(brand,displayRoot.firstChild);
+    return brand;
+  }
+
   function installDisplayRoot(){
     if(!document.body) return;
     displayRoot=document.querySelector('.call-display-root-v7');
     scrollRoot=document.querySelector('.call-display-scroll-v7');
-    if(displayRoot && scrollRoot) return;
+    if(displayRoot && scrollRoot){ensureBrandWatermark();return;}
 
     displayRoot=document.createElement('div');
     displayRoot.className='call-display-root-v7';
@@ -173,6 +196,7 @@
     for(const node of Array.from(document.body.childNodes)) scrollRoot.appendChild(node);
     displayRoot.appendChild(scrollRoot);
     document.body.appendChild(displayRoot);
+    ensureBrandWatermark();
     document.body.classList.add('call-screen-host-v7');
 
     window.__MAGIRECO_SCROLL__=Object.freeze({
@@ -686,36 +710,61 @@
     new MutationObserver(()=>{if(queued)return;queued=true;queueMicrotask(()=>{queued=false;adoptRail();});}).observe(scrollRoot,{childList:true,subtree:false});
   }
 
+  function releaseBoot(reason='ready'){
+    root.dataset.callPreboot='false';
+    root.dataset.callPrebootRelease=reason;
+    try{sessionStorage.setItem('magireco-call-magius-boot-v1','1');}catch(_){}
+  }
+
   function finishBoot(){
     let seen=false;
     try{ seen=sessionStorage.getItem('magireco-call-magius-boot-v1') === '1'; }catch(_){}
-    const delay=reducedMotion ? 80 : (seen ? 260 : 820);
-    setTimeout(()=>{
-      root.dataset.callPreboot='false';
-      try{sessionStorage.setItem('magireco-call-magius-boot-v1','1');}catch(_){}
-    },delay);
+    const delay=reducedMotion ? 80 : (seen ? 180 : 620);
+    setTimeout(()=>releaseBoot('theme-ready'),delay);
+  }
+
+  function runInstallStep(name,fn){
+    try{fn();return true;}
+    catch(error){
+      console.error('[theme-mode] '+name+' failed; continuing with usable page',error);
+      root.dataset.callThemeError=name;
+      return false;
+    }
   }
 
   function install(){
-    installDisplayRoot();
-    installOpticalFilter();
-    installMaterialLayers();
-    installThemeBar();
-    installJump();
-    installFloatingMenu();
-    installSettings();
-    installScrollbar();
-    patchLegacyScroll();
-    observeRails();
-    normalizeThemeState(activeTheme);
-    applyAll();
-    scheduleTrackingSweep();
-    mobileQuery.addEventListener?.('change',()=>{applyAll();scheduleScrollbar();});
-    addEventListener('resize',()=>{applyAll();scheduleScrollbar();},{passive:true});
-    root.dataset.callThemeReady='v7.4';
+    // Start the release timer before optional CRT/UI enhancement work. No
+    // enhancement is allowed to own page visibility.
     finishBoot();
+
+    if(!runInstallStep('display-root',installDisplayRoot)){
+      releaseBoot('display-root-error');
+      return;
+    }
+
+    runInstallStep('optical-filter',installOpticalFilter);
+    runInstallStep('material-layers',installMaterialLayers);
+    runInstallStep('theme-bar',installThemeBar);
+    runInstallStep('jump-rail',installJump);
+    runInstallStep('global-menu',installFloatingMenu);
+    runInstallStep('settings',installSettings);
+    runInstallStep('scrollbar',installScrollbar);
+    runInstallStep('legacy-scroll-patch',patchLegacyScroll);
+    runInstallStep('rail-observer',observeRails);
+    runInstallStep('normalize-theme',()=>normalizeThemeState(activeTheme));
+    runInstallStep('apply-theme',applyAll);
+    runInstallStep('tracking',scheduleTrackingSweep);
+
+    try{
+      mobileQuery.addEventListener?.('change',()=>{applyAll();scheduleScrollbar();});
+      addEventListener('resize',()=>{applyAll();scheduleScrollbar();},{passive:true});
+    }catch(error){
+      console.error('[theme-mode] responsive listeners failed',error);
+    }
+
+    root.dataset.callThemeReady='v7.6';
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:'7.4',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'7.6',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });
