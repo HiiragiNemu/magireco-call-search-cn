@@ -694,14 +694,22 @@
     clearTimeout(trackingTimer);
     clearTimeout(trackingOffTimer);
     root.dataset.callTracking='false';
-    if(isIOS || reducedMotion || activeTheme!=='dark' || !effectValue('noise')) return;
-    const delay=2200 + Math.random()*4200;
+    if(reducedMotion || activeTheme!=='dark' || !effectValue('noise')) return;
+
+    const delay=1800 + Math.random()*4700;
     trackingTimer=setTimeout(()=>{
+      const roll=Math.random();
+      const mode=roll < .50 ? 'down' : (roll < .76 ? 'up' : 'converge');
+      root.dataset.callTrackingMode=mode;
+      root.style.setProperty('--call-tracking-shift-a',`${(-1.4 + Math.random()*2.8).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-shift-b',`${(-1.2 + Math.random()*2.4).toFixed(2)}px`);
+      root.style.setProperty('--call-tracking-duration',`${(0.72 + Math.random()*.58).toFixed(2)}s`);
       root.dataset.callTracking='true';
+
       trackingOffTimer=setTimeout(()=>{
         root.dataset.callTracking='false';
         scheduleTrackingSweep();
-      },760 + Math.random()*520);
+      },900 + Math.random()*650);
     },delay);
   }
 
