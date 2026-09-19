@@ -2320,3 +2320,95 @@ html[data-call-preboot="true"]::after{
     height:40px!important;
   }
 }
+
+
+/* ===== v7.7b branding hierarchy / boot glass ===== */
+
+/* The emblem is the dominant background object; the wordmark is supporting
+   copy. This follows the MadeInMagius hierarchy instead of turning the text
+   into the largest foreground object. */
+.call-brand-emblem-v8{
+  width:min(42vw,680px)!important;
+  max-height:49vh!important;
+}
+.call-brand-wordmark-v8{
+  width:min(40vw,620px)!important;
+  margin-top:clamp(-22px,-1.4vw,-9px)!important;
+  opacity:.66!important;
+}
+.call-brand-watermark-v8{
+  transform:translate3d(0,-1.5vh,0)!important;
+}
+:root[data-call-theme="dark"] .call-brand-watermark-v8{opacity:.088!important}
+:root[data-call-theme="frost"] .call-brand-watermark-v8{opacity:.066!important}
+
+/* Boot follows the same glass geometry and logo/text hierarchy as the page. */
+html[data-call-preboot="true"]{
+  background:#000!important;
+}
+html[data-call-preboot="true"]::before{
+  inset:5px!important;
+  border-radius:clamp(22px,2.2vw,42px)/clamp(20px,3vh,34px)!important;
+  background-position:
+    center calc(50% - 92px),
+    center calc(50% + 35px),
+    0 0,
+    17px 11px,
+    center!important;
+  background-size:
+    min(23vw,220px) auto,
+    min(38vw,330px) auto,
+    auto,
+    256px 256px,
+    cover!important;
+  box-shadow:
+    0 0 0 1px #000,
+    0 0 28px 5px #000,
+    inset 0 0 4px rgba(220,255,230,.06),
+    inset 0 0 26px rgba(0,0,0,.70),
+    inset 0 0 58px rgba(0,0,0,.28)!important;
+  filter:
+    blur(.10px)
+    drop-shadow(-.8px 0 .14px rgba(65,204,255,.55))
+    drop-shadow(.9px 0 .14px rgba(255,57,89,.52))
+    drop-shadow(0 0 11px rgba(82,255,135,.18))!important;
+}
+html[data-call-preboot="true"]::after{
+  top:calc(50% + 132px)!important;
+  font-size:clamp(11px,1.25vw,16px)!important;
+  letter-spacing:.075em!important;
+  text-shadow:
+    -.85px 0 .12px rgba(65,204,255,.66),
+    .95px 0 .12px rgba(255,57,89,.62),
+    0 0 5px rgba(177,255,202,.46)!important;
+}
+
+@media(max-width:760px){
+  .call-brand-emblem-v8{
+    width:min(70vw,380px)!important;
+    max-height:39vh!important;
+  }
+  .call-brand-wordmark-v8{
+    width:min(68vw,350px)!important;
+    margin-top:-8px!important;
+  }
+  html[data-call-preboot="true"]::before{
+    inset:4px!important;
+    background-position:
+      center calc(50% - 78px),
+      center calc(50% + 28px),
+      0 0,
+      17px 11px,
+      center!important;
+    background-size:
+      min(34vw,150px) auto,
+      min(66vw,285px) auto,
+      auto,
+      256px 256px,
+      cover!important;
+  }
+  html[data-call-preboot="true"]::after{
+    top:calc(50% + 116px)!important;
+    font-size:12px!important;
+  }
+}
