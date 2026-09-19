@@ -2699,3 +2699,16 @@ html[data-call-preboot="true"]::after{
   --call-card-text:#c6e5a7;
   --call-network-bg:rgba(11,19,13,.42);
 }
+
+
+/* ===== v7.8c literal rail arrows ===== */
+.call-jump-actions-v7 .call-rail-arrow{
+  display:block;
+  font:400 1.08rem/1 var(--call-pixel-font);
+  line-height:1;
+  color:currentColor;
+  transform:translateY(-.5px);
+  text-shadow:
+    -.28px 0 .05px rgba(63,197,255,.26),
+    .32px 0 .05px rgba(255,54,88,.24);
+}
