@@ -274,14 +274,16 @@
     const p=currentRegistrationProfile();
     const mobile=mobileQuery.matches;
     const filterCapable=!isIOS;
-    const registration=false;
+    const registration=filterCapable && effectValue('registration');
     const curveOn=filterCapable && effectValue('curvature');
     const night=activeTheme === 'dark';
 
-    opticalRefs.redShift.setAttribute('dx',String(registration ? -p.distance*.65 : 0));
-    opticalRefs.redShift.setAttribute('dy',String(registration ? -p.vertical : 0));
-    opticalRefs.blueShift.setAttribute('dx',String(registration ? p.distance : 0));
-    opticalRefs.blueShift.setAttribute('dy',String(registration ? p.vertical : 0));
+    // MadeInMagius reference direction: cool/cyan fringe to the left,
+    // warm/red fringe to the right. Apply it to the complete rendered scene.
+    opticalRefs.redShift.setAttribute('dx',String(registration ? p.distance*.92 : 0));
+    opticalRefs.redShift.setAttribute('dy',String(registration ? p.vertical*.65 : 0));
+    opticalRefs.blueShift.setAttribute('dx',String(registration ? -p.distance : 0));
+    opticalRefs.blueShift.setAttribute('dy',String(registration ? -p.vertical : 0));
     opticalRefs.registered.setAttribute('k2',String(registration ? p.mix : 0));
     opticalRefs.registered.setAttribute('k3',String(registration ? 1-p.mix : 1));
 
