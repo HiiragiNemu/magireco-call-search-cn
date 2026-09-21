@@ -29,6 +29,19 @@
     if (!nav) return;
     const wrapper = document.getElementById('wrapper');
     let spacer = document.querySelector('.call-suite-nav-spacer-v12');
+    const screenScroll = document.querySelector('.call-display-scroll-v7');
+    if (screenScroll) {
+      if (nav.parentElement !== screenScroll) screenScroll.insertBefore(nav, wrapper?.parentElement === screenScroll ? wrapper : screenScroll.firstChild);
+      if (spacer) spacer.hidden = true;
+      nav.classList.add('call-suite-nav-fixed-v12');
+      nav.dataset.v12DocumentFixed = 'screen';
+      nav.style.setProperty('position', 'sticky', 'important');
+      nav.style.setProperty('top', '0', 'important');
+      nav.style.setProperty('left', 'auto', 'important');
+      nav.style.setProperty('transform', 'none', 'important');
+      nav.style.setProperty('z-index', '1950', 'important');
+      return;
+    }
     if (!spacer) {
       spacer = document.createElement('div');
       spacer.className = 'call-suite-nav-spacer-v12';

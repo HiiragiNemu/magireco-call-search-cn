@@ -37,11 +37,11 @@
     }
 
     const defaults = {
-      light: { curvature:false, scanlines:false, noise:true, pixelFont:false, registration:false },
-      paper: { curvature:false, scanlines:false, noise:true, pixelFont:false, registration:false },
-      green: { curvature:false, scanlines:true, noise:true, pixelFont:false, registration:false },
+      light: { curvature:false, scanlines:false, noise:true, pixelFont:false, registration:true },
+      paper: { curvature:false, scanlines:false, noise:true, pixelFont:false, registration:true },
+      green: { curvature:false, scanlines:true, noise:true, pixelFont:false, registration:true },
       dark: { curvature:true, scanlines:true, noise:true, pixelFont:true, registration:true },
-      frost: { curvature:true, scanlines:true, noise:true, pixelFont:true, registration:false }
+      frost: { curvature:true, scanlines:true, noise:true, pixelFont:true, registration:true }
     };
 
     let state = {};
@@ -51,14 +51,12 @@
       state = {};
     }
 
+    const ua = navigator.userAgent || '';
+    const isIOS = /AppleWebKit/.test(ua) && (/iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    root.dataset.callIos = String(isIOS);
+    root.dataset.callIosFlat = String(isIOS);
     const effects = { ...defaults[theme], ...(state.effects?.[theme] || {}) };
-    if (theme === 'dark') {
-      effects.curvature = true;
-      effects.scanlines = true;
-      effects.noise = true;
-      effects.registration = true;
-    }
-    if (theme === 'frost') effects.registration = false;
+    if (isIOS) effects.curvature = false;
 
     root.dataset.callTheme = theme;
     root.dataset.callPhosphor = state.phosphor === 'amber' ? 'amber' : 'green';

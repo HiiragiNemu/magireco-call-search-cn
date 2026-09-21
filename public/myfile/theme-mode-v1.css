@@ -369,16 +369,11 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
 /* Very low-frequency signal instability is bundled with noise, desktop only. */
 @media(min-width:761px){
   :root[data-call-fx-noise="true"] .call-display-scroll-v7{
-    animation:call-signal-jitter-v7 1.8s steps(1,end) infinite;
+    animation:none;
     will-change:transform;
   }
 }
-@keyframes call-signal-jitter-v7{
-  0%,68%,100%{transform:translate3d(0,0,0)}
-  70%{transform:translate3d(.16px,-.08px,0)}
-  73%{transform:translate3d(-.11px,.06px,0)}
-  76%{transform:translate3d(.05px,0,0)}
-}
+
 @media(prefers-reduced-motion:reduce){
   .call-display-scroll-v7{animation:none!important}
 }
@@ -426,7 +421,7 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
 :root[data-call-theme] :where(.suite-muted,.muted,.hint,.help,.description,.suite-field small){color:var(--call-muted)!important}
 
 /* Legacy/native forms are fully theme-controlled. */
-:root[data-call-theme] body :is(
+:root[data-call-theme] body :where(
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
   select,textarea,button,
   .ndownword,.searchbtn,.resetbtn,.ndownReset,.mgreset,#at_reset,
@@ -1544,18 +1539,12 @@ html[data-call-preboot="false"]::after{
   inset:-12px!important;
   opacity:.23!important;
   will-change:transform;
-  animation:call-tube-grain-drift-v75 .105s steps(2,end) infinite!important;
+  animation:none;
 }
 :root[data-call-theme="dark"][data-call-phosphor="amber"] .call-fx-night-grain-v7{
   opacity:.25!important;
 }
-@keyframes call-tube-grain-drift-v75{
-  0%{transform:translate3d(0,0,0)}
-  25%{transform:translate3d(.18px,0,0)}
-  50%{transform:translate3d(-.15px,.08px,0)}
-  75%{transform:translate3d(.08px,-.05px,0)}
-  100%{transform:translate3d(0,0,0)}
-}
+
 
 /* Bundled low-fi film focus: visible on Android/desktop, off only on iOS. */
 :root[data-call-fx-noise="true"][data-call-ios="false"] .call-fx-film-focus-v7{
@@ -1593,12 +1582,9 @@ html[data-call-preboot="false"]::after{
   );
   filter:blur(.58px);
   -webkit-filter:blur(.58px);
-  animation:call-rolling-band-v75 3.4s linear infinite;
+  animation:none;
 }
-@keyframes call-rolling-band-v75{
-  from{transform:translate3d(0,-22vh,0)}
-  to{transform:translate3d(0,132vh,0)}
-}
+
 .call-fx-tracking-v7{
   left:-3%!important;
   right:-3%!important;
@@ -1627,15 +1613,9 @@ html[data-call-preboot="false"]::after{
 :root[data-call-tracking="true"] .call-fx-tracking-v7{
   display:block;
   opacity:.74;
-  animation:call-tracking-sweep-v75 1.05s steps(34,end) both;
+  animation:none;
 }
-@keyframes call-tracking-sweep-v75{
-  0%{top:-18%;transform:translate3d(-.5px,0,0)}
-  18%{transform:translate3d(.2px,0,0)}
-  43%{transform:translate3d(.55px,0,0)}
-  69%{transform:translate3d(-.4px,0,0)}
-  100%{top:108%;transform:translate3d(0,0,0)}
-}
+
 
 /* The actual Reader drag handle: explicit, reliable pointer capture, and part
    of the instrument frame rather than a mystery free-floating box. */
@@ -1910,28 +1890,17 @@ html[data-call-preboot="true"]::after{
     repeating-linear-gradient(0deg,
       rgba(4,0,2,.24) 0 .34px,
       transparent .34px 2.35px)!important;
-  animation:call-raster-phase-v76 .23s steps(2,end) infinite!important;
+  animation:none;
 }
-@keyframes call-raster-phase-v76{
-  0%{transform:translate3d(0,0,0)}
-  50%{transform:translate3d(.09px,.38px,0)}
-  100%{transform:translate3d(0,0,0)}
-}
+
 
 /* Continuous sub-pixel timebase instability. This moves the page signal, not
    the physical CRT shell, so curvature itself remains stationary. */
 :root[data-call-theme="dark"][data-call-fx-noise="true"] .call-display-scroll-v7{
   will-change:transform,opacity;
-  animation:call-signal-jitter-v76 .19s steps(2,end) infinite!important;
+  animation:none;
 }
-@keyframes call-signal-jitter-v76{
-  0%{transform:translate3d(0,0,0);opacity:1}
-  18%{transform:translate3d(.22px,-.11px,0);opacity:.996}
-  37%{transform:translate3d(-.17px,.18px,0);opacity:1}
-  61%{transform:translate3d(.31px,.07px,0);opacity:.992}
-  79%{transform:translate3d(-.09px,-.16px,0);opacity:.998}
-  100%{transform:translate3d(0,0,0);opacity:1}
-}
+
 
 /* Cyan-left / red-right channel registration from the MadeInMagius CRT pass. */
 :root[data-call-theme="dark"][data-call-fx-registration="true"] .call-display-scroll-v7 :is(
@@ -1952,7 +1921,7 @@ html[data-call-preboot="true"]::after{
   bottom:auto!important;
   height:12%!important;
   opacity:.80!important;
-  animation:call-tracking-down-v76 var(--call-tracking-duration,1s) steps(36,end) both!important;
+  animation:none;
 }
 :root[data-call-tracking="true"][data-call-tracking-mode="up"] .call-fx-tracking-v7{
   display:block!important;
@@ -1960,22 +1929,10 @@ html[data-call-preboot="true"]::after{
   bottom:-18%!important;
   height:12%!important;
   opacity:.80!important;
-  animation:call-tracking-up-v76 var(--call-tracking-duration,1s) steps(36,end) both!important;
+  animation:none;
 }
-@keyframes call-tracking-down-v76{
-  0%{top:-18%;transform:translate3d(var(--call-tracking-shift-a,0),0,0)}
-  19%{transform:translate3d(var(--call-tracking-shift-a-19,0),0,0)}
-  48%{transform:translate3d(var(--call-tracking-shift-a-48,0),0,0)}
-  73%{transform:translate3d(var(--call-tracking-shift-a-73,0),0,0)}
-  100%{top:108%;transform:translate3d(0,0,0)}
-}
-@keyframes call-tracking-up-v76{
-  0%{bottom:-18%;transform:translate3d(var(--call-tracking-shift-a,0),0,0)}
-  23%{transform:translate3d(var(--call-tracking-shift-a-23,0),0,0)}
-  57%{transform:translate3d(var(--call-tracking-shift-a-57,0),0,0)}
-  81%{transform:translate3d(var(--call-tracking-shift-a-81,0),0,0)}
-  100%{bottom:108%;transform:translate3d(0,0,0)}
-}
+
+
 :root[data-call-tracking="true"][data-call-tracking-mode="converge"] .call-fx-tracking-v7{
   display:block!important;
   inset:0!important;
@@ -2015,20 +1972,14 @@ html[data-call-preboot="true"]::after{
 }
 :root[data-call-tracking="true"][data-call-tracking-mode="converge"] .call-fx-tracking-v7::before{
   top:-13%;
-  animation:call-tracking-down-half-v76 var(--call-tracking-duration,1s) steps(30,end) both;
+  animation:none;
 }
 :root[data-call-tracking="true"][data-call-tracking-mode="converge"] .call-fx-tracking-v7::after{
   bottom:-13%;
-  animation:call-tracking-up-half-v76 var(--call-tracking-duration,1s) steps(30,end) both;
+  animation:none;
 }
-@keyframes call-tracking-down-half-v76{
-  from{top:-13%;transform:translate3d(var(--call-tracking-shift-a,0),0,0)}
-  to{top:45%;transform:translate3d(0,0,0)}
-}
-@keyframes call-tracking-up-half-v76{
-  from{bottom:-13%;transform:translate3d(var(--call-tracking-shift-b,0),0,0)}
-  to{bottom:45%;transform:translate3d(0,0,0)}
-}
+
+
 
 @media(max-width:760px){
   .call-brand-watermark-v8{
@@ -2712,3 +2663,263 @@ html[data-call-preboot="true"]::after{
     -.28px 0 .05px rgba(63,197,255,.26),
     .32px 0 .05px rgba(255,54,88,.24);
 }
+
+
+/* Local review: a single static screen and a single functional dock. */
+html:root[data-call-theme] body .call-display-scroll-v7 {
+  animation:none!important; transform:none!important; filter:none!important; will-change:auto;
+}
+html:root[data-call-theme] body .call-reader-screen-v7 > span { animation:none!important; }
+html:root[data-call-theme] body .call-fx-film-focus-v7 { display:none!important; }
+html:root[data-call-theme] body .call-fx-rolling-band-v7,
+html:root[data-call-theme] body .call-fx-tracking-v7 { display:none!important; }
+
+/* Deep green black, bright phosphor ink. Grain should not lift the black floor. */
+html:root[data-call-theme="dark"]:not([data-call-phosphor="amber"]) {
+  --call-bg:#040905;
+  --call-field:radial-gradient(ellipse at 48% 42%,#132414 0%,#09140b 57%,#020603 100%);
+  --call-text:#b7ff68; --call-muted:#86bf60;
+  --call-accent:#adff4f; --call-accent-strong:#dbffaf; --call-accent-ink:#102108;
+  --call-border:rgba(174,255,101,.40); --call-border-strong:rgba(197,255,144,.78);
+  --call-surface:rgba(6,16,7,.24); --call-surface-soft:rgba(13,31,12,.55);
+  --call-surface-raised:rgba(8,20,9,.94); --call-card-bg:rgba(7,18,8,.5);
+  --call-card-text:#c8ff92;
+}
+html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-grain-v7 {
+  opacity:.16!important; mix-blend-mode:soft-light!important; filter:none!important;
+}
+html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-phosphor-v7 { opacity:.18!important; }
+html:root[data-call-theme="dark"][data-call-fx-registration="true"] body .call-display-root-v7 :is(
+  h1,h2,h3,h4,legend,label,button,a,input,textarea,select,small,strong,b,.suite-nav
+) {
+  text-shadow:-.25px 0 .08px rgba(175,255,228,.5),.3px 0 .08px rgba(255,233,137,.4),0 0 3px rgba(166,255,79,.44)!important;
+}
+
+/* All document panels share the same uninterrupted watermark plane.
+   No nested opaque slabs or per-panel backdrop refraction. */
+html:root[data-call-theme] body :is(
+  #wrapper,.call-panel-v8,.call-panel-body-v8,.call-result-details-v8,
+  #callResultSection,#canvasflame,#mynetwork,.vis-network,
+  .suite-panel,.suite-panel-details-v8,.suite-results,.suite-result-group,.character-grid-details-v8
+) {
+  background:transparent!important; background-color:transparent!important;
+  backdrop-filter:none!important; -webkit-backdrop-filter:none!important;
+  filter:none!important;
+}
+html:root[data-call-theme] body :is(.call-panel-v8,.suite-panel-details-v8,.character-grid-details-v8) {
+  box-shadow:inset 0 1px color-mix(in srgb,var(--call-text) 7%,transparent)!important;
+}
+html:root[data-call-theme] body :is(.call-panel-v8,.suite-panel-details-v8,.character-grid-details-v8) > summary {
+  background:color-mix(in srgb,var(--call-surface-soft) 38%,transparent)!important;
+  backdrop-filter:none!important; -webkit-backdrop-filter:none!important;
+}
+html:root[data-call-theme] body :is(.call-panel-v8,.suite-panel-details-v8,.character-grid-details-v8) > summary::after,
+html:root[data-call-theme] body .call-details-state-v10::before {
+  color:var(--call-text)!important; -webkit-text-fill-color:currentColor!important;
+  background:var(--call-surface-soft)!important; border:1px solid var(--call-border)!important;
+  border-radius:2px!important; box-shadow:none!important; font-size:12px!important;
+  padding:4px 9px!important;
+}
+html:root[data-call-theme] body .call-brand-watermark-v8 { mix-blend-mode:normal; }
+html:root[data-call-theme="dark"] body .call-brand-watermark-v8 { opacity:.16!important; }
+html:root[data-call-theme="frost"] body .call-brand-watermark-v8 { opacity:.13!important; }
+html:root[data-call-theme="light"] body .call-brand-watermark-v8,
+html:root[data-call-theme="paper"] body .call-brand-watermark-v8,
+html:root[data-call-theme="green"] body .call-brand-watermark-v8 { opacity:.07!important; }
+html:root[data-call-theme="light"] body .call-brand-watermark-v8 img,
+html:root[data-call-theme="paper"] body .call-brand-watermark-v8 img,
+html:root[data-call-theme="green"] body .call-brand-watermark-v8 img { filter:brightness(0) sepia(.4)!important; }
+html:root[data-call-theme="light"] body.call-screen-host-v7,
+html:root[data-call-theme="paper"] body.call-screen-host-v7,
+html:root[data-call-theme="green"] body.call-screen-host-v7 { background:var(--call-bg)!important; }
+
+/* The real action rail is inside this dock (and therefore inside the lens).
+   Collapsing leaves useful up / search / down shortcuts, not an empty handle. */
+html:root[data-call-theme] body .call-jump-widget-v7 {
+  width:48px!important; min-width:48px!important; padding:3px!important;
+  max-height:calc(100% - 32px)!important; overflow:auto!important;
+  right:18px!important; top:50%; bottom:auto!important;
+  background:var(--call-surface-raised)!important; border:1px solid var(--call-border-strong)!important;
+  border-radius:3px!important; filter:none!important;
+  box-shadow:0 0 10px color-mix(in srgb,var(--call-accent) 12%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--call-text) 7%,transparent)!important;
+}
+html:root[data-call-theme] body .call-jump-widget-v7.is-positioned { right:auto!important; }
+html:root[data-call-theme] body .call-jump-head-v7 {
+  display:grid!important; grid-template-columns:1fr 1fr!important; gap:0!important;
+  width:100%!important; height:28px!important; min-height:28px!important;
+  border-bottom:1px solid var(--call-border)!important; margin-bottom:3px!important;
+}
+html:root[data-call-theme] body .call-jump-head-v7 :is(.call-jump-grip-v7,.call-jump-collapse-v7) {
+  display:grid!important; width:100%!important; min-width:0!important; height:27px!important; min-height:27px!important;
+  padding:0!important; border:0!important; background:transparent!important;
+}
+html:root[data-call-theme] body .call-jump-head-v7 .call-jump-grip-v7 { cursor:grab!important; }
+html:root[data-call-theme] body .call-jump-widget-v7 .call-jump-actions-v7 { display:flex!important; }
+html:root[data-call-theme] body .call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button {
+  width:40px!important; min-width:40px!important; height:38px!important; min-height:38px!important;
+  margin:0!important; padding:0!important; background:transparent!important;
+  border:0!important; border-bottom:1px solid color-mix(in srgb,var(--call-border) 40%,transparent)!important;
+}
+html:root[data-call-theme] body .call-jump-widget-v7.is-collapsed .call-jump-actions-v7 button:not([data-action="top"]):not([data-action="search"]):not([data-action="bottom"]) { display:none!important; }
+html:root[data-call-theme] body .call-jump-actions-v7 button:is(:hover,:focus-visible) {
+  color:var(--call-accent-ink)!important; background:var(--call-accent)!important;
+}
+html:root[data-call-theme] body .call-jump-actions-v7 button svg { width:20px!important; height:20px!important; }
+html:root[data-call-theme] body .call-fx-titlebar-v7 { grid-template-columns:minmax(0,1fr) 38px; cursor:grab; }
+html:root[data-call-theme] body .call-fx-window-v7 { background:var(--call-surface-raised)!important; }
+html:root[data-call-theme] body .call-fx-window-v7 [hidden] { display:none!important; }
+@media(max-width:760px) {
+  html:root[data-call-theme] body .call-display-root-v7 { filter:none!important; }
+  html:root[data-call-theme] body .call-display-root-v7 :is(.call-floating-widget-v7,.call-panel-v8,.call-panel-body-v8) { backdrop-filter:none!important; -webkit-backdrop-filter:none!important; }
+  html:root[data-call-theme] body .call-jump-widget-v7 { width:52px!important; min-width:52px!important; right:12px!important; }
+  html:root[data-call-theme] body .call-jump-actions-v7 :is(.call-quick-rail-v10,.suite-quick-rail-v7) button { width:44px!important; min-width:44px!important; height:42px!important; min-height:42px!important; }
+  html:root[data-call-theme] body .call-fx-window-v7 { left:10px; right:10px; top:54px; width:auto; max-height:calc(100% - 68px); }
+  html:root[data-call-theme] body .call-fx-body-v7 { max-height:calc(100dvh - 152px); }
+}
+
+html:root[data-call-theme] body .call-suite-nav-spacer-v12[hidden]{display:none!important}
+
+/* Local phosphor bloom: never rasterize several blurred full-screen copies. */
+html:root[data-call-crt-engine][data-call-theme="dark"][data-call-fx-registration="true"] body .call-display-root-v7 :is(
+  h1,h2,h3,h4,legend,label,button,a,input,textarea,select,option,small,strong,b,summary,.suite-nav,[role="button"]
+) {
+  text-shadow:-.3px 0 rgba(120,255,229,.5),.35px 0 rgba(255,219,111,.45),0 0 4px color-mix(in srgb,var(--call-accent) 54%,transparent)!important;
+}
+html:root[data-call-theme] body .call-reader-screen-v7 > span { will-change:auto!important; }
+html:root[data-call-theme] body .call-fx-titlebar-v7 { touch-action:none; }
+html:root[data-call-ios="true"] body .call-display-root-v7 { filter:none!important; -webkit-filter:none!important; }
+
+/* Keep the CRT edge, without dimming the content at the viewport perimeter. */
+html:root[data-call-fx-curvature="true"] body .call-fx-vignette-v7 {
+  background:radial-gradient(ellipse at 50% 48%,transparent 62%,rgba(0,0,0,.10) 86%,rgba(0,0,0,.38) 100%)!important;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.30)!important;
+}
+html:root[data-call-fx-curvature="true"] body .call-fx-bezel-v7 {
+  box-shadow:inset 0 0 2px 1px rgba(0,0,0,.7),inset 0 0 8px rgba(0,0,0,.3)!important;
+}
+html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-phosphor-v7 {
+  background:url('./reader-textures/PixelOverlay_RGB_16.png') 0 0/4px 4px repeat!important;
+  opacity:.10!important;
+}
+html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-grain-v7 { opacity:.23!important; }
+html:root[data-call-theme="dark"][data-call-fx-scanlines="true"] body .call-fx-scanlines-v7 {
+  display:block!important;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.45) 2px 3px)!important;
+  opacity:.15!important;
+}
+html:root[data-call-theme="dark"] body .suite-nav :is(a.active,a[aria-current="page"],a[data-active="true"]),
+html:root[data-call-theme="dark"] body .call-theme-option-v7[aria-pressed="true"] {
+  color:var(--call-accent-ink)!important; background:var(--call-accent)!important;
+  box-shadow:0 0 10px color-mix(in srgb,var(--call-accent) 40%,transparent),inset 0 0 6px rgba(236,255,195,.30)!important;
+  text-shadow:none!important;
+}
+
+/* Reader-like soft ink and luminous selected surfaces, without a screen blur. */
+html:root[data-call-crt-engine][data-call-theme="dark"][data-call-fx-registration="true"] body .call-display-root-v7 :is(
+  h1,h2,h3,h4,legend,label,button,a,input,textarea,select,option,small,strong,b,summary,.suite-nav,[role="button"]
+) {
+  text-shadow:0 0 .8px currentColor,-.45px 0 .3px rgba(120,255,229,.58),.55px .1px .4px rgba(255,224,122,.48),0 0 5px color-mix(in srgb,var(--call-accent) 56%,transparent)!important;
+}
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body {
+  --call-selected-shadow:0 0 2px var(--call-accent-strong),0 0 9px color-mix(in srgb,var(--call-accent) 72%,transparent),0 0 20px color-mix(in srgb,var(--call-accent) 32%,transparent),inset 0 0 7px color-mix(in srgb,var(--call-accent) 27%,transparent);
+}
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :is(
+  label.girlbox.is-selected-v11,label.girlbox:has(input.MagicalChk:checked),
+  .suite-character-card[aria-pressed="true"],.call-theme-option-v7[aria-pressed="true"],
+  .call-fx-segment-v7 button[aria-pressed="true"],.suite-nav a[aria-current="page"],
+  .suite-nav a.active,.suite-checks label:has(input:checked),.suite-attribute-options-v7 label:has(input:checked)
+) {
+  position:relative; z-index:1;
+  border-color:var(--call-accent-strong)!important;
+  outline-color:var(--call-accent)!important;
+  box-shadow:var(--call-selected-shadow)!important;
+}
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body :is(
+  .call-theme-option-v7[aria-pressed="true"],.call-fx-segment-v7 button[aria-pressed="true"]
+) {
+  background:var(--call-accent)!important; color:var(--call-accent-ink)!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body .call-fx-toggle-row-v7:has(input:checked) {
+  border-color:var(--call-accent)!important;
+  background:color-mix(in srgb,var(--call-accent) 8%,transparent)!important;
+  box-shadow:inset 2px 0 var(--call-accent),0 0 5px color-mix(in srgb,var(--call-accent) 15%,transparent)!important;
+}
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body input:is([type="checkbox"],[type="radio"]):checked {
+  box-shadow:0 0 7px color-mix(in srgb,var(--call-accent) 68%,transparent)!important;
+}
+
+/* Actual static lens on phones too; rounded borders alone are not curvature. */
+html:root[data-call-crt-engine="static-svg"][data-call-optics-active="true"] body .call-display-root-v7 {
+  filter:url('#call-screen-optics-v7')!important;
+  -webkit-filter:url('#call-screen-optics-v7')!important;
+  transform:none!important; -webkit-transform:none!important;
+}
+html:root[data-call-ios="true"] body .call-display-root-v7 *,
+html:root[data-call-ios="true"] body .call-display-root-v7 *::before,
+html:root[data-call-ios="true"] body .call-display-root-v7 *::after {
+  will-change:auto!important; animation:none!important; transition:none!important;
+}
+html:root[data-call-ios="true"] body :is(.call-reader-screen-v7,.call-floating-widget-v7,.call-display-scroll-v7) { contain:none!important; }
+html:root[data-call-ios="true"] body .call-brand-watermark-v8 { transform:translateY(-1.5vh)!important; }
+html:root[data-call-theme] body .call-display-root-v7 .call-theme-widget-v7 .call-theme-option-v7[aria-pressed="true"],
+html:root[data-call-theme] body .call-display-root-v7 .call-fx-window-v7 .call-fx-segment-v7 button[aria-pressed="true"] {
+  background:var(--call-accent)!important; background-color:var(--call-accent)!important;
+  color:var(--call-accent-ink)!important; -webkit-text-fill-color:currentColor!important;
+  box-shadow:var(--call-selected-shadow)!important; text-shadow:none!important;
+}
+html:root[data-call-theme] body .call-fx-window-v7 .call-fx-body-v7 > fieldset {
+  display:block!important; float:none!important; clear:both;
+  width:auto!important; min-width:0!important; max-width:none!important;
+}
+
+/* r8: the actual site menu shares the theme, not the retired floating-menu class. */
+html:root[data-call-theme] body .header { width:44px; height:44px; margin:10px 0 12px; isolation:auto; }
+html:root[data-call-theme] body .header .menu-icon {
+  width:44px; height:44px; border:1px solid var(--call-border-strong); border-radius:3px;
+  background:var(--call-surface-raised); color:var(--call-text); box-shadow:none;
+}
+html:root[data-call-theme] body .header .navicon,
+html:root[data-call-theme] body .header .navicon::before,
+html:root[data-call-theme] body .header .navicon::after {
+  width:22px; height:2px; background:var(--call-text); border-radius:0; transition:none;
+}
+html:root[data-call-theme] body .header .navicon::before { top:-7px; }
+html:root[data-call-theme] body .header .navicon::after { bottom:-7px; }
+html:root[data-call-theme] body .header .menu-btn:checked ~ .menu-icon .navicon { background:transparent; }
+html:root[data-call-theme] body .header .menu-btn:checked ~ .menu-icon .navicon::before { top:0; }
+html:root[data-call-theme] body .header .menu-btn:checked ~ .menu-icon .navicon::after { bottom:0; }
+html:root[data-call-theme] body .header .menu {
+  top:48px; background:var(--call-surface-raised); border:1px solid var(--call-border-strong);
+  color:var(--call-text); border-radius:3px; transform:none; transition:none;
+  max-width:calc(100vw - 48px); box-shadow:0 4px 12px #0003;
+}
+html:root[data-call-theme] body .header .menu :is(li,a,.menulabel,.thismenu) { color:var(--call-text)!important; }
+html:root[data-call-theme] body .header .menu .thismenu { font-weight:700; border-left:2px solid var(--call-accent); }
+html:root[data-call-theme] body .header .menu-icon:focus-visible { outline:2px solid var(--call-accent); outline-offset:3px; }
+
+/* Keep all lower-page actions inside the same optical signal, away from its edge. */
+html:root[data-call-theme] body .call-display-scroll-v7 { padding-inline:12px; padding-bottom:24px; }
+html:root[data-call-theme] body .call-name-filter-tools { margin:14px 0; min-width:0; }
+html:root[data-call-theme] body .call-name-filter-actions { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+html:root[data-call-theme] body .call-name-filter-actions input { margin:0!important; max-width:100%; white-space:normal; }
+html:root[data-call-theme] body input.ndownword { box-sizing:border-box; width:min(100%,42rem); min-height:36px; padding:6px 9px; font-size:16px; }
+html:root[data-call-theme] body .call-name-filter-help { width:min(100%,42rem); white-space:normal; overflow-wrap:anywhere; font-size:14px; line-height:1.6; margin:6px 0 12px; color:var(--call-text); }
+
+/* An optical viewport is not another scrolling ancestor of focused controls. */
+@supports (overflow:clip) { html:root[data-call-theme] body .call-display-root-v7 { overflow:clip; } }
+
+/* Same release route as Reader: iOS flat, native scroll, static material intact.
+   Explicit final override defeats every older mobile perspective/URL-filter rule. */
+html:root[data-call-ios-flat="true"] { --call-ios-flat-filter:none; }
+html:root[data-call-ios-flat="true"][data-call-fx-registration="true"] { --call-ios-flat-filter:blur(.13px); }
+html:root[data-call-ios-flat="true"][data-call-theme="frost"] { --call-ios-flat-filter:blur(.22px); }
+html:root[data-call-ios-flat="true"][data-call-theme="dark"] { --call-ios-flat-filter:blur(.39px); }
+html:root[data-call-ios-flat="true"][data-call-theme] body .call-display-root-v7 {
+  inset:0!important; border-radius:0!important; clip-path:none!important; box-shadow:none!important;
+  transform:none!important; -webkit-transform:none!important;
+  filter:var(--call-ios-flat-filter)!important; -webkit-filter:var(--call-ios-flat-filter)!important;
+}
+html:root[data-call-ios-flat="true"] body :is(.call-fx-bezel-v7,.call-fx-vignette-v7) { display:none!important; }
+html:root[data-call-ios-flat="true"] body .call-fx-toggle-row-v7[data-platform-disabled="true"] { opacity:.65; cursor:not-allowed; }
+html:root[data-call-theme] body .call-platform-note { font-size:14px; line-height:1.6; white-space:normal; }

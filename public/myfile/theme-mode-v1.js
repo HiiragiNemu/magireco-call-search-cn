@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'reader-terminal-v7.8-20260920';
+  const RELEASE = 'call-ui-r8-ios-flat-20260921';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
   const VISUAL_KEY = 'magireco-call-visual-v7-5';
@@ -19,39 +19,32 @@
   ]);
   const VALID_THEMES = new Set(THEMES.map(item => item.key));
 
-  // Match MagiReader's public screen-effects model. Soft focus, bloom, jitter,
-  // glass wear and frost dirt are theme material, not separate user switches.
+  // Static Reader materials: the scene and its grain never animate or jitter.
   const EFFECT_KEYS = Object.freeze(['curvature','scanlines','noise','pixelFont','registration']);
   const EFFECT_LABELS = Object.freeze({
     curvature:'屏幕曲率模拟',
     scanlines:'扫描线',
     noise:'屏幕噪点',
     pixelFont:'像素字体',
-    registration:'全局色彩偏移（文字、图标、边框）'
+    registration:'静态色散与荧光描边'
   });
   const DEFAULTS = Object.freeze({
-    light:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:false },
-    paper:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:false },
-    green:{ curvature:false,scanlines:true,noise:true,pixelFont:false,registration:false },
+    light:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:true },
+    paper:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:true },
+    green:{ curvature:false,scanlines:true,noise:true,pixelFont:false,registration:true },
     dark:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:true },
-    frost:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:false }
+    frost:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:true }
   });
   const THEME_COLORS = Object.freeze({
     light:'#d8d4c6', paper:'#f3eacb', green:'#d6e9c4', dark:'#030702', frost:'#001018'
-  });
-  const REGISTRATION = Object.freeze({
-    green:{ distance:.8, vertical:.18, mix:.86, pale:'#e3fff4', dark:'#a0eedf', paleGain:.8, darkGain:.34 },
-    amber:{ distance:.8, vertical:.18, mix:.86, pale:'#fffcec', dark:'#e85c2c', paleGain:.8, darkGain:.58 },
-    day:{ distance:.8, vertical:.18, mix:.76, pale:'#fffcec', dark:'#355c9a', paleGain:.24, darkGain:.14 }
   });
 
   const root = document.documentElement;
   const mobileQuery = matchMedia('(max-width: 760px)');
   const isIOS = (() => {
     const ua=navigator.userAgent || '';
-    return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    return /AppleWebKit/.test(ua) && (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
   })();
-  const crtEngine = isIOS ? 'ios-safe' : 'svg-lens';
   const reducedMotion = (() => {
     try { return Boolean(matchMedia('(prefers-reduced-motion: reduce)').matches); }
     catch(_) { return false; }
@@ -112,36 +105,28 @@
   // the CRT shell is installed. The stylesheet can render the Magius boot layer
   // immediately while the body is still being parsed.
   normalizeThemeState(activeTheme);
+  root.dataset.callIos=String(isIOS);
+  root.dataset.callIosFlat=String(isIOS);
   root.dataset.callTheme=activeTheme;
   root.dataset.callPhosphor=state.phosphor;
   root.dataset.callThemeBarMode=state.themeBarMode;
   if(!root.dataset.callPreboot) root.dataset.callPreboot='true';
   root.style.colorScheme=(activeTheme === 'dark' || activeTheme === 'frost') ? 'dark' : 'light';
   for(const key of EFFECT_KEYS){
-    root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(Boolean(state.effects[activeTheme]?.[key]));
+    root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(effectValue(key));
   }
 
   function normalizeThemeState(theme){
     const effects=state.effects[theme] || (state.effects[theme]=cloneDefaults(theme));
-    if(theme === 'dark'){
-      effects.curvature=true;
-      effects.scanlines=true;
-      effects.noise=true;
-      effects.registration=true;
-    }
-    if(theme === 'frost') effects.registration=false;
     return effects;
   }
   function persist(){ storageSet(VISUAL_KEY,JSON.stringify(state)); }
-  function effectValue(key){ return Boolean(normalizeThemeState(activeTheme)[key]); }
+  // Platform policy affects rendering only; retain the user preference for other devices.
+  function effectValue(key){ return key === 'curvature' && isIOS ? false : Boolean(normalizeThemeState(activeTheme)[key]); }
   function setBrowserChrome(){
     let meta=document.querySelector('meta[name="theme-color"]');
     if(!meta && document.head){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta);}
     if(meta) meta.content=THEME_COLORS[activeTheme] || THEME_COLORS.paper;
-  }
-  function currentRegistrationProfile(){
-    if(activeTheme === 'dark') return REGISTRATION[state.phosphor === 'amber' ? 'amber' : 'green'];
-    return REGISTRATION.day;
   }
 
   function rootTop(){ return scrollRoot ? scrollRoot.scrollTop : scrollY; }
@@ -153,7 +138,8 @@
     if(!element) return;
     if(!scrollRoot){ element.scrollIntoView({behavior,block:'start'}); return; }
     const sr=scrollRoot.getBoundingClientRect(), er=element.getBoundingClientRect();
-    scrollRoot.scrollTo({top:Math.max(0,scrollRoot.scrollTop + er.top - sr.top - 10),behavior});
+    const stickyHeight=displayRoot.querySelector('.call-suite-nav-fixed-v12')?.getBoundingClientRect().height || 0;
+    scrollRoot.scrollTo({top:Math.max(0,scrollRoot.scrollTop + er.top - sr.top - stickyHeight - 14),behavior});
   }
 
   function ensureBrandWatermark(){
@@ -227,89 +213,36 @@
     return canvas.toDataURL('image/png');
   }
   function installOpticalFilter(){
+    if(isIOS) return; // No SVG lens or displacement map allocation on iOS.
     if(document.querySelector('.call-optics-defs-v7')) return;
     const map=makeLensMap(); if(!map) return;
-    const svg=svgEl('svg',{width:0,height:0,'aria-hidden':'true'});
+    const svg=svgEl('svg',{width:1,height:1,'aria-hidden':'true'});
     svg.classList.add('call-optics-defs-v7');
+    svg.style.cssText='position:absolute;left:-2px;top:0;pointer-events:none;overflow:hidden';
     const defs=svgEl('defs');
-    const filter=svgEl('filter',{id:'call-screen-optics-v7',x:'-2%',y:'-2%',width:'104%',height:'104%','color-interpolation-filters':'sRGB'});
+    const filter=svgEl('filter',{id:'call-screen-optics-v7',x:0,y:0,filterUnits:'userSpaceOnUse',primitiveUnits:'userSpaceOnUse','color-interpolation-filters':'sRGB'});
     const image=svgEl('feImage',{href:map,x:0,y:0,width:'100%',height:'100%',preserveAspectRatio:'none',result:'lens'});
+    image.setAttributeNS('http://www.w3.org/1999/xlink','href',map);
 
-    // Scene registration copied from MagiReader.
-    const red=svgEl('feColorMatrix',{in:'SourceGraphic',values:'1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1',result:'reg-red'});
-    const redShift=svgEl('feOffset',{in:'reg-red',dx:'-.52',dy:'-.18',result:'reg-red-shift'});
-    const green=svgEl('feColorMatrix',{in:'SourceGraphic',values:'0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0 1',result:'reg-green'});
-    const blue=svgEl('feColorMatrix',{in:'SourceGraphic',values:'0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0 1',result:'reg-blue'});
-    const blueShift=svgEl('feOffset',{in:'reg-blue',dx:'.8',dy:'.18',result:'reg-blue-shift'});
-    const rg=svgEl('feComposite',{in:'reg-red-shift',in2:'reg-green',operator:'arithmetic',k2:1,k3:1,result:'reg-rg'});
-    const rgb=svgEl('feComposite',{in:'reg-rg',in2:'reg-blue-shift',operator:'arithmetic',k2:1,k3:1,result:'reg-rgb'});
-    const rgba=svgEl('feComposite',{in:'reg-rgb',in2:'SourceGraphic',operator:'in',result:'reg-rgb-alpha'});
-    const registered=svgEl('feComposite',{in:'reg-rgb-alpha',in2:'SourceGraphic',operator:'arithmetic',k2:'.86',k3:'.14',result:'registeredScene'});
-
-    const beam=svgEl('feGaussianBlur',{in:'registeredScene',stdDeviation:'.35',result:'beam'});
-    const curve=svgEl('feDisplacementMap',{in:'beam',in2:'lens',scale:'50',xChannelSelector:'R',yChannelSelector:'G',result:'curvedSignal'});
-    const tube=svgEl('feGaussianBlur',{in:'curvedSignal',stdDeviation:'.18',result:'tubeSignal'});
-    const key=svgEl('feColorMatrix',{in:'tubeSignal',type:'matrix','color-interpolation-filters':'linearRGB',
-      values:'1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  .29764 1.00128 .10108 0 -.55',result:'emissionKey'});
-    const emission=svgEl('feComposite',{in:'tubeSignal',in2:'emissionKey',operator:'in',result:'phosphorEmission','color-interpolation-filters':'linearRGB'});
-    const near=svgEl('feGaussianBlur',{in:'phosphorEmission',stdDeviation:'3.5',result:'nearScatter','color-interpolation-filters':'linearRGB'});
-    const nearGain=svgEl('feComponentTransfer',{in:'nearScatter',result:'nearBloom','color-interpolation-filters':'linearRGB'});
-    const nearFn=svgEl('feFuncA',{type:'linear',slope:'.32'}); nearGain.appendChild(nearFn);
-    const wide=svgEl('feGaussianBlur',{in:'phosphorEmission',stdDeviation:'22',result:'wideScatter','color-interpolation-filters':'linearRGB'});
-    const wideGain=svgEl('feComponentTransfer',{in:'wideScatter',result:'wideBloom','color-interpolation-filters':'linearRGB'});
-    const wideFn=svgEl('feFuncA',{type:'linear',slope:'.36'}); wideGain.appendChild(wideFn);
-    const merge1=svgEl('feBlend',{in:'tubeSignal',in2:'nearBloom',mode:'screen',result:'litSignal'});
-    const merge2=svgEl('feBlend',{in:'litSignal',in2:'wideBloom',mode:'screen',result:'originalOptics'});
-    const panel=svgEl('feGaussianBlur',{in:'phosphorEmission',stdDeviation:'48',result:'panelScatter','color-interpolation-filters':'linearRGB'});
-    const panelGain=svgEl('feComponentTransfer',{in:'panelScatter',result:'panelBloom','color-interpolation-filters':'linearRGB'});
-    const panelFn=svgEl('feFuncA',{type:'linear',slope:'.38'}); panelGain.appendChild(panelFn);
-    const finalBlend=svgEl('feBlend',{in:'originalOptics',in2:'panelBloom',mode:'screen'});
-
-    filter.append(image,red,redShift,green,blue,blueShift,rg,rgb,rgba,registered,beam,curve,tube,key,emission,near,nearGain,wide,wideGain,merge1,merge2,panel,panelGain,finalBlend);
+    // One static displacement pass. Bloom belongs to small CSS text/icon shadows,
+    // not several blurred copies of the complete scrolling viewport.
+    const curve=svgEl('feDisplacementMap',{in:'SourceGraphic',in2:'lens',scale:'50',xChannelSelector:'R',yChannelSelector:'G',result:'curved'});
+    const focus=svgEl('feGaussianBlur',{in:'curved',stdDeviation:'.38 .22'});
+    filter.append(image,curve,focus);
     defs.appendChild(filter);svg.appendChild(defs);document.body.appendChild(svg);
-    opticalRefs={redShift,blueShift,registered,beam,curve,tube,nearFn,wideFn,panelFn};
+    opticalRefs={filter,image,curve,focus};
+    if(typeof ResizeObserver==='function')new ResizeObserver(updateOpticalFilter).observe(displayRoot);
   }
   function updateOpticalFilter(){
     if(!opticalRefs) return;
-    const p=currentRegistrationProfile();
-    const mobile=mobileQuery.matches;
-    const filterCapable=!isIOS;
-    const registration=filterCapable && effectValue('registration');
-    const curveOn=filterCapable && effectValue('curvature');
-    const night=activeTheme === 'dark';
-
-    // MadeInMagius reference direction: cool/cyan fringe to the left,
-    // warm/red fringe to the right. Apply it to the complete rendered scene.
-    opticalRefs.redShift.setAttribute('dx',String(registration ? p.distance*.92 : 0));
-    opticalRefs.redShift.setAttribute('dy',String(registration ? p.vertical*.65 : 0));
-    opticalRefs.blueShift.setAttribute('dx',String(registration ? -p.distance : 0));
-    opticalRefs.blueShift.setAttribute('dy',String(registration ? -p.vertical : 0));
-    opticalRefs.registered.setAttribute('k2',String(registration ? p.mix : 0));
-    opticalRefs.registered.setAttribute('k3',String(registration ? 1-p.mix : 1));
-
-    opticalRefs.beam.setAttribute('stdDeviation',String(curveOn ? (night ? .35 : activeTheme === 'frost' ? .20 : .10) : 0));
-    opticalRefs.curve.setAttribute('scale',String(curveOn ? (mobile ? 38 : 50) : 0));
-    opticalRefs.tube.setAttribute('stdDeviation',String(curveOn ? (night ? .18 : activeTheme === 'frost' ? .10 : .05) : 0));
-
-    let near=0,wide=0,panel=0;
-    if(curveOn){
-      if(night){
-        near=mobile ? .18 : .32;
-        wide=mobile ? .14 : .36;
-        panel=mobile ? .10 : .38;
-      }else if(activeTheme === 'frost'){
-        near=mobile ? .08 : .14;
-        wide=mobile ? .06 : .12;
-        panel=mobile ? .04 : .08;
-      }else{
-        near=mobile ? .025 : .04;
-        wide=mobile ? .012 : .02;
-        panel=0;
-      }
+    const width=displayRoot.clientWidth, height=displayRoot.clientHeight;
+    const assign=(node,name,value)=>{value=String(value);if(node.getAttribute(name)!==value)node.setAttribute(name,value);};
+    for(const node of [opticalRefs.filter,opticalRefs.image]){
+      assign(node,'width',width);assign(node,'height',height);
     }
-    opticalRefs.nearFn.setAttribute('slope',String(near));
-    opticalRefs.wideFn.setAttribute('slope',String(wide));
-    opticalRefs.panelFn.setAttribute('slope',String(panel));
+    const scale=Math.round(Math.max(24,Math.min(50,Math.min(width,height)*.075)));
+    assign(opticalRefs.curve,'scale',effectValue('curvature') ? scale : 0);
+    assign(opticalRefs.focus,'stdDeviation',activeTheme==='dark' ? '.38 .22' : activeTheme==='frost' ? '.28 .18' : '.08 .06');
   }
 
   function applyDatasets(){
@@ -324,8 +257,9 @@
     for(const key of EFFECT_KEYS){
       root.dataset[`callFx${key[0].toUpperCase()}${key.slice(1)}`]=String(effectValue(key));
     }
-    root.dataset.callCrtEngine=crtEngine;
-    root.dataset.callOpticsActive=String(!isIOS && effectValue('curvature'));
+    root.dataset.callCrtEngine=isIOS ? 'native-flat' : 'static-svg';
+    root.dataset.callOpticsActive=String(effectValue('curvature'));
+    if(!opticalRefs) installOpticalFilter();
     setBrowserChrome();
     updateOpticalFilter();
   }
@@ -339,15 +273,24 @@
     for(const input of panel.querySelectorAll('input[data-fx-key]')){
       const key=input.dataset.fxKey;
       input.checked=effectValue(key);
-      const fixed=activeTheme === 'dark' && ['curvature','scanlines','noise','registration'].includes(key);
-      const hidden=activeTheme === 'frost' && key === 'registration';
-      input.disabled=fixed;
-      input.closest('label')?.classList.toggle('is-fixed',fixed);
-      input.closest('label')?.toggleAttribute('hidden',hidden);
+      const platformDisabled=isIOS && key === 'curvature';
+      input.disabled=platformDisabled;
+      input.closest('label')?.classList.toggle('is-fixed',platformDisabled);
+      input.closest('label')?.setAttribute('data-platform-disabled',String(platformDisabled));
+      if(platformDisabled) input.setAttribute('aria-describedby','call-ios-flat-note');
+      input.closest('label')?.removeAttribute('hidden');
     }
     panel.querySelector('[data-phosphor-section]')?.toggleAttribute('hidden',activeTheme !== 'dark');
     for(const b of panel.querySelectorAll('[data-phosphor]')) b.setAttribute('aria-pressed',String(b.dataset.phosphor === state.phosphor));
     for(const b of panel.querySelectorAll('[data-themebar-mode]')) b.setAttribute('aria-pressed',String(b.dataset.themebarMode === state.themeBarMode));
+    for(const b of document.querySelectorAll('[data-call-settings-toggle]')) b.setAttribute('aria-expanded',String(state.fxOpen));
+  }
+  function setSettingsOpen(open){
+    state.fxOpen=Boolean(open);
+    persist();
+    syncSettings();
+    if(open) displayRoot.querySelector('.call-fx-close-v7')?.focus({preventScroll:true});
+    else document.querySelector('[data-call-settings-toggle]')?.focus({preventScroll:true});
   }
   function syncJump(){
     const widget=displayRoot?.querySelector('.call-jump-widget-v7');
@@ -374,9 +317,7 @@
   }
   function setPhosphor(value){state.phosphor=value==='amber'?'amber':'green';persist();applyAll();}
   function setEffect(key,enabled){
-    if(!EFFECT_KEYS.includes(key)) return;
-    if(activeTheme === 'dark' && ['curvature','scanlines','noise','registration'].includes(key)) return;
-    if(activeTheme === 'frost' && key === 'registration') return;
+    if(!EFFECT_KEYS.includes(key) || (isIOS && key === 'curvature')) return;
     state.effects[activeTheme][key]=Boolean(enabled);persist();applyAll();scheduleTrackingSweep();
   }
   function placeThemeBar(){
@@ -404,9 +345,9 @@
     if(displayRoot.querySelector('.call-reader-screen-v7')) return;
     const surface=document.createElement('div');surface.className='call-reader-screen-v7';surface.setAttribute('aria-hidden','true');
     for(const cls of [
-      'call-fx-film-focus-v7','call-fx-day-grain-v7','call-fx-night-phosphor-v7','call-fx-night-grain-v7',
+      'call-fx-day-grain-v7','call-fx-night-phosphor-v7','call-fx-night-grain-v7',
       'call-fx-frost-grain-v7','call-fx-frost-smudges-v7','call-fx-frost-glass-v7','call-fx-frost-wear-v7',
-      'call-fx-scanlines-v7','call-fx-rolling-band-v7','call-fx-tracking-v7','call-fx-vignette-v7','call-fx-bezel-v7'
+      'call-fx-scanlines-v7','call-fx-vignette-v7','call-fx-bezel-v7'
     ]){
       const span=document.createElement('span');span.className=cls;surface.appendChild(span);
     }
@@ -414,19 +355,6 @@
   }
 
   function orientationKey(base){return `${base}:${matchMedia('(orientation: portrait)').matches?'portrait':'landscape'}`;}
-  function parsePoint(v){try{const p=JSON.parse(v||'null');return p&&Number.isFinite(p.x)&&Number.isFinite(p.y)?p:null;}catch(_){return null;}}
-  function clampPoint(node,point){
-    const r=node.getBoundingClientRect(),host=displayRoot.getBoundingClientRect();
-    return {
-      x:Math.min(Math.max(host.left+VIEWPORT_MARGIN,point.x),Math.max(host.left+VIEWPORT_MARGIN,host.right-r.width-VIEWPORT_MARGIN)),
-      y:Math.min(Math.max(host.top+VIEWPORT_MARGIN,point.y),Math.max(host.top+VIEWPORT_MARGIN,host.bottom-r.height-VIEWPORT_MARGIN))
-    };
-  }
-  function applyPoint(node,point){
-    if(!point){node.classList.remove('is-positioned');for(const p of ['left','top','right','bottom','transform']) node.style.removeProperty(p);return;}
-    const p=clampPoint(node,point),host=displayRoot.getBoundingClientRect();
-    node.classList.add('is-positioned');node.style.left=`${p.x-host.left}px`;node.style.top=`${p.y-host.top}px`;node.style.right='auto';node.style.bottom='auto';node.style.transform='none';
-  }
   function parsePoint(v){
     try{
       const p=JSON.parse(v||'null');
@@ -492,7 +420,7 @@
       if(!enabled()) return;
       if(event.pointerType==='mouse' && event.button!==0) return;
       const interactive=event.target?.closest?.('button,a,input,select,textarea,label,summary');
-      if(interactive && !handle.contains(interactive)) return;
+       if(interactive && interactive !== handle) return;
       const rect=node.getBoundingClientRect();
       event.preventDefault();
       event.stopPropagation();
@@ -518,6 +446,11 @@
     };
     const finish=(event,save)=>{
       if(!drag || drag.pointerId!==event.pointerId) return;
+      if(frame){
+        cancelAnimationFrame(frame);
+        frame=0;
+        if(save) setPoint({x:event.clientX-drag.offsetX,y:event.clientY-drag.offsetY});
+      }
       drag=null;
       node.classList.remove('is-dragging');
       root.dataset.callDragging='false';
@@ -588,7 +521,10 @@
     fx.innerHTML=settingsIcon;
     fx.title='画面设置';
     fx.setAttribute('aria-label',fx.title);
-    fx.addEventListener('click',()=>{state.fxOpen=!state.fxOpen;persist();syncSettings();});
+    fx.dataset.callSettingsToggle='true';
+    fx.setAttribute('aria-controls','call-display-settings');
+    fx.setAttribute('aria-expanded','false');
+    fx.addEventListener('click',()=>setSettingsOpen(!state.fxOpen));
     widget.append(dragGrip,options,fx);
     displayRoot.appendChild(widget);
     placeThemeBar();
@@ -652,7 +588,7 @@
   function adoptRail(){
     const host=displayRoot.querySelector('.call-jump-widget-v7 [data-quick-rail-host]');if(!host)return;
     const rails=Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7'));
-    const canonical=host.querySelector('.call-quick-rail-v10,.suite-quick-rail-v7') || rails[0] || ensureRail();
+    const canonical=rails.find(rail=>rail.matches('.call-quick-rail-v10')) || host.querySelector('.suite-quick-rail-v7') || rails[0] || ensureRail();
     if(canonical&&canonical.parentElement!==host)host.appendChild(canonical);
     normalizeRailButtons(canonical);
     for(const r of Array.from(document.querySelectorAll('.call-quick-rail-v10,.suite-quick-rail-v7')))if(r!==canonical)r.remove();
@@ -700,16 +636,44 @@
     const input=document.createElement('input');input.type='checkbox';input.role='switch';input.dataset.fxKey=key;input.setAttribute('aria-label',EFFECT_LABELS[key]);
     input.addEventListener('change',()=>setEffect(key,input.checked));label.append(span,input);return label;
   }
+  function installNameFilterHints(){
+    for(const input of document.querySelectorAll('input.ndownword')){
+      input.placeholder='输入名字或假名';
+      input.setAttribute('aria-label',input.id === 'ndownword2' ? '角色名称筛选（列表下方）' : '角色名称筛选');
+      const id=input.id+'-help';
+      if(document.getElementById(id)) continue;
+      const help=document.createElement('p');help.id=id;help.className='call-name-filter-help';
+      help.textContent='支持汉字、平假名和片假名。多个关键词用空格分隔（满足任一项）；清空输入可恢复角色列表。';
+      input.setAttribute('aria-describedby',id);
+      input.insertAdjacentElement('afterend',help);
+      input.addEventListener('input',()=>requestAnimationFrame(()=>{
+        if(document.activeElement !== input) return;
+        const nav=scrollRoot?.querySelector('.suite-nav');
+        const visibleTop=(nav?.getBoundingClientRect().bottom || 0)+14;
+        // Filtering can shorten hundreds of cards above the lower input. Keep
+        // that focused input visible without scrolling any optical ancestor.
+        if(input.getBoundingClientRect().top < visibleTop) scrollElement(input,'auto');
+      }));
+      if(input.id === 'ndownword2'){
+        const group=document.createElement('section');group.className='call-name-filter-tools';group.setAttribute('aria-label','角色筛选快捷操作');
+        const actions=document.createElement('div');actions.className='call-name-filter-actions';
+        let node=input.previousElementSibling;const buttons=[];
+        while(node?.matches('input[type="button"]')){buttons.unshift(node);node=node.previousElementSibling;}
+        input.before(group);group.append(actions);actions.append(...buttons);group.append(input,help);
+      }
+    }
+  }
+
   function installSettings(){
     displayRoot.querySelectorAll('.call-fx-window-v6,.call-fx-window-v5').forEach(n=>n.remove());
-    const panel=document.createElement('section');panel.className='call-floating-widget-v7 call-fx-window-v7';panel.role='dialog';panel.setAttribute('aria-label','画面与字体设置');
+    const panel=document.createElement('section');panel.className='call-floating-widget-v7 call-fx-window-v7';panel.id='call-display-settings';panel.hidden=true;panel.role='dialog';panel.setAttribute('aria-label','画面与字体设置');
     const titlebar=document.createElement('header');titlebar.className='call-fx-titlebar-v7';titlebar.title='拖动设置窗口';
     const copy=document.createElement('div');copy.className='call-fx-title-copy-v7';copy.innerHTML='<small>SYS://DISPLAY.CONFIG</small><strong>画面与字体效果</strong>';
-    const close=document.createElement('button');close.type='button';close.className='call-fx-close-v7';close.textContent='×';close.setAttribute('aria-label','关闭设置');close.addEventListener('click',()=>{state.fxOpen=false;persist();syncSettings();});
+    const close=document.createElement('button');close.type='button';close.className='call-fx-close-v7';close.textContent='×';close.setAttribute('aria-label','关闭设置');close.addEventListener('click',()=>setSettingsOpen(false));
     titlebar.append(copy,close);
 
     const body=document.createElement('div');body.className='call-fx-body-v7';
-    const intro=document.createElement('p');intro.className='call-fx-intro-v7';intro.innerHTML='当前主题：<strong data-fx-theme-label></strong>。设置项与 MagiReader 对齐；夜间的曲率、扫描线、噪点与全局色散固定开启。';
+    const intro=document.createElement('p');intro.className='call-fx-intro-v7';intro.innerHTML='当前主题：<strong data-fx-theme-label></strong>。保留静态玻璃质感；无画面抖动、滚动扫描或动态噪点。设置按主题保存。';
 
     const phosphor=document.createElement('fieldset');phosphor.dataset.phosphorSection='true';phosphor.innerHTML='<legend>夜间磷光</legend>';
     const pseg=document.createElement('div');pseg.className='call-fx-segment-v7';
@@ -720,6 +684,11 @@
 
     const effects=document.createElement('fieldset');effects.innerHTML='<legend>屏幕与字体效果</legend>';
     for(const key of EFFECT_KEYS)effects.appendChild(toggleRow(key));
+    if(isIOS){
+      const note=document.createElement('p');note.id='call-ios-flat-note';note.className='call-platform-note';
+      note.textContent='iOS 已停用屏幕曲率，使用原生滚动；保留噪点、扫描线、像素字体与静态辉光。';
+      effects.appendChild(note);
+    }
 
     const placement=document.createElement('fieldset');placement.innerHTML='<legend>主题栏位置</legend>';
     const placeSeg=document.createElement('div');placeSeg.className='call-fx-segment-v7';
@@ -730,9 +699,12 @@
 
     const footer=document.createElement('footer');footer.className='call-fx-footer-v7';
     const reset=document.createElement('button');reset.type='button';reset.textContent='恢复本主题默认';reset.addEventListener('click',resetEffects);
-    const done=document.createElement('button');done.type='button';done.textContent='关闭';done.addEventListener('click',()=>{state.fxOpen=false;persist();syncSettings();});
+    const done=document.createElement('button');done.type='button';done.textContent='关闭';done.addEventListener('click',()=>setSettingsOpen(false));
     footer.append(reset,done);
     body.append(intro,phosphor,effects,placement,footer);panel.append(titlebar,body);displayRoot.appendChild(panel);makeDraggable(panel,titlebar,FX_POS_KEY,()=>true,false);
+    document.addEventListener('keydown',event=>{
+      if(event.key==='Escape' && state.fxOpen){event.preventDefault();setSettingsOpen(false);}
+    });
   }
 
   function installScrollbar(){
@@ -840,8 +812,8 @@
     runInstallStep('material-layers',installMaterialLayers);
     runInstallStep('theme-bar',installThemeBar);
     runInstallStep('jump-rail',installJump);
-    runInstallStep('global-menu',installFloatingMenu);
     runInstallStep('settings',installSettings);
+    runInstallStep('name-filter-hints',installNameFilterHints);
     runInstallStep('scrollbar',installScrollbar);
     runInstallStep('legacy-scroll-patch',patchLegacyScroll);
     runInstallStep('rail-observer',observeRails);
@@ -856,14 +828,16 @@
       console.error('[theme-mode] responsive listeners failed',error);
     }
 
-    root.dataset.callThemeReady='v7.8';
+    root.dataset.callThemeReady='ui-r8-ios-flat';
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:'7.8',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'ui-r8-ios-flat',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });
   }
 
-  if(document.body)install();
-  else document.addEventListener('DOMContentLoaded',install,{once:true});
+  // Let the legacy page builders finish before moving their nodes into the
+  // unified screen. This avoids body-relative inserts into an already moved tree.
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
 })();

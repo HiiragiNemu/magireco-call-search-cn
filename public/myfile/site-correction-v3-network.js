@@ -28,7 +28,21 @@
     }, ms);
   }
 
-  const edgeChosen = (values) => { values.color = '#ffffff'; values.width = 4; };
+  function graphPalette() {
+    const style = getComputedStyle(document.documentElement);
+    const value = (name, fallback) => style.getPropertyValue(name).trim() || fallback;
+    return { text:value('--call-text','#283033'), accent:value('--call-accent','#5c696c'), halo:value('--call-bg','#d8d4c6') };
+  }
+  function applyGraphTheme(network) {
+    if (!network?.setOptions) return;
+    const p = graphPalette();
+    network.setOptions({
+      nodes:{ color:{border:p.accent,highlight:{border:p.text}},font:{color:p.text,strokeColor:p.halo,strokeWidth:2} },
+      edges:{ color:{color:p.text,highlight:p.accent,hover:p.accent},font:{color:p.text,strokeColor:p.halo,strokeWidth:3} }
+    });
+  }
+  global.addEventListener('magireco-call-theme-change', () => applyGraphTheme(global.network));
+  const edgeChosen = (values) => { values.color = graphPalette().accent; values.width = 4; };
   const edgeLabelChosen = (values) => {
     values.color = '#ff4500'; values.size = compact() ? 17 : 23; values.mod = 'bold'; values.strokeWidth = 5;
   };
@@ -81,6 +95,7 @@
       options
     );
     const network = global.network;
+    applyGraphTheme(network);
     network.once('stabilized', () => {
       if (network !== global.network) return;
       try { network.stopSimulation(); if (sourceNodes.length) network.fit({ animation: false }); } catch { /* no-op */ }
@@ -114,12 +129,20 @@
       settleEdges(network, mobile ? 260 : 340);
       network.fit({ animation: { duration: 260, easingFunction: 'easeInOutQuad' } });
     });
-    network.on('afterDrawing', (ctx) => {
+    // Export only when requested; encoding a JPEG on every physics/drag frame
+    // stalls interaction. PNG also preserves the transparent themed canvas.
+    const imageLink = document.getElementById('canvasImgLink');
+    if (imageLink) imageLink.onclick = function exportGraph(event) {
       try {
-        const link = document.getElementById('canvasImgLink');
-        if (link) link.href = ctx.canvas.toDataURL('image/jpeg', 0.92);
-      } catch (error) { console.warn('关系图图片生成失败：', error); }
-    });
+        const canvas = container.querySelector('canvas');
+        if (!canvas) { event.preventDefault(); return; }
+        imageLink.href = canvas.toDataURL('image/png');
+        imageLink.download = (imageLink.download || 'relationship.png').replace(/\.(jpe?g|png)$/i, '.png');
+      } catch (error) {
+        event.preventDefault();
+        console.warn('关系图图片生成失败：', error);
+      }
+    };
     if (typeof global.makeImageName === 'function') global.makeImageName();
   };
 
