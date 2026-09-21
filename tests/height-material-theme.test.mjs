@@ -51,6 +51,7 @@ test('Reader current night material uses direct sibling layers on all ten entrie
   assert.ok(film);assert.doesNotMatch(film,/night-phosphor|night-grain|day-grain|scanlines/);
   assert.equal((html.match(/call-material-direct-v11/g)||[]).length,4,name);
   assert.match(html,/ui-r11-height-material/);
+  if(html.includes('height-export-v11.js'))assert.match(html,/height-export-v11\.js\?v=ui-r11-height-material/);
  }
  const final=css.slice(css.indexOf('/* r11:'));
  assert.match(final,/NoiseAndGrain\.png/);assert.match(final,/PixelOverlay_RGB_16\.png/);

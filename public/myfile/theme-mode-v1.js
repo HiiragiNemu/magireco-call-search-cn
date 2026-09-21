@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'call-ui-r10-reader-loader-20260922';
+  const RELEASE = 'call-ui-r11-height-material-20260922';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
   const VISUAL_KEY = 'magireco-call-visual-v7-5';
@@ -152,7 +152,7 @@
 
     const emblem=document.createElement('img');
     emblem.className='call-brand-emblem-v8';
-    emblem.src='./myfile/magius-mark.svg?v=ui-r10-reader-loader';
+    emblem.src='./myfile/magius-mark.svg?v=ui-r11-height-material';
     emblem.alt='';
 
     const wordmark=document.createElement('img');
@@ -835,10 +835,10 @@
       console.error('[theme-mode] responsive listeners failed',error);
     }
 
-    root.dataset.callThemeReady='ui-r10-reader-loader';
+    root.dataset.callThemeReady='ui-r11-height-material';
     finishBoot();
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:'ui-r10-reader-loader',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'ui-r11-height-material',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });
