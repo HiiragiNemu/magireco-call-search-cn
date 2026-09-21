@@ -149,9 +149,27 @@ def main() -> None:
             menu_box = index.locator(".header .menu").bounding_box()
             if not menu_box or menu_box["width"] >= 700:
                 raise AssertionError(f"hamburger menu is unexpectedly wide: {menu_box}")
-            body_overflow = index.evaluate("getComputedStyle(document.body).overflow")
-            if body_overflow == "hidden":
-                raise AssertionError("hamburger menu locked document scrolling")
+            # The CRT viewport deliberately clips body; native scrolling belongs
+            # to its inner signal. Test scrolling, not the retired body layout.
+            scroll_before = index.evaluate("""() => {
+              const root = document.querySelector('.call-display-scroll-v7') || document.scrollingElement;
+              return { top: root.scrollTop, height: root.scrollHeight,
+                client: root.clientHeight, overflow: getComputedStyle(root).overflowY };
+            }""")
+            if scroll_before["height"] <= scroll_before["client"]:
+                raise AssertionError(f"Call smoke fixture is not scrollable: {scroll_before}")
+            index.mouse.move(850, 550)  # outside the open menu
+            index.mouse.wheel(0, 300)
+            index.wait_for_function("""before => {
+              const root = document.querySelector('.call-display-scroll-v7') || document.scrollingElement;
+              return root.scrollTop > before;
+            }""", arg=scroll_before["top"], timeout=10000)
+            scroll_after = index.evaluate("""() => ({
+              contentTop: (document.querySelector('.call-display-scroll-v7') || document.scrollingElement).scrollTop,
+              opticalTop: document.querySelector('.call-display-root-v7')?.scrollTop || 0
+            })""")
+            if scroll_after["opticalTop"] != 0:
+                raise AssertionError(f"optical viewport scrolled with content: {scroll_after}")
             index.keyboard.press("Escape")
             index.wait_for_function(
                 "() => document.querySelector('#menu-btn')?.checked === false",
@@ -159,7 +177,8 @@ def main() -> None:
             )
             proof["checks"]["hamburger"] = {
                 "width": menu_box["width"],
-                "bodyOverflow": body_overflow,
+                "nativeScrollBefore": scroll_before,
+                "nativeScrollAfter": scroll_after,
             }
 
             for path, heading in (
