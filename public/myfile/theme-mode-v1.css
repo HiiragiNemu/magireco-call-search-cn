@@ -1047,7 +1047,7 @@ html[data-call-preboot="true"]::before{
   z-index:2147483646;
   pointer-events:none;
   background-image:
-    url('./magius-mark.svg'),
+    url('./magius-mark.svg?v=ui-r9-reader-edge'),
     url('./magius-link-wordmark.svg'),
     repeating-linear-gradient(0deg,rgba(0,0,0,.52) 0 .7px,transparent .7px 2px),
     url('./reader-textures/magi-lofi-grain.png'),
@@ -2923,3 +2923,66 @@ html:root[data-call-ios-flat="true"][data-call-theme] body .call-display-root-v7
 html:root[data-call-ios-flat="true"] body :is(.call-fx-bezel-v7,.call-fx-vignette-v7) { display:none!important; }
 html:root[data-call-ios-flat="true"] body .call-fx-toggle-row-v7[data-platform-disabled="true"] { opacity:.65; cursor:not-allowed; }
 html:root[data-call-theme] body .call-platform-note { font-size:14px; line-height:1.6; white-space:normal; }
+
+/* r9 / Reader accepted candidate 4192: one dark surround and one recessed edge.
+   The surround is OUTSIDE the signal. Never paint the light page color behind
+   the lens or filter an extra outer shadow into a second raised frame. */
+html:root[data-call-theme="light"] { --call-screen-surround:#080b0c; --call-bezel-reflection:166,189,193; }
+html:root[data-call-theme="paper"] { --call-screen-surround:#0d0b07; --call-bezel-reflection:204,180,119; }
+html:root[data-call-theme="green"] { --call-screen-surround:#060d09; --call-bezel-reflection:132,196,159; }
+html:root[data-call-theme="dark"] { --call-screen-surround:#000; --call-bezel-reflection:132,192,92; }
+html:root[data-call-theme="frost"] { --call-screen-surround:#000; --call-bezel-reflection:105,188,177; }
+html:root[data-call-theme][data-call-fx-curvature="true"],
+html:root[data-call-theme][data-call-fx-curvature="true"] body.call-screen-host-v7 {
+  background:var(--call-screen-surround)!important;
+}
+html:root[data-call-theme] body .call-display-root-v7 { box-shadow:none!important; }
+html:root[data-call-theme][data-call-fx-curvature="true"] body .call-display-root-v7 {
+  inset:0!important; border:0!important;
+  border-radius:clamp(22px,2.2vw,42px)/clamp(20px,3vh,34px)!important;
+  clip-path:inset(0 round clamp(22px,2.2vw,42px)/clamp(20px,3vh,34px))!important;
+}
+html:root[data-call-theme] body .call-display-root-v7::before,
+html:root[data-call-theme] body .call-display-root-v7::after { content:none!important; }
+html:root[data-call-theme] body .call-fx-vignette-v7 { display:none!important; }
+html:root[data-call-theme][data-call-fx-curvature="true"] body .call-fx-bezel-v7 {
+  display:block!important; background:none!important; border:0!important;
+  border-radius:inherit!important;
+  box-shadow:inset 0 0 2px 1px rgba(0,0,0,.9),
+    inset 0 0 9px 3px rgba(0,0,0,.58),
+    inset 0 0 24px 4px rgba(0,0,0,.25),
+    inset 0 2px 3px rgba(var(--call-bezel-reflection),.1)!important;
+}
+
+/* Tight 548:624 artwork from Reader's MagiusEmblem, with supporting wordmark.
+   A single width governs both assets, so max-height cannot squash the emblem. */
+html:root[data-call-theme] { --call-brand-width:min(70vw,54dvh,600px); --call-wordmark-ratio:.6; }
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) { --call-wordmark-ratio:.4; }
+html:root[data-call-theme] body .call-brand-watermark-v8 {
+  display:flex!important; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; transform:none!important;
+}
+html:root[data-call-theme] body .call-brand-emblem-v8 {
+  width:var(--call-brand-width)!important; height:auto!important; max-height:none!important;
+  aspect-ratio:548 / 624; object-fit:contain; flex:none;
+}
+html:root[data-call-theme] body .call-brand-wordmark-v8 {
+  width:calc(var(--call-brand-width) * var(--call-wordmark-ratio))!important;
+  height:auto!important; max-height:none!important; aspect-ratio:341.927 / 156.45;
+  object-fit:contain; flex:none; margin:0!important;
+}
+
+/* Use the same hierarchy during startup rather than flashing the old huge text. */
+html:root[data-call-theme] { --call-boot-brand-width:min(56vw,32dvh,310px); }
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) { --call-boot-brand-width:min(78vw,54dvh,500px); }
+html:root[data-call-theme][data-call-preboot="true"]::before {
+  background-position:
+    center calc(50% - var(--call-boot-brand-width) * var(--call-wordmark-ratio) * .22878 - 1px),
+    center calc(50% + var(--call-boot-brand-width) * .56934 + 1px),0 0,17px 11px,center!important;
+  background-size:var(--call-boot-brand-width) auto,
+    calc(var(--call-boot-brand-width) * var(--call-wordmark-ratio)) auto,auto,256px 256px,cover!important;
+  box-shadow:none!important;
+}
+html:root[data-call-theme][data-call-preboot="true"]::after {
+  top:calc(50% + var(--call-boot-brand-width) * (.56934 + var(--call-wordmark-ratio) * .22878) + 24px)!important;
+}

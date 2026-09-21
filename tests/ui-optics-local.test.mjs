@@ -104,3 +104,26 @@ test('static selected glow uses a soft halo rather than only a hard outline',()=
   assert.match(css,/--call-selected-shadow:0 0 2px/);
   assert.match(css,/0 0 20px color-mix/);
 });
+
+test('Reader emblem keeps its tight viewBox and natural aspect ratio',()=>{
+  assert.match(read('public/myfile/magius-mark.svg'),/viewBox="96 32 548 624"/);
+  const revision=css.slice(css.indexOf('/* r9 / Reader'));
+  assert.match(revision,/aspect-ratio:548 \/ 624; object-fit:contain; flex:none/);
+  assert.match(revision,/height:auto!important; max-height:none!important/);
+  assert.match(revision,/--call-wordmark-ratio:\.6/);
+  assert.match(revision,/--call-wordmark-ratio:\.4/);
+  assert.match(revision,/width:calc\(var\(--call-brand-width\) \* var\(--call-wordmark-ratio\)\)/);
+});
+
+test('Reader edge uses a dark external surround and one inset bezel, not raised shadows',()=>{
+  const revision=css.slice(css.indexOf('/* r9 / Reader'));
+  assert.match(revision,/--call-screen-surround:#080b0c/);
+  assert.match(revision,/--call-screen-surround:#0d0b07/);
+  assert.match(revision,/--call-screen-surround:#060d09/);
+  assert.match(revision,/body\.call-screen-host-v7\s*\{\s*background:var\(--call-screen-surround\)!important/);
+  assert.match(revision,/body \.call-display-root-v7 \{ box-shadow:none!important; \}/);
+  assert.match(revision,/body \.call-fx-vignette-v7 \{ display:none!important; \}/);
+  const bezel=revision.split('body .call-fx-bezel-v7 {')[1].split('}')[0];
+  assert.equal((bezel.match(/inset 0/g)||[]).length,4);
+  assert.doesNotMatch(bezel,/box-shadow:0/);
+});
