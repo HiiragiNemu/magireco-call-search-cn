@@ -45,7 +45,7 @@ test('static lens is at most three primitives with one small blur',()=>{
   const install=theme.split('function installOpticalFilter(){')[1].split('function updateOpticalFilter(){')[0];
   assert.equal([...install.matchAll(/svgEl\('fe/g)].length,3);
   assert.equal([...install.matchAll(/svgEl\('feGaussianBlur'/g)].length,1);
-  assert.match(install,/stdDeviation:'\.38 \.22'/);
+  assert.match(install,/stdDeviation:'\.32'/);
   assert.match(install,/filterUnits:'userSpaceOnUse'/);
 });
 test('iOS first paint clamps only curvature including saved on',()=>{

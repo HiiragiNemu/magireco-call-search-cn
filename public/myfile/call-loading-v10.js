@@ -59,18 +59,18 @@
       el.setAttribute('width',width);el.setAttribute('height',height);
     }
     filter.querySelector('feDisplacementMap').setAttribute('scale',root.dataset.callFxCurvature==='true'?Math.round(Math.max(24,Math.min(50,Math.min(width,height)*.075))):0);
-    filter.querySelector('feGaussianBlur').setAttribute('stdDeviation',root.dataset.callTheme==='dark'?'.38 .22':root.dataset.callTheme==='frost'?'.28 .18':'.08 .06');
+    filter.querySelector('feGaussianBlur').setAttribute('stdDeviation',parseFloat(getComputedStyle(root).getPropertyValue('--call-focus-radius')) || 0);
   }
   root.dataset.callCrtEngine=root.dataset.callIosFlat==='true'?'native-flat':'static-svg';
   root.dataset.callOpticsActive=root.dataset.callFxCurvature;
   const imageReady=url=>new Promise((resolve,reject)=>{
-    const img=new Image();img.onload=()=>resolve();img.onerror=()=>reject(new Error('Display asset failed: '+url));img.src=url;
+    const img=new Image();img.onload=()=>{Promise.resolve(typeof img.decode==='function'?img.decode():undefined).then(resolve,reject);};img.onerror=()=>reject(new Error('Display asset failed: '+url));img.src=url;
   });
   async function displayReady(){
     const done=hold('display-assets');
     try{
       const urls=new Set();
-      for(const el of document.querySelectorAll('.call-reader-screen-v7 span')){
+      for(const el of document.querySelectorAll('.call-reader-screen-v7 span, .call-material-direct-v11')){
         const s=getComputedStyle(el);
         if(s.display==='none'||s.visibility==='hidden'||Number(s.opacity)===0)continue;
         for(const match of s.backgroundImage.matchAll(/url\(["']?([^"')]+)["']?\)/g))urls.add(match[1]);
@@ -78,7 +78,7 @@
       const waits=[...urls].map(imageReady);
       if(root.dataset.callTheme==='frost')waits.push(imageReady('./myfile/reader-textures/frost-phosphor-ink-mask.svg'));
       if(root.dataset.callIosFlat!=='true')waits.push(imageReady('./myfile/call-lens-v10.png'));
-      if(root.dataset.callFxPixelFont==='true'&&document.fonts)waits.push(document.fonts.load('16px MagiCallPixelSC'));
+      if(root.dataset.callFxPixelFont==='true'&&document.fonts)waits.push(Promise.all([document.fonts.load('16px MagiCallPixelSC'),document.fonts.load('16px MagiCallPixelJP')]));
       await Promise.all(waits);
       root.dataset.callLoadingAssets='ready';
     }catch(error){console.warn('[call-loading]',error);fail('display-asset');}

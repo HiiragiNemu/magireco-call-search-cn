@@ -236,7 +236,7 @@
     // One static displacement pass. Bloom belongs to small CSS text/icon shadows,
     // not several blurred copies of the complete scrolling viewport.
     const curve=svgEl('feDisplacementMap',{in:'SourceGraphic',in2:'lens',scale:'50',xChannelSelector:'R',yChannelSelector:'G',result:'curved'});
-    const focus=svgEl('feGaussianBlur',{in:'curved',stdDeviation:'.38 .22'});
+    const focus=svgEl('feGaussianBlur',{in:'curved',stdDeviation:'.32'});
     filter.append(image,curve,focus);
     defs.appendChild(filter);svg.appendChild(defs);document.body.appendChild(svg);
     opticalRefs={filter,image,curve,focus};
@@ -251,7 +251,7 @@
     }
     const scale=Math.round(Math.max(24,Math.min(50,Math.min(width,height)*.075)));
     assign(opticalRefs.curve,'scale',effectValue('curvature') ? scale : 0);
-    assign(opticalRefs.focus,'stdDeviation',activeTheme==='dark' ? '.38 .22' : activeTheme==='frost' ? '.28 .18' : '.08 .06');
+    assign(opticalRefs.focus,'stdDeviation',parseFloat(getComputedStyle(root).getPropertyValue('--call-focus-radius')) || 0);
   }
 
   function applyDatasets(){
@@ -358,7 +358,10 @@
       'call-fx-frost-grain-v7','call-fx-frost-smudges-v7','call-fx-frost-glass-v7','call-fx-frost-wear-v7',
       'call-fx-scanlines-v7','call-fx-vignette-v7','call-fx-bezel-v7'
     ]){
-      const span=document.createElement('span');span.className=cls;(cls==='call-fx-bezel-v7'?displayRoot:surface).appendChild(span);
+      const span=document.createElement('span');span.className=cls;
+      const direct=['call-fx-day-grain-v7','call-fx-night-phosphor-v7','call-fx-night-grain-v7','call-fx-scanlines-v7'].includes(cls);
+      if(direct)span.classList.add('call-material-direct-v11');
+      (direct || cls==='call-fx-bezel-v7'?displayRoot:surface).appendChild(span);
     }
     displayRoot.appendChild(surface);
   }

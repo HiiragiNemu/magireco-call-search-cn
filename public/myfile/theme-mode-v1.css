@@ -1530,8 +1530,7 @@ html[data-call-preboot="false"]::after{
   text-shadow:var(--call-reader-inverse-echo)!important;
 }
 
-/* Reader/MadeInMagius raster intensity. The grain layer itself moves on the
-   compositor instead of repainting background-position. */
+/* Legacy raster intensity; r11 below owns the final static material recipe. */
 :root[data-call-theme="dark"] .call-fx-night-phosphor-v7{
   opacity:.38!important;
 }
@@ -2685,10 +2684,6 @@ html:root[data-call-theme="dark"]:not([data-call-phosphor="amber"]) {
   --call-surface-raised:rgba(8,20,9,.94); --call-card-bg:rgba(7,18,8,.5);
   --call-card-text:#c8ff92;
 }
-html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-grain-v7 {
-  opacity:.16!important; mix-blend-mode:soft-light!important; filter:none!important;
-}
-html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-phosphor-v7 { opacity:.18!important; }
 html:root[data-call-theme="dark"][data-call-fx-registration="true"] body .call-display-root-v7 :is(
   h1,h2,h3,h4,legend,label,button,a,input,textarea,select,small,strong,b,.suite-nav
 ) {
@@ -2797,11 +2792,6 @@ html:root[data-call-fx-curvature="true"] body .call-fx-vignette-v7 {
 html:root[data-call-fx-curvature="true"] body .call-fx-bezel-v7 {
   box-shadow:inset 0 0 2px 1px rgba(0,0,0,.7),inset 0 0 8px rgba(0,0,0,.3)!important;
 }
-html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-phosphor-v7 {
-  background:url('./reader-textures/PixelOverlay_RGB_16.png') 0 0/4px 4px repeat!important;
-  opacity:.10!important;
-}
-html:root[data-call-theme="dark"][data-call-fx-noise] body .call-fx-night-grain-v7 { opacity:.23!important; }
 html:root[data-call-theme="dark"][data-call-fx-scanlines="true"] body .call-fx-scanlines-v7 {
   display:block!important;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.45) 2px 3px)!important;
@@ -2912,9 +2902,9 @@ html:root[data-call-theme] body .call-name-filter-help { width:min(100%,42rem); 
 /* Same release route as Reader: iOS flat, native scroll, static material intact.
    Explicit final override defeats every older mobile perspective/URL-filter rule. */
 html:root[data-call-ios-flat="true"] { --call-ios-flat-filter:none; }
-html:root[data-call-ios-flat="true"][data-call-fx-registration="true"] { --call-ios-flat-filter:blur(.13px); }
-html:root[data-call-ios-flat="true"][data-call-theme="frost"] { --call-ios-flat-filter:blur(.22px); }
-html:root[data-call-ios-flat="true"][data-call-theme="dark"] { --call-ios-flat-filter:blur(.39px); }
+html:root[data-call-ios-flat="true"][data-call-fx-registration="true"] { --call-ios-flat-filter:blur(var(--call-focus-radius)); }
+html:root[data-call-ios-flat="true"][data-call-theme="frost"] { --call-ios-flat-filter:blur(var(--call-focus-radius)); }
+html:root[data-call-ios-flat="true"][data-call-theme="dark"] { --call-ios-flat-filter:blur(var(--call-focus-radius)); }
 html:root[data-call-ios-flat="true"][data-call-theme] body .call-display-root-v7 {
   inset:0!important; border-radius:0!important; clip-path:none!important; box-shadow:none!important;
   transform:none!important; -webkit-transform:none!important;
@@ -2991,3 +2981,131 @@ html:root[data-call-theme][data-call-preboot="true"]::after {
    The bezel stays outside this blend group so its recessed black edge survives. */
 html:root[data-call-theme="frost"] .call-reader-screen-v7 { mix-blend-mode:screen; }
 .call-display-root-v7>.call-fx-bezel-v7 { position:absolute; inset:0; z-index:5001; pointer-events:none; display:none; border-radius:inherit; }
+
+/* r11: semantic chart colors, shared by the live DOM and Canvas exporter.
+   Theme switches recolor existing data without rebuilding 186 character points. */
+html:root[data-call-theme] {
+  --call-chart-bg:var(--call-surface);
+  --call-chart-backdrop:var(--call-bg);
+  --call-chart-panel:var(--call-surface-raised);
+  --call-chart-ink:var(--call-text);
+  --call-chart-grid:var(--call-border);
+  --call-chart-major:var(--call-border-strong);
+  --call-chart-accent:var(--call-accent);
+  --call-chart-bar-start:var(--call-surface-soft);
+  --call-chart-bar-end:var(--call-accent);
+  --call-focus-radius:.18px;
+}
+html:root[data-call-theme="dark"] { --call-focus-radius:.39px; }
+html:root[data-call-theme="frost"] { --call-focus-radius:.32px; }
+html:root[data-call-ios-flat="true"][data-call-theme="frost"] { --call-focus-radius:.22px; }
+html:root[data-call-fx-noise="false"] { --call-focus-radius:0px; }
+html:root[data-call-fx-noise="false"][data-call-fx-registration="true"] { --call-focus-radius:.13px; }
+html:root[data-call-theme][data-call-optics-active="false"] body .call-display-root-v7 {
+  filter:blur(var(--call-focus-radius))!important; -webkit-filter:blur(var(--call-focus-radius))!important;
+}
+html:root[data-call-theme] body :is(label.girlbox,.suite-character-card) {
+  --call-card-accent:var(--call-accent);
+  border-color:var(--call-border)!important;
+}
+html:root[data-call-theme] body :is(label.girlbox,.suite-character-card):not(.is-selected-v11):not([aria-pressed="true"]):not(:has(input:checked)) {
+  box-shadow:inset 0 -3px 0 var(--call-accent)!important;
+}
+html:root[data-call-theme] body #heightChartContainer { background:transparent!important; border-color:var(--call-border)!important; }
+html:root[data-call-theme] body :is(.height-chart-surface-v2,.height-plot-v2) {
+  color:var(--call-chart-ink)!important; background-color:var(--call-chart-bg)!important;
+}
+html:root[data-call-theme] body .height-plot-v2 {
+  background-image:repeating-linear-gradient(to top,color-mix(in srgb,var(--call-chart-grid) 35%,transparent) 0 1px,transparent 1px 12px)!important;
+}
+html:root[data-call-theme] body .height-major-line-v2 { background:var(--call-chart-major)!important; opacity:.65; }
+html:root[data-call-theme] body :is(.height-category-column-v2,.height-x-label-v2,.height-y-axis-v2,.height-x-axis-v2,.height-x-axis-spacer-v2,.height-x-axis-spacer-right-v3) {
+  border-color:var(--call-chart-grid)!important; color:var(--call-chart-ink)!important;
+}
+html:root[data-call-theme] body :is(.height-y-axis-v2,.height-x-axis-v2,.height-x-axis-spacer-v2,.height-x-axis-spacer-right-v3,.height-guide-mode-v4,.height-chart-tooltip-v2,.height-active-guide-label-v3,.height-active-y-label-v3) {
+  background:var(--call-chart-panel)!important; color:var(--call-chart-ink)!important;
+  -webkit-text-fill-color:currentColor!important; border-color:var(--call-chart-major)!important; box-shadow:none!important;
+}
+html:root[data-call-theme] body :is(.height-guide-status-v4,.height-guide-help-v4,.height-export-status-v10) { color:var(--call-muted)!important; }
+html:root[data-call-theme] body :is(.height-point-guide-v2,.height-active-guide-v3) {
+  color:var(--call-chart-accent)!important; border-top-color:var(--call-chart-accent)!important; filter:none!important;
+}
+html:root[data-call-theme] body .height-point-guide-v2::before {
+  background:var(--call-chart-accent)!important; border-color:var(--call-chart-panel)!important; box-shadow:none!important;
+}
+html:root[data-call-theme] body .height-point-v2 {
+  background:var(--call-chart-panel)!important; border-color:var(--call-chart-accent)!important;
+  box-shadow:0 0 0 1px var(--call-chart-bg)!important;
+}
+html:root[data-call-theme] body .height-point-v2:is(:hover,:focus-visible,.is-active) {
+  border-color:var(--call-accent-strong)!important;
+  box-shadow:0 0 0 2px var(--call-chart-panel),0 0 0 4px var(--call-chart-accent),var(--call-selected-shadow)!important;
+}
+html:root[data-call-theme] body .height-bar-v2 {
+  border-color:var(--call-chart-accent)!important;
+  background:linear-gradient(to bottom,var(--call-chart-bar-start),var(--call-chart-bar-end))!important;
+}
+
+/* Reader's phosphor and day grain blend directly against the signal, not a
+   transparent isolated parent. Frost retains its own screen-blended film group.
+   All textures are static, viewport-bounded and non-interactive. */
+.call-display-root-v7 > .call-material-direct-v11 {
+  position:absolute; inset:0!important; z-index:5000; pointer-events:none;
+  display:none; border-radius:inherit; animation:none!important; will-change:auto!important;
+}
+html:root[data-call-theme="dark"][data-call-fx-noise="true"] body .call-fx-night-phosphor-v7 {
+  display:block!important; opacity:var(--call-scan-opacity)!important;
+  background:var(--call-raster-lines,linear-gradient(transparent,transparent)),
+    url('./reader-textures/NoiseAndGrain.png') 0 0/128px 64px repeat,
+    url('./reader-textures/PixelOverlay_RGB_16.png') 0 0/4px 4px repeat!important;
+  background-blend-mode:multiply,soft-light,normal!important; mix-blend-mode:soft-light!important;
+}
+html:root[data-call-theme="dark"][data-call-fx-scanlines="true"] {
+  --call-raster-lines:repeating-linear-gradient(0deg,rgba(5,0,2,.52) 0 .6px,transparent .6px 2px);
+}
+/* The scan is already in the Reader phosphor recipe: do not double-stack it. */
+html:root[data-call-theme="dark"][data-call-fx-noise="true"] body .call-fx-scanlines-v7 { display:none!important; }
+html:root[data-call-theme="dark"][data-call-fx-noise="true"] body .call-fx-night-grain-v7 {
+  display:block!important; opacity:.495!important; mix-blend-mode:screen!important;
+  filter:sepia(.2) hue-rotate(42deg) saturate(.72)!important;
+  background:url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat,
+    url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat!important;
+  background-blend-mode:screen!important;
+}
+html:root[data-call-theme="dark"][data-call-phosphor="amber"][data-call-fx-noise="true"] body .call-fx-night-grain-v7 {
+  display:block!important; opacity:.66!important; mix-blend-mode:screen!important; filter:sepia(.65)!important;
+  background:url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat,
+    url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat!important;
+  background-blend-mode:screen!important;
+}
+
+/* The legacy entry uses native anchors/inputs and label.at rather than suite
+   controls. Include that real DOM in the theme, including keyboard focus. */
+html:root[data-call-theme] body a:not(.suite-nav a) { color:var(--call-accent-strong); }
+html:root[data-call-theme] body a:visited { color:var(--call-accent-strong); }
+html:root[data-call-theme] body p.top > span[style] { color:var(--call-accent-strong)!important; }
+html:root[data-call-theme] body :is(input,textarea,select,button,a,summary,[tabindex]):focus-visible {
+  outline:2px solid var(--call-accent)!important; outline-offset:2px!important;
+}
+html:root[data-call-theme] ::selection {
+  color:var(--call-accent-ink); background:var(--call-accent); text-shadow:none;
+}
+html:root[data-call-theme] body :is(input[type="button"],input[type="submit"],input[type="reset"],button.searchbtn) {
+  min-height:32px; padding:5px 10px!important; border-width:1px!important;
+  box-shadow:inset 0 1px color-mix(in srgb,var(--call-accent-ink) 14%,transparent)!important;
+}
+html:root[data-call-theme] body #at_form { display:flex; flex-wrap:wrap; gap:6px; background:transparent!important; padding:8px 0; }
+html:root[data-call-theme] body #at_form > br { display:none; }
+html:root[data-call-theme] body #at_form label.at {
+  display:inline-flex; align-items:center; gap:5px; min-height:30px; padding:3px 8px; margin:0;
+  border:1px solid var(--call-border); border-radius:3px;
+  color:var(--call-text); background:color-mix(in srgb,var(--call-surface) 65%,transparent);
+}
+html:root[data-call-theme] body #at_form label.at:has(input:checked) {
+  color:var(--call-accent-ink)!important; -webkit-text-fill-color:currentColor!important;
+  background:var(--call-accent)!important; border-color:var(--call-accent-strong); box-shadow:var(--call-selected-shadow);
+}
+html:root[data-call-theme] body #at_form label.at:has(input:focus-visible) { outline:2px solid var(--call-accent); outline-offset:2px; }
+html:root[data-call-theme] body #at_form input:is([type="checkbox"],[type="radio"]) { flex:none; margin:0; }
+
+html:root[data-call-theme] body .call-attribute-fieldset-v8 { background:transparent!important; border:0!important; }

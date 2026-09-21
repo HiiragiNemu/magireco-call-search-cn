@@ -17,7 +17,7 @@ test('all ten entries contain the same pre-rendered Reader card and one shared o
   assert.equal((html.match(/id="call-loading-screen"/g)||[]).length,1,name);
   assert.equal((html.match(/id="call-screen-optics-v7"/g)||[]).length,1,name);
   assert.equal((html.match(/class="call-reader-screen-v7"/g)||[]).length,1,name);
-  assert.match(html,/<\/div><span class="call-fx-bezel-v7" aria-hidden="true">/);
+  assert.match(html,/<\/div><span class="call-fx-day-grain-v7 call-material-direct-v11"/);
   assert.match(html,/EIA 2017 \/ MAGIUS LINK/);
   assert.match(html,/viewBox="96 32 548 624"/);
   assert.match(html,/>LOADING<\/span>/);
@@ -61,12 +61,12 @@ test('startup gates cover each asynchronous application initialization',()=>{
  assert.match(theme,/CallLoading.release\('theme'\)/);
  assert.doesNotMatch(theme,/seen \? 180 : 620/);
 });
-function harness({assetFailure=false,fontWait=Promise.resolve()}={}){
+function harness({assetFailure=false,fontWait=Promise.resolve(),decodeWait=Promise.resolve()}={}){
  const events={},raf=[],buttons={},error={hidden:true},scroll={inert:true};
  const cover={setAttribute(){},querySelector(sel){if(sel==='.call-loading-error')return error;return {addEventListener(type,fn){buttons[sel]=fn;}};}};
  const html={dataset:{callTheme:'frost',callIosFlat:'true',callFxCurvature:'false',callFxPixelFont:'true'}};
  const doc={documentElement:html,getElementById(id){return id==='call-loading-screen'?cover:null;},querySelector(){return scroll;},querySelectorAll(){return [{}];},fonts:{load(){return fontWait;}},addEventListener(name,fn){events[name]=fn;}};
- const ctx={document:doc,window:{},location:{origin:'https://fixture.test',pathname:'/index.html',href:'https://fixture.test/index.html',reload(){}},URL,Image:class{set src(_){assetFailure?this.onerror():this.onload();}},getComputedStyle(){return {display:'block',visibility:'visible',opacity:'1',backgroundImage:'url("./noise.png")'};},requestAnimationFrame(fn){raf.push(fn);},setTimeout(){return 1;},clearTimeout(){},addEventListener(name,fn){events[name]=fn;},console};
+ const ctx={document:doc,window:{},location:{origin:'https://fixture.test',pathname:'/index.html',href:'https://fixture.test/index.html',reload(){}},URL,Image:class{set src(_){assetFailure?this.onerror():this.onload();}decode(){return decodeWait;}},getComputedStyle(){return {display:'block',visibility:'visible',opacity:'1',backgroundImage:'url("./noise.png")'};},requestAnimationFrame(fn){raf.push(fn);},setTimeout(){return 1;},clearTimeout(){},addEventListener(name,fn){events[name]=fn;},console};
  vm.runInNewContext(source,ctx);
  return {api:ctx.window.CallLoading,html,error,scroll,events,buttons,paint(){while(raf.length)raf.shift()();}};
 }
@@ -89,4 +89,12 @@ test('same-origin navigation reuses the cover and bfcache restores the page',asy
  h.events.click({button:0,target:{closest(){return link;}}});
  assert.equal(h.html.dataset.callLoadingState,'navigation');assert.equal(h.scroll.inert,true);
  h.events.pageshow({persisted:true});assert.equal(h.html.dataset.callLoadingState,'ready');assert.equal(h.scroll.inert,false);
+});
+
+test('decoded textures gate the reveal, not just network onload',async()=>{
+ let decoded;const h=harness({decodeWait:new Promise(r=>decoded=r)});
+ h.events.DOMContentLoaded();h.api.release('theme');await flush();h.paint();
+ assert.equal(h.api.active,true);assert.notEqual(h.html.dataset.callLoadingAssets,'ready');
+ decoded();await flush();h.paint();assert.equal(h.api.active,false);
+ assert.equal(h.html.dataset.callLoadingAssets,'ready');
 });

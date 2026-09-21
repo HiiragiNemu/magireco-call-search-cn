@@ -1,7 +1,7 @@
 /* V11: high-resolution height export drawn directly to Canvas. No html2canvas/CSS parser. */
 (function (global) {
   'use strict';
-  const RELEASE = 'live-reacceptance-v11-20260817';
+  const RELEASE = 'ui-r11-height-material';
   const MAX_SIDE = 16384;
   const MAX_PIXELS = 80_000_000;
   const px = (value) => Number.parseFloat(String(value || '')) || 0;
@@ -46,7 +46,7 @@
 
   function text(ctx, value, x, y, options = {}) {
     ctx.save();
-    ctx.fillStyle = options.color || '#28151f';
+    ctx.fillStyle = options.color || '#283033';
     ctx.font = options.font || '12px system-ui, -apple-system, "Noto Sans CJK SC", sans-serif';
     ctx.textAlign = options.align || 'center';
     ctx.textBaseline = options.baseline || 'middle';
@@ -68,10 +68,13 @@
     lines.forEach((part, index) => ctx.fillText(part, x, y - total / 2 + lineHeight * (index + .5), width));
   }
 
-  function cssColor(element, property, fallback) {
-    const value = global.getComputedStyle(element)[property];
-    if (!value || /color\(|color-mix\(|oklab|oklch|lab\(|lch\(/iu.test(value)) return fallback;
-    return value;
+  function chartPalette() {
+    const style = global.getComputedStyle(document.documentElement);
+    const token = (name, fallback) => style.getPropertyValue(`--call-chart-${name}`).trim() || fallback;
+    return { backdrop: token('backdrop', token('bg', '#f3f4f4')), bg: token('bg', '#f3f4f4'), panel: token('panel', '#fbfcfc'),
+      ink: token('ink', '#283033'), grid: token('grid', '#6d797c78'),
+      major: token('major', '#58666a'), accent: token('accent', '#5c696c'),
+      barStart: token('bar-start', '#e1e4e4'), barEnd: token('bar-end', '#5c696c') };
   }
 
   async function loadImage(src) {
@@ -86,29 +89,31 @@
 
   async function renderExportCanvas() {
     const g = geometry();
+    const palette = chartPalette();
     const scale = exportScale(g.width, g.height);
     const canvas = document.createElement('canvas');
     canvas.width = Math.max(1, Math.round(g.width * scale));
     canvas.height = Math.max(1, Math.round(g.height * scale));
     const ctx = canvas.getContext('2d');
     ctx.scale(scale, scale);
-    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, g.width, g.height);
+    ctx.fillStyle = palette.backdrop; ctx.fillRect(0, 0, g.width, g.height);
+    ctx.fillStyle = palette.bg; ctx.fillRect(0, 0, g.width, g.height);
 
     const plotX = g.axisWidth;
     const rightX = plotX + g.plotWidth;
-    ctx.fillStyle = '#fafafa'; ctx.fillRect(0, 0, g.axisWidth, g.plotHeight);
+    ctx.fillStyle = palette.panel; ctx.fillRect(0, 0, g.axisWidth, g.plotHeight);
     ctx.fillRect(rightX, 0, g.axisWidth, g.plotHeight);
     ctx.fillRect(0, g.plotHeight, g.width, g.xHeight);
-    ctx.fillStyle = '#fff'; ctx.fillRect(plotX, 0, g.plotWidth, g.plotHeight);
+    ctx.fillStyle = palette.bg; ctx.fillRect(plotX, 0, g.plotWidth, g.plotHeight);
 
     // Minor 1cm lattice plus stronger 5cm rulers.
     for (let h = 120; h <= 180; h += 1) {
       const y = ((180 - h) / 60) * g.plotHeight;
       const major = h % 5 === 0;
-      line(ctx, plotX, y, rightX, y, major ? '#6a294b' : '#dedede', major ? 1.15 : .45);
+      line(ctx, plotX, y, rightX, y, major ? palette.major : palette.grid, major ? 1.15 : .45);
       if (major) {
-        text(ctx, `${h}cm`, g.axisWidth - 6, y, { align: 'right', font: '12px system-ui' });
-        text(ctx, `${h}cm`, rightX + 6, y, { align: 'left', font: '12px system-ui' });
+        text(ctx, `${h}cm`, g.axisWidth - 6, y, { color: palette.ink, align: 'right', font: '12px system-ui' });
+        text(ctx, `${h}cm`, rightX + 6, y, { color: palette.ink, align: 'left', font: '12px system-ui' });
       }
     }
 
@@ -117,14 +122,14 @@
     ctx.font = '12px system-ui, -apple-system, sans-serif';
     labels.forEach((label) => {
       const width = Math.max(1, px(label.style.width) || label.offsetWidth);
-      line(ctx, plotX + cursor, 0, plotX + cursor, g.plotHeight + g.xHeight, '#c9c9c9', .8, [3, 3]);
-      ctx.save(); ctx.fillStyle = '#191919'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      line(ctx, plotX + cursor, 0, plotX + cursor, g.plotHeight + g.xHeight, palette.grid, .8, [3, 3]);
+      ctx.save(); ctx.fillStyle = palette.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       wrapText(ctx, label.textContent.trim(), plotX + cursor + width / 2, g.plotHeight + g.xHeight / 2, Math.max(20, width - 8), 14);
       ctx.restore();
       cursor += width;
     });
-    line(ctx, plotX + cursor, 0, plotX + cursor, g.plotHeight + g.xHeight, '#c9c9c9', .8, [3, 3]);
-    line(ctx, plotX, g.plotHeight, rightX, g.plotHeight, '#888', 1);
+    line(ctx, plotX + cursor, 0, plotX + cursor, g.plotHeight + g.xHeight, palette.grid, .8, [3, 3]);
+    line(ctx, plotX, g.plotHeight, rightX, g.plotHeight, palette.major, 1);
 
     const state = global.__MAGIRECO_CORRECTION_V2__?.heightState || {};
     if (state.viewMode === 'bar') {
@@ -134,10 +139,10 @@
         const pct = Math.max(0, Math.min(100, px(bar.style.height)));
         const height = g.plotHeight * pct / 100;
         const grad = ctx.createLinearGradient(0, g.plotHeight - height, 0, g.plotHeight);
-        grad.addColorStop(0, '#ffd3e9'); grad.addColorStop(1, '#f28ec1');
+        grad.addColorStop(0, palette.barStart); grad.addColorStop(1, palette.barEnd);
         ctx.fillStyle = grad; ctx.fillRect(plotX + center - width / 2, g.plotHeight - height, width, height);
-        ctx.strokeStyle = '#b52970'; ctx.lineWidth = 2; ctx.strokeRect(plotX + center - width / 2, g.plotHeight - height, width, height);
-        text(ctx, bar.querySelector('.height-bar-label-v2')?.textContent || '', plotX + center, Math.max(12, g.plotHeight - height - 16), { font: '11px system-ui' });
+        ctx.strokeStyle = palette.accent; ctx.lineWidth = 2; ctx.strokeRect(plotX + center - width / 2, g.plotHeight - height, width, height);
+        text(ctx, bar.querySelector('.height-bar-label-v2')?.textContent || '', plotX + center, Math.max(12, g.plotHeight - height - 16), { color: palette.ink, font: '11px system-ui' });
       }
     } else {
       const points = [...g.plot.querySelectorAll('.height-point-v2')];
@@ -146,7 +151,7 @@
       for (const point of points) {
         const x = px(point.style.left); const y = px(point.style.top);
         const radius = Math.max(18, (point.offsetWidth || 54) / 2);
-        const color = point.dataset.characterColor || cssColor(point, 'borderTopColor', '#ce176f');
+        const color = palette.accent;
         let direction = guideMode === 'all-left' ? 'left' : guideMode === 'all-right' ? 'right' : (x <= g.plotWidth / 2 ? 'left' : 'right');
         const lineStart = direction === 'left' ? 0 : x + radius;
         const lineEnd = direction === 'left' ? Math.max(0, x - radius) : g.plotWidth;
@@ -158,7 +163,7 @@
         if (image === undefined) { image = await loadImage(src); imageCache.set(src, image); }
         ctx.save();
         ctx.beginPath(); ctx.arc(plotX + x, y, radius, 0, Math.PI * 2); ctx.clip();
-        ctx.fillStyle = '#fff'; ctx.fillRect(plotX + x - radius, y - radius, radius * 2, radius * 2);
+        ctx.fillStyle = palette.bg; ctx.fillRect(plotX + x - radius, y - radius, radius * 2, radius * 2);
         if (image?.naturalWidth) ctx.drawImage(image, plotX + x - radius, y - radius, radius * 2, radius * 2);
         ctx.restore();
         ctx.beginPath(); ctx.arc(plotX + x, y, radius, 0, Math.PI * 2); ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
@@ -211,5 +216,5 @@
   else { install(); observer.observe(document.body, { childList: true, subtree: true }); }
 
   global.saveHeightChart = saveHeightChartV11;
-  global.__MAGIRECO_HEIGHT_EXPORT_V11__ = Object.freeze({ release: RELEASE, renderExportCanvas, saveHeightChart: saveHeightChartV11, geometry, exportScale });
+  global.__MAGIRECO_HEIGHT_EXPORT_V11__ = Object.freeze({ release: RELEASE, renderExportCanvas, saveHeightChart: saveHeightChartV11, geometry, exportScale, chartPalette });
 })(window);
