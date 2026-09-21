@@ -3,6 +3,7 @@
 
   const root = document.documentElement;
   const releasePreboot = (reason = 'ready') => {
+    if(typeof window!=='undefined' && window.CallLoading){ return; }
     root.dataset.callPreboot = 'false';
     root.dataset.callPrebootRelease = reason;
   };

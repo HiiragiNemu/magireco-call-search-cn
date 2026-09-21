@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'call-ui-r9-reader-edge-20260922';
+  const RELEASE = 'call-ui-r10-reader-loader-20260922';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
   const VISUAL_KEY = 'magireco-call-visual-v7-5';
@@ -152,7 +152,7 @@
 
     const emblem=document.createElement('img');
     emblem.className='call-brand-emblem-v8';
-    emblem.src='./myfile/magius-mark.svg?v=ui-r9-reader-edge';
+    emblem.src='./myfile/magius-mark.svg?v=ui-r10-reader-loader';
     emblem.alt='';
 
     const wordmark=document.createElement('img');
@@ -171,7 +171,7 @@
     scrollRoot=document.querySelector('.call-display-scroll-v7');
     if(displayRoot && scrollRoot){ensureBrandWatermark();return;}
 
-    displayRoot=document.createElement('div');
+    displayRoot=displayRoot || document.createElement('div');
     displayRoot.className='call-display-root-v7';
     displayRoot.setAttribute('data-call-screen-root','true');
 
@@ -179,8 +179,12 @@
     scrollRoot.className='call-display-scroll-v7';
     scrollRoot.setAttribute('data-call-scroll-root','true');
 
-    for(const node of Array.from(document.body.childNodes)) scrollRoot.appendChild(node);
-    displayRoot.appendChild(scrollRoot);
+    for(const node of Array.from(document.body.childNodes)){
+      if(node===displayRoot || node.nodeType===1 && node.matches('.call-optics-defs-v7'))continue;
+      scrollRoot.appendChild(node);
+    }
+    displayRoot.insertBefore(scrollRoot,displayRoot.firstChild);
+    scrollRoot.inert=root.dataset.callPreboot==='true';
     document.body.appendChild(displayRoot);
     ensureBrandWatermark();
     document.body.classList.add('call-screen-host-v7');
@@ -214,7 +218,12 @@
   }
   function installOpticalFilter(){
     if(isIOS) return; // No SVG lens or displacement map allocation on iOS.
-    if(document.querySelector('.call-optics-defs-v7')) return;
+    const existing=document.getElementById('call-screen-optics-v7');
+    if(existing){
+      opticalRefs={filter:existing,image:existing.querySelector('feImage'),curve:existing.querySelector('feDisplacementMap'),focus:existing.querySelector('feGaussianBlur')};
+      if(typeof ResizeObserver==='function')new ResizeObserver(updateOpticalFilter).observe(displayRoot);
+      return;
+    }
     const map=makeLensMap(); if(!map) return;
     const svg=svgEl('svg',{width:1,height:1,'aria-hidden':'true'});
     svg.classList.add('call-optics-defs-v7');
@@ -349,7 +358,7 @@
       'call-fx-frost-grain-v7','call-fx-frost-smudges-v7','call-fx-frost-glass-v7','call-fx-frost-wear-v7',
       'call-fx-scanlines-v7','call-fx-vignette-v7','call-fx-bezel-v7'
     ]){
-      const span=document.createElement('span');span.className=cls;surface.appendChild(span);
+      const span=document.createElement('span');span.className=cls;(cls==='call-fx-bezel-v7'?displayRoot:surface).appendChild(span);
     }
     displayRoot.appendChild(surface);
   }
@@ -783,10 +792,8 @@
   }
 
   function finishBoot(){
-    let seen=false;
-    try{ seen=sessionStorage.getItem('magireco-call-magius-boot-v1') === '1'; }catch(_){}
-    const delay=reducedMotion ? 80 : (seen ? 180 : 620);
-    setTimeout(()=>releaseBoot('theme-ready'),delay);
+    if(window.CallLoading) window.CallLoading.release('theme');
+    else releaseBoot('theme-ready');
   }
 
   function runInstallStep(name,fn){
@@ -799,9 +806,6 @@
   }
 
   function install(){
-    // Start the release timer before optional CRT/UI enhancement work. No
-    // enhancement is allowed to own page visibility.
-    finishBoot();
 
     if(!runInstallStep('display-root',installDisplayRoot)){
       releaseBoot('display-root-error');
@@ -828,9 +832,10 @@
       console.error('[theme-mode] responsive listeners failed',error);
     }
 
-    root.dataset.callThemeReady='ui-r9-reader-edge';
+    root.dataset.callThemeReady='ui-r10-reader-loader';
+    finishBoot();
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:'ui-r9-reader-edge',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'ui-r10-reader-loader',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });

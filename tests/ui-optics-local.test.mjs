@@ -44,7 +44,7 @@ test('all themes and platforms default registration on but preserve explicit off
 test('static lens is at most three primitives with one small blur',()=>{
   const install=theme.split('function installOpticalFilter(){')[1].split('function updateOpticalFilter(){')[0];
   assert.equal([...install.matchAll(/svgEl\('fe/g)].length,3);
-  assert.equal([...install.matchAll(/feGaussianBlur/g)].length,1);
+  assert.equal([...install.matchAll(/svgEl\('feGaussianBlur'/g)].length,1);
   assert.match(install,/stdDeviation:'\.38 \.22'/);
   assert.match(install,/filterUnits:'userSpaceOnUse'/);
 });

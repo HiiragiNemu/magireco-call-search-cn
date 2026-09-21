@@ -335,7 +335,7 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
 }
 :root[data-call-theme="frost"] .call-fx-frost-glass-v7{
   display:block;opacity:.86;mix-blend-mode:screen;
-  background:url('./reader-textures/2k_BG_Texture.png') center/100% 100% no-repeat;
+  background:url('./reader-textures/2k_BG_Texture.png?v=ui-r10-reader-loader') center/100% 100% no-repeat;
   filter:grayscale(1);
 }
 :root[data-call-theme="frost"] .call-fx-frost-wear-v7{
@@ -2986,3 +2986,8 @@ html:root[data-call-theme][data-call-preboot="true"]::before {
 html:root[data-call-theme][data-call-preboot="true"]::after {
   top:calc(50% + var(--call-boot-brand-width) * (.56934 + var(--call-wordmark-ratio) * .22878) + 24px)!important;
 }
+
+/* Shared Reader film group must screen against the signal, not an isolated black tile.
+   The bezel stays outside this blend group so its recessed black edge survives. */
+html:root[data-call-theme="frost"] .call-reader-screen-v7 { mix-blend-mode:screen; }
+.call-display-root-v7>.call-fx-bezel-v7 { position:absolute; inset:0; z-index:5001; pointer-events:none; display:none; border-radius:inherit; }

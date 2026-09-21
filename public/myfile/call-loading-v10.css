@@ -1,0 +1,161 @@
+/* Loading-only paint: no selectors reach the accepted home/Reader surfaces. */
+.magi-loading-screen {
+  --loading-paper: #f3ead4;
+  --loading-ink: #443823;
+  --loading-secondary: #655035;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--loading-paper);
+  color: var(--loading-ink);
+  font-family: ui-monospace, Consolas, monospace;
+}
+html[data-call-theme='light'] .magi-loading-screen {
+  --loading-paper: #f6f6f6;
+  --loading-ink: #252525;
+  --loading-secondary: #4d4d4d;
+}
+html[data-call-theme='green'] .magi-loading-screen {
+  --loading-paper: #e0edcc;
+  --loading-ink: #244b31;
+  --loading-secondary: #3f6144;
+}
+.magi-loading-plate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(96vw, 122dvh, 1320px);
+  aspect-ratio: 1000 / 760;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.magi-loading-chart { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.magi-loading-ident {
+  position: relative;
+  width: min(78vw, 54dvh, 500px);
+  text-align: center;
+}
+html:not([data-call-theme='dark']):not([data-call-theme='frost']) .magi-loading-screen .magi-loading-ident {
+  position: absolute;
+  left: 50%; top: 18.5%;
+  transform: translateX(-50%);
+  width: min(30.5cqi, 56vw, 32dvh, 310px);
+  /* Logo field ends where the lower scale begins; the wordmark uses the
+     remaining space below the emblem instead of an arbitrary top gap. */
+  height: 58.2105263158%;
+}
+.magi-loading-screen .magi-loading-brand {
+  margin: 0;
+  padding: 0;
+  color: var(--loading-ink);
+  text-shadow: none;
+}
+.magi-loading-brand svg { display: block; width: 100%; height: auto; fill: var(--loading-ink); }
+.magi-loading-brand .magi-loading-wordmark { width: 40%; margin: 2px auto 0; }
+html:not([data-call-theme='dark']):not([data-call-theme='frost']) .magi-loading-screen .magi-loading-brand {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+html:not([data-call-theme='dark']):not([data-call-theme='frost']) .magi-loading-screen .magi-loading-brand svg {
+  flex: none;
+}
+html:not([data-call-theme='dark']):not([data-call-theme='frost']) .magi-loading-screen .magi-loading-wordmark {
+  width: 60%;
+  margin: auto 0;
+}
+.magi-loading-brand .magi-loading-link {
+  fill: var(--loading-secondary);
+}
+.magi-loading-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.5cqi, 20px);
+  margin-top: 1.8cqi;
+  font-size: clamp(12px, 1.25cqi, 16px);
+  line-height: 1.6;
+  color: var(--loading-ink);
+  white-space: nowrap;
+  position: relative;
+}
+.magi-loading-english { letter-spacing: .15em; }
+html:not([data-call-theme='dark']):not([data-call-theme='frost']) .magi-loading-screen .magi-loading-status {
+  /* Same coordinates as the lower scale: x=330, y=583, w=340, h=35
+     in the 1000 x 760 chart. The label shares its centre at (500, 600.5). */
+  position: absolute;
+  left: 33%; top: 76.7105263158%;
+  width: 34%; height: 4.6052631579%;
+  margin: 0;
+  line-height: 1;
+  font-size: clamp(10px, 1.65cqi, 18px);
+}
+html:is([data-call-theme='dark'], [data-call-theme='frost']) .magi-loading-screen {
+  --loading-paper: #082611;
+  --loading-ink: #a7ff54;
+  --loading-secondary: #84d644;
+  --loading-glow: #8ded4566;
+  --loading-scan-opacity: .28;
+}
+html[data-call-theme='dark'][data-call-phosphor='amber'] .magi-loading-screen {
+  --loading-paper: #2c2409;
+  --loading-ink: #ffe96e;
+  --loading-secondary: #d5bb49;
+  --loading-glow: #efcc4866;
+  --loading-scan-opacity: .42;
+}
+html[data-call-theme='frost'] .magi-loading-screen {
+  --loading-paper: #082b31;
+  --loading-ink: #b0ffec;
+  --loading-secondary: #77d9c7;
+  --loading-glow: #77dfd066;
+  --loading-scan-opacity: .18;
+}
+html:is([data-call-theme='dark'], [data-call-theme='frost']) .magi-loading-screen .magi-loading-brand svg {
+  filter: drop-shadow(0 0 3px var(--loading-glow)) drop-shadow(0 0 12px var(--loading-glow));
+}
+html:is([data-call-theme='dark'], [data-call-theme='frost']) .magi-loading-screen .magi-loading-status {
+  text-shadow: 0 0 7px var(--loading-glow);
+}
+@media (max-width: 600px) and (min-height: 480px) {
+  /* Keep the centre legible in portrait; crop the outer test targets, not the logo. */
+  .magi-loading-plate { width: clamp(640px, 188vw, 820px); }
+  .magi-loading-status { flex-direction: column; gap: 2px; margin-top: 2.2cqi; }
+}
+@media (max-height: 479px) {
+  .magi-loading-status { margin-top: 1.2cqi; font-size: 10px; gap: 8px; }
+}
+
+/* Hide the server-rendered day card before the client even starts. */
+html:is([data-call-theme='dark'], [data-call-theme='frost']) .magi-loading-chart { display: none; }
+
+
+/* Call owns one optical root and material stack for loader and page. */
+html:root[data-call-theme][data-call-preboot="true"]::before,
+html:root[data-call-theme][data-call-preboot="true"]::after { content:none!important; display:none!important; animation:none!important; }
+html:root[data-call-theme] body #call-loading-screen { position:absolute; inset:0; min-height:100%; z-index:4990; filter:none; }
+html:root:not([data-call-preboot="true"]) body #call-loading-screen { display:none; }
+html:root[data-call-preboot="true"] body .call-display-root-v7 > :is(.call-display-scroll-v7,.call-floating-widget-v7,.call-optical-scroll-v7,.call-suite-nav-fixed-v12) { visibility:hidden!important; }
+html:root:not([data-call-preboot]) .call-display-root-v7[data-call-ssr-shell] { display:none; }
+html:root[data-call-fx-pixel-font="true"] #call-loading-screen :is(.magi-loading-status,.magi-loading-english) { font-family:var(--call-pixel-font)!important; }
+html:root[data-call-theme="frost"] #call-loading-screen :is(.magi-loading-ident,.magi-loading-status) { mask-image:url('./reader-textures/frost-phosphor-ink-mask.svg'); mask-size:509px 383px; mask-repeat:repeat; }
+#call-loading-screen .call-loading-error { position:absolute; z-index:2; bottom:3%; left:50%; transform:translateX(-50%); max-width:90%; padding:12px; background:var(--call-surface-raised); color:var(--call-text); border:1px solid var(--call-border); text-align:center; font-size:14px; }
+#call-loading-screen .call-loading-error[hidden] { display:none!important; }
+#call-loading-screen .call-loading-error button { margin:4px; }
+/* Registration uses small local colour fringes, never a second viewport-sized filter. */
+html:root[data-call-fx-registration="true"] #call-loading-screen svg {
+  filter:drop-shadow(.65px 0 .14px var(--call-sized-trail)) drop-shadow(-.35px 0 .12px var(--call-sized-lead));
+}
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"])[data-call-fx-registration="true"] #call-loading-screen .magi-loading-brand svg {
+  filter:drop-shadow(.65px 0 .14px var(--call-sized-trail)) drop-shadow(-.35px 0 .12px var(--call-sized-lead)) drop-shadow(0 0 3px var(--loading-glow)) drop-shadow(0 0 12px var(--loading-glow));
+}

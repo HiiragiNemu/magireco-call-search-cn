@@ -574,6 +574,12 @@
     }
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
+  function initWithLoading(){
+    const done=window.CallLoading?.hold('page-data') || (()=>{});
+    Promise.resolve().then(init).catch(error=>{
+      console.error(error);window.CallLoading?.fail('page-data');
+    }).finally(done);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initWithLoading, { once: true });
+  else initWithLoading();
 })(window);
