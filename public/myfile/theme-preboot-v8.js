@@ -5,12 +5,14 @@
   const releasePreboot = (reason = 'ready') => {
     if(typeof window!=='undefined' && window.CallLoading){ return; }
     root.dataset.callPreboot = 'false';
+    root.dataset.callMaterialReady = 'true';
     root.dataset.callPrebootRelease = reason;
   };
 
   // The boot layer is decorative only. Schedule the escape hatch before any
   // preference/theme work so a runtime failure can never make the site unusable.
   root.dataset.callPreboot = 'true';
+  root.dataset.callMaterialReady = 'false';
   setTimeout(() => releasePreboot('watchdog'), 3600);
   addEventListener('error', () => releasePreboot('error'), { once: true });
   addEventListener('unhandledrejection', () => releasePreboot('rejection'), { once: true });
@@ -38,11 +40,11 @@
     }
 
     const defaults = {
-      light: { curvature:false, scanlines:false, noise:true, pixelFont:false, registration:true },
-      paper: { curvature:false, scanlines:false, noise:true, pixelFont:false, registration:true },
-      green: { curvature:false, scanlines:true, noise:true, pixelFont:false, registration:true },
-      dark: { curvature:true, scanlines:true, noise:true, pixelFont:true, registration:true },
-      frost: { curvature:true, scanlines:true, noise:true, pixelFont:true, registration:true }
+      light:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false },
+      paper:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false },
+      green:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false },
+      dark:{ curvature:true,scanlines:true,noise:true,pixelFont:false,registration:true,glassDamage:false },
+      frost:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false }
     };
 
     let state = {};
@@ -56,7 +58,11 @@
     const isIOS = /AppleWebKit/.test(ua) && (/iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
     root.dataset.callIos = String(isIOS);
     root.dataset.callIosFlat = String(isIOS);
+    defaults.dark.pixelFont = state.phosphor === 'amber';
     const effects = { ...defaults[theme], ...(state.effects?.[theme] || {}) };
+    if(theme === 'dark' && typeof state.nightPixelFonts?.[state.phosphor === 'amber' ? 'amber' : 'green'] === 'boolean') {
+      effects.pixelFont = state.nightPixelFonts[state.phosphor === 'amber' ? 'amber' : 'green'];
+    }
     if (isIOS) effects.curvature = false;
 
     root.dataset.callTheme = theme;

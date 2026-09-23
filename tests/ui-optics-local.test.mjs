@@ -50,7 +50,7 @@ test('static lens is at most three primitives with one small blur',()=>{
 });
 test('iOS first paint clamps only curvature including saved on',()=>{
   for(const identity of [iosSafari,iosChrome,ipad]) for(const mode of ['light','paper','green','dark','frost']){
-    const d=preboot({effects:{[mode]:{curvature:true}}},mode,identity);
+    const d=preboot({effects:{[mode]:{curvature:true,noise:true}}},mode,identity);
     assert.equal(d.callIosFlat,'true');assert.equal(d.callFxCurvature,'false');
     assert.equal(d.callFxNoise,'true');assert.equal(d.callFxRegistration,'true');
   }

@@ -8,7 +8,7 @@
   let active=true, failed=false, generation=0;
   const content=()=>document.querySelector('.call-display-scroll-v7');
   function reveal(reason='ready'){
-    active=false; generation++; clearTimeout(watchdog);
+    active=false;root.dataset.callMaterialReady='true'; generation++; clearTimeout(watchdog);
     root.dataset.callPreboot='false'; root.dataset.callPrebootRelease=reason;
     root.dataset.callLoadingState='ready'; cover.setAttribute('aria-busy','false');
     if(content()) content().inert=false;
@@ -54,7 +54,8 @@
   if(root.dataset.callIosFlat==='true'){
     filter?.closest('svg')?.remove();
   }else if(filter){
-    const width=document.documentElement.clientWidth, height=innerHeight;
+    const scene=document.querySelector('.call-display-root-v7');
+    const width=scene?.clientWidth || document.documentElement.clientWidth, height=scene?.clientHeight || innerHeight;
     for(const el of [filter,filter.querySelector('feImage')]){
       el.setAttribute('width',width);el.setAttribute('height',height);
     }
@@ -72,15 +73,17 @@
       const urls=new Set();
       for(const el of document.querySelectorAll('.call-reader-screen-v7 span, .call-material-direct-v11')){
         const s=getComputedStyle(el);
-        if(s.display==='none'||s.visibility==='hidden'||Number(s.opacity)===0)continue;
+        if(s.display==='none'||Number(s.opacity)===0)continue;
         for(const match of s.backgroundImage.matchAll(/url\(["']?([^"')]+)["']?\)/g))urls.add(match[1]);
       }
       const waits=[...urls].map(imageReady);
+      if(window.CallGlass) waits.push(window.CallGlass.sync());
       if(root.dataset.callTheme==='frost')waits.push(imageReady('./myfile/reader-textures/frost-phosphor-ink-mask.svg'));
       if(root.dataset.callIosFlat!=='true')waits.push(imageReady('./myfile/call-lens-v10.png'));
       if(root.dataset.callFxPixelFont==='true'&&document.fonts)waits.push(Promise.all([document.fonts.load('16px MagiCallPixelSC'),document.fonts.load('16px MagiCallPixelJP')]));
       await Promise.all(waits);
       root.dataset.callLoadingAssets='ready';
+      root.dataset.callMaterialReady='true';
     }catch(error){console.warn('[call-loading]',error);fail('display-asset');}
     finally{done();}
   }

@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'call-ui-r11-height-material-20260922';
+  const RELEASE = 'call-ui-r12-reader-controls-20260924';
   const THEME_KEY = 'magireco-call-theme-v2';
   const LEGACY_THEME_KEY = 'magireco-call-theme-v1';
   const VISUAL_KEY = 'magireco-call-visual-v7-5';
@@ -20,20 +20,21 @@
   const VALID_THEMES = new Set(THEMES.map(item => item.key));
 
   // Static Reader materials: the scene and its grain never animate or jitter.
-  const EFFECT_KEYS = Object.freeze(['curvature','scanlines','noise','pixelFont','registration']);
+  const EFFECT_KEYS = Object.freeze(['curvature','scanlines','noise','pixelFont','registration','glassDamage']);
   const EFFECT_LABELS = Object.freeze({
     curvature:'屏幕曲率模拟',
     scanlines:'扫描线',
     noise:'屏幕噪点',
     pixelFont:'像素字体',
-    registration:'静态色散与荧光描边'
+    registration:'静态色散与荧光描边',
+    glassDamage:'玻璃裂纹与划痕'
   });
   const DEFAULTS = Object.freeze({
-    light:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:true },
-    paper:{ curvature:false,scanlines:false,noise:true,pixelFont:false,registration:true },
-    green:{ curvature:false,scanlines:true,noise:true,pixelFont:false,registration:true },
-    dark:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:true },
-    frost:{ curvature:true,scanlines:true,noise:true,pixelFont:true,registration:true }
+    light:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false },
+    paper:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false },
+    green:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false },
+    dark:{ curvature:true,scanlines:true,noise:true,pixelFont:false,registration:true,glassDamage:false },
+    frost:{ curvature:false,scanlines:false,noise:false,pixelFont:false,registration:true,glassDamage:false }
   });
   const THEME_COLORS = Object.freeze({
     light:'#d8d4c6', paper:'#f3eacb', green:'#d6e9c4', dark:'#030702', frost:'#001018'
@@ -81,21 +82,29 @@
     try{
       const parsed=JSON.parse(storageGet(VISUAL_KEY) || '{}');
       if(parsed && typeof parsed === 'object'){
+        effects.dark.pixelFont=parsed.phosphor === 'amber';
         for(const item of THEMES){
           const src=parsed.effects?.[item.key];
           if(!src || typeof src !== 'object') continue;
           for(const key of EFFECT_KEYS) if(typeof src[key] === 'boolean') effects[item.key][key]=src[key];
         }
+        const phosphor=parsed.phosphor === 'amber' ? 'amber' : 'green';
+        const nightPixelFonts={green:false,amber:true};
+        for(const key of ['green','amber']){
+          if(typeof parsed.nightPixelFonts?.[key] === 'boolean') nightPixelFonts[key]=parsed.nightPixelFonts[key];
+        }
+        if(!parsed.nightPixelFonts && typeof parsed.effects?.dark?.pixelFont === 'boolean') nightPixelFonts[phosphor]=parsed.effects.dark.pixelFont;
+        effects.dark.pixelFont=nightPixelFonts[phosphor];
         return {
           effects,
-          phosphor:parsed.phosphor === 'amber' ? 'amber' : 'green',
+          phosphor,nightPixelFonts,
           themeBarMode:parsed.themeBarMode === 'floating' ? 'floating' : 'top',
           fxOpen:Boolean(parsed.fxOpen),
           jumpCollapsed:Boolean(parsed.jumpCollapsed)
         };
       }
     }catch(_){}
-    return {effects,phosphor:'green',themeBarMode:'top',fxOpen:false,jumpCollapsed:false};
+    return {effects,phosphor:'green',nightPixelFonts:{green:false,amber:true},themeBarMode:'top',fxOpen:false,jumpCollapsed:false};
   }
 
   const state=loadState();
@@ -152,7 +161,7 @@
 
     const emblem=document.createElement('img');
     emblem.className='call-brand-emblem-v8';
-    emblem.src='./myfile/magius-mark.svg?v=ui-r11-height-material';
+    emblem.src='./myfile/magius-mark.svg?v=ui-r12-reader-controls';
     emblem.alt='';
 
     const wordmark=document.createElement('img');
@@ -271,6 +280,7 @@
     if(!opticalRefs) installOpticalFilter();
     setBrowserChrome();
     updateOpticalFilter();
+    window.CallGlass?.sync();
   }
   function syncThemeButtons(){
     for(const b of document.querySelectorAll('[data-call-theme-option]')) b.setAttribute('aria-pressed',String(b.dataset.callThemeOption === activeTheme));
@@ -287,7 +297,7 @@
       input.closest('label')?.classList.toggle('is-fixed',platformDisabled);
       input.closest('label')?.setAttribute('data-platform-disabled',String(platformDisabled));
       if(platformDisabled) input.setAttribute('aria-describedby','call-ios-flat-note');
-      input.closest('label')?.removeAttribute('hidden');
+      input.closest('label')?.toggleAttribute('hidden',key === 'glassDamage' && activeTheme !== 'frost');
     }
     panel.querySelector('[data-phosphor-section]')?.toggleAttribute('hidden',activeTheme !== 'dark');
     for(const b of panel.querySelectorAll('[data-phosphor]')) b.setAttribute('aria-pressed',String(b.dataset.phosphor === state.phosphor));
@@ -324,10 +334,12 @@
     try{dispatchEvent(new CustomEvent('magireco-call-theme-change',{detail:{theme}}));}catch(_){}
     return theme;
   }
-  function setPhosphor(value){state.phosphor=value==='amber'?'amber':'green';persist();applyAll();}
+  function setPhosphor(value){state.phosphor=value==='amber'?'amber':'green';state.effects.dark.pixelFont=state.nightPixelFonts[state.phosphor];persist();applyAll();}
   function setEffect(key,enabled){
     if(!EFFECT_KEYS.includes(key) || (isIOS && key === 'curvature')) return;
-    state.effects[activeTheme][key]=Boolean(enabled);persist();applyAll();scheduleTrackingSweep();
+    state.effects[activeTheme][key]=Boolean(enabled);
+    if(activeTheme==='dark' && key==='pixelFont')state.nightPixelFonts[state.phosphor]=Boolean(enabled);
+    persist();applyAll();scheduleTrackingSweep();
   }
   function placeThemeBar(){
     const widget=document.querySelector('.call-theme-widget-v7');
@@ -348,7 +360,7 @@
     placeThemeBar();
     applyAll();
   }
-  function resetEffects(){state.effects[activeTheme]=cloneDefaults(activeTheme);normalizeThemeState(activeTheme);persist();applyAll();}
+  function resetEffects(){state.effects[activeTheme]=cloneDefaults(activeTheme);if(activeTheme==='dark'){state.effects.dark.pixelFont=state.phosphor==='amber';state.nightPixelFonts[state.phosphor]=state.effects.dark.pixelFont;}normalizeThemeState(activeTheme);persist();applyAll();}
 
   function installMaterialLayers(){
     if(displayRoot.querySelector('.call-reader-screen-v7')) return;
@@ -738,7 +750,9 @@
     if(!rail||!thumb||!track)return;
     const height=rootHeight(),client=rootClient(),max=Math.max(0,height-client);rail.hidden=max<2;if(rail.hidden)return;
     const th=track.clientHeight||Math.max(1,client-44),hh=Math.max(40,Math.min(th,th*(client/height))),travel=Math.max(0,th-hh),ratio=max?Math.min(1,Math.max(0,rootTop()/max)):0;
-    thumb.style.height=`${hh}px`;thumb.style.transform=`translateY(${travel*ratio}px)`;
+    const h=`${hh}px`, y=`translateY(${travel*ratio}px)`;
+    if(thumb.style.height!==h)thumb.style.height=h;
+    if(thumb.style.transform!==y)thumb.style.transform=y;
   }
 
   function patchLegacyScroll(){
@@ -789,7 +803,7 @@
   }
 
   function releaseBoot(reason='ready'){
-    root.dataset.callPreboot='false';
+    root.dataset.callPreboot='false';root.dataset.callMaterialReady='true';
     root.dataset.callPrebootRelease=reason;
     try{sessionStorage.setItem('magireco-call-magius-boot-v1','1');}catch(_){}
   }
@@ -835,10 +849,10 @@
       console.error('[theme-mode] responsive listeners failed',error);
     }
 
-    root.dataset.callThemeReady='ui-r11-height-material';
+    root.dataset.callThemeReady='ui-r12-reader-controls';
     finishBoot();
     window.__MAGIRECO_CALL_THEME__=Object.freeze({
-      version:'ui-r11-height-material',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
+      version:'ui-r12-reader-controls',release:RELEASE,themes:THEMES.map(x=>x.key),effects:EFFECT_KEYS.slice(),
       get theme(){return activeTheme;},get phosphor(){return state.phosphor;},get themeBarMode(){return state.themeBarMode;},
       setTheme,setPhosphor,setEffect,setThemeBarMode,resetEffects
     });

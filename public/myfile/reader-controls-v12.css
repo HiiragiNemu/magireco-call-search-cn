@@ -1,0 +1,332 @@
+/* Reader r12: six control palettes, one optical scene. Paint only: no business
+   handlers or per-control SVG filters. Loaded after the legacy cascade. */
+html:root[data-call-theme] {
+  --control-face:linear-gradient(#f9faf8,#dfe3e1);
+  --control-hover:linear-gradient(#fff,#e7efec);
+  --control-edge:#889795;
+  --control-radius:7px;
+  --control-rest:inset 0 1px 0 #fff,0 2px 0 #77878355,0 3px 7px #253a3212;
+  --control-lit:inset 0 1px #fff,0 0 0 1px #627d7430,0 3px 8px #253a3226;
+  --control-press:inset 0 2px 4px #263d3838;
+  --control-selected:linear-gradient(#667a73,#3d544c);
+  --control-selected-ink:#f7fff9;
+  --control-selected-shadow:inset 0 1px #d0e1d780,0 2px 4px #23382d40;
+  --control-hover-ink:var(--call-accent-strong);
+  --control-text-glow:none;
+  --control-panel:linear-gradient(180deg,#eff2ecbd,#dde3d67a);
+  --call-menu-face:#edf0e9f5;
+}
+html:root[data-call-theme="paper"] {
+  --control-face:linear-gradient(175deg,#fff6db,#e8d8b1);
+  --control-hover:linear-gradient(#fff9e8,#f3dfac);
+  --control-edge:#a18a60;
+  --control-radius:2px;
+  --control-rest:inset 0 0 0 2px #fff6dc,0 2px 0 #856d3e80,0 3px 5px #4f391819;
+  --control-lit:inset 0 0 0 2px #fff8e6,0 2px 0 #856d3e,0 3px 8px #856d3e30;
+  --control-press:inset 0 2px 4px #6e4e2440,inset 0 0 0 1px #b89c68;
+  --control-selected:linear-gradient(155deg,#897049,#5e482b);
+  --control-selected-ink:#fff3cf;
+  --control-selected-shadow:inset 0 0 0 2px #d8c69d60,0 2px 0 #4f391860;
+  --control-panel:linear-gradient(100deg,#e2d2a678,#fff1c51f);
+  --call-menu-face:#f4e7c6f5;
+}
+html:root[data-call-theme="green"] {
+  --control-face:linear-gradient(150deg,#edf6e4,#bfd8bc);
+  --control-hover:linear-gradient(150deg,#f1ffe9,#c5e6c9);
+  --control-edge:#71987c;
+  --control-radius:10px 4px 10px 4px;
+  --control-rest:inset 0 1px #f7fff0,inset 0 -2px #90b79855,0 2px 5px #1d483317;
+  --control-lit:inset 0 1px #fff,0 0 0 1px #82b79070,0 4px 10px #386c3f2b;
+  --control-press:inset 0 2px 4px #29523d55;
+  --control-selected:linear-gradient(145deg,#478669,#235b45);
+  --control-selected-ink:#efffe8;
+  --control-selected-shadow:inset 0 1px #a5d5aa80,0 2px 0 #204b35aa,0 3px 8px #34593b2b;
+  --control-panel:linear-gradient(110deg,#9dbf9680,#deedcd38);
+  --call-menu-face:#d5e7caf5;
+}
+html:root[data-call-theme="dark"] {
+  --call-field:radial-gradient(ellipse 60vw 62vh at 51vw 46vh,#293922 0%,#1c2a17 40%,#10190c 72%,#030702 100%);
+  --control-face:linear-gradient(180deg,#0c180cdd,#050c06ed);
+  --control-hover:#101813;
+  --control-edge:color-mix(in srgb,var(--call-accent) 58%,#142510);
+  --control-radius:0;
+  --control-rest:inset 0 0 4px #b4dc2810;
+  --control-lit:inset 0 0 9px #a7ff541c,0 0 2px var(--call-accent),0 0 12px var(--call-ambient-glow);
+  --control-press:inset 0 2px 5px #000,0 0 5px var(--call-accent);
+  --control-selected:var(--call-accent);
+  --control-selected-ink:#141b12;
+  --control-selected-shadow:inset 0 0 1px #fff,0 0 6px var(--call-accent),0 0 18px var(--call-ambient-glow);
+  --control-hover-ink:#f4f8f5;
+  --control-text-glow:0 0 3px var(--call-ambient-glow);
+  --control-panel:linear-gradient(90deg,#182b1678,#08110732);
+  --call-menu-face:#091009f5;
+}
+html:root[data-call-theme="dark"][data-call-phosphor="amber"] {
+  --call-field:radial-gradient(ellipse 60vw 62vh at 51vw 46vh,#433337 0%,#2c2024 40%,#190f13 72%,#070305 100%);
+  --control-face:linear-gradient(180deg,#24191bdd,#10090bed);
+  --control-edge:#b9a05b99;
+  --control-panel:linear-gradient(90deg,#44312678,#170e1032);
+  --call-menu-face:#18100df5;
+}
+html:root[data-call-theme="frost"] {
+  --control-face:linear-gradient(140deg,#22424b7a,#081d24b0);
+  --control-hover:rgba(170,224,205,.13);
+  --control-edge:rgba(122,180,171,.52);
+  --control-radius:6px;
+  --control-rest:inset 0 0 8px rgba(106,185,176,.06),inset 0 0 0 2px #83b6b012;
+  --control-lit:inset 0 12px 24px -9px rgba(188,235,221,.36),inset 0 -10px 22px -12px rgba(143,210,196,.22),0 0 4px rgba(193,235,220,.65),0 0 12px rgba(149,222,208,.68),0 9px 26px -6px rgba(101,195,185,.5);
+  --control-press:inset 0 3px 9px #001820aa,0 0 5px #d1f4e88f;
+  --control-selected:linear-gradient(135deg,#aadecd38,#467c772b);
+  --control-selected-ink:#d8eee3;
+  --control-selected-shadow:var(--control-lit);
+  --control-hover-ink:#d8eee3;
+  --control-text-glow:0 0 2px rgba(223,248,236,.55),0 0 7px rgba(137,213,194,.34);
+  --control-panel:linear-gradient(100deg,#385e6438,#122d3215);
+  --call-menu-face:#08212bf5;
+  /* Cold film softness is intrinsic, independent of the optional screen noise. */
+  --call-focus-radius:.32px;
+}
+html:root[data-call-theme="frost"][data-call-fx-noise][data-call-fx-registration] { --call-focus-radius:.32px; }
+html:root[data-call-theme="frost"][data-call-fx-noise][data-call-fx-registration][data-call-ios-flat="true"] { --call-focus-radius:.22px; }
+
+/* Physical control faces. Titles and artwork are not painted as generic keys. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  button,input[type="button"],input[type="submit"],input[type="reset"],
+  .suite-nav a,.suite-button,:where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
+) {
+  appearance:none!important; -webkit-appearance:none!important;
+  background:var(--control-face)!important; color:var(--call-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:var(--control-rest)!important;
+  transition:background-color 120ms ease,border-color 120ms ease,box-shadow 120ms ease;
+  touch-action:manipulation;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  button,input[type="button"],input[type="submit"],input[type="reset"],.suite-nav a,.suite-button,
+  :where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
+):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) {
+  color:var(--control-hover-ink)!important; background:var(--control-hover)!important;
+  border-color:var(--call-accent-strong)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  button[aria-pressed="true"],button[aria-expanded="true"],.suite-nav a[aria-current="page"],
+  .suite-button.is-active,input[type="button"].is-active
+) {
+  background:var(--control-selected)!important; color:var(--control-selected-ink)!important;
+  border-color:var(--call-accent-strong)!important; box-shadow:var(--control-selected-shadow)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],.suite-nav a):not(:disabled):active {
+  box-shadow:var(--control-press)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],input[type="submit"]):is(:disabled,[aria-disabled="true"]) {
+  color:var(--call-muted)!important; background:var(--control-face)!important;
+  box-shadow:none!important; border-color:var(--call-border)!important;
+  opacity:.55!important; cursor:not-allowed; text-shadow:none!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,.suite-nav a,.suite-button) :is(svg,span,strong,b) {
+  color:inherit!important; -webkit-text-fill-color:currentColor!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"],input[type="reset"],button.searchbtn,.suite-button) {
+  min-height:36px!important; padding:7px 14px!important; line-height:1.25!important;
+}
+
+/* Recessed fields, themed focus for pointer and keyboard, no UA blue ring. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="text"],input[type="number"],input[type="search"],textarea,select) {
+  background:color-mix(in srgb,var(--call-surface) 72%,transparent)!important;
+  color:var(--call-text)!important; border:1px solid var(--control-edge)!important;
+  border-radius:var(--control-radius)!important; box-shadow:inset 0 2px 4px #00000017!important;
+  min-height:36px; padding:6px 10px!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input,textarea,select):focus,
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,a,summary,[tabindex],.header .menu-icon):focus-visible {
+  outline:2px solid var(--call-accent-strong)!important; outline-offset:3px!important;
+  border-color:var(--call-accent-strong)!important;
+}
+html:root[data-call-theme] body .call-display-root-v7 input::placeholder { color:var(--call-muted)!important; opacity:.85; }
+html:root[data-call-theme] body .call-display-root-v7 :is(input[type="checkbox"],input[type="radio"],input[type="range"]) { accent-color:var(--call-accent); }
+html:root[data-call-theme] body .call-display-root-v7 input[type="range"]::-webkit-slider-runnable-track { background:var(--control-face); border:1px solid var(--control-edge); border-radius:4px; }
+
+/* Translucent title strips retain the watermark; the small disclosure owns its
+   own face. Selected character artwork is preserved, only its frame lights up. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.call-panel-v8,.character-grid-details-v8,.suite-panel-details-v8)>summary {
+  background:var(--control-panel)!important; border-color:var(--control-edge)!important;
+  box-shadow:inset 0 1px #ffffff14!important; min-height:42px;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.call-panel-v8,.character-grid-details-v8,.suite-panel-details-v8)>summary:is(:hover,:focus-visible) {
+  background:var(--control-hover)!important; box-shadow:inset 3px 0 var(--call-accent)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox,.suite-character-card) {
+  border-radius:var(--control-radius)!important;
+  background-color:var(--call-card-bg)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox:has(input:checked),.suite-character-card[aria-pressed="true"]) {
+  border-color:var(--call-accent-strong)!important;
+  box-shadow:inset 0 -3px var(--call-accent),var(--control-selected-shadow)!important;
+  background:color-mix(in srgb,var(--call-accent) 15%,var(--call-card-bg))!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 label.girlbox:has(input:focus-visible) { outline:2px solid var(--call-accent-strong)!important; outline-offset:3px; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 #at_form label.at {
+  background:var(--control-face)!important; border-color:var(--control-edge); border-radius:var(--control-radius);
+  box-shadow:var(--control-rest); min-height:34px;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 #at_form label.at:has(input:checked) {
+  background:var(--control-selected)!important; color:var(--control-selected-ink)!important; box-shadow:var(--control-selected-shadow)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-theme-widget-v7 {
+  width:max-content!important; max-width:calc(100% - 28px)!important;
+  padding:5px!important; gap:5px; border-radius:var(--control-radius)!important;
+  background:var(--control-panel)!important; box-shadow:var(--control-rest)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-jump-widget-v7 {
+  padding:3px!important; border-radius:var(--control-radius)!important; overflow-x:hidden!important;
+  background:var(--call-surface-raised)!important; box-shadow:var(--control-rest)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-jump-actions-v7 button {
+  margin-block:2px!important; min-height:40px!important;
+}
+
+/* Cold idle faces never glow. Lit faces own Reader's inset wash and spill. */
+html:root[data-call-theme="frost"][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],.suite-nav a):not(:disabled):is(:hover,:focus-visible,[aria-pressed="true"],[aria-current="page"]) {
+  color:#d8eee3!important; text-shadow:var(--control-text-glow)!important;
+  background:var(--control-hover)!important; border-color:#b5ded1!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme="dark"][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],.suite-nav a):not(:disabled):is(:hover,:focus-visible) {
+  background:#101813!important; color:#f4f8f5!important;
+}
+/* A held press beats hover and selected illumination without hiding focus. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  button,input[type="button"],input[type="submit"],input[type="reset"],.suite-nav a,.suite-button,
+  :where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
+):not(:disabled):not([aria-disabled="true"]):active {
+  box-shadow:var(--control-press)!important;
+  border-color:var(--call-accent-strong)!important;
+}
+
+/* Single bounded scene; native scroll remains inside it on every platform. */
+html:root[data-call-theme],html:root[data-call-theme] body {
+  height:100%; min-height:0!important; overflow:hidden!important; overscroll-behavior:none;
+}
+html:root[data-call-theme] body .call-display-root-v7 { min-height:0!important; max-height:100dvh!important; }
+html:root[data-call-theme] body .call-display-scroll-v7 { min-height:0!important; background:transparent!important; background-attachment:scroll!important; }
+html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body #call-loading-screen { background:var(--call-field)!important; }
+html:root[data-call-theme="frost"][data-call-fx-glass-damage="false"] body :is(.call-fx-frost-wear-v7) { display:none!important; }
+html:root[data-call-theme="frost"][data-call-fx-noise="true"] body .call-fx-night-phosphor-v7 {
+  display:block!important; opacity:.28!important; mix-blend-mode:soft-light!important;
+  background:url('./reader-textures/NoiseAndGrain.png') 0 0/128px 64px repeat!important;
+}
+html:root[data-call-material-ready="false"][data-call-preboot="true"] body .call-display-root-v7 > * { visibility:hidden!important; }
+html:root[data-call-loading-state="error"] body #call-loading-screen .call-loading-error { visibility:visible!important; }
+/* No remount/re-hide on a live setting change: this gate is first-load only. */
+html:root[data-call-theme][data-call-crt-engine] body .call-fx-window-v7 {
+  display:flex; flex-direction:column; top:48px; max-height:calc(100% - 96px)!important;
+  backdrop-filter:none!important; -webkit-backdrop-filter:none!important; border-radius:var(--control-radius)!important;
+}
+html:root[data-call-theme] body .call-fx-titlebar-v7 { flex:none; }
+html:root[data-call-theme] body .call-fx-body-v7 { flex:1 1 auto; min-height:0; max-height:none!important; overflow-y:auto; }
+html:root[data-call-theme] body .call-fx-toggle-row-v7[hidden] { display:none!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-fx-window-v7 .call-fx-body-v7 > [data-phosphor-section][hidden] { display:none!important; }
+@media(max-width:760px) {
+  html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"],button.searchbtn) { min-height:44px!important; padding:8px 10px!important; }
+  html:root[data-call-theme][data-call-crt-engine] body .call-fx-window-v7 { top:48px; right:16px!important; width:calc(100% - 32px)!important; max-width:calc(100% - 32px)!important; max-height:calc(100% - 96px)!important; }
+  html:root[data-call-theme] body .call-fx-titlebar-v7 { min-height:44px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html:root[data-call-theme] body .call-display-root-v7 :is(button,input,a) { transition:none!important; }
+}
+
+/* The menu is part of the same sticky navigation, never a second toolbar. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-nav.call-nav-with-menu {
+  display:grid!important; grid-template-columns:44px repeat(4,minmax(0,1fr));
+  align-items:stretch; gap:6px!important; overflow:visible!important;
+  position:sticky!important; top:0!important; z-index:1950!important;
+  width:100%!important; box-sizing:border-box; border-radius:var(--control-radius)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-nav-with-menu > .header {
+  position:static!important; inset:auto!important; transform:none!important;
+  width:44px!important; height:100%!important; min-height:44px; margin:0!important; padding:0!important;
+  isolation:auto; align-self:stretch;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-nav-with-menu .menu-icon {
+  width:44px!important; height:100%!important; min-height:44px; margin:0!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-nav-with-menu > a {
+  min-width:0; min-height:44px!important; margin:0!important; padding:9px 6px!important;
+  display:grid; place-items:center; white-space:normal; line-height:1.35!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-nav-with-menu .menu {
+  top:calc(100% + 5px)!important; left:0!important; width:390px!important;
+  max-width:100%!important; max-height:var(--call-menu-room,calc(100dvh - 220px))!important;
+  border-radius:var(--control-radius)!important; background:var(--call-menu-face)!important;
+  text-align:left; overscroll-behavior:contain; overflow:auto; padding:10px 0 24px!important;
+  scrollbar-width:thin; scrollbar-color:var(--call-accent) var(--call-surface);
+  scrollbar-gutter:stable;
+}
+html:root[data-call-theme] body .call-nav-with-menu .menu::-webkit-scrollbar { width:8px; height:8px; }
+html:root[data-call-theme] body .call-nav-with-menu .menu::-webkit-scrollbar-track { background:var(--call-surface); }
+html:root[data-call-theme] body .call-nav-with-menu .menu::-webkit-scrollbar-thumb { background:var(--call-accent); border:2px solid var(--call-surface); border-radius:var(--control-radius); }
+html:root[data-call-theme] body .call-nav-with-menu .menu::-webkit-scrollbar-button { display:none; width:0; height:0; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-nav-with-menu .menu a {
+  display:block!important; background:none!important; border:0!important; border-radius:var(--control-radius)!important;
+  box-shadow:none!important; min-height:44px!important; padding:8px!important; text-align:left!important;
+  white-space:normal!important; overflow-wrap:anywhere; font-size:14px!important; line-height:1.5!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-nav-with-menu .menu a:is(:hover,:focus-visible) {
+  background:var(--control-hover)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme] body .call-nav-with-menu .menu .menulabel { font-size:14px; letter-spacing:.06em; }
+html:root[data-call-theme] body .call-display-root-v7:has(.menu-btn:checked) .call-jump-widget-v7 { visibility:hidden!important; pointer-events:none!important; }
+html:root[data-call-theme] body .call-nav-with-menu .menu .call-credit-notice {
+  font-size:11.5px!important; font-weight:400; letter-spacing:0; line-height:1.6;
+  padding:6px 12px 10px; white-space:normal; color:var(--call-text)!important;
+  border-bottom:1px solid var(--call-border); margin-bottom:8px;
+}
+@media(max-width:760px) {
+  html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-nav.call-nav-with-menu {
+    grid-template-columns:44px minmax(0,1fr) minmax(0,1fr); gap:5px!important;
+  }
+  html:root[data-call-theme] body .call-nav-with-menu > a:nth-of-type(3) { grid-column:2; }
+}
+
+/* One body-text ink recipe. Orphan instructions are now a real paragraph;
+   emphasis remains weight, not a second cyan paint/filter stack. */
+html:root[data-call-theme="frost"] {
+  --call-cold-copy-glow:0 0 1px rgba(223,248,236,.5),0 0 5px rgba(137,213,194,.27);
+}
+html:root[data-call-theme="frost"][data-call-fx-registration="true"] {
+  --call-cold-copy-glow:-.45px 0 .35px rgba(112,216,209,.4),.45px .12px .35px rgba(220,255,249,.4),0 0 2px rgba(223,248,236,.55),0 0 7px rgba(137,213,194,.34);
+}
+html:root[data-call-theme="frost"][data-call-crt-engine] body .call-display-root-v7 :is(
+  .call-selection-help,.call-selection-help span,.returnlink,.returnlink a,
+  .call-name-filter-help,.suite-notice,.suite-status,.call-panel-body-v8 > p
+) {
+  color:var(--call-text)!important; -webkit-text-fill-color:currentColor!important;
+  text-shadow:var(--call-cold-copy-glow)!important; filter:none!important; opacity:1!important;
+  line-height:1.55!important;
+}
+html:root[data-call-theme="frost"][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"]) {
+  text-shadow:var(--call-cold-copy-glow)!important;
+}
+
+/* Refraction follows the lens/focus, never replaces it; the same viewport
+   contains the loader, live content, controls, and the mounted film. */
+html:root[data-call-theme="frost"][data-call-glass-active="true"] body .call-display-root-v7 {
+  filter:blur(var(--call-focus-radius)) var(--call-glass-filter-v12)!important;
+  -webkit-filter:blur(var(--call-focus-radius)) var(--call-glass-filter-v12)!important;
+}
+html:root[data-call-theme="frost"][data-call-glass-active="true"][data-call-optics-active="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
+  filter:url('#call-screen-optics-v7') var(--call-glass-filter-v12)!important;
+  -webkit-filter:url('#call-screen-optics-v7') var(--call-glass-filter-v12)!important;
+}
+html:root[data-call-theme] body img.call-fx-frost-wear-v7 {
+  position:absolute; inset:0; width:100%!important; height:100%!important; max-width:none!important;
+  object-fit:fill!important; background:none!important;
+}
+html:root[data-call-glass-active="false"] body .call-fx-frost-wear-v7 { display:none!important; }
+.call-glass-refraction-v12 { display:none; }
+html:root[data-call-theme="frost"][data-call-glass-active="true"] body .call-glass-refraction-v12 {
+  display:block; position:absolute; inset:0; z-index:1100; pointer-events:none;
+  mask-image:url('./reader-textures/frost-glass-scratches.png'); mask-mode:luminance;
+  mask-size:100% 100%; mask-repeat:no-repeat;
+  background:rgba(0,18,23,.62); transform:translate(-.7px,.4px);
+}
