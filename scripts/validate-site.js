@@ -109,7 +109,7 @@ if (isV26) {
   const aioRouterPath = path.join('public', 'aio', 'story-routes.json');
   const aioReportPath = path.join('public', 'aio', 'story-routes.report.json');
   const aioEdgeFunctionPath = path.join('public', 'edge-functions', 'aio', 'open.js');
-  const menuScript = './myfile/hamburger-menu-v23.js?v=20260822-v26-final3';
+  const menuScript = './myfile/hamburger-menu-v23.js?v=ui-r12-reader-controls';
   for (const file of [manifestPath, authorityPath, storyPath, editorPath, runtimePath, routeBridgePath, readerLinksPath, storyRouterPath, aioRouterPath, aioReportPath, aioEdgeFunctionPath]) requireFile(file);
   const manifest = JSON.parse(read(manifestPath));
   if (manifest.release !== TITLE_RELEASE || manifest.dataArchitecture !== 'plain-json') fail('V26 title manifest mismatch.');

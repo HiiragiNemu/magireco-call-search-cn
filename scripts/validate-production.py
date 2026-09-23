@@ -160,7 +160,7 @@ assert "v26-converged-20260822" in editor
 assert "story-title-runtime-v2.js?v=20260825-canonical-title-v1" in story
 assert "story-title-runtime-v2.js?v=20260825-canonical-title-v1" in editor
 assert 'class="navtext-container"' not in index
-assert "hamburger-menu-v23.js?v=20260822-v26-final3" in index
+assert "hamburger-menu-v23.js?v=ui-r12-reader-controls" in index
 assert "width: max-content;" in menu_css
 assert "min-width:" not in menu_css
 assert "body:has(.menu-btn:checked)" in menu_css
