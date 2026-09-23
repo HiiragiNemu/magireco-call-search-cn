@@ -55,6 +55,7 @@ test('menu belongs to navigation, has bounded available-height scrolling and rea
  for(const url of ['https://magius3dviewer.pages.dev/','https://madeinmagius-site.pages.dev/','https://afdian.com/a/madeinmagius'])assert.ok(js.includes(url));
  assert.match(css,/scrollbar-color:var\(--call-accent\) var\(--call-surface\)/);
  assert.match(css,/max-height:var\(--call-menu-room/);
+ assert.ok(css.includes(':is(.call-jump-widget-v7,.call-jump-widget-v7 *) { visibility:hidden!important; pointer-events:none!important; }'));
  assert.match(js,/menu.inert = !expanded/);
  assert.ok(js.includes('使用本工具二创，请注明工具名称及出处链接。'));
  assert.ok(js.includes('magia exedra 魔法纪录l2d查看器'));

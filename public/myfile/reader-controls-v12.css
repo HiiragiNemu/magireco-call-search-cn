@@ -275,7 +275,8 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .cal
   background:var(--control-hover)!important; box-shadow:var(--control-lit)!important;
 }
 html:root[data-call-theme] body .call-nav-with-menu .menu .menulabel { font-size:14px; letter-spacing:.06em; }
-html:root[data-call-theme] body .call-display-root-v7:has(.menu-btn:checked) .call-jump-widget-v7 { visibility:hidden!important; pointer-events:none!important; }
+/* The legacy rail explicitly restores visibility/pointer-events on its children. */
+html:root[data-call-theme] body .call-display-root-v7:has(.menu-btn:checked) :is(.call-jump-widget-v7,.call-jump-widget-v7 *) { visibility:hidden!important; pointer-events:none!important; }
 html:root[data-call-theme] body .call-nav-with-menu .menu .call-credit-notice {
   font-size:11.5px!important; font-weight:400; letter-spacing:0; line-height:1.6;
   padding:6px 12px 10px; white-space:normal; color:var(--call-text)!important;
