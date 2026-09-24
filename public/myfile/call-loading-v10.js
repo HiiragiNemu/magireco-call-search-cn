@@ -70,16 +70,20 @@
   async function displayReady(){
     const done=hold('display-assets');
     try{
+      // Finish the synchronous theme installation before collecting its final
+      // material recipe. Otherwise first-load waits only for the retired shell.
+      await Promise.resolve();
       const urls=new Set();
       for(const el of document.querySelectorAll('.call-reader-screen-v7 span, .call-material-direct-v11')){
         const s=getComputedStyle(el);
         if(s.display==='none'||Number(s.opacity)===0)continue;
-        for(const match of s.backgroundImage.matchAll(/url\(["']?([^"')]+)["']?\)/g))urls.add(match[1]);
+        for(const value of [s.backgroundImage,s.maskImage||'',s.webkitMaskImage||''])
+          for(const match of value.matchAll(/url\(["']?([^"')]+)["']?\)/g))urls.add(match[1]);
       }
       const waits=[...urls].map(imageReady);
       if(window.CallGlass) waits.push(window.CallGlass.sync());
       if(root.dataset.callTheme==='frost')waits.push(imageReady('./myfile/reader-textures/frost-phosphor-ink-mask.svg'));
-      if(root.dataset.callIosFlat!=='true')waits.push(imageReady('./myfile/call-lens-v10.png'));
+      if(root.dataset.callIosFlat!=='true')waits.push(imageReady('./myfile/reader-textures/magi-tube-lens-512.png'));
       if(root.dataset.callFxPixelFont==='true'&&document.fonts)waits.push(Promise.all([document.fonts.load('16px MagiCallPixelSC'),document.fonts.load('16px MagiCallPixelJP')]));
       await Promise.all(waits);
       root.dataset.callLoadingAssets='ready';

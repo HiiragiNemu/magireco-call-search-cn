@@ -59,10 +59,12 @@ test('Reader current night material uses direct sibling layers on all ten entrie
  assert.match(final,/mix-blend-mode:screen!important/);assert.match(final,/inset:0!important/);
  assert.match(read('public/myfile/call-loading-v10.js'),/\.call-reader-screen-v7 span, \.call-material-direct-v11/);
 });
-test('startup and runtime share the same single focus value; flat mode retains it',()=>{
- for(const p of ['public/myfile/theme-mode-v1.js','public/myfile/call-loading-v10.js'])assert.match(read(p),/getComputedStyle\(root\).getPropertyValue\('--call-focus-radius'\)/);
- assert.match(css,/data-call-optics-active="false"[\s\S]*?filter:blur\(var\(--call-focus-radius\)\)/);
- assert.match(css,/data-call-theme="dark"\] \{ --call-focus-radius:\.39px/);
+test('Reader focus belongs to the shared curved graph; flat cold and native iOS retain their focus path',()=>{
+ const {graphs}=JSON.parse(read('public/myfile/reader-optics-graphs-v14.json'));
+ assert.match(graphs['frost:true'],/stdDeviation=".32" result="focusedBeam"/);
+ assert.match(graphs['frost:true'],/in="focusedScene"/);
+ assert.match(read('public/myfile/reader-optics-v14.css'),/data-call-optics-active="false"[\s\S]*?filter:blur\(.32px\) saturate\(.96\) contrast\(.99\)/);
+ assert.match(read('public/myfile/call-loading-v10.js'),/imageReady\('\.\/myfile\/reader-textures\/magi-tube-lens-512.png'\)/);
  assert.match(css,/data-call-ios-flat="true"\]\[data-call-theme="frost"\] \{ --call-focus-radius:\.22px/);
 });
 test('theme coverage includes actual legacy controls and every chart decoration',()=>{

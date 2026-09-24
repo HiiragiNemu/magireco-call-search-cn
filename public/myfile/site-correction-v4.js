@@ -304,16 +304,21 @@
   function scrollTarget(target) {
     if (!target) return;
     const sequence = ++state.scrollSequence;
-    const desiredTop = () => Math.max(0, global.scrollY + target.getBoundingClientRect().top - 8);
-
+    // Results can be inside a folded section. Reveal before measuring layout.
+    for (let parent = target; parent; parent = parent.parentElement) {
+      if (parent.tagName === 'DETAILS') parent.open = true;
+    }
     global.requestAnimationFrame(() => global.requestAnimationFrame(() => {
-      if (sequence !== state.scrollSequence) return;
-      global.scrollTo({ top: desiredTop(), behavior: 'smooth' });
-      global.setTimeout(() => {
-        if (sequence !== state.scrollSequence || !target.isConnected) return;
-        const top = target.getBoundingClientRect().top;
-        if (top < -12 || top > 84) global.scrollTo({ top: desiredTop(), behavior: 'auto' });
-      }, 720);
+      if (sequence !== state.scrollSequence || !target.isConnected) return;
+      const behavior = global.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      const optical = global.__MAGIRECO_SCROLL__;
+      if (optical?.element) {
+        optical.element(target, behavior);
+        return;
+      }
+      const navHeight = document.querySelector('.suite-nav')?.getBoundingClientRect().height || 0;
+      const top = Math.max(0, global.scrollY + target.getBoundingClientRect().top - navHeight - 14);
+      global.scrollTo({ top, behavior });
     }));
   }
 
@@ -324,8 +329,8 @@
       const result = baseDisplayHeightChart.apply(this, arguments);
       global.requestAnimationFrame(() => global.requestAnimationFrame(() => {
         installHeightChartV4();
-        if (shouldJump) scrollTarget(document.getElementById('heightChartContainer'));
       }));
+      if (shouldJump) scrollTarget(document.getElementById('heightChartContainer'));
       return result;
     };
   }
@@ -333,13 +338,11 @@
   global.drawAndJump = function drawAndJumpV4() {
     if (typeof global.toggleHeightView === 'function') global.toggleHeightView(false);
     if (typeof global.drawNet_Table === 'function') global.drawNet_Table();
-    global.requestAnimationFrame(() => global.requestAnimationFrame(() => {
-      scrollTarget(
-        document.getElementById('callResultSection')
-        || document.getElementById('canvasflame')
-        || document.getElementById('mynetwork')
-      );
-    }));
+    scrollTarget(
+      document.getElementById('callResultSection')
+      || document.getElementById('canvasflame')
+      || document.getElementById('mynetwork')
+    );
     return false;
   };
 

@@ -1,0 +1,121 @@
+/* Reader 30fedb8 material adaptation. Values are from display-material,
+   screen-effects, night-display-surface, frost-glass-surface and scene-registration.
+   No animation, pointer listener, per-card blur or backdrop sampling. */
+html:root[data-call-theme][data-call-reader-optics="v14"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
+  --call-optical-pass:opacity(1);
+  --call-glass-pass: ;
+  filter:var(--call-optical-pass) var(--call-glass-pass)!important;
+  -webkit-filter:var(--call-optical-pass) var(--call-glass-pass)!important;
+  contain:paint; overflow:clip!important;
+  transform:none!important; transition:none!important; animation:none!important;
+}
+/* The root itself stays dark until the complete lens/material set is decoded.
+   Existing recovery controls remain reachable if an asset fails. */
+html:root[data-call-material-ready="false"][data-call-preboot="true"]:not([data-call-loading-state="error"]) body .call-display-root-v7 { opacity:0!important; }
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
+  --call-optical-pass:url('#call-flat-registration-v14');
+}
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-optics-active="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
+  --call-optical-pass:url('#call-screen-optics-v7');
+}
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"][data-call-glass-active="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
+  --call-glass-pass:var(--call-glass-filter-v12);
+}
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"][data-call-optics-active="false"]:not([data-call-ios-flat="true"]) body .call-display-scroll-v7 {
+  filter:blur(.32px) saturate(.96) contrast(.99);
+}
+html:root[data-call-theme][data-call-reader-optics="v14"] body .call-display-scroll-v7 {
+  will-change:auto!important; animation:none!important;
+}
+html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-film-focus-v7 {
+  display:none!important; backdrop-filter:none!important; -webkit-backdrop-filter:none!important;
+}
+/* Offscreen optimizations must not leave missing card tiles inside a tube. */
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-optics-active="true"] body :is(.girlbox,.suite-character-card),
+html:root[data-call-ios-flat="true"] body :is(.girlbox,.suite-character-card) {
+  content-visibility:visible!important; contain-intrinsic-size:none!important;
+}
+
+html:root[data-call-theme] { --call-reader-scan:.28; }
+html:root[data-call-theme="dark"][data-call-phosphor="amber"] { --call-reader-scan:.42; }
+html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-scanlines-v7 {
+  background:none!important; display:none!important;
+  opacity:var(--call-reader-scan)!important; mix-blend-mode:multiply!important;
+}
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-scanlines="true"] body .call-fx-scanlines-v7 { display:block!important; }
+.call-reader-scan-v14 { display:block; width:100%; height:100%; overflow:hidden; pointer-events:none; }
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-fx-noise="true"] body .call-fx-scanlines-v7 { display:none!important; }
+html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-day-grain-v7 {
+  display:none!important; filter:none!important;
+  background:url('./reader-textures/NoiseAndGrain.png') 0 0/257px 131px repeat!important;
+  background-blend-mode:soft-light!important; mix-blend-mode:soft-light!important;
+  opacity:var(--call-reader-scan)!important;
+}
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-noise="true"]:not([data-call-theme="dark"]) body .call-fx-day-grain-v7 { display:block!important; }
+/* Retire Call's extra cold raster; Reader uses the day raster in cold mode. */
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"] body .call-fx-night-phosphor-v7 { display:none!important; }
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"] body .call-fx-night-phosphor-v7 {
+  --call-reader-raster:linear-gradient(transparent,transparent);
+  background:var(--call-reader-raster),url('./reader-textures/NoiseAndGrain.png') 0 0/128px 64px repeat,url('./reader-textures/PixelOverlay_RGB_16.png') 0 0/4px 4px repeat!important;
+  background-blend-mode:multiply,soft-light,normal!important; mix-blend-mode:soft-light!important;
+  opacity:var(--call-reader-scan)!important;
+}
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-fx-scanlines="true"] body .call-fx-night-phosphor-v7 {
+  --call-reader-raster:repeating-linear-gradient(0deg,rgba(5,0,2,.52) 0 .6px,transparent .6px 2px);
+}
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"] body .call-fx-night-grain-v7 {
+  background:url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat,url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat!important;
+  background-blend-mode:screen!important; mix-blend-mode:screen!important;
+  opacity:.495!important; filter:sepia(.2) hue-rotate(42deg) saturate(.72)!important;
+}
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor="amber"] body .call-fx-night-grain-v7 { opacity:.66!important; filter:sepia(.65)!important; }
+
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"] body .call-reader-screen-v7 {
+  --call-left-material-fade:linear-gradient(90deg,rgba(0,0,0,.70),rgba(0,0,0,.84) 16%,#000 34%);
+  opacity:.96!important; mix-blend-mode:screen!important;
+  mask-image:var(--call-left-material-fade)!important;
+}
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"] body .call-fx-frost-grain-v7 {
+  display:block!important; opacity:.95!important; mix-blend-mode:screen!important;
+  background:url('./reader-textures/magi-lofi-grain.png') 19px 17px/384px 384px repeat,url('./reader-textures/magi-lofi-grain.png') 19px 17px/384px 384px repeat,url('./reader-textures/magi-lofi-grain.png') 19px 17px/384px 384px repeat,url('./reader-textures/magi-lofi-grain.png') 19px 17px/384px 384px repeat!important;
+  background-blend-mode:screen!important;
+  mask-image:radial-gradient(ellipse 19% 13% at 78% 34%,#000 12%,transparent 90%),radial-gradient(ellipse 14% 26% at 94% 68%,rgba(0,0,0,.86),transparent 93%),radial-gradient(ellipse 17% 19% at 54% 77%,rgba(0,0,0,.7),transparent 92%),radial-gradient(ellipse 11% 12% at 44% 17%,rgba(0,0,0,.62),transparent 94%),linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.45) 20%,rgba(0,0,0,.76) 38%,rgba(0,0,0,.84) 70%,rgba(0,0,0,.68))!important;
+}
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"] body .call-fx-frost-smudges-v7 {
+  opacity:.24!important; mix-blend-mode:screen!important; filter:grayscale(1)!important;
+  mask-image:radial-gradient(ellipse at 48% 43%,rgba(0,0,0,.22) 15%,#000 82%),var(--call-left-material-fade)!important;
+  mask-composite:intersect!important;
+}
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"] body .call-fx-frost-glass-v7 { opacity:.9!important; mask-image:var(--call-left-material-fade)!important; }
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"] body .call-fx-frost-wear-v7 { opacity:.78!important; mask-image:var(--call-left-material-fade)!important; }
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"][data-call-optics-active="true"] body .call-reader-screen-v7 {
+  mask-image:var(--call-left-material-fade),linear-gradient(90deg,transparent,#000 14px calc(100% - 14px),transparent),linear-gradient(0deg,transparent,#000 14px calc(100% - 14px),transparent)!important;
+  mask-composite:intersect!important;
+}
+html:root[data-call-theme="frost"][data-call-reader-optics="v14"][data-call-optics-active="true"] body .call-fx-bezel-v7 {
+  background:linear-gradient(90deg,rgba(0,3,6,.62),rgba(0,3,6,.18) 1.4%,transparent 4% 96%,rgba(0,3,6,.18) 98.6%,rgba(0,3,6,.62)),linear-gradient(0deg,rgba(0,3,6,.58),rgba(0,3,6,.16) 2%,transparent 6% 94%,rgba(0,3,6,.16) 98%,rgba(0,3,6,.58)),radial-gradient(ellipse at 50% 47%,transparent 37%,rgba(0,0,0,.025) 64%,rgba(0,0,0,.16) 92%,rgba(0,0,0,.34) 100%)!important;
+  box-shadow:inset 0 0 3px 1px rgba(0,0,0,.85),inset 0 0 17px rgba(0,0,0,.6)!important;
+}
+/* Preserve Reader's size-sensitive ink behind the core; the scene graph handles
+   RGB splitting, including plain text, borders and icons, exactly once. */
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"] {
+  --call-sized-lead:rgba(255,252,225,.5); --call-sized-trail:rgba(69,154,244,.55);
+}
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor="green"] { --call-sized-trail:rgba(153,235,213,.48); }
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor="amber"] { --call-sized-trail:rgba(246,94,40,.52); }
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"][data-call-phosphor] body .call-display-root-v7 :is(button,input,textarea,select,option,a,span,p,b,strong,label,legend,h1,h2,h3,h4,small,summary,li,output) {
+  text-shadow:clamp(-1px,calc(1.7px - .17em),0px) 0 .008em var(--call-sized-lead),clamp(0px,calc(.2em - 2px),1.4px) 0 .008em var(--call-sized-trail)!important;
+}
+html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"] body .call-display-root-v7 :is(.call-theme-option-v7,.call-floating-widget-v7 button) svg { filter:none!important; }
+
+/* Reader native-flat: shared material/ink, no SVG URL or second scene focus. */
+html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"] { --call-ios-flat-filter:none; }
+html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"][data-call-fx-registration="true"] { --call-ios-flat-filter:blur(.13px); }
+html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"][data-call-theme="frost"] { --call-ios-flat-filter:blur(.22px); }
+html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"][data-call-theme="dark"] { --call-ios-flat-filter:blur(.39px); }
+html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"][data-call-theme] body .call-display-root-v7 {
+  filter:var(--call-ios-flat-filter)!important; -webkit-filter:var(--call-ios-flat-filter)!important;
+}
+html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"][data-call-theme] body .call-display-scroll-v7 {
+  filter:none!important; -webkit-filter:none!important;
+}

@@ -331,3 +331,184 @@ html:root[data-call-theme="frost"][data-call-glass-active="true"] body .call-gla
   mask-size:100% 100%; mask-repeat:no-repeat;
   background:rgba(0,18,23,.62); transform:translate(-.7px,.4px);
 }
+
+/* Shared suite controls: story filters, ranking and rune tools use the same
+   six palettes as Call. These are paint rules, not new compositing layers. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label,
+  .runes-mask-enable-v9,.runes-mask-brush-v9
+) {
+  color:var(--call-text)!important; -webkit-text-fill-color:currentColor!important;
+  background:var(--control-face)!important; border:1px solid var(--control-edge)!important;
+  border-radius:var(--control-radius)!important; box-shadow:var(--control-rest)!important;
+  min-height:38px; max-width:100%; gap:8px; line-height:1.4; overflow-wrap:anywhere;
+  cursor:pointer; touch-action:manipulation;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label,
+  .runes-mask-enable-v9,.runes-mask-brush-v9
+):has(input:checked) {
+  background:var(--control-selected)!important; color:var(--control-selected-ink)!important;
+  border-color:var(--call-accent-strong)!important; box-shadow:var(--control-selected-shadow)!important;
+  text-shadow:var(--control-text-glow)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label,
+  .runes-mask-enable-v9,.runes-mask-brush-v9
+):not(:has(input:disabled)):hover {
+  border-color:var(--call-accent-strong)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label,
+  .runes-mask-enable-v9,.runes-mask-brush-v9
+):has(input:focus-visible) {
+  outline:2px solid var(--call-accent-strong); outline-offset:3px;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label,
+  .runes-mask-enable-v9,.runes-mask-brush-v9
+):not(:has(input:disabled)):active { box-shadow:var(--control-press)!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label
+):has(input:disabled) { opacity:.55; cursor:not-allowed; box-shadow:none!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-checks input { flex:none; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-checks label * {
+  color:inherit!important; -webkit-text-fill-color:currentColor!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-button.primary:not(:disabled):not([aria-disabled="true"]):not(:hover):not(:focus-visible):not(:active) {
+  background:var(--control-selected)!important; color:var(--control-selected-ink)!important;
+  border-color:var(--call-accent-strong)!important; box-shadow:var(--control-selected-shadow)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-attribute-v7,.runes-reference-details-v9,.suite-result-group,.attendance-row,
+  .runes-mask-controls-v9,.runes-image-card-v9,.story-row-v7,.story-route-variant-v1
+) {
+  background:var(--control-panel)!important; border-color:var(--control-edge)!important;
+  border-radius:var(--control-radius)!important; box-shadow:inset 0 1px #ffffff14!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.suite-attribute-v7,.runes-reference-details-v9)>summary {
+  background:var(--control-face)!important; color:var(--call-text)!important;
+  border-radius:var(--control-radius)!important; border-color:var(--control-edge)!important;
+  box-shadow:var(--control-rest)!important; padding:10px 12px; min-height:42px;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.suite-attribute-v7,.runes-reference-details-v9)>summary:is(:hover,:focus-visible) {
+  background:var(--control-hover)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .call-panel-v8,.character-grid-details-v8,.suite-panel-details-v8,.runes-reference-details-v9
+)>summary::after {
+  background:var(--control-face)!important; color:var(--call-text)!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:var(--control-rest)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .suite-status,.suite-notice,.suite-chip,.suite-cast span,.suite-badge,.runes-guidance-v10,.runes-drop,.runes-mask-status-v9,
+  #runesMaskStatus,#runesDiagnostics,.runes-diagnostics-v6,.story-title-preview-v1
+) {
+  background:var(--control-panel)!important; color:var(--call-text)!important;
+  border-color:var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:inset 0 1px #ffffff14!important; overflow-wrap:anywhere;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-status[data-kind="error"] { border-inline-start:4px solid #cb7460!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-status[data-kind="success"] { border-inline-start:4px solid var(--call-accent-strong)!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.suite-chip,.suite-cast span,.suite-badge) {
+  background:var(--control-panel)!important; color:var(--call-text)!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:none!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.suite-result-group>h3,.suite-result-table th) {
+  background:var(--control-panel)!important; color:var(--call-text)!important; border-color:var(--control-edge)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 #attendanceResults .attendance-row {
+  background:var(--control-panel)!important; color:var(--call-text)!important;
+  border-color:var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:inset 0 1px #ffffff14!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 #attendanceResults .attendance-value { color:var(--call-accent-strong)!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 #attendanceResults .attendance-track {
+  background:color-mix(in srgb,var(--call-surface) 65%,transparent)!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:inset 0 2px 4px #00000017!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .attendance-bar {
+  background:linear-gradient(90deg,var(--call-accent),var(--call-accent-strong))!important;
+  box-shadow:inset 0 1px #ffffff40!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .runes-drop {
+  min-height:180px; gap:8px; border-width:1px; border-style:dashed;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .runes-drop:is([data-drag="true"],:focus-within) {
+  background:var(--control-hover)!important; border-color:var(--call-accent-strong)!important;
+  box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 input[type="file"] {
+  max-width:100%; min-width:0; padding:6px!important; color:var(--call-text)!important;
+  background:transparent!important; border:1px solid var(--control-edge)!important;
+  border-radius:var(--control-radius)!important; font:inherit;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 input[type="file"]::file-selector-button {
+  appearance:none; -webkit-appearance:none; font:inherit; cursor:pointer;
+  min-height:40px; margin-inline-end:12px; padding:7px 12px;
+  background:var(--control-face)!important; color:var(--call-text)!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important; box-shadow:var(--control-rest)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 input[type="file"]::file-selector-button:hover {
+  background:var(--control-hover)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 input[type="file"]::file-selector-button:active { box-shadow:var(--control-press)!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .runes-progress {
+  accent-color:var(--call-accent); border-radius:var(--control-radius); overflow:hidden;
+}
+html:root[data-call-theme] body .runes-progress::-webkit-progress-bar { background:var(--control-panel); }
+html:root[data-call-theme] body .runes-progress::-webkit-progress-value { background:var(--call-accent); }
+html:root[data-call-theme] body .runes-progress::-moz-progress-bar { background:var(--call-accent); }
+/* Parent-story groups are injected after search; their legacy inline stylesheet
+   must not reintroduce pink gutters or white count badges. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-result-list-v7 {
+  background:transparent!important; gap:7px;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.story-parent-group-v18,.story-title-table-wrap-v2) {
+  background:var(--control-panel)!important; border:1px solid var(--control-edge)!important;
+  border-radius:var(--control-radius)!important; margin-block:0;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-parent-group-v18>summary {
+  background:var(--control-face)!important; color:var(--call-text)!important;
+  min-height:44px; box-shadow:var(--control-rest)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-parent-group-v18>summary:is(:hover,:focus-visible) {
+  background:var(--control-hover)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .story-parent-count-v18,.story-cast-chip-v7,.story-route-edition-v1,.story-route-status-v1,.story-route-precision-v1,
+  .story-title-changed-toggle-v2
+) {
+  background:var(--control-panel)!important; color:var(--call-text)!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-route-link-v1 {
+  background:var(--control-face)!important; color:var(--call-text)!important;
+  border:1px solid var(--control-edge)!important; border-radius:var(--control-radius)!important;
+  box-shadow:var(--control-rest)!important; min-height:30px; line-height:1.35;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-route-link-v1:is(:hover,:focus-visible) {
+  background:var(--control-hover)!important; box-shadow:var(--control-lit)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .story-parent-source-v18,.story-title-original-v7,.story-title-source-v2>small
+) { color:var(--call-muted)!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+  .story-parent-children-v18,.story-title-v7,.story-summary-v7,.story-title-table-v2 td,.story-title-table-v2 th
+) { border-color:var(--control-edge)!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.story-cast-chip-v7 img,.story-cast-fallback-v7) { background:transparent!important; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.story-title-table-v2 tbody tr,.story-title-table-v2 thead th) {
+  background:var(--control-panel)!important; color:var(--call-text)!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-title-table-v2 tbody tr[data-dirty="true"] {
+  background:var(--control-hover)!important; box-shadow:inset 3px 0 var(--call-accent-strong);
+}
+@media(max-width:760px) {
+  html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
+    .suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label
+  ) { min-height:44px; }
+  html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .runes-drop { padding:14px; }
+}

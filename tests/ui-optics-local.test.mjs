@@ -41,12 +41,16 @@ test('all themes and platforms default registration on but preserve explicit off
     assert.equal(preboot({effects:{[theme]:{registration:false}}},theme,identity).callFxRegistration,'false');
   }
 });
-test('static lens is at most three primitives with one small blur',()=>{
+test('static lens uses the complete Reader signal graph rather than the retired three-pass approximation',()=>{
   const install=theme.split('function installOpticalFilter(){')[1].split('function updateOpticalFilter(){')[0];
-  assert.equal([...install.matchAll(/svgEl\('fe/g)].length,3);
-  assert.equal([...install.matchAll(/svgEl\('feGaussianBlur'/g)].length,1);
-  assert.match(install,/stdDeviation:'\.32'/);
-  assert.match(install,/filterUnits:'userSpaceOnUse'/);
+  assert.match(install,/CallReaderOpticsV14.mount\(displayRoot\)/);
+  const {graphs}=JSON.parse(read('public/myfile/reader-optics-graphs-v14.json'));
+  for(const key of ['dark:green','dark:amber','frost:true','light:false']){
+    assert.match(graphs[key],/result="tubeSignal"/);
+    for(const pass of ['threshold','emission','near','wide','near-merge','wide-merge'])
+      assert.ok(graphs[key].includes('data-tube-bloom="'+pass+'"'),key+': '+pass);
+  }
+  assert.match(read('public/myfile/reader-optics-v14.js'),/filter.setAttribute\('filterUnits','userSpaceOnUse'\)/);
 });
 test('iOS first paint clamps only curvature including saved on',()=>{
   for(const identity of [iosSafari,iosChrome,ipad]) for(const mode of ['light','paper','green','dark','frost']){
@@ -61,14 +65,17 @@ test('runtime iOS policy matches bootstrap, keeps stored curvature and skips SVG
     const saved={effects:{dark:{curvature:true,registration:true}}};
     const ctx={navigator:identity,document:{documentElement:{dataset:{},style:{}},readyState:'loading',addEventListener:()=>{}},
       localStorage:{getItem:key=>key==='magireco-call-theme-v2'?'dark':key==='magireco-call-visual-v7-5'?JSON.stringify(saved):null},
-      matchMedia:()=>({matches:false}),window:{},console};
+      matchMedia:()=>({matches:false}),window:{CallReaderOpticsV14:{mountMaterials(){ctx.document.documentElement.dataset.callReaderOptics='v14';return {sync(){}};}}},console};
     const instrumented=theme.replace("  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install", "  window.policy={effectValue,state,isIOS,installOpticalFilter};\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install");
     vm.runInNewContext(instrumented,ctx);
     const p=ctx.window.policy,isIOS=[iosSafari,iosChrome,ipad].includes(identity);
     assert.equal(p.effectValue('curvature'),!isIOS);assert.equal(p.state.effects.dark.curvature,true);
     assert.equal(ctx.document.documentElement.dataset.callFxCurvature,String(!isIOS));
     assert.equal(p.effectValue('registration'),true);
-    if(isIOS) assert.doesNotThrow(()=>p.installOpticalFilter()); // document has no DOM factories.
+    if(isIOS){
+      assert.doesNotThrow(()=>p.installOpticalFilter());
+      assert.equal(ctx.document.documentElement.dataset.callReaderOptics,'v14');
+    }
   }
 });
 

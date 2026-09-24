@@ -57,7 +57,7 @@ test('menu belongs to navigation, has bounded available-height scrolling and rea
  assert.match(css,/max-height:var\(--call-menu-room/);
  assert.ok(css.includes(':is(.call-jump-widget-v7,.call-jump-widget-v7 *) { visibility:hidden!important; pointer-events:none!important; }'));
  assert.match(js,/menu.inert = !expanded/);
- assert.ok(js.includes('使用本工具二创，请注明工具名称及出处链接。'));
+ assert.ok(js.includes('使用本工具二创，请注明工具作者以及提供工具链接。'));
  assert.ok(js.includes('magia exedra 魔法纪录l2d查看器'));
  assert.ok(js.includes('魔法纪录MAGIAEXEDRA 中日双语剧情存档与翻译平台'));
  assert.ok(!js.includes('■通用'));

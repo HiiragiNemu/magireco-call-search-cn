@@ -47,7 +47,10 @@ test('DOM initialization adopts the existing surface and does not duplicate filt
  assert.match(theme,/displayRoot=displayRoot \|\| document.createElement/);
  assert.match(theme,/node===displayRoot/);
  assert.match(theme,/if\(displayRoot.querySelector\('\.call-reader-screen-v7'\)\) return/);
- assert.match(theme,/opticalRefs=\{filter:existing/);
+ assert.match(theme,/window.CallReaderOpticsV14.mount\(displayRoot\)/);
+ const adapter=read('public/myfile/reader-optics-v14.js');
+ assert.match(adapter,/document.querySelector\('\.call-optics-defs-v7'\)/);
+ assert.match(adapter,/svg.replaceChildren\(defs\)/);
  assert.match(source,/callIosFlat==='true'[\s\S]*closest\('svg'\)\?\.remove/);
  assert.doesNotMatch(source,/requestAnimationFrame\([^\n]*(?:animate|renderLoop)/);
 });

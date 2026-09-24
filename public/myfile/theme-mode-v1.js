@@ -210,57 +210,13 @@
     for(const [key,value] of Object.entries(attrs)) el.setAttribute(key,String(value));
     return el;
   }
-  function makeLensMap(){
-    const canvas=document.createElement('canvas'), size=512;
-    canvas.width=canvas.height=size;
-    const ctx=canvas.getContext('2d');
-    if(!ctx) return null;
-    const pixels=ctx.createImageData(size,size);
-    for(let y=0;y<size;y++) for(let x=0;x<size;x++){
-      const nx=x/(size-1)*2-1, ny=y/(size-1)*2-1, radial=nx*nx+ny*ny, i=(y*size+x)*4;
-      pixels.data[i]=Math.round(128+nx*radial*45);
-      pixels.data[i+1]=Math.round(128+ny*radial*45);
-      pixels.data[i+2]=128; pixels.data[i+3]=255;
-    }
-    ctx.putImageData(pixels,0,0);
-    return canvas.toDataURL('image/png');
-  }
   function installOpticalFilter(){
-    if(isIOS) return; // No SVG lens or displacement map allocation on iOS.
-    const existing=document.getElementById('call-screen-optics-v7');
-    if(existing){
-      opticalRefs={filter:existing,image:existing.querySelector('feImage'),curve:existing.querySelector('feDisplacementMap'),focus:existing.querySelector('feGaussianBlur')};
-      if(typeof ResizeObserver==='function')new ResizeObserver(updateOpticalFilter).observe(displayRoot);
-      return;
-    }
-    const map=makeLensMap(); if(!map) return;
-    const svg=svgEl('svg',{width:1,height:1,'aria-hidden':'true'});
-    svg.classList.add('call-optics-defs-v7');
-    svg.style.cssText='position:absolute;left:-2px;top:0;pointer-events:none;overflow:hidden';
-    const defs=svgEl('defs');
-    const filter=svgEl('filter',{id:'call-screen-optics-v7',x:0,y:0,filterUnits:'userSpaceOnUse',primitiveUnits:'userSpaceOnUse','color-interpolation-filters':'sRGB'});
-    const image=svgEl('feImage',{href:map,x:0,y:0,width:'100%',height:'100%',preserveAspectRatio:'none',result:'lens'});
-    image.setAttributeNS('http://www.w3.org/1999/xlink','href',map);
-
-    // One static displacement pass. Bloom belongs to small CSS text/icon shadows,
-    // not several blurred copies of the complete scrolling viewport.
-    const curve=svgEl('feDisplacementMap',{in:'SourceGraphic',in2:'lens',scale:'50',xChannelSelector:'R',yChannelSelector:'G',result:'curved'});
-    const focus=svgEl('feGaussianBlur',{in:'curved',stdDeviation:'.32'});
-    filter.append(image,curve,focus);
-    defs.appendChild(filter);svg.appendChild(defs);document.body.appendChild(svg);
-    opticalRefs={filter,image,curve,focus};
-    if(typeof ResizeObserver==='function')new ResizeObserver(updateOpticalFilter).observe(displayRoot);
+    // Shared materials apply on iOS too; only the SVG signal graph is excluded.
+    opticalRefs=isIOS ? window.CallReaderOpticsV14.mountMaterials(displayRoot)
+      : window.CallReaderOpticsV14.mount(displayRoot);
   }
   function updateOpticalFilter(){
-    if(!opticalRefs) return;
-    const width=displayRoot.clientWidth, height=displayRoot.clientHeight;
-    const assign=(node,name,value)=>{value=String(value);if(node.getAttribute(name)!==value)node.setAttribute(name,value);};
-    for(const node of [opticalRefs.filter,opticalRefs.image]){
-      assign(node,'width',width);assign(node,'height',height);
-    }
-    const scale=Math.round(Math.max(24,Math.min(50,Math.min(width,height)*.075)));
-    assign(opticalRefs.curve,'scale',effectValue('curvature') ? scale : 0);
-    assign(opticalRefs.focus,'stdDeviation',parseFloat(getComputedStyle(root).getPropertyValue('--call-focus-radius')) || 0);
+    opticalRefs?.sync();
   }
 
   function applyDatasets(){
@@ -756,8 +712,12 @@
   }
 
   function patchLegacyScroll(){
+    // V4 owns height/relation switching, folded sections and latest-click order.
+    // Replacing it here would draw into a hidden network after a height search.
+    if(window.__MAGIRECO_CORRECTION_V4__?.scrollTarget) return;
     if(typeof window.drawAndJump==='function'){
       window.drawAndJump=function(){
+        if(typeof window.toggleHeightView==='function')window.toggleHeightView(false);
         if(typeof window.drawNet_Table==='function')window.drawNet_Table();
         requestAnimationFrame(()=>scrollElement(document.getElementById('mynetwork')));
         return false;
