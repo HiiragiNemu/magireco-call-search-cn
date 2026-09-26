@@ -15,7 +15,7 @@ test('all ten entries contain the same pre-rendered Reader card and one shared o
  for(const name of pages){
   const html=read('public/'+name);
   assert.equal((html.match(/id="call-loading-screen"/g)||[]).length,1,name);
-  assert.equal((html.match(/id="call-screen-optics-v7"/g)||[]).length,1,name);
+  assert.equal((html.match(/id="call-screen-optics-v7"/g)||[]).length,0,name);
   assert.equal((html.match(/class="call-reader-screen-v7"/g)||[]).length,1,name);
   assert.match(html,/<\/div><span class="call-fx-day-grain-v7 call-material-direct-v11"/);
   assert.match(html,/EIA 2017 \/ MAGIUS LINK/);
@@ -49,9 +49,10 @@ test('DOM initialization adopts the existing surface and does not duplicate filt
  assert.match(theme,/if\(displayRoot.querySelector\('\.call-reader-screen-v7'\)\) return/);
  assert.match(theme,/window.CallReaderOpticsV14.mount\(displayRoot\)/);
  const adapter=read('public/myfile/reader-optics-v14.js');
- assert.match(adapter,/document.querySelector\('\.call-optics-defs-v7'\)/);
+ assert.match(adapter,/if\(instances.has\(scene\)\)return instances.get\(scene\)/);
  assert.match(adapter,/svg.replaceChildren\(defs\)/);
- assert.match(source,/callIosFlat==='true'[\s\S]*closest\('svg'\)\?\.remove/);
+ assert.match(source,/callIosFlat==='true'\) window.CallReaderOpticsV14.mountMaterials\(scene\)/);
+ assert.match(source,/else window.CallReaderOpticsV14.mount\(scene\)/);
  assert.doesNotMatch(source,/requestAnimationFrame\([^\n]*(?:animate|renderLoop)/);
 });
 test('startup gates cover each asynchronous application initialization',()=>{
@@ -69,7 +70,7 @@ function harness({assetFailure=false,fontWait=Promise.resolve(),decodeWait=Promi
  const cover={setAttribute(){},querySelector(sel){if(sel==='.call-loading-error')return error;return {addEventListener(type,fn){buttons[sel]=fn;}};}};
  const html={dataset:{callTheme:'frost',callIosFlat:'true',callFxCurvature:'false',callFxPixelFont:'true'}};
  const doc={documentElement:html,getElementById(id){return id==='call-loading-screen'?cover:null;},querySelector(){return scroll;},querySelectorAll(){return [{}];},fonts:{load(){return fontWait;}},addEventListener(name,fn){events[name]=fn;}};
- const ctx={document:doc,window:{},location:{origin:'https://fixture.test',pathname:'/index.html',href:'https://fixture.test/index.html',reload(){}},URL,Image:class{set src(_){assetFailure?this.onerror():this.onload();}decode(){return decodeWait;}},getComputedStyle(){return {display:'block',visibility:'visible',opacity:'1',backgroundImage:'url("./noise.png")'};},requestAnimationFrame(fn){raf.push(fn);},setTimeout(){return 1;},clearTimeout(){},addEventListener(name,fn){events[name]=fn;},console};
+ const ctx={document:doc,window:{CallReaderOpticsV14:{mountMaterials(){},mount(){}}},location:{origin:'https://fixture.test',pathname:'/index.html',href:'https://fixture.test/index.html',reload(){}},URL,Image:class{set src(_){assetFailure?this.onerror():this.onload();}decode(){return decodeWait;}},getComputedStyle(){return {display:'block',visibility:'visible',opacity:'1',backgroundImage:'url("./noise.png")'};},requestAnimationFrame(fn){raf.push(fn);},setTimeout(){return 1;},clearTimeout(){},addEventListener(name,fn){events[name]=fn;},console};
  vm.runInNewContext(source,ctx);
  return {api:ctx.window.CallLoading,html,error,scroll,events,buttons,paint(){while(raf.length)raf.shift()();}};
 }

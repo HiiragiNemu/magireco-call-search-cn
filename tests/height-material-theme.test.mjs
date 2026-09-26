@@ -61,8 +61,8 @@ test('Reader current night material uses direct sibling layers on all ten entrie
 });
 test('Reader focus belongs to the shared curved graph; flat cold and native iOS retain their focus path',()=>{
  const {graphs}=JSON.parse(read('public/myfile/reader-optics-graphs-v14.json'));
- assert.match(graphs['frost:true'],/stdDeviation=".32" result="focusedBeam"/);
- assert.match(graphs['frost:true'],/in="focusedScene"/);
+ assert.match(graphs['frost:true'],/stdDeviation="0.35" result="beam"/);
+ assert.doesNotMatch(graphs['frost:true'],/focusedBeam|focusedScene/);
  assert.match(read('public/myfile/reader-optics-v14.css'),/data-call-optics-active="false"[\s\S]*?filter:blur\(.32px\) saturate\(.96\) contrast\(.99\)/);
  assert.match(read('public/myfile/call-loading-v10.js'),/imageReady\('\.\/myfile\/reader-textures\/magi-tube-lens-512.png'\)/);
  assert.match(css,/data-call-ios-flat="true"\]\[data-call-theme="frost"\] \{ --call-focus-radius:\.22px/);

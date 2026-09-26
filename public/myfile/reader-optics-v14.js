@@ -1,10 +1,13 @@
-/* Reader 30fedb8: unchanged signal graphs, adapted to Call's stationary viewport.
+/* Reader 7bd527d: shared night/cold signal graphs, adapted to Call's stationary viewport.
    All graph changes happen on theme/effect/viewport changes, never on hover. */
 (() => {
   'use strict';
   const ns='http://www.w3.org/2000/svg';
   const parse=markup=>new DOMParser().parseFromString('<svg xmlns="'+ns+'">'+markup+'</svg>','image/svg+xml').querySelector('filter');
+  const instances=new WeakMap(),materialInstances=new WeakMap();
+  let nextInstance=0;
   function mountMaterials(scene,observe=true){
+    if(materialInstances.has(scene))return materialInstances.get(scene);
     let lines;
     function sync(){
       const width=scene.clientWidth,height=scene.clientHeight;
@@ -25,11 +28,15 @@
     }
     sync();
     if(observe && typeof ResizeObserver==='function')new ResizeObserver(sync).observe(scene);
-    return {sync};
+    const api={sync};materialInstances.set(scene,api);return api;
   }
   function mount(scene){
-    let svg=document.querySelector('.call-optics-defs-v7');
-    if(!svg){svg=document.createElementNS(ns,'svg');svg.classList.add('call-optics-defs-v7');document.body.appendChild(svg);}
+    if(instances.has(scene))return instances.get(scene);
+    const id='call-tube-'+(++nextInstance),flatId='call-flat-'+nextInstance;
+    const svg=document.createElementNS(ns,'svg');
+    svg.classList.add('call-optics-defs-v7','call-reader-optics-defs-v14');
+    scene.style.setProperty('--call-active-tube-filter','url(#'+id+')');
+    scene.style.setProperty('--call-active-flat-filter','url(#'+flatId+')');
     // Definitions are not a child of the filtered source, nor of an interactive control.
     document.body.appendChild(svg);
     svg.setAttribute('width','0');svg.setAttribute('height','0');svg.setAttribute('aria-hidden','true');
@@ -43,6 +50,7 @@
       if(key!==graphKey){
         lens=document.importNode(parse(window.CallReaderGraphsV14[key]),true);
         flat=document.importNode(parse(window.CallReaderGraphsV14['flat:'+(d.callTheme==='dark'?d.callPhosphor:'day')]),true);
+        lens.setAttribute('id',id);flat.setAttribute('id',flatId);
         defs.replaceChildren(lens,flat);graphKey=key;sizeKey='';
       }
       const width=scene.clientWidth,height=scene.clientHeight;
@@ -65,7 +73,7 @@
     }
     sync();
     if(typeof ResizeObserver==='function')new ResizeObserver(sync).observe(scene);
-    return {sync};
+    const api={sync};instances.set(scene,api);return api;
   }
   window.CallReaderOpticsV14=Object.freeze({mount,mountMaterials});
 })();

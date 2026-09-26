@@ -15,7 +15,7 @@ const material=read('public/myfile/reader-optics-v14.css');
 // This deliberately does not claim browser paint, raster or SVG-filter support.
 let writes=0;
 class Element {
-  constructor(tag,attrs={}){this.tag=tag;this.attrs={...attrs};this.children=[];this.dataset={};this.style={};this.clientWidth=1024;this.clientHeight=768;this.classList={add:c=>this.attrs.class=[this.attrs.class,c].filter(Boolean).join(' ')};}
+  constructor(tag,attrs={}){this.tag=tag;this.attrs={...attrs};this.children=[];this.dataset={};this.style={setProperty(k,v){this[k]=v;}};this.clientWidth=1024;this.clientHeight=768;this.classList={add:(...c)=>this.attrs.class=[this.attrs.class,...c].filter(Boolean).join(' ')};}
   appendChild(el){if(el.parentNode)el.parentNode.children=el.parentNode.children.filter(x=>x!==el);this.children.push(el);el.parentNode=this;return el;}
   replaceChildren(...els){for(const c of this.children)c.parentNode=null;this.children=[];for(const c of els)this.appendChild(c);writes++;}
   setAttribute(k,v){this.attrs[k]=String(v);writes++;}
@@ -49,12 +49,12 @@ function harness({identity=null,mode='green'}={}){
     const theme=read('public/myfile/theme-mode-v1.js').replace("  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install", "  window.activateTestMaterials=scene=>{displayRoot=scene;installOpticalFilter();return opticalRefs;};\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install");
     vm.runInNewContext(theme,context);api=context.window.activateTestMaterials(scene);
   }else api=context.window.CallReaderOpticsV14.mount(scene);
-  return {html,body,scene,scroll,host,existing,observers,api,window:context.window,lens:()=>existing.querySelector('filter')};
+  return {html,body,scene,scroll,host,existing,observers,api,window:context.window,lens:()=>body.querySelector('.call-reader-optics-defs-v14')?.querySelector('filter')};
 }
 
 test('exported graph payload is pinned to the Reader handoff, including all coefficients',()=>{
-  assert.equal(artifact.meta.donorCommit,'30fedb8cb970469e5be1349ff326bc614b0299b0');
-  assert.equal(artifact.meta.files.length,33);assert.equal(Object.keys(artifact.graphs).length,13);
+  assert.equal(artifact.meta.donorCommit,'7bd527d068a72047cdc982a90b5bd60c19871915');
+  assert.equal(artifact.meta.files.length,36);assert.equal(Object.keys(artifact.graphs).length,13);
   const ctx={window:{}};vm.runInNewContext(read('public/myfile/reader-optics-graphs-v14.js'),ctx);
   for(const [key,value] of Object.entries(artifact.graphs)){
     assert.equal(ctx.window.CallReaderGraphsV14[key],value,key);
@@ -78,7 +78,7 @@ test('runtime changes only viewport coordinates and responsive lens scale in eve
     for(const [width,height] of [[412,915],[1024,768]]){
       h.scene.clientWidth=width;h.scene.clientHeight=height;h.api.sync();
       const expected=xml(artifact.graphs[key]).querySelector('filter');
-      expected.attrs.filterUnits='userSpaceOnUse';expected.attrs.primitiveUnits='userSpaceOnUse';
+      expected.attrs.id=h.lens().attrs.id;expected.attrs.filterUnits='userSpaceOnUse';expected.attrs.primitiveUnits='userSpaceOnUse';
       for(const p of [expected,...expected.children])Object.assign(p.attrs,{x:'0',y:'0',width:String(width),height:String(height)});
       expected.querySelector('feDisplacementMap').attrs.scale=width<=767?'38':'50';
       const flat=n=>({tag:n.tag,attrs:n.attrs,children:n.children.map(flat)});
@@ -119,8 +119,8 @@ test('all ten pages load the shared adapter before the theme and use the donor l
     const html=read('public/'+name);
     assert.ok(html.indexOf('reader-optics-graphs-v14.js')<html.indexOf('reader-optics-v14.js'),name);
     assert.ok(html.indexOf('reader-optics-v14.js')<html.indexOf('theme-mode-v1.js'),name);
-    assert.match(html,/reader-optics-v14.css\?v=reader-30fedb8-r14/);
-    assert.match(html,/call-loading-v10.js\?v=reader-30fedb8-r14/);
+    assert.match(html,/reader-optics-v14.css\?v=reader-7bd527d-r15/);
+    assert.match(html,/call-loading-v10.js\?v=reader-7bd527d-r15/);
     assert.match(html,/href="\.\/myfile\/reader-textures\/magi-tube-lens-512.png"/);
   }
 });
@@ -163,4 +163,53 @@ test('iOS shares material selectors but is excluded from URL filtering and dupli
   assert.doesNotMatch(native,/url\(/);
   // Pending asset visibility is shared and was already correct before this fix.
   assert.match(material,/data-call-material-ready="false"\]\[data-call-preboot="true"\]:not\(\[data-call-loading-state="error"\]\) body \.call-display-root-v7 \{ opacity:0!important/);
+});
+
+
+test('cold is the night signal path and panel bloom, not the retired coldFocus prefilter',()=>{
+  for(const key of ['frost:false','frost:true','dark:green','dark:amber']){
+    const graph=xml(artifact.graphs[key]).querySelector('filter');
+    const pass=result=>graph.children.find(n=>n.attrs.result===result);
+    assert.equal(pass('beam').attrs.stdDeviation,'0.35');
+    assert.equal(pass('tubeSignal').attrs.stdDeviation,'0.18');
+    assert.equal(pass('nearBloom').children[0].attrs.slope,'0.32');
+    assert.equal(pass('wideBloom').children[0].attrs.slope,'0.36');
+    assert.equal(pass('panelScatter').attrs.stdDeviation,'48');
+    assert.equal(pass('panelBloom').children[0].attrs.slope,'.38');
+    assert.doesNotMatch(artifact.graphs[key],/coldFocus|coldSaturation|coldExposure/);
+  }
+  assert.equal(xml(artifact.graphs['frost:false']).querySelector('filter').children.find(n=>n.attrs.result==='beam').attrs.in,'SourceGraphic');
+  assert.equal(xml(artifact.graphs['frost:true']).querySelector('filter').children.find(n=>n.attrs.result==='beam').attrs.in,'registeredScene');
+});
+
+test('each display owns unique filter IDs and an idempotent mount, including loader reuse',()=>{
+  const h=harness({mode:'frost'}),original=h.lens(),before=writes;
+  assert.equal(h.window.CallReaderOpticsV14.mount(h.scene),h.api);
+  assert.equal(writes,before);
+  const second=h.body.appendChild(new Element('div'));
+  second.appendChild(new Element('span',{class:'call-fx-scanlines-v7'}));
+  h.window.CallReaderOpticsV14.mount(second);
+  const filterIds=h.body.children.filter(n=>n.attrs.class?.includes('call-reader-optics-defs-v14')).flatMap(n=>n.children[0].children.map(f=>f.attrs.id));
+  assert.equal(new Set(filterIds).size,4);
+  assert.notEqual(second.style['--call-active-tube-filter'],h.scene.style['--call-active-tube-filter']);
+  assert.equal(h.lens(),original);assert.equal(h.existing.children.length,0);
+  assert.equal(h.observers.length,2);
+  assert.match(material,/--call-optical-pass:var\(--call-active-tube-filter\)/);
+  assert.doesNotMatch(material,/url\('#call-(screen-optics|flat-registration)/);
+});
+
+test('Call has no legacy Reader grid DOM or per-card SVG wear masks to carry into curves',()=>{
+  for(const name of fs.readdirSync(path.join(root,'public')).filter(n=>n.endsWith('.html'))){
+    const page=read('public/'+name);
+    assert.doesNotMatch(page,/class="[^"\n]*magi-background/);
+    assert.doesNotMatch(page,/id="call-screen-optics-v7"/);
+    assert.ok(page.indexOf('reader-optics-v14.js')<page.indexOf('call-loading-v10.js'));
+  }
+  // Decorations keep masks; content cards/sidebar/rows do not use SVG wear masks.
+  for(const name of fs.readdirSync(path.join(root,'public/myfile')).filter(n=>n.endsWith('.css'))){
+    assert.doesNotMatch(read('public/myfile/'+name),/url\(['"]?#call-screen-optics-v7/);
+    for(const rule of read('public/myfile/'+name).matchAll(/([^{}]+)\{([^{}]+)\}/g)){
+      if(/mask-image:\s*url\(/.test(rule[2]))assert.doesNotMatch(rule[1],/\.girlbox|\.suite-character-card|\.hamburger/);
+    }
+  }
 });

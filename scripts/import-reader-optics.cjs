@@ -40,15 +40,18 @@ const { SceneRegistrationDefinitions } = sourceModule('components/SceneRegistrat
 const { scanlinePattern } = sourceModule('lib/scanline-pattern.ts');
 const graphs = {};
 const renderFilter = element => renderToStaticMarkup(React.createElement('svg',null,element)).replace(/^<svg>/,'').replace(/<\/svg>$/,'');
-const options = { id: 'call-screen-optics-v7', map: './myfile/reader-textures/magi-tube-lens-512.png', scale: 50 };
+const options = { id: 'call-tube-template', map: './myfile/reader-textures/magi-tube-lens-512.png', scale: 50 };
 for (const theme of ['light','paper','green','frost']) for (const registration of [false,true]) {
-  graphs[theme + ':' + registration] = renderFilter(React.createElement(DayTubeFilter, {...options, theme, registration}));
+  // Cold follows ReaderTubeSurface: the actual night path, with day registration.
+  graphs[theme + ':' + registration] = renderFilter(theme === 'frost'
+    ? React.createElement(NightTubeFilter, {...options, profile: registration ? 'day' : undefined})
+    : React.createElement(DayTubeFilter, {...options, theme, registration}));
 }
 for (const profile of ['green','amber']) {
   graphs['dark:' + profile] = renderFilter(React.createElement(NightTubeFilter, {...options, profile}));
-  graphs['flat:' + profile] = renderToStaticMarkup(React.createElement(SceneRegistrationDefinitions, {id:'call-flat-registration-v14',profile}));
+  graphs['flat:' + profile] = renderToStaticMarkup(React.createElement(SceneRegistrationDefinitions, {id:'call-flat-template',profile}));
 }
-graphs['flat:day'] = renderToStaticMarkup(React.createElement(SceneRegistrationDefinitions, {id:'call-flat-registration-v14',profile:'day'}));
+graphs['flat:day'] = renderToStaticMarkup(React.createElement(SceneRegistrationDefinitions, {id:'call-flat-template',profile:'day'}));
 const meta = { donorCommit: inventory.commit, files: inventory.files, graphHashes: Object.fromEntries(Object.entries(graphs).map(([k,v])=>[k,hash(v)])) };
 const out = path.resolve(__dirname,'../public/myfile');
 const check = process.argv.includes('--check');

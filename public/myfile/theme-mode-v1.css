@@ -230,7 +230,7 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
     inset 0 0 9px color-mix(in srgb,var(--call-accent) 8%,transparent);
 }
 :root[data-call-optics-active="true"] .call-display-root-v7{
-  filter:url('#call-screen-optics-v7');
+  filter:var(--call-active-tube-filter, none);
 }
 .call-display-scroll-v7{
   position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;
@@ -1000,7 +1000,7 @@ body.call-screen-host-v7{overflow:hidden!important;background:#000!important}
    iOS remains on the static low-cost glass path. */
 @media(max-width:760px){
   :root[data-call-ios="false"][data-call-optics-active="true"] .call-display-root-v7{
-    filter:url('#call-screen-optics-v7')!important;
+    filter:var(--call-active-tube-filter, none)!important;
   }
   :root[data-call-fx-curvature="true"] .call-display-root-v7{
     inset:7px!important;
@@ -1729,8 +1729,8 @@ html[data-call-preboot="false"]::after{
    reduced. This mirrors MadeInMagius rather than deleting the visual language. */
 @media(max-width:760px){
   :root[data-call-ios="false"][data-call-optics-active="true"] .call-display-root-v7{
-    filter:url('#call-screen-optics-v7')!important;
-    -webkit-filter:url('#call-screen-optics-v7')!important;
+    filter:var(--call-active-tube-filter, none)!important;
+    -webkit-filter:var(--call-active-tube-filter, none)!important;
   }
   :root[data-call-theme="dark"] .call-fx-night-phosphor-v7{opacity:.36!important}
   :root[data-call-theme="dark"] .call-fx-night-grain-v7{opacity:.21!important}
@@ -2841,8 +2841,8 @@ html:root:is([data-call-theme="dark"],[data-call-theme="frost"]) body input:is([
 
 /* Actual static lens on phones too; rounded borders alone are not curvature. */
 html:root[data-call-crt-engine="static-svg"][data-call-optics-active="true"] body .call-display-root-v7 {
-  filter:url('#call-screen-optics-v7')!important;
-  -webkit-filter:url('#call-screen-optics-v7')!important;
+  filter:var(--call-active-tube-filter, none)!important;
+  -webkit-filter:var(--call-active-tube-filter, none)!important;
   transform:none!important; -webkit-transform:none!important;
 }
 html:root[data-call-ios="true"] body .call-display-root-v7 *,

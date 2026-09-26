@@ -50,18 +50,9 @@
 
   // The loader and the eventual page use the SAME root, filter and material nodes.
   // Parser-time preferences already selected the theme; no loader-only defaults.
-  const filter=document.getElementById('call-screen-optics-v7');
-  if(root.dataset.callIosFlat==='true'){
-    filter?.closest('svg')?.remove();
-  }else if(filter){
-    const scene=document.querySelector('.call-display-root-v7');
-    const width=scene?.clientWidth || document.documentElement.clientWidth, height=scene?.clientHeight || innerHeight;
-    for(const el of [filter,filter.querySelector('feImage')]){
-      el.setAttribute('width',width);el.setAttribute('height',height);
-    }
-    filter.querySelector('feDisplacementMap').setAttribute('scale',root.dataset.callFxCurvature==='true'?Math.round(Math.max(24,Math.min(50,Math.min(width,height)*.075))):0);
-    filter.querySelector('feGaussianBlur').setAttribute('stdDeviation',parseFloat(getComputedStyle(root).getPropertyValue('--call-focus-radius')) || 0);
-  }
+  const scene=document.querySelector('.call-display-root-v7');
+  if(root.dataset.callIosFlat==='true') window.CallReaderOpticsV14.mountMaterials(scene);
+  else window.CallReaderOpticsV14.mount(scene);
   root.dataset.callCrtEngine=root.dataset.callIosFlat==='true'?'native-flat':'static-svg';
   root.dataset.callOpticsActive=root.dataset.callFxCurvature;
   const imageReady=url=>new Promise((resolve,reject)=>{

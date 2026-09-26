@@ -1,4 +1,4 @@
-/* Reader 30fedb8 material adaptation. Values are from display-material,
+/* Reader 7bd527d material adaptation. Values are from display-material,
    screen-effects, night-display-surface, frost-glass-surface and scene-registration.
    No animation, pointer listener, per-card blur or backdrop sampling. */
 html:root[data-call-theme][data-call-reader-optics="v14"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
@@ -13,10 +13,10 @@ html:root[data-call-theme][data-call-reader-optics="v14"]:not([data-call-ios-fla
    Existing recovery controls remain reachable if an asset fails. */
 html:root[data-call-material-ready="false"][data-call-preboot="true"]:not([data-call-loading-state="error"]) body .call-display-root-v7 { opacity:0!important; }
 html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
-  --call-optical-pass:url('#call-flat-registration-v14');
+  --call-optical-pass:var(--call-active-flat-filter);
 }
 html:root[data-call-theme][data-call-reader-optics="v14"][data-call-optics-active="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
-  --call-optical-pass:url('#call-screen-optics-v7');
+  --call-optical-pass:var(--call-active-tube-filter);
 }
 html:root[data-call-theme="frost"][data-call-reader-optics="v14"][data-call-glass-active="true"]:not([data-call-ios-flat="true"]) body .call-display-root-v7 {
   --call-glass-pass:var(--call-glass-filter-v12);

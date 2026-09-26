@@ -82,6 +82,6 @@ test('glass uses exact Reader refraction graph and mounted image decode before c
  assert.ok(js.indexOf('await wear.decode()')<js.indexOf('startCachedGlassMask'));
  assert.match(js,/requestAnimationFrame\(\(\) => requestAnimationFrame\(resolve\)\)/);
  assert.match(read('public/myfile/call-loading-v10.js'),/waits.push\(window.CallGlass.sync\(\)\)/);
- assert.match(css,/filter:url\('#call-screen-optics-v7'\) var\(--call-glass-filter-v12\)/);
+ assert.match(css,/filter:var\(--call-active-tube-filter, none\) var\(--call-glass-filter-v12\)/);
  assert.doesNotMatch(js,/setInterval|scrollTop|devicePixelRatio\s*=/);
 });
