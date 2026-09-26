@@ -9,6 +9,15 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const css=read('public/myfile/reader-controls-v12.css');
 const preboot=read('public/myfile/theme-preboot-v8.js');
 const runtime=read('public/myfile/theme-mode-v1.js');
+test('character selection has a paired opaque face, persistent check and card-level focus',()=>{
+ assert.match(css,/button:where\(:not\(\.suite-character-card\)\)\[aria-pressed="true"\]/);
+ assert.match(css,/background:var\(--call-accent\)!important; color:var\(--call-accent-ink\)!important/);
+ assert.match(css,/\.suite-character-card\[aria-pressed="true"\]::after/);
+ assert.match(css,/content:"✓"/);
+ assert.match(css,/label\.girlbox input\.MagicalChk \{\s*outline:none!important; border:0!important; box-shadow:none!important/);
+ assert.match(css,/label\.girlbox:has\(input:focus-visible\)/);
+ assert.doesNotMatch(css,/type="button:not/);
+});
 function context(theme,saved={},ios=false){return {
  navigator:{userAgent:ios?'iPhone AppleWebKit':'Windows AppleWebKit',platform:ios?'iPhone':'Win32',maxTouchPoints:ios?5:0},
  document:{documentElement:{dataset:{},style:{}},readyState:'loading',addEventListener(){}},window:{},console,

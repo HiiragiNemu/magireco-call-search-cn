@@ -10,7 +10,14 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./img/png/apple_fabicon.png">
 
   <title>マギレコ魔法少女呼びかけ検索</title>
-	<script src="./myfile/theme-preboot-v8.js?v=20260920-ui-r12-reader-controls"></script>
+	<style id="call-boot-guard-v16">
+html:not([data-call-boot-released="true"]) body > :not(.call-display-root-v7),
+html:not([data-call-boot-released="true"]) .call-display-scroll-v7 {
+  visibility:hidden!important; opacity:0!important; pointer-events:none!important;
+}
+</style>
+<noscript><style>html body > :not(.call-display-root-v7) {visibility:visible!important;opacity:1!important;pointer-events:auto!important} .call-display-root-v7[data-call-ssr-shell] {display:none!important}</style></noscript>
+<script src="./myfile/theme-preboot-v8.js?v=20260926-r16-selection-boot"></script>
 	
 <!-- CSSファイル読み出し -->
   <link rel="stylesheet" href="./myfile/mycss.css">
@@ -43,7 +50,7 @@
   <link rel="stylesheet" href="./myfile/theme-mode-v1.css?v=reader-7bd527d-r15">
 <link rel="stylesheet" href="./myfile/call-loading-v10.css?v=20260922-ui-r12-reader-controls">
 <link rel="stylesheet" href="./myfile/hamburgerMenu.css">
-<link rel="stylesheet" href="./myfile/reader-controls-v12.css?v=reader-7bd527d-r15">
+<link rel="stylesheet" href="./myfile/reader-controls-v12.css?v=20260926-r16-selection-boot">
 <link rel="preload" as="image" href="./myfile/reader-textures/magi-tube-lens-512.png">
 <link rel="stylesheet" href="./myfile/reader-optics-v14.css?v=reader-7bd527d-r15">
 </head>
@@ -130,7 +137,7 @@
 </main><div class="call-reader-screen-v7" aria-hidden="true"><span class="call-fx-frost-grain-v7"></span><span class="call-fx-frost-smudges-v7"></span><span class="call-fx-frost-glass-v7"></span><span class="call-fx-frost-wear-v7"></span><span class="call-fx-vignette-v7"></span></div><span class="call-fx-day-grain-v7 call-material-direct-v11" aria-hidden="true"></span><span class="call-fx-night-phosphor-v7 call-material-direct-v11" aria-hidden="true"></span><span class="call-fx-night-grain-v7 call-material-direct-v11" aria-hidden="true"></span><span class="call-fx-scanlines-v7 call-material-direct-v11" aria-hidden="true"></span><span class="call-fx-bezel-v7" aria-hidden="true"></span></div>
 <script src="./myfile/reader-optics-graphs-v14.js?v=reader-7bd527d-r15"></script>
 <script src="./myfile/reader-optics-v14.js?v=reader-7bd527d-r15"></script>
-<script src="./myfile/call-loading-v10.js?v=reader-7bd527d-r15"></script>
+<script src="./myfile/call-loading-v10.js?v=20260926-r16-selection-boot"></script>
 <script src="./myfile/reader-glass-cache-v12.js?v=ui-r12-reader-controls"></script>
 <script src="./myfile/reader-glass-v12.js?v=ui-r12-reader-controls"></script>
 
@@ -799,7 +806,7 @@
       }
     </script>
   </div>
-<script src="./myfile/theme-mode-v1.js?v=reader-7bd527d-r15"></script>
+<script src="./myfile/theme-mode-v1.js?v=20260926-r16-selection-boot"></script>
 <script src="./myfile/hamburger-menu-v23.js?v=ui-r13-suite-navigation"></script>
 </body>
 

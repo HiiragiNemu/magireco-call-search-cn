@@ -2,25 +2,36 @@
   'use strict';
 
   const root = document.documentElement;
-  const releasePreboot = (reason = 'ready') => {
-    if(typeof window!=='undefined' && window.CallLoading){ return; }
-    root.dataset.callPreboot = 'false';
-    root.dataset.callMaterialReady = 'true';
-    root.dataset.callPrebootRelease = reason;
-  };
-
-  // The boot layer is decorative only. Schedule the escape hatch before any
-  // preference/theme work so a runtime failure can never make the site unusable.
-  root.dataset.callPreboot = 'true';
-  root.dataset.callMaterialReady = 'false';
-  setTimeout(() => releasePreboot('watchdog'), 3600);
-  addEventListener('error', () => releasePreboot('error'), { once: true });
-  addEventListener('unhandledrejection', () => releasePreboot('rejection'), { once: true });
-  addEventListener('pageshow', () => {
-    if (root.dataset.callPreboot === 'true') {
-      setTimeout(() => releasePreboot('pageshow-watchdog'), 3600);
+  // Slow CSS/scripts and unrelated errors never expose an uninitialized page.
+  // A timed-out boot offers explicit recovery instead of automatically revealing.
+  const reportPrebootFailure = (reason) => {
+    if (typeof window !== 'undefined' && window.CallLoading) {
+      window.CallLoading.fail(reason);
+      return;
     }
-  }, { once: true });
+    if (root.dataset.callBootReleased === 'true') return;
+    root.dataset.callLoadingState = 'error';
+    root.dataset.callLoadingError = reason;
+    const showRecovery = () => {
+      const cover = document.getElementById('call-loading-screen');
+      if (!cover) return;
+      cover.querySelector('.call-loading-error').hidden = false;
+      cover.querySelector('[data-loading-retry]').addEventListener('click', () => location.reload(), { once:true });
+      cover.querySelector('[data-loading-continue]').addEventListener('click', () => {
+        root.dataset.callBootReleased = 'true';
+        root.dataset.callPreboot = 'false';
+        root.dataset.callPrebootRelease = 'user-continue';
+      }, { once:true });
+    };
+    if (document.body) showRecovery();
+    else document.addEventListener('DOMContentLoaded', showRecovery, { once:true });
+  };
+  root.dataset.callPreboot = 'true';
+  root.dataset.callBootReleased = 'false';
+  root.dataset.callMaterialReady = 'false';
+  setTimeout(() => reportPrebootFailure('bootstrap-timeout'), 15000);
+  addEventListener('error', () => { root.dataset.callPrebootDiagnostic = 'error'; }, { once:true });
+  addEventListener('unhandledrejection', () => { root.dataset.callPrebootDiagnostic = 'rejection'; }, { once:true });
 
   try {
     const valid = new Set(['light', 'paper', 'green', 'dark', 'frost']);
@@ -74,7 +85,7 @@
       root.dataset['callFx' + key[0].toUpperCase() + key.slice(1)] = String(Boolean(value));
     }
   } catch (error) {
-    console.error('[theme-preboot] preference bootstrap failed; revealing page', error);
-    releasePreboot('bootstrap-error');
+    console.error('[theme-preboot] preference bootstrap failed', error);
+    reportPrebootFailure('bootstrap-error');
   }
 })();

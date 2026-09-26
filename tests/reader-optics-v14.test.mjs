@@ -120,7 +120,7 @@ test('all ten pages load the shared adapter before the theme and use the donor l
     assert.ok(html.indexOf('reader-optics-graphs-v14.js')<html.indexOf('reader-optics-v14.js'),name);
     assert.ok(html.indexOf('reader-optics-v14.js')<html.indexOf('theme-mode-v1.js'),name);
     assert.match(html,/reader-optics-v14.css\?v=reader-7bd527d-r15/);
-    assert.match(html,/call-loading-v10.js\?v=reader-7bd527d-r15/);
+    assert.match(html,/call-loading-v10.js\?v=20260926-r16-selection-boot/);
     assert.match(html,/href="\.\/myfile\/reader-textures\/magi-tube-lens-512.png"/);
   }
 });

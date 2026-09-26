@@ -9,6 +9,7 @@
   const content=()=>document.querySelector('.call-display-scroll-v7');
   function reveal(reason='ready'){
     active=false;root.dataset.callMaterialReady='true'; generation++; clearTimeout(watchdog);
+    root.dataset.callBootReleased='true';
     root.dataset.callPreboot='false'; root.dataset.callPrebootRelease=reason;
     root.dataset.callLoadingState='ready'; cover.setAttribute('aria-busy','false');
     if(content()) content().inert=false;
@@ -36,13 +37,17 @@
   function release(label){pending.delete(label);settle();}
   function showNavigation(){
     generation++;active=true;failed=false;pending.add('navigation');
+    root.dataset.callBootReleased='false';
     root.dataset.callPreboot='true';root.dataset.callLoadingState='navigation';
     cover.setAttribute('aria-busy','true');cover.querySelector('.call-loading-error').hidden=true;
     if(content()) content().inert=true;
     clearTimeout(watchdog);watchdog=setTimeout(()=>fail('navigation-timeout'),15000);
   }
   let watchdog=setTimeout(()=>fail('readiness-timeout'),15000);
+  root.dataset.callPreboot='true';
+  root.dataset.callBootReleased='false';
   root.dataset.callLoadingState='loading';
+  cover.querySelector('.call-loading-error').hidden=true;
   notePending();
   cover.querySelector('[data-loading-retry]').addEventListener('click',()=>location.reload());
   cover.querySelector('[data-loading-continue]').addEventListener('click',()=>reveal('user-continue'));

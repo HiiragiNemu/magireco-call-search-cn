@@ -91,7 +91,7 @@ html:root[data-call-theme="frost"][data-call-fx-noise][data-call-fx-registration
 
 /* Physical control faces. Titles and artwork are not painted as generic keys. */
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
-  button,input[type="button"],input[type="submit"],input[type="reset"],
+  button:where(:not(.suite-character-card)),input[type="button"],input[type="submit"],input[type="reset"],
   .suite-nav a,.suite-button,:where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
 ) {
   appearance:none!important; -webkit-appearance:none!important;
@@ -103,31 +103,31 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
   touch-action:manipulation;
 }
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
-  button,input[type="button"],input[type="submit"],input[type="reset"],.suite-nav a,.suite-button,
+  button:where(:not(.suite-character-card)),input[type="button"],input[type="submit"],input[type="reset"],.suite-nav a,.suite-button,
   :where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
 ):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) {
   color:var(--control-hover-ink)!important; background:var(--control-hover)!important;
   border-color:var(--call-accent-strong)!important; box-shadow:var(--control-lit)!important;
 }
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
-  button[aria-pressed="true"],button[aria-expanded="true"],.suite-nav a[aria-current="page"],
+  button:where(:not(.suite-character-card))[aria-pressed="true"],button:where(:not(.suite-character-card))[aria-expanded="true"],.suite-nav a[aria-current="page"],
   .suite-button.is-active,input[type="button"].is-active
 ) {
   background:var(--control-selected)!important; color:var(--control-selected-ink)!important;
   border-color:var(--call-accent-strong)!important; box-shadow:var(--control-selected-shadow)!important;
 }
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],.suite-nav a):not(:disabled):active {
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),input[type="button"],.suite-nav a):not(:disabled):active {
   box-shadow:var(--control-press)!important;
 }
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],input[type="submit"]):is(:disabled,[aria-disabled="true"]) {
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),input[type="button"],input[type="submit"]):is(:disabled,[aria-disabled="true"]) {
   color:var(--call-muted)!important; background:var(--control-face)!important;
   box-shadow:none!important; border-color:var(--call-border)!important;
   opacity:.55!important; cursor:not-allowed; text-shadow:none!important;
 }
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,.suite-nav a,.suite-button) :is(svg,span,strong,b) {
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),.suite-nav a,.suite-button) :is(svg,span,strong,b) {
   color:inherit!important; -webkit-text-fill-color:currentColor!important;
 }
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"],input[type="reset"],button.searchbtn,.suite-button) {
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"],input[type="reset"],button:where(:not(.suite-character-card)).searchbtn,.suite-button) {
   min-height:36px!important; padding:7px 14px!important; line-height:1.25!important;
 }
 
@@ -139,7 +139,7 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
   min-height:36px; padding:6px 10px!important;
 }
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input,textarea,select):focus,
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button,a,summary,[tabindex],.header .menu-icon):focus-visible {
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),a,summary,[tabindex],.header .menu-icon):focus-visible {
   outline:2px solid var(--call-accent-strong)!important; outline-offset:3px!important;
   border-color:var(--call-accent-strong)!important;
 }
@@ -148,7 +148,7 @@ html:root[data-call-theme] body .call-display-root-v7 :is(input[type="checkbox"]
 html:root[data-call-theme] body .call-display-root-v7 input[type="range"]::-webkit-slider-runnable-track { background:var(--control-face); border:1px solid var(--control-edge); border-radius:4px; }
 
 /* Translucent title strips retain the watermark; the small disclosure owns its
-   own face. Selected character artwork is preserved, only its frame lights up. */
+   own face. Character cards use their own persistent selection face below. */
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.call-panel-v8,.character-grid-details-v8,.suite-panel-details-v8)>summary {
   background:var(--control-panel)!important; border-color:var(--control-edge)!important;
   box-shadow:inset 0 1px #ffffff14!important; min-height:42px;
@@ -156,16 +156,40 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(.call-panel-v8,.character-grid-details-v8,.suite-panel-details-v8)>summary:is(:hover,:focus-visible) {
   background:var(--control-hover)!important; box-shadow:inset 3px 0 var(--call-accent)!important;
 }
+/* r16: one opaque selected face and its paired ink, independent of input focus.
+   No border-width/padding changes: selecting another card cannot move its name. */
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox,.suite-character-card) {
   border-radius:var(--control-radius)!important;
-  background-color:var(--call-card-bg)!important;
+  background:var(--call-card-bg)!important; color:var(--call-card-text)!important;
+  -webkit-text-fill-color:currentColor!important; text-decoration:none!important;
+  box-shadow:none!important; outline:none!important; transition:none!important;
 }
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox:has(input:checked),.suite-character-card[aria-pressed="true"]) {
   border-color:var(--call-accent-strong)!important;
-  box-shadow:inset 0 -3px var(--call-accent),var(--control-selected-shadow)!important;
-  background:color-mix(in srgb,var(--call-accent) 15%,var(--call-card-bg))!important;
+  background:var(--call-accent)!important; color:var(--call-accent-ink)!important;
+  box-shadow:inset 0 0 0 2px var(--call-accent-strong)!important;
+  text-shadow:none!important; filter:none!important;
 }
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 label.girlbox:has(input:focus-visible) { outline:2px solid var(--call-accent-strong)!important; outline-offset:3px; }
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox,.suite-character-card) :is(strong,.main-card-star-v6,.suite-star) {
+  color:inherit!important; -webkit-text-fill-color:currentColor!important; text-shadow:none!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 label.girlbox:has(input:checked)::before,
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-character-card[aria-pressed="true"]::after {
+  content:"✓"; position:absolute; top:2px; left:2px; z-index:6;
+  display:grid; place-items:center; width:16px; height:16px;
+  background:var(--call-accent); color:var(--call-accent-ink);
+  -webkit-text-fill-color:currentColor; border:1px solid currentColor; border-radius:3px;
+  font:700 13px/1 system-ui,sans-serif; text-shadow:none; pointer-events:none;
+}
+/* The legacy avatar IS the checkbox. Its outline used to cross the name below.
+   Keyboard focus belongs outside the whole card, never around the avatar. */
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 label.girlbox input.MagicalChk {
+  outline:none!important; border:0!important; box-shadow:none!important;
+}
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 label.girlbox:has(input:focus-visible),
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .suite-character-card:focus-visible {
+  outline:2px solid var(--call-focus)!important; outline-offset:2px!important;
+}
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 #at_form label.at {
   background:var(--control-face)!important; border-color:var(--control-edge); border-radius:var(--control-radius);
   box-shadow:var(--control-rest); min-height:34px;
@@ -182,21 +206,21 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .cal
   padding:3px!important; border-radius:var(--control-radius)!important; overflow-x:hidden!important;
   background:var(--call-surface-raised)!important; box-shadow:var(--control-rest)!important;
 }
-html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-jump-actions-v7 button {
+html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .call-jump-actions-v7 button:where(:not(.suite-character-card)) {
   margin-block:2px!important; min-height:40px!important;
 }
 
 /* Cold idle faces never glow. Lit faces own Reader's inset wash and spill. */
-html:root[data-call-theme="frost"][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],.suite-nav a):not(:disabled):is(:hover,:focus-visible,[aria-pressed="true"],[aria-current="page"]) {
+html:root[data-call-theme="frost"][data-call-crt-engine] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),input[type="button"],.suite-nav a):not(:disabled):is(:hover,:focus-visible,[aria-pressed="true"],[aria-current="page"]) {
   color:#d8eee3!important; text-shadow:var(--control-text-glow)!important;
   background:var(--control-hover)!important; border-color:#b5ded1!important; box-shadow:var(--control-lit)!important;
 }
-html:root[data-call-theme="dark"][data-call-crt-engine] body .call-display-root-v7 :is(button,input[type="button"],.suite-nav a):not(:disabled):is(:hover,:focus-visible) {
+html:root[data-call-theme="dark"][data-call-crt-engine] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),input[type="button"],.suite-nav a):not(:disabled):is(:hover,:focus-visible) {
   background:#101813!important; color:#f4f8f5!important;
 }
 /* A held press beats hover and selected illumination without hiding focus. */
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
-  button,input[type="button"],input[type="submit"],input[type="reset"],.suite-nav a,.suite-button,
+  button:where(:not(.suite-character-card)),input[type="button"],input[type="submit"],input[type="reset"],.suite-nav a,.suite-button,
   :where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
 ):not(:disabled):not([aria-disabled="true"]):active {
   box-shadow:var(--control-press)!important;
@@ -227,12 +251,12 @@ html:root[data-call-theme] body .call-fx-body-v7 { flex:1 1 auto; min-height:0; 
 html:root[data-call-theme] body .call-fx-toggle-row-v7[hidden] { display:none!important; }
 html:root[data-call-theme][data-call-crt-engine] body .call-fx-window-v7 .call-fx-body-v7 > [data-phosphor-section][hidden] { display:none!important; }
 @media(max-width:760px) {
-  html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"],button.searchbtn) { min-height:44px!important; padding:8px 10px!important; }
+  html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(input[type="button"],input[type="submit"],button:where(:not(.suite-character-card)).searchbtn) { min-height:44px!important; padding:8px 10px!important; }
   html:root[data-call-theme][data-call-crt-engine] body .call-fx-window-v7 { top:48px; right:16px!important; width:calc(100% - 32px)!important; max-width:calc(100% - 32px)!important; max-height:calc(100% - 96px)!important; }
   html:root[data-call-theme] body .call-fx-titlebar-v7 { min-height:44px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  html:root[data-call-theme] body .call-display-root-v7 :is(button,input,a) { transition:none!important; }
+  html:root[data-call-theme] body .call-display-root-v7 :is(button:where(:not(.suite-character-card)),input,a) { transition:none!important; }
 }
 
 /* The menu is part of the same sticky navigation, never a second toolbar. */

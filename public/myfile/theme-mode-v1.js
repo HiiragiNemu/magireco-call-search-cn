@@ -763,6 +763,7 @@
   }
 
   function releaseBoot(reason='ready'){
+    root.dataset.callBootReleased='true';
     root.dataset.callPreboot='false';root.dataset.callMaterialReady='true';
     root.dataset.callPrebootRelease=reason;
     try{sessionStorage.setItem('magireco-call-magius-boot-v1','1');}catch(_){}
@@ -785,7 +786,7 @@
   function install(){
 
     if(!runInstallStep('display-root',installDisplayRoot)){
-      releaseBoot('display-root-error');
+      window.CallLoading?.fail('display-root-error');
       return;
     }
 

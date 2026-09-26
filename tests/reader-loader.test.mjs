@@ -102,3 +102,36 @@ test('decoded textures gate the reveal, not just network onload',async()=>{
  decoded();await flush();h.paint();assert.equal(h.api.active,false);
  assert.equal(h.html.dataset.callLoadingAssets,'ready');
 });
+
+test('parser guard precedes dependencies and protects raw body siblings on all entries',()=>{
+ for(const page of fs.readdirSync(path.join(root,'public')).filter(x=>x.endsWith('.html'))){
+  const html=read('public/'+page);
+  assert.ok(html.indexOf('id="call-boot-guard-v16"')<html.indexOf('theme-preboot-v8.js'),page);
+  assert.match(html,/html:not\(\[data-call-boot-released="true"\]\) body > :not\(\.call-display-root-v7\)/);
+  assert.match(html,/html:not\(\[data-call-boot-released="true"\]\) \.call-display-scroll-v7/);
+  assert.match(html,/<noscript><style>/);
+ }
+});
+
+test('preboot errors and old watchdog duration never silently release the document',()=>{
+ const timers=[],events={},html={dataset:{},style:{}},buttons={},error={hidden:true};
+ const cover={querySelector(s){if(s==='.call-loading-error')return error;return {addEventListener(_,fn){buttons[s]=fn;}};}};
+ const ctx={document:{documentElement:html,body:{},getElementById(){return cover;}},window:{},navigator:{userAgent:'Windows',platform:'Win32'},localStorage:{getItem(){return null;}},matchMedia:()=>({matches:false}),setTimeout(fn,ms){timers.push({fn,ms});},addEventListener(n,fn){events[n]=fn;},location:{reload(){}},console};
+ vm.runInNewContext(read('public/myfile/theme-preboot-v8.js'),ctx);
+ events.error();events.unhandledrejection();
+ assert.equal(html.dataset.callBootReleased,'false');assert.equal(html.dataset.callPreboot,'true');
+ assert.ok(timers.every(t=>t.ms!==3600));timers[0].fn();
+ assert.equal(html.dataset.callLoadingState,'error');assert.equal(error.hidden,false);
+ assert.equal(html.dataset.callBootReleased,'false');
+ buttons['[data-loading-continue]']();assert.equal(html.dataset.callBootReleased,'true');
+});
+
+test('only completed readiness, explicit recovery and history restore release the parser guard',async()=>{
+ const h=harness(),done=h.api.hold('slow-page');
+ h.events.DOMContentLoaded();h.api.release('theme');await flush();h.paint();
+ assert.equal(h.html.dataset.callBootReleased,'false');
+ done();h.paint();assert.equal(h.html.dataset.callBootReleased,'true');
+ h.events.click({button:0,target:{closest(){return {href:'https://fixture.test/story.html',target:'',hasAttribute(){return false;}};}}});
+ assert.equal(h.html.dataset.callBootReleased,'false');
+ h.events.pageshow({persisted:true});assert.equal(h.html.dataset.callBootReleased,'true');
+});
