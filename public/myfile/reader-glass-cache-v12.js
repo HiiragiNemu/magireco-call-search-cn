@@ -1,8 +1,14 @@
-/* Port of Reader 48b9d706 lib/cached-glass-mask.ts. Only asset/property paths adapted. */
+/* Reader 2026-09-27 pinned cached-glass-mask + viewport-filter port. */
 (()=>{
-/** Cache only the static scratch mask on Android Chromium. The live scene,
+"use strict";
+/** Cache only the static scratch mask on Chromium. The live scene,
  * refraction offset, lens, emission and every optical strength stay unchanged. */
-const usesCachedGlassMask = (userAgent) => /Android/i.test(userAgent) && /Chrome\//.test(userAgent);
+const usesCachedGlassMask = (userAgent) => /(?:Chrome|Chromium|Edg)\//.test(userAgent);
+// SVG displacement samples at x + scale * (R - .5), y + scale * (G - .5).
+// Luminance-mask alpha selects a +1.5 / -.6 px refracted image without cutting
+// transparent holes in the original scene. Outside scratches, R = G = .5.
+const GLASS_REFRACTION_SCALE = 4;
+const GLASS_REFRACTION_MATRIX = '0 0 0 -.375 .5  0 0 0 .15 .5  0 0 0 0 .5  0 0 0 0 1';
 function glassMaskSize(width, height, dpr) {
     if (![width, height, dpr].every(n => Number.isFinite(n) && n > 0))
         return null;
@@ -164,6 +170,65 @@ function startCachedGlassMask(root, original, ready = () => { }) {
         restore();
     };
 }
-window.CallGlassCache = Object.freeze({ startCachedGlassMask, glassMaskSize, glassMaskExtent, usesCachedGlassMask });
 
+/** Isolate filter definitions from their own filtered SourceGraphic. Only the
+ * SVG graph is cloned, never live content. Bound EVERY primitive to the same
+ * CSS-pixel viewport; DPR and optical strengths remain the browser's originals. */
+function boundViewportFilter(filter, width, height) {
+    if (!(width > 0 && height > 0))
+        return;
+    filter.setAttribute('filterUnits', 'userSpaceOnUse');
+    filter.setAttribute('primitiveUnits', 'userSpaceOnUse');
+    for (const node of [filter, ...Array.from(filter.children)]) {
+        node.setAttribute('x', '0');
+        node.setAttribute('y', '0');
+        node.setAttribute('width', String(width));
+        node.setAttribute('height', String(height));
+    }
+}
+function mountViewportFilter(root, source, property) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const host = document.createElementNS(ns, 'svg');
+    host.setAttribute('width', '0');
+    host.setAttribute('height', '0');
+    host.setAttribute('aria-hidden', 'true');
+    host.dataset.viewportFilter = source.id;
+    host.style.cssText = 'position:absolute;pointer-events:none;overflow:hidden';
+    const defs = document.createElementNS(ns, 'defs');
+    host.appendChild(defs);
+    const filter = source.cloneNode(true);
+    filter.id = `${source.id}-viewport`;
+    defs.appendChild(filter);
+    document.body.appendChild(host);
+    const previous = root.style.getPropertyValue(property);
+    const resize = () => {
+        // Include an Android decoded-mask successor, if present. Its feImage extent
+        // is maintained separately by the cache and must not be rounded or cropped.
+        for (const child of Array.from(defs.children)) {
+            const image = child.id.includes('-cached-') ? child.firstElementChild : null;
+            const extent = image && [image.getAttribute('width'), image.getAttribute('height')];
+            boundViewportFilter(child, root.clientWidth, root.clientHeight);
+            if (image && extent) {
+                image.setAttribute('width', extent[0]);
+                image.setAttribute('height', extent[1]);
+            }
+        }
+    };
+    resize();
+    root.style.setProperty(property, `url(#${filter.id})`);
+    const observer = new ResizeObserver(resize);
+    observer.observe(root);
+    return { filter, dispose: () => {
+            observer.disconnect();
+            if (root.style.getPropertyValue(property).includes(filter.id)) {
+                if (previous)
+                    root.style.setProperty(property, previous);
+                else
+                    root.style.removeProperty(property);
+            }
+            host.remove();
+        } };
+}
+
+window.CallGlassCache=Object.freeze({startCachedGlassMask,glassMaskSize,glassMaskExtent,glassMaskSvg,usesCachedGlassMask,GLASS_REFRACTION_MATRIX,GLASS_REFRACTION_SCALE,boundViewportFilter,mountViewportFilter});
 })();

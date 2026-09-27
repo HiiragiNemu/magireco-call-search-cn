@@ -18,6 +18,13 @@ test('character selection has a paired opaque face, persistent check and card-le
  assert.match(css,/label\.girlbox:has\(input:focus-visible\)/);
  assert.doesNotMatch(css,/type="button:not/);
 });
+test('cold selected cards keep their translucent face and bright ink with an edge halo',()=>{
+ const rule=css.match(/html:root\[data-call-theme="frost"\]\[data-call-crt-engine\] body \.call-display-root-v7 :is\(label\.girlbox:has\(input:checked\),\.suite-character-card\[aria-pressed="true"\]\) \{([^}]+)\}/);
+ assert.ok(rule);
+ assert.match(rule[1],/background:var\(--call-card-bg\)!important; color:var\(--call-card-text\)!important/);
+ assert.match(rule[1],/box-shadow:inset 0 0 0 1px #c1ebdc,0 0 4px/);
+ assert.doesNotMatch(rule[1],/--call-accent-ink|background:var\(--call-accent\)|border-width|padding/);
+});
 function context(theme,saved={},ios=false){return {
  navigator:{userAgent:ios?'iPhone AppleWebKit':'Windows AppleWebKit',platform:ios?'iPhone':'Win32',maxTouchPoints:ios?5:0},
  document:{documentElement:{dataset:{},style:{}},readyState:'loading',addEventListener(){}},window:{},console,
@@ -87,9 +94,9 @@ test('native-DPR glass mask geometry preserves dimensions through viewport resiz
 });
 test('glass uses exact Reader refraction graph and mounted image decode before cache publication',()=>{
  const js=read('public/myfile/reader-glass-v12.js');new vm.Script(js);
- assert.match(js,/radius="\.6"/);assert.match(js,/dx="1\.5" dy="-\.6"/);
+ assert.match(js,/radius="\.6"/);assert.match(js,/GLASS_REFRACTION_MATRIX/);assert.match(js,/<feDisplacementMap in="SourceGraphic" in2="refractionMap"/);assert.doesNotMatch(js,/<feOffset|<feMerge|operator="out"/);
  assert.ok(js.indexOf('await wear.decode()')<js.indexOf('startCachedGlassMask'));
- assert.match(js,/requestAnimationFrame\(\(\) => requestAnimationFrame\(resolve\)\)/);
+ assert.equal((js.match(/frame=requestAnimationFrame/g)||[]).length,2);
  assert.match(read('public/myfile/call-loading-v10.js'),/waits.push\(window.CallGlass.sync\(\)\)/);
  assert.match(css,/filter:var\(--call-active-tube-filter, none\) var\(--call-glass-filter-v12\)/);
  assert.doesNotMatch(js,/setInterval|scrollTop|devicePixelRatio\s*=/);

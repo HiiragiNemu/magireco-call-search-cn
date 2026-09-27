@@ -170,6 +170,13 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
   box-shadow:inset 0 0 0 2px var(--call-accent-strong)!important;
   text-shadow:none!important; filter:none!important;
 }
+/* r17: cold selection is luminous glass edging, not an inverse filled key.
+   Keep the same dark translucent face and bright name before/after focus. */
+html:root[data-call-theme="frost"][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox:has(input:checked),.suite-character-card[aria-pressed="true"]) {
+  background:var(--call-card-bg)!important; color:var(--call-card-text)!important;
+  border-color:#d8eee3!important;
+  box-shadow:inset 0 0 0 1px #c1ebdc,0 0 4px rgba(193,235,220,.65),0 0 12px rgba(149,222,208,.68),0 0 20px rgba(101,195,185,.5)!important;
+}
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox,.suite-character-card) :is(strong,.main-card-star-v6,.suite-star) {
   color:inherit!important; -webkit-text-fill-color:currentColor!important; text-shadow:none!important;
 }

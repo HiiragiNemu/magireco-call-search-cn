@@ -36,7 +36,7 @@ html:root[data-call-ios-flat="true"] body :is(.girlbox,.suite-character-card) {
   content-visibility:visible!important; contain-intrinsic-size:none!important;
 }
 
-html:root[data-call-theme] { --call-reader-scan:.28; }
+html:root[data-call-theme] { --call-reader-scan:.28; --call-day-noise:.28; }
 html:root[data-call-theme="dark"][data-call-phosphor="amber"] { --call-reader-scan:.42; }
 html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-scanlines-v7 {
   background:none!important; display:none!important;
@@ -49,7 +49,7 @@ html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-day-grai
   display:none!important; filter:none!important;
   background:url('./reader-textures/NoiseAndGrain.png') 0 0/257px 131px repeat!important;
   background-blend-mode:soft-light!important; mix-blend-mode:soft-light!important;
-  opacity:var(--call-reader-scan)!important;
+  opacity:var(--call-day-noise)!important;
 }
 html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-noise="true"]:not([data-call-theme="dark"]) body .call-fx-day-grain-v7 { display:block!important; }
 /* Retire Call's extra cold raster; Reader uses the day raster in cold mode. */
@@ -103,10 +103,48 @@ html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registrat
 }
 html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor="green"] { --call-sized-trail:rgba(153,235,213,.48); }
 html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor="amber"] { --call-sized-trail:rgba(246,94,40,.52); }
-html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"][data-call-phosphor] body .call-display-root-v7 :is(button,input,textarea,select,option,a,span,p,b,strong,label,legend,h1,h2,h3,h4,small,summary,li,output) {
+html:root[data-call-theme]:where(:not([data-call-theme="dark"]))[data-call-reader-optics="v14"][data-call-fx-registration="true"][data-call-phosphor] body .call-display-root-v7 :is(button,input,textarea,select,option,a,span,p,b,strong,label,legend,h1,h2,h3,h4,small,summary,li,output) {
   text-shadow:clamp(-1px,calc(1.7px - .17em),0px) 0 .008em var(--call-sized-lead),clamp(0px,calc(.2em - 2px),1.4px) 0 .008em var(--call-sized-trail)!important;
 }
 html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-registration="true"] body .call-display-root-v7 :is(.call-theme-option-v7,.call-floating-widget-v7 button) svg { filter:none!important; }
+
+/* r18 accepted Reader independent ink. These variables paint shadows only;
+   the existing control/card rules remain the sole owners of foreground fill.
+   Amber's scene pass clips pale coverage INSIDE yellow strokes, with no second
+   generic RGB split. Native-flat iOS keeps CSS ink, never a per-label filter. */
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor] body .call-display-root-v7 {
+  --call-night-base-shadow:clamp(-1.8px,calc(.91px - .124em),-.08px) 0 .016em rgba(255,232,82,.88),clamp(.1px,calc(.16em - 1.17px),2.3px) 0 .018em rgba(52,249,22,.82),0 0 .12em rgba(166,247,82,.24);
+  --call-night-white-shadow:clamp(.08px,calc(.15em - 1.1px),1.8px) 0 .012em rgb(38,141,255),clamp(-.6px,calc(.4px - .06em),-.04px) 0 .014em rgba(103,255,235,.72),0 0 .1em #eaffff35;
+  --call-night-inverse-shadow:clamp(.08px,calc(.14em - 1.03px),1.7px) 0 .007em #fffef1,clamp(.12px,calc(.21em - 1.52px),2.6px) .006em .015em #ffffd980;
+  --call-night-text-shadow:var(--call-night-base-shadow);
+}
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor="amber"] body .call-display-root-v7 {
+  --call-night-base-shadow:clamp(.05px,calc(.12em - .89px),1.65px) 0 0 #140a0c,clamp(.08px,calc(.27em - 2px),3.6px) .007em .007em #ff410de8,-.012em 0 .007em #fffad355,0 0 .16em #ffa72d35;
+}
+/* Call's inverse controls, including raw-text legacy labels and nested names. */
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor] body .call-display-root-v7 :where(
+  button[aria-pressed="true"],button[aria-expanded="true"],.suite-nav a[aria-current="page"],
+  .suite-button.is-active,input[type="button"].is-active,
+  label.girlbox:has(input:checked),#at_form label.at:has(input:checked),
+  :is(.suite-checks label,.suite-attribute-toolbar-v7 label,.suite-attribute-options-v7 label,.runes-mask-enable-v9,.runes-mask-brush-v9):has(input:checked),
+  .suite-button.primary:not(:disabled):not([aria-disabled="true"]):not(:hover):not(:focus-visible):not(:active)
+) { --call-night-text-shadow:var(--call-night-inverse-shadow); }
+/* Night hover/focus uses actual native white ink on a dark face. Do not apply
+   the yellow/red echo merely because the same key was previously selected. */
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor] body .call-display-root-v7 :where(
+  button:where(:not(.suite-character-card)),input[type="button"],input[type="submit"],input[type="reset"],
+  .suite-nav a,.suite-button,:where(#canvasImgLink,#saveHeightChartBtn),.header .menu-icon
+):where(:not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible)) {
+  --call-night-text-shadow:var(--call-night-white-shadow);
+}
+/* These selected palettes intentionally stay inverse even while hovered. */
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-phosphor] body .call-display-root-v7 :where(
+  .call-theme-widget-v7 .call-theme-option-v7[aria-pressed="true"],
+  .call-fx-window-v7 .call-fx-segment-v7 button[aria-pressed="true"]
+) { --call-night-text-shadow:var(--call-night-inverse-shadow); }
+html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-fx-registration="true"][data-call-phosphor] body .call-display-root-v7 :is(button,input,textarea,select,option,a,span,p,b,strong,label,legend,h1,h2,h3,h4,small,summary,li,output) {
+  text-shadow:var(--call-night-text-shadow)!important;
+}
 
 /* Reader native-flat: shared material/ink, no SVG URL or second scene focus. */
 html:root[data-call-ios-flat="true"][data-call-reader-optics="v14"] { --call-ios-flat-filter:none; }

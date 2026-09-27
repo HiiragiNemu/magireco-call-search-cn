@@ -63,12 +63,12 @@
   --background-navbar:var(--call-surface-raised);
 }
 :root[data-call-theme="paper"]{
-  --call-bg:#eee4c5;
+  --call-bg:#f3eacb;
   --call-field:
     radial-gradient(ellipse at 50% 12%,rgba(255,251,224,.46),transparent 63%),
     linear-gradient(rgba(92,70,37,.025) 1px,transparent 1px),
     linear-gradient(90deg,rgba(92,70,37,.025) 1px,transparent 1px),
-    #eee4c5;
+    #f3eacb;
   --call-surface:#f5ecd0;
   --call-surface-soft:#e7dab8;
   --call-surface-raised:#fff7de;
@@ -88,11 +88,11 @@
   --call-day-grain-opacity:.20;
 }
 :root[data-call-theme="green"]{
-  --call-bg:#d5e6c6;
+  --call-bg:#d6e9c4;
   --call-field:
     radial-gradient(circle at 18% 14%,rgba(109,162,126,.12),transparent 29%),
     radial-gradient(circle at 82% 76%,rgba(73,133,103,.09),transparent 31%),
-    #d5e6c6;
+    #d6e9c4;
   --call-surface:#edf5e8;
   --call-surface-soft:#d1e3cf;
   --call-surface-raised:#f8fcf5;
