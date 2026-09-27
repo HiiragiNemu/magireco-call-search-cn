@@ -41,6 +41,6 @@ test('day palettes, desktop logo alignment and both portrait target layouts matc
  for(const file of fs.readdirSync(path.join(root,'public')).filter(f=>f.endsWith('.html'))){
   const h=read('public/'+file);for(let i=0;i<4;i++)assert.equal(h.split('data-loading-target="'+i+'"').length,2,file);
   assert.equal(h.split('class="magi-loading-chart-border"').length,2,file);
-  for(const asset of ['reader-optics-v14.css','theme-mode-v1.css','call-loading-v10.css','reader-glass-v12.js','reader-glass-cache-v12.js'])assert.ok(h.includes(asset+'?v=20260927-r19-day-glass'),file+' '+asset);
+  for(const asset of ['reader-optics-v14.css','theme-mode-v1.css','call-loading-v10.css','reader-glass-v12.js','reader-glass-cache-v12.js'])assert.ok(h.includes(asset+'?v='+(asset==='reader-optics-v14.css'?'20260928-r20-day-grain':'20260927-r19-day-glass')),file+' '+asset);
  }
 });

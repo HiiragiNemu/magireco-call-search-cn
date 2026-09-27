@@ -16,6 +16,9 @@ const material=read('public/myfile/reader-optics-v14.css');
 let writes=0;
 class Element {
   constructor(tag,attrs={}){this.tag=tag;this.attrs={...attrs};this.children=[];this.dataset={};this.style={setProperty(k,v){this[k]=v;}};this.clientWidth=1024;this.clientHeight=768;this.classList={add:(...c)=>this.attrs.class=[this.attrs.class,...c].filter(Boolean).join(' ')};}
+  remove(){if(this.parentNode){this.parentNode.children=this.parentNode.children.filter(x=>x!==this);this.parentNode=null;writes++;}}
+  get className(){return this.attrs.class||'';}
+  set className(v){this.attrs.class=v;}
   appendChild(el){if(el.parentNode)el.parentNode.children=el.parentNode.children.filter(x=>x!==el);this.children.push(el);el.parentNode=this;return el;}
   replaceChildren(...els){for(const c of this.children)c.parentNode=null;this.children=[];for(const c of els)this.appendChild(c);writes++;}
   setAttribute(k,v){this.attrs[k]=String(v);writes++;}
@@ -34,13 +37,13 @@ function xml(text){
   return doc;
 }
 function harness({identity=null,mode='green'}={}){
-  const html=new Element('html');html.dataset={callTheme:mode,callPhosphor:'green',callFxRegistration:'true'};
+  const html=new Element('html');html.dataset={callTheme:mode,callPhosphor:'green',callFxRegistration:'true',callFxNoise:'false',callFxScanlines:'true'};
   const body=new Element('body'),scene=body.appendChild(new Element('div'));
   const scroll=scene.appendChild(new Element('div',{class:'call-display-scroll-v7'}));scroll.scrollTop=412;
   const host=scene.appendChild(new Element('span',{class:'call-fx-scanlines-v7'}));
   const existing=body.appendChild(new Element('svg',{class:'call-optics-defs-v7'}));
   const observers=[];
-  const context={window:{},document:{documentElement:html,body,readyState:'loading',addEventListener(){},querySelector:s=>body.querySelector(s),createElementNS:(_,t)=>new Element(t),importNode:n=>n.clone()},DOMParser:class{parseFromString(s){return xml(s);}},ResizeObserver:class{constructor(f){this.callback=f;observers.push(this);}observe(el){this.observed=el;}}};
+  const context={window:{},document:{documentElement:html,body,readyState:'loading',addEventListener(){},querySelector:s=>body.querySelector(s),createElement:t=>new Element(t),createElementNS:(_,t)=>new Element(t),importNode:n=>n.clone()},DOMParser:class{parseFromString(s){return xml(s);}},ResizeObserver:class{constructor(f){this.callback=f;observers.push(this);}observe(el){this.observed=el;}}};
   vm.runInNewContext(read('public/myfile/reader-optics-graphs-v14.js'),context);
   vm.runInNewContext(script,context);
   let api;
@@ -99,19 +102,38 @@ test('repeated synchronization and child hover do not rewrite the viewport graph
   assert.doesNotMatch(script,/addEventListener|requestAnimationFrame|setInterval|pointermove|mousemove/);
 });
 
-test('noise and scanline toggles leave filter definitions and native scroll position intact',()=>{
-  const h=harness(),lens=h.lens(),before=writes;
-  for(const value of ['false','true','false']){h.html.dataset.callFxNoise=value;h.html.dataset.callFxScanlines=value;h.api.sync();}
-  assert.equal(writes,before);assert.equal(h.lens(),lens);assert.equal(h.scroll.scrollTop,412);
+test('noise and scanline switches remove and remount one empty span without resizing the graph',()=>{
+  const h=harness(),lens=h.lens();
+  for(const value of ['false','true','false','true']){
+    h.html.dataset.callFxNoise=value;h.html.dataset.callFxScanlines=value;h.api.sync();
+    const grain=h.scene.querySelector('.call-fx-day-grain-v7'),scan=h.scene.querySelector('.call-fx-scanlines-v7');
+    assert.equal(!!grain,value==='true');assert.equal(!!scan,value==='true');
+    if(scan){assert.equal(scan.tag,'span');assert.equal(scan.children.length,0);}
+    assert.equal(h.lens(),lens);assert.equal(h.scroll.scrollTop,412);
+    const before=writes;h.api.sync();assert.equal(writes,before);
+  }
+});
+test('scanlines use one static soft-shoulder gradient rather than a path generator',()=>{
+  assert.match(material,/repeating-linear-gradient\(0deg,/);
+  assert.match(material,/rgba\(5,0,2,\.34\) 1\.2px/);
+  assert.doesNotMatch(script,/CallReaderScanlines|viewBox|preserveAspectRatio/);
+  assert.doesNotMatch(read('public/myfile/reader-optics-graphs-v14.js'),/CallReaderScanlines/);
 });
 
-test('Reader scanlines are deterministic, irregular, bounded and stationary',()=>{
-  const h=harness(),pattern=h.window.CallReaderScanlinesV14;
-  const a=pattern(1024,768),b=pattern(1024,768);
-  assert.deepEqual(a,b);assert.ok(a.length>200&&a.length<500);
-  assert.ok(new Set(a.map(l=>l.thickness)).size>200);
-  for(const l of a){assert.ok(l.thickness>=.24&&l.thickness<.8);assert.ok(l.opacity>=.15&&l.opacity<.49);assert.ok(l.y>=0&&l.y<768);}
-  assert.equal(pattern(0,768).length,0);assert.equal(pattern(412,9000).length,0);
+test('all five themes unload grain/scan spans with independent switches and keep stable filters',()=>{
+  for(const mode of ['light','paper','green','frost','dark']){
+    const h=harness({mode}),lens=h.lens();
+    for(const noise of ['false','true'])for(const scan of ['false','true']){
+      h.html.dataset.callFxNoise=noise;h.html.dataset.callFxScanlines=scan;h.api.sync();
+      const grains=h.scene.children.filter(n=>n.className.includes('call-fx-day-grain-v7'));
+      const scans=h.scene.children.filter(n=>n.className.includes('call-fx-scanlines-v7'));
+      assert.equal(grains.length,noise==='true'&&mode!=='dark'?1:0,mode+' grain');
+      assert.equal(scans.length,scan==='true'?1:0,mode+' scan');
+      for(const n of [...grains,...scans]){assert.equal(n.tag,'span');assert.equal(n.children.length,0);}
+      const before=writes;h.api.sync();assert.equal(writes,before);
+      assert.equal(h.lens(),lens);assert.equal(h.scroll.scrollTop,412);
+    }
+  }
 });
 
 test('all ten pages load the shared adapter before the theme and use the donor lens',()=>{
@@ -119,7 +141,7 @@ test('all ten pages load the shared adapter before the theme and use the donor l
     const html=read('public/'+name);
     assert.ok(html.indexOf('reader-optics-graphs-v14.js')<html.indexOf('reader-optics-v14.js'),name);
     assert.ok(html.indexOf('reader-optics-v14.js')<html.indexOf('theme-mode-v1.js'),name);
-    assert.match(html,/reader-optics-v14.css\?v=20260927-r19-day-glass/);
+    assert.match(html,/reader-optics-v14.css\?v=20260928-r20-day-grain/);
     assert.match(html,/call-loading-v10.js\?v=20260926-r16-selection-boot/);
     assert.match(html,/href="\.\/myfile\/reader-textures\/magi-tube-lens-512.png"/);
   }
@@ -142,7 +164,7 @@ test('actual iPhone Safari/Chrome UA dispatches shared material runtime without 
     const h=harness({identity,mode});
     assert.equal(h.html.dataset.callIosFlat,'true');assert.equal(h.html.dataset.callReaderOptics,'v14');
     assert.equal(h.html.dataset.callFxCurvature,'false');assert.equal(h.body.querySelector('filter'),null);
-    assert.ok(h.host.querySelector('path'));assert.equal(h.observers.length,1);
+    assert.equal(h.host.children.length,0);assert.equal(h.observers.length,0);
     const lines=h.host.children[0],before=writes;h.api.sync();assert.equal(writes,before);assert.equal(h.host.children[0],lines);
     assert.equal(h.scroll.scrollTop,412);
   }

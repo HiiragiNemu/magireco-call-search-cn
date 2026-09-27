@@ -37,7 +37,6 @@ function sourceModule(relative) {
 }
 const { DayTubeFilter, NightTubeFilter } = sourceModule('components/TubeOpticalFilters.tsx');
 const { SceneRegistrationDefinitions } = sourceModule('components/SceneRegistration.tsx');
-const { scanlinePattern } = sourceModule('lib/scanline-pattern.ts');
 const graphs = {};
 const renderFilter = element => renderToStaticMarkup(React.createElement('svg',null,element)).replace(/^<svg>/,'').replace(/<\/svg>$/,'');
 const options = { id: 'call-tube-template', map: './myfile/reader-textures/magi-tube-lens-512.png', scale: 50 };
@@ -65,8 +64,7 @@ const publish = (name, value) => {
 publish('reader-optics-graphs-v14.json',JSON.stringify({meta,graphs},null,2)+'\n');
 publish('reader-optics-graphs-v14.js',
   '/* Generated verbatim from Reader '+inventory.commit+'; see scripts/import-reader-optics.cjs. */\n'+
-  'window.CallReaderGraphsV14=Object.freeze('+JSON.stringify(graphs)+');\n'+
-  'window.CallReaderScanlinesV14='+scanlinePattern.toString()+';\n');
+  'window.CallReaderGraphsV14=Object.freeze('+JSON.stringify(graphs)+');\n');
 // The same decoded lens and textures, not visually similar replacements.
 for (const file of inventory.files.filter(f=>f.path.startsWith('website/public/textures/'))) {
   publish(path.join('reader-textures',path.basename(file.path)),fs.readFileSync(path.join(root,'..',file.path)));

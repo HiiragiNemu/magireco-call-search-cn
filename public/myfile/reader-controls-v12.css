@@ -14,7 +14,7 @@ html:root[data-call-theme] {
   --control-hover-ink:var(--call-accent-strong);
   --control-text-glow:none;
   --control-panel:linear-gradient(180deg,#eff2ecbd,#dde3d67a);
-  --call-menu-face:#edf0e9f5;
+  --call-menu-face:#edf0e9;
 }
 html:root[data-call-theme="paper"] {
   --control-face:linear-gradient(175deg,#fff6db,#e8d8b1);
@@ -28,7 +28,7 @@ html:root[data-call-theme="paper"] {
   --control-selected-ink:#fff3cf;
   --control-selected-shadow:inset 0 0 0 2px #d8c69d60,0 2px 0 #4f391860;
   --control-panel:linear-gradient(100deg,#e2d2a678,#fff1c51f);
-  --call-menu-face:#f4e7c6f5;
+  --call-menu-face:#f4e7c6;
 }
 html:root[data-call-theme="green"] {
   --control-face:linear-gradient(150deg,#edf6e4,#bfd8bc);
@@ -42,7 +42,7 @@ html:root[data-call-theme="green"] {
   --control-selected-ink:#efffe8;
   --control-selected-shadow:inset 0 1px #a5d5aa80,0 2px 0 #204b35aa,0 3px 8px #34593b2b;
   --control-panel:linear-gradient(110deg,#9dbf9680,#deedcd38);
-  --call-menu-face:#d5e7caf5;
+  --call-menu-face:#d5e7ca;
 }
 html:root[data-call-theme="dark"] {
   --call-field:radial-gradient(ellipse 60vw 62vh at 51vw 46vh,#293922 0%,#1c2a17 40%,#10190c 72%,#030702 100%);
@@ -169,6 +169,13 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 :is(
   background:var(--call-accent)!important; color:var(--call-accent-ink)!important;
   box-shadow:inset 0 0 0 2px var(--call-accent-strong)!important;
   text-shadow:none!important; filter:none!important;
+}
+/* r21: night selection lights the edges like cold glass, not the whole face.
+   Palette variables keep green/amber phosphor in sync; no layout or filter changes. */
+html:root[data-call-theme="dark"][data-call-crt-engine] body .call-display-root-v7 :is(label.girlbox:has(input:checked),.suite-character-card[aria-pressed="true"]) {
+  background:var(--call-card-bg)!important; color:var(--call-card-text)!important;
+  border-color:var(--call-accent-strong)!important;
+  box-shadow:inset 0 0 0 1px var(--call-accent-strong),0 0 4px color-mix(in srgb,var(--call-accent) 65%,transparent),0 0 12px color-mix(in srgb,var(--call-accent) 68%,transparent),0 0 20px color-mix(in srgb,var(--call-accent) 50%,transparent)!important;
 }
 /* r17: cold selection is luminous glass edging, not an inverse filled key.
    Keep the same dark translucent face and bright name before/after focus. */
@@ -493,6 +500,15 @@ html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .run
 html:root[data-call-theme] body .runes-progress::-webkit-progress-bar { background:var(--control-panel); }
 html:root[data-call-theme] body .runes-progress::-webkit-progress-value { background:var(--call-accent); }
 html:root[data-call-theme] body .runes-progress::-moz-progress-bar { background:var(--call-accent); }
+/* Reader's accepted green story surface, scoped to actual Call story actions.
+   Character selection, navigation and the night/cold palettes stay unchanged. */
+html:root[data-call-theme="green"] body .call-display-root-v7 :is(.story-route-link-v1,.story-parent-group-v18>summary) {
+  --control-face:#b7d0ae; --control-hover:#acc9a2;
+}
+html:root[data-call-theme="green"][data-call-crt-engine] body .call-display-root-v7 :is(.story-parent-group-v18[open]>summary,.story-route-link-v1:active) {
+  --control-face:#2E7D32; --control-hover:#2E7D32;
+  color:#fff!important; -webkit-text-fill-color:currentColor!important;
+}
 /* Parent-story groups are injected after search; their legacy inline stylesheet
    must not reintroduce pink gutters or white count badges. */
 html:root[data-call-theme][data-call-crt-engine] body .call-display-root-v7 .story-result-list-v7 {

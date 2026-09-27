@@ -36,19 +36,30 @@ html:root[data-call-ios-flat="true"] body :is(.girlbox,.suite-character-card) {
   content-visibility:visible!important; contain-intrinsic-size:none!important;
 }
 
-html:root[data-call-theme] { --call-reader-scan:.28; --call-day-noise:.28; }
+/* Frozen Reader daylight handoff, 2026-09-28. The grain blends inside the
+   existing opaque scene, never against a transparent group or a grey mask. */
+html:root[data-call-theme] {
+  --call-reader-scan:.28; --call-day-noise:.28;
+  --call-grain-size:257px 131px; --call-grain-background-blend:soft-light; --call-grain-blend:soft-light;
+}
+html:root:is([data-call-theme="light"],[data-call-theme="paper"],[data-call-theme="green"]) {
+  --call-day-noise:.85; --call-grain-size:160px 160px;
+  --call-grain-background-blend:normal; --call-grain-blend:hard-light;
+}
 html:root[data-call-theme="dark"][data-call-phosphor="amber"] { --call-reader-scan:.42; }
 html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-scanlines-v7 {
-  background:none!important; display:none!important;
+  background: repeating-linear-gradient(0deg,
+      rgba(5,0,2,0) 0px, rgba(5,0,2,.06) .4px,
+      rgba(5,0,2,.22) .8px, rgba(5,0,2,.34) 1.2px,
+      rgba(5,0,2,.22) 1.6px, rgba(5,0,2,.06) 2px,
+      rgba(5,0,2,0) 2.4px, rgba(5,0,2,0) 3px)!important; display:none!important;
   opacity:var(--call-reader-scan)!important; mix-blend-mode:multiply!important;
 }
 html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-scanlines="true"] body .call-fx-scanlines-v7 { display:block!important; }
-.call-reader-scan-v14 { display:block; width:100%; height:100%; overflow:hidden; pointer-events:none; }
-html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-fx-noise="true"] body .call-fx-scanlines-v7 { display:none!important; }
 html:root[data-call-theme][data-call-reader-optics="v14"] body .call-fx-day-grain-v7 {
   display:none!important; filter:none!important;
-  background:url('./reader-textures/NoiseAndGrain.png') 0 0/257px 131px repeat!important;
-  background-blend-mode:soft-light!important; mix-blend-mode:soft-light!important;
+  background:url('./reader-textures/NoiseAndGrain.png') 0 0/var(--call-grain-size) repeat!important;
+  background-blend-mode:var(--call-grain-background-blend)!important; mix-blend-mode:var(--call-grain-blend)!important;
   opacity:var(--call-day-noise)!important;
 }
 html:root[data-call-theme][data-call-reader-optics="v14"][data-call-fx-noise="true"]:not([data-call-theme="dark"]) body .call-fx-day-grain-v7 { display:block!important; }
@@ -59,9 +70,6 @@ html:root[data-call-theme="dark"][data-call-reader-optics="v14"] body .call-fx-n
   background:var(--call-reader-raster),url('./reader-textures/NoiseAndGrain.png') 0 0/128px 64px repeat,url('./reader-textures/PixelOverlay_RGB_16.png') 0 0/4px 4px repeat!important;
   background-blend-mode:multiply,soft-light,normal!important; mix-blend-mode:soft-light!important;
   opacity:var(--call-reader-scan)!important;
-}
-html:root[data-call-theme="dark"][data-call-reader-optics="v14"][data-call-fx-scanlines="true"] body .call-fx-night-phosphor-v7 {
-  --call-reader-raster:repeating-linear-gradient(0deg,rgba(5,0,2,.52) 0 .6px,transparent .6px 2px);
 }
 html:root[data-call-theme="dark"][data-call-reader-optics="v14"] body .call-fx-night-grain-v7 {
   background:url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat,url('./reader-textures/magi-lofi-grain.png') 7px 13px/384px 384px repeat!important;

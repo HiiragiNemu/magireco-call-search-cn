@@ -6,28 +6,25 @@
   const parse=markup=>new DOMParser().parseFromString('<svg xmlns="'+ns+'">'+markup+'</svg>','image/svg+xml').querySelector('filter');
   const instances=new WeakMap(),materialInstances=new WeakMap();
   let nextInstance=0;
-  function mountMaterials(scene,observe=true){
+  function mountMaterials(scene){
     if(materialInstances.has(scene))return materialInstances.get(scene);
-    let lines;
+    function surface(className,enabled){
+      const current=scene.querySelector('.'+className);
+      if(!enabled){current?.remove();return;}
+      if(current)return;
+      const span=document.createElement('span');
+      span.className=className+' call-material-direct-v11';
+      span.setAttribute('aria-hidden','true');scene.appendChild(span);
+    }
     function sync(){
-      const width=scene.clientWidth,height=scene.clientHeight;
-      const host=scene.querySelector('.call-fx-scanlines-v7');
-      if(host && (!lines || lines.parentNode!==host)){
-        lines=document.createElementNS(ns,'svg');lines.setAttribute('aria-hidden','true');
-        lines.classList.add('call-reader-scan-v14');host.replaceChildren(lines);
-      }
-      if(lines && lines.getAttribute('viewBox')!=='0 0 '+width+' '+height){
-        lines.setAttribute('viewBox','0 0 '+width+' '+height);lines.setAttribute('preserveAspectRatio','none');
-        lines.replaceChildren(...window.CallReaderScanlinesV14(width,height).map(line=>{
-          const p=document.createElementNS(ns,'path');
-          for(const [k,v] of Object.entries({d:`M${line.start} ${line.y} Q${width*.47} ${line.y+line.bend} ${line.end} ${line.y}`,fill:'none',stroke:'rgb(5,0,2)','stroke-width':line.thickness,opacity:line.opacity}))p.setAttribute(k,String(v));
-          return p;
-        }));
-      }
-      document.documentElement.dataset.callReaderOptics='v14';
+      const d=document.documentElement.dataset;
+      // One painted span, no SVG paths or resize observer for materials.
+      // Off removes the effect instead of keeping a transparent texture alive.
+      surface('call-fx-day-grain-v7',d.callFxNoise==='true' && d.callTheme!=='dark');
+      surface('call-fx-scanlines-v7',d.callFxScanlines==='true');
+      d.callReaderOptics='v14';
     }
     sync();
-    if(observe && typeof ResizeObserver==='function')new ResizeObserver(sync).observe(scene);
     const api={sync};materialInstances.set(scene,api);return api;
   }
   function mount(scene){
@@ -42,7 +39,7 @@
     svg.setAttribute('width','0');svg.setAttribute('height','0');svg.setAttribute('aria-hidden','true');
     svg.style.cssText='position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;overflow:hidden';
     const defs=document.createElementNS(ns,'defs');svg.replaceChildren(defs);
-    const materials=mountMaterials(scene,false);
+    const materials=mountMaterials(scene);
     let graphKey='',sizeKey='',lens,flat;
     function sync(){
       const root=document.documentElement, d=root.dataset;

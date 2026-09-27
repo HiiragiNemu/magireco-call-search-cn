@@ -58,12 +58,12 @@ test('night paint is shadow-only, independent white and inverse roles follow act
  }
  assert.doesNotMatch(read('public/myfile/reader-optics-v14.js'),/pointermove|mousemove|MutationObserver/);
 });
-test('r19 invalidates day CSS while retaining accepted r18 graph, r17 controls and r16 loader',()=>{
+test('r20 invalidates material assets while retaining accepted graph coefficients and r16 loader',()=>{
  for(const name of fs.readdirSync(path.join(root,'public')).filter(n=>n.endsWith('.html'))){
   const html=read('public/'+name);
-  assert.ok(html.includes('reader-optics-v14.css?v=20260927-r19-day-glass'));
-  assert.ok(html.includes('reader-optics-graphs-v14.js?v=20260927-r18-independent-ink'));
-  assert.ok(html.includes('reader-controls-v12.css?v=20260926-r17-reader-sync'));
+  assert.ok(html.includes('reader-optics-v14.css?v=20260928-r20-day-grain'));
+  assert.ok(html.includes('reader-optics-graphs-v14.js?v=20260928-r20-day-grain'));
+  assert.ok(html.includes('reader-controls-v12.css?v=20260928-r21-night-halo'));
   assert.ok(html.includes('call-loading-v10.js?v=20260926-r16-selection-boot'));
  }
 });

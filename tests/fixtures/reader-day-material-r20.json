@@ -1,0 +1,5 @@
+{
+  "source": "Reader selected-candidate.zip 2026-09-28; no live-source imports",
+  "sha256": "7ff6f704eaabd5193ff685ee5fb7880251181a4d23c390e971e624d1ab7aa432",
+  "gradient": "repeating-linear-gradient(0deg,\n      rgba(5,0,2,0) 0px, rgba(5,0,2,.06) .4px,\n      rgba(5,0,2,.22) .8px, rgba(5,0,2,.34) 1.2px,\n      rgba(5,0,2,.22) 1.6px, rgba(5,0,2,.06) 2px,\n      rgba(5,0,2,0) 2.4px, rgba(5,0,2,0) 3px)"
+}
