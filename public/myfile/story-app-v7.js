@@ -10,7 +10,9 @@
   const VARIANT_URL = './data/story-v6/variant-map.json';
   const MEMORIA_WIKI_LINKS_URL = './data/story-v6/memoria-wiki-links-v1.json';
   const STORAGE_KEY = 'magireco-story-search-v7';
-  const MAX_RENDERED_ROWS = 1800;
+  // Keep every match in memory, but bound the live DOM to a single page.
+  const RESULTS_PAGE_SIZE = 100;
+  const RENDER_BUDGET_MS = 8;
   const nodes = {};
   const categoryCache = new Map();
   let catalog = [];
@@ -21,6 +23,7 @@
   let routeReady = Promise.resolve(null);
   let attributeController = null;
   let searchSerial = 0;
+  let renderSerial = 0;
 
   function cacheNodes() {
     for (const id of [
@@ -173,6 +176,13 @@
   }
 
   function resetAll() {
+    // Invalidate both pending searches and page renders before clearing the UI.
+    searchSerial += 1;
+    renderSerial += 1;
+    nodes.storySearchButton.disabled = false;
+    nodes.storyResultsBody.removeAttribute('aria-busy');
+    delete nodes.storyResultsBody.dataset.resultTotal;
+    delete nodes.storyResultsBody.dataset.resultPage;
     for (const input of nodes.storyTypeOptions.querySelectorAll('input[name="storyType"]')) input.checked = true;
     const and = document.querySelector('input[name="storyLogic"][value="AND"]');
     if (and) and.checked = true;
@@ -392,12 +402,106 @@
     actions.appendChild(group);
   }
 
-  async function renderResults(grouped, types, showSpoiler, totalMatches) {
+  function yieldToBrowser() {
+    // Unlike requestAnimationFrame, this also completes in a background tab.
+    return new Promise((resolve) => setTimeout(resolve, 0));
+  }
+
+  function makeResultPager(page, pages, navigate, position) {
+    const nav = document.createElement('nav');
+    nav.className = 'suite-actions story-pagination-v1';
+    nav.setAttribute('aria-label', `剧情结果分页（${position}）`);
+    const addButton = (action, label, target, disabled) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'suite-button';
+      button.dataset.storyPageAction = action;
+      button.textContent = label;
+      button.disabled = disabled;
+      button.addEventListener('click', () => navigate(target));
+      nav.appendChild(button);
+    };
+    addButton('first', '首页', 0, page === 0);
+    addButton('previous', '上一页', page - 1, page === 0);
+    const label = document.createElement('label');
+    label.appendChild(document.createTextNode('第 '));
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'suite-input';
+    input.style.width = '5em';
+    input.min = '1';
+    input.max = String(pages);
+    input.step = '1';
+    input.value = String(page + 1);
+    input.setAttribute('aria-label', '页码');
+    input.dataset.storyPageInput = '';
+    label.append(input, document.createTextNode(` / ${pages.toLocaleString()} 页`));
+    nav.appendChild(label);
+    const jump = document.createElement('button');
+    jump.type = 'button';
+    jump.className = 'suite-button';
+    jump.textContent = '跳转';
+    jump.dataset.storyPageAction = 'jump';
+    const jumpToInput = () => {
+      const value = Number(input.value);
+      if (!Number.isInteger(value) || value < 1 || value > pages) {
+        input.setCustomValidity(`请输入 1 至 ${pages} 的整数页码。`);
+        input.reportValidity();
+        return;
+      }
+      input.setCustomValidity('');
+      navigate(value - 1);
+    };
+    input.addEventListener('input', () => input.setCustomValidity(''));
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { event.preventDefault(); jumpToInput(); }
+    });
+    jump.addEventListener('click', jumpToInput);
+    nav.appendChild(jump);
+    addButton('next', '下一页', page + 1, page === pages - 1);
+    addButton('last', '末页', pages - 1, page === pages - 1);
+    return nav;
+  }
+
+  async function renderResults(grouped, types, showSpoiler, totalMatches, serial = searchSerial, requestedPage = 0) {
+    if (serial !== searchSerial) return;
+    const token = ++renderSerial;
+    const isCurrent = () => serial === searchSerial && token === renderSerial;
+    if (!isCurrent()) return;
+    const pages = Math.max(1, Math.ceil(totalMatches / RESULTS_PAGE_SIZE));
+    const page = Math.max(0, Math.min(pages - 1, Math.trunc(requestedPage) || 0));
+    const start = page * RESULTS_PAGE_SIZE;
+    const end = Math.min(start + RESULTS_PAGE_SIZE, totalMatches);
+    const navigate = async (nextPage) => {
+      if (!isCurrent() || nextPage === page) return;
+      const controls = [...nodes.storyResultsBody.querySelectorAll('.story-pagination-v1 button, .story-pagination-v1 input')];
+      const disabledBefore = controls.map((control) => control.disabled);
+      controls.forEach((control) => { control.disabled = true; });
+      nodes.storyResultsBody.setAttribute('aria-busy', 'true');
+      try {
+        await renderResults(grouped, types, showSpoiler, totalMatches, serial, nextPage);
+        if (serial === searchSerial) {
+          Tools.scrollToTargetV7(nodes.storyResults);
+          nodes.storyResultsBody.querySelector('.story-page-summary-v1')?.focus({ preventScroll: true });
+        }
+      } catch (error) {
+        if (serial !== searchSerial) return;
+        // Keep the previous page usable when an asynchronous renderer fails.
+        renderSerial = token;
+        controls.forEach((control, index) => { control.disabled = disabledBefore[index]; });
+        nodes.storyResultsBody.removeAttribute('aria-busy');
+        Tools.setStatus(nodes.storyStatus, `翻页失败：${Tools.escapeHtml(error.message || error)}`, 'error');
+      }
+    };
     const wrapper = document.createElement('div');
-    let rendered = 0;
+    let offset = 0;
+    let sliceStarted = performance.now();
     for (const storyType of types) {
       const rows = grouped.get(storyType) || [];
-      if (!rows.length) continue;
+      const localStart = Math.max(0, start - offset);
+      const localEnd = Math.min(rows.length, end - offset);
+      offset += rows.length;
+      if (localStart >= localEnd) continue;
       const group = document.createElement('section');
       group.className = 'suite-result-group';
       const heading = document.createElement('h3');
@@ -406,9 +510,9 @@
       const list = document.createElement('div');
       list.className = 'story-result-list-v7';
 
-      for (const tagged of rows) {
-        if (rendered >= MAX_RENDERED_ROWS) break;
-        rendered += 1;
+      for (let index = localStart; index < localEnd; index += 1) {
+        if (!isCurrent()) return;
+        const tagged = rows[index];
         const row = tagged.row;
         const rowIndex = tagged.rowIndex;
         const titleInfo = localizeTitle(storyType, row?.[0]);
@@ -416,6 +520,9 @@
         const sourceHref = storyLink(storyType, row, titleInfo.display, titleInfo.original, tagged.sourceHref);
         const item = document.createElement('article');
         item.className = 'story-row-v7';
+        // Original category + rowIndex, never the page-relative index.
+        item.dataset.storyCategory = storyType;
+        item.dataset.storyRowIndex = String(rowIndex);
         const title = document.createElement('div');
         title.className = `story-title-v7${titleInfo.translated ? '' : ' story-untranslated-v7'}`;
         const link = document.createElement('a');
@@ -447,7 +554,9 @@
           actions.appendChild(routeAnchor('来源', sourceHref, 'source', '打开原始资料来源'));
         }
         if (actions.childElementCount) title.appendChild(actions);
-        item.append(title, await renderCast(row?.[1]));
+        const cast = await renderCast(row?.[1]);
+        if (!isCurrent()) return;
+        item.append(title, cast);
         if (showSpoiler) {
           const summary = document.createElement('div');
           summary.className = 'story-summary-v7';
@@ -455,19 +564,33 @@
           item.appendChild(summary);
         }
         list.appendChild(item);
+        if (performance.now() - sliceStarted >= RENDER_BUDGET_MS) {
+          await yieldToBrowser();
+          if (!isCurrent()) return;
+          sliceStarted = performance.now();
+        }
       }
       group.appendChild(list);
       wrapper.appendChild(group);
     }
 
-    nodes.storyResultsBody.replaceChildren(wrapper);
+    if (!isCurrent()) return;
     const summary = document.createElement('div');
-    summary.className = 'suite-status';
+    summary.className = 'suite-status story-page-summary-v1';
+    summary.tabIndex = -1;
+    summary.setAttribute('aria-live', 'polite');
     summary.dataset.kind = 'success';
-    summary.textContent = totalMatches > MAX_RENDERED_ROWS
-      ? `找到 ${totalMatches.toLocaleString()} 条；当前显示前 ${MAX_RENDERED_ROWS.toLocaleString()} 条。`
+    summary.textContent = totalMatches > RESULTS_PAGE_SIZE
+      ? `找到 ${totalMatches.toLocaleString()} 条；本页显示第 ${(start + 1).toLocaleString()}–${end.toLocaleString()} 条，第 ${page + 1}/${pages} 页。全部结果均可翻页查看。`
       : `找到 ${totalMatches.toLocaleString()} 条。`;
-    nodes.storyResultsBody.prepend(summary);
+    const children = [summary];
+    if (pages > 1) children.push(makeResultPager(page, pages, navigate, '顶部'));
+    children.push(wrapper);
+    if (pages > 1) children.push(makeResultPager(page, pages, navigate, '底部'));
+    nodes.storyResultsBody.replaceChildren(...children);
+    nodes.storyResultsBody.dataset.resultTotal = String(totalMatches);
+    nodes.storyResultsBody.dataset.resultPage = String(page + 1);
+    nodes.storyResultsBody.removeAttribute('aria-busy');
     if (!wrapper.childElementCount) {
       const empty = document.createElement('div');
       empty.className = 'suite-notice';
@@ -484,6 +607,10 @@
     if (!selected.length && !keyword) return Tools.setStatus(nodes.storyStatus, '请选择角色或填写概要关键词。', 'error');
 
     const serial = ++searchSerial;
+    renderSerial += 1;
+    delete nodes.storyResultsBody.dataset.resultTotal;
+    delete nodes.storyResultsBody.dataset.resultPage;
+    nodes.storyResultsBody.setAttribute('aria-busy', 'true');
     const showSpoiler = nodes.storySpoiler.checked || Boolean(keyword);
     if (keyword) nodes.storySpoiler.checked = true;
     saveState();
@@ -502,16 +629,28 @@
       if (serial !== searchSerial) return;
       const grouped = new Map();
       let total = 0;
+      let filterStarted = performance.now();
       for (const [key, rows] of datasets) {
-        const matches = rows.filter(({ row }) => rowMatches(row, families, logic, includeVariants, keywordTerms));
+        const matches = [];
+        for (let index = 0; index < rows.length; index += 1) {
+          const tagged = rows[index];
+          if (rowMatches(tagged.row, families, logic, includeVariants, keywordTerms)) matches.push(tagged);
+          if (index % 128 === 0 && performance.now() - filterStarted >= RENDER_BUDGET_MS) {
+            await yieldToBrowser();
+            if (serial !== searchSerial) return;
+            filterStarted = performance.now();
+          }
+        }
         grouped.set(key, matches);
         total += matches.length;
       }
-      await renderResults(grouped, types, showSpoiler, total);
+      await renderResults(grouped, types, showSpoiler, total, serial);
       if (serial !== searchSerial) return;
       Tools.setStatus(nodes.storyStatus, `搜索完成：${total.toLocaleString()} 条。`, 'success');
       Tools.scrollToTargetV7(nodes.storyResults);
     } catch (error) {
+      if (serial !== searchSerial) return;
+      nodes.storyResultsBody.removeAttribute('aria-busy');
       console.error(error);
       Tools.setStatus(nodes.storyStatus, `搜索失败：${Tools.escapeHtml(error.message || error)}`, 'error');
       nodes.storyResultsBody.innerHTML = '<div class="suite-notice">数据读取失败，请刷新页面后重试。</div>';
