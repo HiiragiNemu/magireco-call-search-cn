@@ -183,7 +183,7 @@
     Tools.renderNav('attendance');
     nodes.attendanceClear.addEventListener('click', clearAll);
     try {
-      [catalog] = await Promise.all([Tools.loadCatalog(), Tools.loadLocalizationV7()]);
+      [catalog] = await Promise.all([Tools.loadCatalog('./data/attendance-character-additions.json'), Tools.loadLocalizationV7()]);
       renderCharacters();
       Tools.setStatus(nodes.attendanceStatus, '点击角色即可生成排行。');
     } catch (error) {

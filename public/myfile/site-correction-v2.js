@@ -233,8 +233,8 @@
 
   function measureNatural(element) {
     if (!element) return { width: 1, height: 1 };
-    const width = Math.max(1, element.scrollWidth, element.offsetWidth, element.getBoundingClientRect().width);
-    const height = Math.max(1, element.scrollHeight, element.offsetHeight, element.getBoundingClientRect().height);
+    const width = Math.max(1, element.scrollWidth, element.offsetWidth);
+    const height = Math.max(1, element.scrollHeight, element.offsetHeight);
     return { width, height };
   }
 
@@ -246,6 +246,44 @@
     surface.style.transform = `scale(${scale})`;
     stage.style.width = `${Math.ceil(natural.width * scale)}px`;
     stage.style.height = `${Math.ceil(natural.height * scale)}px`;
+  }
+
+  // One observer per live table. Hidden result panels are measured again when
+  // revealed; a stale table must never resize its replacement.
+  let relationObserver = null;
+  let relationFrame = 0;
+  function stopRelationObservation() {
+    relationObserver?.disconnect();
+    relationObserver = null;
+    if (relationFrame) global.cancelAnimationFrame(relationFrame);
+    relationFrame = 0;
+  }
+
+  function syncRelationViewport() {
+    const viewport = document.querySelector('.relationship-table-viewport');
+    const stage = viewport?.querySelector('.relationship-table-stage');
+    if (!stage || !viewport.offsetWidth) return;
+    // Border and a real horizontal scrollbar belong to the viewport, not data.
+    const extent = stage.offsetHeight + viewport.offsetHeight - viewport.clientHeight;
+    const height = `${extent}px`;
+    if (viewport.style.getPropertyValue('--relation-content-height') !== height) {
+      viewport.style.setProperty('--relation-content-height', height);
+    }
+    const overflow = global.getComputedStyle(viewport).overflowY;
+    const scrolls = /^(auto|scroll)$/.test(overflow) && viewport.scrollHeight > viewport.clientHeight + 1;
+    const value = String(scrolls);
+    if (viewport.dataset.scrollY !== value) viewport.dataset.scrollY = value;
+  }
+
+  function scheduleRelationLayout() {
+    if (relationFrame) return;
+    relationFrame = global.requestAnimationFrame(() => {
+      relationFrame = 0;
+      const viewport = document.querySelector('.relationship-table-viewport');
+      if (!viewport?.offsetWidth) return;
+      if (relationState.mode === 'fit' && !global.matchMedia(MOBILE_QUERY).matches) fitRelationTable();
+      else applyRelationScale(relationState.scale, relationState.mode);
+    });
   }
 
   function refreshRelationReadout() {
@@ -265,6 +303,7 @@
     const stage = document.querySelector('.relationship-table-stage');
     const surface = document.querySelector('.relationship-table-surface');
     applyScaledStage(stage, surface, relationState.scale);
+    syncRelationViewport();
     refreshRelationReadout();
   }
 
@@ -305,7 +344,7 @@
 
     const heightWrap = document.createElement('label');
     heightWrap.className = 'relationship-height-control';
-    heightWrap.appendChild(document.createTextNode('框高'));
+    heightWrap.appendChild(document.createTextNode('高度上限'));
     const heightRange = document.createElement('input');
     heightRange.type = 'range';
     heightRange.min = '45';
@@ -313,11 +352,12 @@
     heightRange.step = '5';
     heightRange.value = String(relationState.viewportVh);
     heightRange.dataset.relationHeightRange = '';
-    heightRange.setAttribute('aria-label', '称呼表显示框高度');
+    heightRange.setAttribute('aria-label', '称呼表高度上限；内容较少时自动收缩');
     heightRange.addEventListener('input', () => {
       relationState.viewportVh = Number(heightRange.value);
       const viewport = document.querySelector('.relationship-table-viewport');
-      if (viewport) viewport.style.height = `${relationState.viewportVh}vh`;
+      if (viewport) viewport.style.setProperty('--relation-viewport-limit', `${relationState.viewportVh}vh`);
+      syncRelationViewport();
       refreshRelationReadout();
     });
     heightWrap.appendChild(heightRange);
@@ -369,12 +409,14 @@
   function renderRelationshipTable(entries, options) {
     const host = document.getElementById('mytable');
     if (!host) return;
+    stopRelationObservation();
     host.replaceChildren();
     buildRelationshipControls(host);
 
     const viewport = document.createElement('div');
     viewport.className = 'relationship-table-viewport';
-    viewport.style.height = `${relationState.viewportVh}vh`;
+    viewport.dataset.scrollY = 'false';
+    viewport.style.setProperty('--relation-viewport-limit', `${relationState.viewportVh}vh`);
 
     const stage = document.createElement('div');
     stage.className = 'relationship-table-stage';
@@ -385,10 +427,12 @@
     viewport.appendChild(stage);
     host.appendChild(viewport);
 
-    requestAnimationFrame(() => {
-      if (relationState.mode === 'fit' && !global.matchMedia(MOBILE_QUERY).matches) fitRelationTable();
-      else applyRelationScale(relationState.scale, relationState.mode);
-    });
+    if (typeof ResizeObserver === 'function') {
+      relationObserver = new ResizeObserver(scheduleRelationLayout);
+      relationObserver.observe(viewport);
+      relationObserver.observe(surface);
+    }
+    scheduleRelationLayout();
   }
 
   function makeSafeImageFilename() {
@@ -414,6 +458,7 @@
     global.edges = [];
 
     if (!entries.length) {
+      stopRelationObservation();
       setResetButtonsDisabled(true);
       const host = document.getElementById('mytable');
       if (host) host.replaceChildren();
@@ -1201,7 +1246,7 @@
   global.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = global.setTimeout(() => {
-      if (relationState.mode === 'fit' && document.querySelector('.relationship-table-surface')) fitRelationTable();
+      if (document.querySelector('.relationship-table-surface')) scheduleRelationLayout();
       if (heightState.mode === 'fit' && document.querySelector('.height-chart-surface-v2')) fitHeightChart();
       if (global.network && !global.isHeightView) global.network.fit({ animation: false });
     }, 160);

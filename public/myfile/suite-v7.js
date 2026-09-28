@@ -72,6 +72,8 @@
 
   async function resolveCharacterV7(raw) {
     const value = String(raw || '').trim();
+    const extra = Tools.extraCharacter?.(value);
+    if (extra) return { ...extra, raw: value };
     const data = await loadLocalization();
     const characters = data.characters || {};
     const byNormalized = data.charactersNormalized || {};

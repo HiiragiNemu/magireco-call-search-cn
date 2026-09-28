@@ -688,7 +688,7 @@
     Tools.renderNav('story');
     try {
       [catalog, manifest, localization] = await Promise.all([
-        Tools.loadCatalog(),
+        Tools.loadCatalog('./data/story-character-additions.json'),
         Tools.fetchJson(MANIFEST_URL, { cache: 'no-cache' }, 30000),
         Tools.loadLocalizationV7()
       ]);

@@ -1,0 +1,109 @@
+{
+  "sourceSha256": "92cced9f176c583ab125b0a77b513116a27b4c376332de0c5f4c031f83ac51cc",
+  "sourceCaptureRun": 36470614126,
+  "totalRows": 14466,
+  "categories": [
+    {
+      "category": "ピュエラ・ヒストリア",
+      "rows": 283,
+      "differentRows": 0
+    },
+    {
+      "category": "イベント",
+      "rows": 5537,
+      "differentRows": 0
+    },
+    {
+      "category": "メイン【第2部】",
+      "rows": 1497,
+      "differentRows": 0
+    },
+    {
+      "category": "アナザー【第2部】",
+      "rows": 174,
+      "differentRows": 0
+    },
+    {
+      "category": "魔法少女",
+      "rows": 2809,
+      "differentRows": 0
+    },
+    {
+      "category": "スペシャル",
+      "rows": 411,
+      "differentRows": 0
+    },
+    {
+      "category": "衣装",
+      "rows": 447,
+      "differentRows": 0
+    },
+    {
+      "category": "ミラーズ",
+      "rows": 67,
+      "differentRows": 0
+    },
+    {
+      "category": "バトルミュージアム",
+      "rows": 44,
+      "differentRows": 0
+    },
+    {
+      "category": "scene0",
+      "rows": 475,
+      "differentRows": 0
+    },
+    {
+      "category": "メモリア",
+      "rows": 1038,
+      "differentRows": 0
+    },
+    {
+      "category": "シール図鑑",
+      "rows": 228,
+      "differentRows": 0
+    },
+    {
+      "category": "メイン【第1部】",
+      "rows": 731,
+      "differentRows": 0
+    },
+    {
+      "category": "アナザー【第1部】",
+      "rows": 126,
+      "differentRows": 0
+    },
+    {
+      "category": "第1部EDムービー",
+      "rows": 34,
+      "differentRows": 0
+    },
+    {
+      "category": "第2部EDムービー",
+      "rows": 90,
+      "differentRows": 0
+    },
+    {
+      "category": "アニメ【1st】",
+      "rows": 169,
+      "differentRows": 0
+    },
+    {
+      "category": "アニメ【2nd】",
+      "rows": 165,
+      "differentRows": 0
+    },
+    {
+      "category": "アニメ【Final】",
+      "rows": 141,
+      "differentRows": 0
+    }
+  ],
+  "baseCharacters": 193,
+  "storyCharacters": 291,
+  "attendanceCharacters": 194,
+  "newPortraits": 98,
+  "allPortraitPixelsPreserved": true,
+  "rawStoryDataChanged": false,
+  "aioChanged": false
+}

@@ -1,0 +1,1285 @@
+[
+  {
+    "jp": "小さなキュゥべえ",
+    "zh": "小丘比",
+    "roman": "Chiisana Kyubey",
+    "kana": "ちいさなきゅぅべえ",
+    "image": "story-33dfc5e32943",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "環いろは(水着ver)",
+    "zh": "环彩羽（泳装ver.）",
+    "roman": "Tamaki Iroha (Swimsuit ver)",
+    "kana": "たまき いろは みずぎ",
+    "image": "story-37cecce872ef",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "やちよ・みふゆ(始まりver)",
+    "zh": "七海八千代·梓美冬（初始ver.）",
+    "roman": "Yachiyo & Mifuyu (Beginning ver)",
+    "kana": "やちよ みふゆ はじまり",
+    "image": "story-100d6d89c160",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ウワサの鶴乃",
+    "zh": "传闻鹤乃",
+    "roman": "Uwasa no Tsuruno",
+    "kana": "うわさのつるの",
+    "image": "story-51aa8dcab780",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ウワサのさな",
+    "zh": "传闻莎奈",
+    "roman": "Uwasa no Sana",
+    "kana": "うわさのさな",
+    "image": "story-d7afa9e70861",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "フェリシアちゃん",
+    "zh": "小菲莉希亚",
+    "roman": "Felicia-chan",
+    "kana": "ふぇりしあちゃん",
+    "image": "story-033e32a60695",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "梓みふゆ(おとぎ話ver)",
+    "zh": "梓美冬（童话ver.）",
+    "roman": "Azusa Mifuyu (Fairy Tale ver)",
+    "kana": "あずさ みふゆ おとぎばなし",
+    "image": "story-bc59fbf8de63",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "灯花・ねむ(聖夜ver)",
+    "zh": "里见灯花·柊音梦（圣夜ver.）",
+    "roman": "Touka & Nemu (Holy Night ver)",
+    "kana": "とうか ねむ せいや",
+    "image": "story-33572d9aa35f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ホーリーアリナ",
+    "zh": "圣阿莉娜",
+    "roman": "Holy Alina",
+    "kana": "ほーりーありな",
+    "image": "story-8f5c251cfb7c",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "レナちゃん(アイドルver)",
+    "zh": "小玲奈（偶像ver.）",
+    "roman": "Rena-chan (Idol ver)",
+    "kana": "れなちゃん あいどる",
+    "image": "story-ba3e54a58ff2",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": [
+      "小玲奈（アイドルver.）"
+    ]
+  },
+  {
+    "jp": "十咎ももこ(シスターver)",
+    "zh": "十咎桃子（修女ver.）",
+    "roman": "Togame Momoko (Sister ver)",
+    "kana": "とがめ ももこ しすたー",
+    "image": "story-633ab0114bca",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "かりん・アリナ(ハロウィンver)",
+    "zh": "御园花凛·阿莉娜·格雷（万圣节ver.）",
+    "roman": "Karin & Alina (Halloween ver)",
+    "kana": "かりん ありな はろうぃん",
+    "image": "story-74b9f18f0bfe",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "竜城明日香(新春龍神ver)",
+    "zh": "龙城明日香（新春龙神ver.）",
+    "roman": "Tatsuki Asuka (New Year Dragon God ver)",
+    "kana": "たつき あすか しんしゅんりゅうじん",
+    "image": "story-e61cc6026cb9",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "和泉十七夜(ヴァンパイアver)",
+    "zh": "和泉十七夜（吸血鬼ver.）",
+    "roman": "Izumi Kanagi (Vampire ver)",
+    "kana": "いずみ かなぎ ゔぁんぱいあ",
+    "image": "story-fa6307c28966",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "八雲みたま(晴着ver)",
+    "zh": "八云御魂（新年和服ver.）",
+    "roman": "Yakumo Mitama (New Year ver)",
+    "kana": "やくも みたま はれぎ",
+    "image": "story-25e73fab894c",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "天音姉妹(水着ver)",
+    "zh": "天音姐妹（泳装ver.）",
+    "roman": "Amane Shimai (Swimsuit ver)",
+    "kana": "あまねしまい みずぎ",
+    "image": "story-7287fddf8475",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "佐鳥かごめ(百鬼夜行ver)",
+    "zh": "佐鸟笼目（百鬼夜行ver.）",
+    "roman": "Satori Kagome (Hyakki Yakou ver)",
+    "kana": "さとり かごめ ひゃっきやこう",
+    "image": "story-124c96a2121e",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "結菜・樹里(ヴァンパイアver)",
+    "zh": "红晴结菜·大庭树里（吸血鬼ver.）",
+    "roman": "Yuna & Juri (Vampire ver)",
+    "kana": "ゆな じゅり ゔぁんぱいあ",
+    "image": "story-7b2c68c745f0",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "時女静香(初日の出ver)",
+    "zh": "时女静香（元旦日出ver.）",
+    "roman": "Tokime Shizuka (First Sunrise ver)",
+    "kana": "ときめ しずか はつひので",
+    "image": "story-606b08390d58",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "氷室ラビ(キモチver)",
+    "zh": "冰室拉比（心魔ver.）",
+    "roman": "Himuro Lavi (Kimochi ver)",
+    "kana": "ひむろ らび きもち",
+    "image": "story-7f6b9a63532b",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "那由他・みかげ(クリスマスver)",
+    "zh": "里见那由他·八云御影（圣诞ver.）",
+    "roman": "Nayuta & Mikage (Christmas ver)",
+    "kana": "なゆた みかげ くりすます",
+    "image": "story-7f4e6862f5f6",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "佐和月出里(バレンタインver)",
+    "zh": "佐和月出里（情人节ver.）",
+    "roman": "Sawa Sudachi (Valentine ver)",
+    "kana": "さわ すだち ばれんたいん",
+    "image": "story-48cab1184fd3",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "黒江(水着ver)",
+    "zh": "黑江（泳装ver.）",
+    "roman": "Kuroe (Swimsuit ver)",
+    "kana": "くろえ みずぎ",
+    "image": "story-5ccba1133eb2",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ウワサのみこと",
+    "zh": "谣命",
+    "roman": "Uwasa no Mikoto",
+    "kana": "うわさのみこと",
+    "image": "story-084a077dd1ab",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "いろはちゃん",
+    "zh": "小彩羽",
+    "roman": "Iroha-chan",
+    "kana": "いろはちゃん",
+    "image": "story-8eae1f4c9a25",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "七海やちよ(七夕ver)",
+    "zh": "七海八千代（七夕ver.）",
+    "roman": "Nanami Yachiyo (Tanabata ver)",
+    "kana": "ななみ やちよ たなばた",
+    "image": "story-0cf150d0af49",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "鶴乃・フェリシア(宅配ver)",
+    "zh": "由比鹤乃·深月菲莉希亚（配送ver.）",
+    "roman": "Tsuruno & Felicia (Delivery ver)",
+    "kana": "つるの ふぇりしあ たくはい",
+    "image": "story-cb1668c68b64",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "レナ・かえで(水着ver)",
+    "zh": "水波玲奈·秋野枫（泳装ver.）",
+    "roman": "Rena & Kaede (Swimsuit ver)",
+    "kana": "れな かえで みずぎ",
+    "image": "story-e5ac87a316de",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ももこ・みたま(人魚ver)",
+    "zh": "十咎桃子·八云御魂（人鱼ver.）",
+    "roman": "Momoko & Mitama (Mermaid ver)",
+    "kana": "ももこ みたま にんぎょ",
+    "image": "story-2e154d3c5582",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "和泉十七夜(常闇ver)",
+    "zh": "和泉十七夜（常暗ver.）",
+    "roman": "Izumi Kanagi (Eternal Darkness ver)",
+    "kana": "いずみ かなぎ とこやみ",
+    "image": "story-fc92f41573ae",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "八雲みたま(常闇ver)",
+    "zh": "八云御魂（常暗ver.）",
+    "roman": "Yakumo Mitama (Eternal Darkness ver)",
+    "kana": "やくも みたま とこやみ",
+    "image": "story-0d3a48086018",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "いろは・やちよ(決戦ver)",
+    "zh": "环彩羽·七海八千代（决战ver.）",
+    "roman": "Iroha & Yachiyo (Final Battle ver)",
+    "kana": "いろは やちよ けっせん",
+    "image": "story-17b5c8727d83",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "七海やちよ(アニメver)",
+    "zh": "七海八千代（动画ver.）",
+    "roman": "Nanami Yachiyo (Anime ver)",
+    "kana": "ななみ やちよ あにめ",
+    "image": "story-75113cd3662b",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ウワサの鶴乃(アニメver)",
+    "zh": "传闻鹤乃（动画ver.）",
+    "roman": "Uwasa no Tsuruno (Anime ver)",
+    "kana": "うわさのつるの あにめ",
+    "image": "story-a921a6bdea21",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "水波レナ(アニメver)",
+    "zh": "水波玲奈（动画ver.）",
+    "roman": "Minami Rena (Anime ver)",
+    "kana": "みなみ れな あにめ",
+    "image": "story-e9471b940b96",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "いろは・うい(巫女ver)",
+    "zh": "环彩羽·环忧（巫女ver.）",
+    "roman": "Iroha & Ui (Miko ver)",
+    "kana": "いろは うい みこ",
+    "image": "story-6ca7deaa9c33",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "七海やちよ(おとぎ話ver)",
+    "zh": "七海八千代（童话ver.）",
+    "roman": "Nanami Yachiyo (Fairy Tale ver)",
+    "kana": "ななみ やちよ おとぎばなし",
+    "image": "story-bf22cfa14aab",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "環いろは(アニメver)",
+    "zh": "环彩羽（动画ver.）",
+    "roman": "Tamaki Iroha (Anime ver)",
+    "kana": "たまき いろは あにめ",
+    "image": "story-d657100fbeac",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "七海やちよ(ヒストリアver)",
+    "zh": "七海八千代（历史篇ver.）",
+    "roman": "Nanami Yachiyo (Historia ver)",
+    "kana": "ななみ やちよ ひすとりあ",
+    "image": "story-efe0b5f0da86",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "∞いろは",
+    "zh": "∞彩羽",
+    "roman": "Infinite Iroha",
+    "kana": "いんふぃにっと いろは",
+    "image": "story-a8254beb7464",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "無限大いろはちゃん",
+    "zh": "无限大小彩羽",
+    "roman": "Mugendai Iroha-chan",
+    "kana": "むげんだいいろはちゃん",
+    "image": "story-ed6c67be8a7a",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "いろは・黒江",
+    "zh": "彩羽·黑江",
+    "roman": "Iroha & Kuroe",
+    "kana": "いろは くろえ",
+    "image": "story-ac3f83979c96",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "umeOtherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "鹿目まどか(晴着ver)",
+    "zh": "鹿目圆（新年和服ver.）",
+    "roman": "Kaname Madoka (New Year ver)",
+    "kana": "かなめ まどか はれぎ",
+    "image": "story-245381676c33",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "アルティメットまどか",
+    "zh": "圆神",
+    "roman": "Ultimate Madoka",
+    "kana": "あるてぃめっとまどか",
+    "image": "story-30527880dd61",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "まどか先輩",
+    "zh": "小圆前辈",
+    "roman": "Madoka-senpai",
+    "kana": "まどかせんぱい",
+    "image": "story-7fe2ccb191cf",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "究極まどか先輩",
+    "zh": "究极小圆前辈",
+    "roman": "Kyuukyoku Madoka-senpai",
+    "kana": "きゅうきょくまどかせんぱい",
+    "image": "story-cab683c2882b",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "まどか・いろは",
+    "zh": "圆·彩羽",
+    "roman": "Madoka & Iroha",
+    "kana": "まどか いろは",
+    "image": "story-fb8e4382c244",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "鹿目まどか(scene0ver)",
+    "zh": "鹿目圆（scene0ver.）",
+    "roman": "Kaname Madoka (scene0 ver)",
+    "kana": "かなめ まどか しーんぜろ すけねおー",
+    "image": "story-ecdf23e3a9b9",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "鹿目まどか(水着ver)",
+    "zh": "鹿目圆（泳装ver.）",
+    "roman": "Kaname Madoka (Swimsuit ver)",
+    "kana": "かなめ まどか みずぎ",
+    "image": "story-663c4a090b02",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "まどか先輩・いろはちゃん",
+    "zh": "小圆前辈·小彩羽",
+    "roman": "Madoka-senpai & Iroha-chan",
+    "kana": "まどかせんぱい いろはちゃん",
+    "image": "story-4a034f8808de",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "悪魔ほむらちゃん",
+    "zh": "恶魔小焰",
+    "roman": "Akuma Homura-chan",
+    "kana": "あくまほむらちゃん",
+    "image": "story-65c606603457",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "悪魔ほむら",
+    "zh": "恶魔焰",
+    "roman": "Akuma Homura",
+    "kana": "あくまほむら",
+    "image": "story-2a51a2a4ec8d",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "暁美ほむら(晴着ver)",
+    "zh": "晓美焰（新年和服ver.）",
+    "roman": "Akemi Homura (New Year ver)",
+    "kana": "あけみ ほむら はれぎ",
+    "image": "story-d3efeefa6713",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "暁美ほむら(水着ver)",
+    "zh": "晓美焰（泳装ver.）",
+    "roman": "Akemi Homura (Swimsuit ver)",
+    "kana": "あけみ ほむら みずぎ",
+    "image": "story-66d63174920f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "暁美ほむら(scene0ver)",
+    "zh": "晓美焰（scene0ver.）",
+    "roman": "Akemi Homura (scene0 ver)",
+    "kana": "あけみ ほむら しーんぜろ すけねおー",
+    "image": "story-48da150f8b35",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "美樹さやか(晴着ver)",
+    "zh": "美树沙耶香（新年和服ver.）",
+    "roman": "Miki Sayaka (New Year ver)",
+    "kana": "みき さやか はれぎ",
+    "image": "story-66e64976745d",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "美樹さやか(波乗りver)",
+    "zh": "美树沙耶香（冲浪ver.）",
+    "roman": "Miki Sayaka (Surfing ver)",
+    "kana": "みき さやか なみのり",
+    "image": "story-86efe3d6e83f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "美樹さやか(scene0ver)",
+    "zh": "美树沙耶香（scene0ver.）",
+    "roman": "Miki Sayaka (scene0 ver)",
+    "kana": "みき さやか しーんぜろ すけねおー",
+    "image": "story-02fc2eca7fd3",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ホーリーマミ",
+    "zh": "圣麻美",
+    "roman": "Holy Mami",
+    "kana": "ほーりーまみ",
+    "image": "story-5bf423bbb778",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "巴マミ(水着ver)",
+    "zh": "巴麻美（泳装ver.）",
+    "roman": "Tomoe Mami (Swimsuit ver)",
+    "kana": "ともえ まみ みずぎ",
+    "image": "story-e4062645387d",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ホーリーマミ(アニメver)",
+    "zh": "圣麻美（动画ver.）",
+    "roman": "Holy Mami (Anime ver)",
+    "kana": "ほーりーまみ あにめ",
+    "image": "story-daf741b21daf",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "巴マミ(scene0ver)",
+    "zh": "巴麻美（scene0ver.）",
+    "roman": "Tomoe Mami (scene0 ver)",
+    "kana": "ともえ まみ しーんぜろ すけねおー",
+    "image": "story-6df37b9f15c8",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "佐倉杏子(水着ver)",
+    "zh": "佐仓杏子（泳装ver.）",
+    "roman": "Sakura Kyoko (Swimsuit ver)",
+    "kana": "さくら きょうこ みずぎ",
+    "image": "story-57272511f602",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "佐倉杏子(scene0ver)",
+    "zh": "佐仓杏子（scene0ver.）",
+    "roman": "Sakura Kyoko (scene0 ver)",
+    "kana": "さくら きょうこ しーんぜろ すけねおー",
+    "image": "story-865e412591b7",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "佐倉杏子(ドッペルver)",
+    "zh": "佐仓杏子（魔女化身ver.）",
+    "roman": "Sakura Kyoko (Doppel ver)",
+    "kana": "さくら きょうこ どっぺる",
+    "image": "story-9f57ae110c5c",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "百江なぎさ(バレンタインver)",
+    "zh": "百江渚（情人节ver.）",
+    "roman": "Momoe Nagisa (Valentine ver)",
+    "kana": "ももえ なぎさ ばれんたいん",
+    "image": "story-4cb3401b2511",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "百江なぎさ(水着ver)",
+    "zh": "百江渚（泳装ver.）",
+    "roman": "Momoe Nagisa (Swimsuit ver)",
+    "kana": "ももえ なぎさ みずぎ",
+    "image": "story-8a8ea5d88cc3",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "PMHQotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "梨花・れん(クリスマスver)",
+    "zh": "绫野梨花·五十铃怜（圣诞ver.）",
+    "roman": "Rika & Ren (Christmas ver)",
+    "kana": "りか れん くりすます",
+    "image": "story-3a6f7f7fc7dc",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "万年桜のウワサ(水着ver)",
+    "zh": "万年樱之谣（泳装ver.）",
+    "roman": "Eternal Sakura (Swimsuit ver)",
+    "kana": "まんねんざくらのうわさ みずぎ",
+    "image": "story-91f40a5b2d54",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": [
+      "万年樱的传闻（泳装ver.）"
+    ]
+  },
+  {
+    "jp": "このは・葉月",
+    "zh": "木叶·叶月",
+    "roman": "Konoha & Hazuki",
+    "kana": "このは はづき",
+    "image": "story-31ede40186f9",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "まさら・こころ(花嫁ver)",
+    "zh": "加贺见真良·粟根心（新娘ver.）",
+    "roman": "Masara & Kokoro (Bride ver)",
+    "kana": "まさら こころ はなよめ",
+    "image": "story-c6d2f23b0956",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "れいら・せいか",
+    "zh": "丽良·清佳",
+    "roman": "Leila & Seika",
+    "kana": "れいら せいか",
+    "image": "story-e8b43c10200f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "otherotherColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "美国織莉子(ver.Final)",
+    "zh": "美国织莉子（ver.Final）",
+    "roman": "Mikuni Oriko (Final ver)",
+    "kana": "みくに おりこ ふぁいなる",
+    "image": "story-03f827579956",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "昴かずみ",
+    "zh": "昴和美",
+    "roman": "Subaru Kazumi",
+    "kana": "すばる かずみ",
+    "image": "story-bd50651931af",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "タルト(ver.Final)",
+    "zh": "塔鲁特（ver.Final）",
+    "roman": "Tart (Final ver)",
+    "kana": "たると ふぁいなる",
+    "image": "story-8e567f26c8db",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "戦場ヶ原ひたぎ",
+    "zh": "战场原黑仪",
+    "roman": "Senjougahara Hitagi",
+    "kana": "せんじょうがはら ひたぎ",
+    "image": "story-a1c24b61ef9f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "八九寺真宵",
+    "zh": "八九寺真宵",
+    "roman": "Hachikuji Mayoi",
+    "kana": "はちくじ まよい",
+    "image": "story-84a4bd856950",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "神原駿河",
+    "zh": "神原骏河",
+    "roman": "Kanbaru Suruga",
+    "kana": "かんばる するが",
+    "image": "story-93a1c87b9c30",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "千石撫子",
+    "zh": "千石抚子",
+    "roman": "Sengoku Nadeko",
+    "kana": "せんごく なでこ",
+    "image": "story-d9d19846018b",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "羽川翼",
+    "zh": "羽川翼",
+    "roman": "Hanekawa Tsubasa",
+    "kana": "はねかわ つばさ",
+    "image": "story-017ddd88c672",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "忍野忍",
+    "zh": "忍野忍",
+    "roman": "Oshino Shinobu",
+    "kana": "おしの しのぶ",
+    "image": "story-7e220f27b236",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "collaboColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "イザボー(魔女ver)",
+    "zh": "伊莎贝拉（魔女ver.）",
+    "roman": "Isabeau de Bavière (Witch ver)",
+    "kana": "いざぼー まじょ",
+    "image": "story-1274b5e3d703",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "gaidenColor",
+      "leftm"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ピンクのキュゥべえ",
+    "zh": "粉色丘比",
+    "roman": "Pink no Kyubey",
+    "kana": "ぴんくのきゅぅべえ",
+    "image": "story-c702e67f2e61",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ジュゥべえ",
+    "zh": "朱比",
+    "roman": "Juubey",
+    "kana": "じゅぅべぇ",
+    "image": "story-7603e52c2a79",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ウワサさん",
+    "zh": "谣先生",
+    "roman": "Uwasa-san",
+    "kana": "うわささん",
+    "image": "story-4b1a38bbded5",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "伊津見尹縫",
+    "zh": "伊津见尹缝",
+    "roman": "Itsumi Inui",
+    "kana": "いつみ いぬい",
+    "image": "story-37d52ab39a2b",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "アイ",
+    "zh": "爱",
+    "roman": "Ai",
+    "kana": "あい",
+    "image": "story-9a520e788af8",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "夏希の兄",
+    "zh": "夏希的哥哥",
+    "roman": "Natsuki no Ani",
+    "kana": "なつきのあに",
+    "image": "story-075478375e4f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "タケさん",
+    "zh": "阿武",
+    "roman": "Take-san",
+    "kana": "たけさん",
+    "image": "story-b48c4dc5e90b",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "おネェさま",
+    "zh": "姐姐大人",
+    "roman": "Onee-sama",
+    "kana": "おねぇさま",
+    "image": "story-9cddcd37a003",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ちはるの母",
+    "zh": "千春的母亲",
+    "roman": "Chiharu no Haha",
+    "kana": "ちはるのはは",
+    "image": "story-25818aefc3a0",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "静香の母",
+    "zh": "静香的母亲",
+    "roman": "Shizuka no Haha",
+    "kana": "しずかのはは",
+    "image": "story-e234af6503f9",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "水名の先輩",
+    "zh": "水名前辈",
+    "roman": "Mizuna no Senpai",
+    "kana": "みずなのせんぱい",
+    "image": "story-590d02460615",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "トルテ",
+    "zh": "托尔特",
+    "roman": "Torte",
+    "kana": "とるて",
+    "image": "story-635b323a71c9",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ニコラ",
+    "zh": "尼古拉",
+    "roman": "Nicola",
+    "kana": "にこら",
+    "image": "story-32b6a13a803d",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "mobColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "ラマ",
+    "zh": "拉玛",
+    "roman": "Rama",
+    "kana": "らま",
+    "image": "story-e334bbfb3d9f",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "hisColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "出涸嵐マナ",
+    "zh": "出涸岚玛娜",
+    "roman": "Degarashi Mana",
+    "kana": "でがらし まな",
+    "image": "story-aaf93a18f836",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  },
+  {
+    "jp": "未完成いろは",
+    "zh": "未完成彩羽",
+    "roman": "Mikansei Iroha",
+    "kana": "みかんせいいろは",
+    "image": "story-bd74abbee6f1",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "unimpColor"
+    ],
+    "aliases": []
+  }
+]

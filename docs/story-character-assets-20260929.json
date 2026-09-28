@@ -1,0 +1,1276 @@
+[
+  {
+    "jp": "小さなキュゥべえ",
+    "image": "story-33dfc5e32943",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%B0%8F%E3%81%95%E3%81%AA%E3%82%AD%E3%83%A5%E3%82%A5%E3%81%B9%E3%81%88.webp",
+    "sourceSha256": "e176ebc8b51839117035ee2cf588803af043b79de4331a5b1b1ad7696369b5ba",
+    "pngSha256": "75cf51c767c5a67b1c70d41020883cd89d4fb97d9cada6b082f7a4eea1a7b0ff",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "環いろは(水着ver)",
+    "image": "story-37cecce872ef",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%92%B0%E3%81%84%E3%82%8D%E3%81%AF(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "f169f5b0e11e101c696945c92f31085fba167f8d1933e877cd04a8dd56f4d923",
+    "pngSha256": "0df072c4daabe8e22fab5e79da1af7915409e9f23964ffc5ac925d81dcd82417",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "やちよ・みふゆ(始まりver)",
+    "image": "story-100d6d89c160",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%84%E3%81%A1%E3%82%88%E3%83%BB%E3%81%BF%E3%81%B5%E3%82%86(%E5%A7%8B%E3%81%BE%E3%82%8Aver).webp",
+    "sourceSha256": "05bf5000fd54da8d81217a9165c441667d1ba45763188a0c82b1c28382d97302",
+    "pngSha256": "b87e6e6edc32d2ac6430461c68c446ec5dd1b0bc32d3005affb796b3e1ee9f32",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ウワサの鶴乃",
+    "image": "story-51aa8dcab780",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A6%E3%83%AF%E3%82%B5%E3%81%AE%E9%B6%B4%E4%B9%83.webp",
+    "sourceSha256": "2493740409e81b2d08f44efc5ebc54291543b291566f30221a27c99bb1694d13",
+    "pngSha256": "624f761d8dcebbb64d5264e4a5cd4a6a848ad6e1d183eaca7b61978076975651",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "ウワサのさな",
+    "image": "story-d7afa9e70861",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A6%E3%83%AF%E3%82%B5%E3%81%AE%E3%81%95%E3%81%AA.webp",
+    "sourceSha256": "02687df11f6186406608161c11f3597f304fda00f224f95652fb32edc39f1bfb",
+    "pngSha256": "a02bcd9e87fc67662ee190918498a23bdee2c756a3e4e4abfcf578a8945166c9",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "フェリシアちゃん",
+    "image": "story-033e32a60695",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%95%E3%82%A7%E3%83%AA%E3%82%B7%E3%82%A2%E3%81%A1%E3%82%83%E3%82%93.webp",
+    "sourceSha256": "7b31de9e5f5c9c56f79dd4694b4159c168c0797905c43fee4f3e2fcb2f23c3c5",
+    "pngSha256": "705623205fec2ec6e24837277876a2fc80f2c33cbdf00da13a721a684fd45f2e",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-dictionary"
+  },
+  {
+    "jp": "梓みふゆ(おとぎ話ver)",
+    "image": "story-bc59fbf8de63",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%A2%93%E3%81%BF%E3%81%B5%E3%82%86(%E3%81%8A%E3%81%A8%E3%81%8E%E8%A9%B1ver).webp",
+    "sourceSha256": "e12d97dcf8e9cb4ac9323bf7fd3a49c5378d5fbfb76d394a262d3a716024555c",
+    "pngSha256": "27966d55579982ec09924045a9db5bc90910bec1a25fae962a2b3a78b1e16f09",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "灯花・ねむ(聖夜ver)",
+    "image": "story-33572d9aa35f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%81%AF%E8%8A%B1%E3%83%BB%E3%81%AD%E3%82%80(%E8%81%96%E5%A4%9Cver).webp",
+    "sourceSha256": "ec4997edac0f4e5a3b84a16732031eee6fafa1e6b7d5b8020677999ddc9fc47c",
+    "pngSha256": "ef2184d264283dd50f56ba78475efa20428691acf7f05aa6b42a471b32b3617d",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ホーリーアリナ",
+    "image": "story-8f5c251cfb7c",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%9B%E3%83%BC%E3%83%AA%E3%83%BC%E3%82%A2%E3%83%AA%E3%83%8A.webp",
+    "sourceSha256": "51024c9c5e5510bba4e942c7c24be87dfed03ab0c4c7d42f5afa03193fcfb5c3",
+    "pngSha256": "3db9ae84a97907575c8e5525028ac60d845e5ce160085695df91c90915f64e7d",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "レナちゃん(アイドルver)",
+    "image": "story-ba3e54a58ff2",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%AC%E3%83%8A%E3%81%A1%E3%82%83%E3%82%93(%E3%82%A2%E3%82%A4%E3%83%89%E3%83%ABver).webp",
+    "sourceSha256": "08ebcbba191a29ee038f84bd0d52e1d739222841dfa208bdc85357158b19b0d4",
+    "pngSha256": "5935bb66be33045f95d12c155af30e07fa4dbd434a0f390a30d2451f3f980343",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "十咎ももこ(シスターver)",
+    "image": "story-633ab0114bca",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%8D%81%E5%92%8E%E3%82%82%E3%82%82%E3%81%93(%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%BCver).webp",
+    "sourceSha256": "4a27fe7daca4a3eab4944302727d246f73ea2096f3a6d6920c4251f2a05b6acb",
+    "pngSha256": "d98d7bc9a20a093a16d3db84a8f9958b5b5785b2b7bde26683fdd3cd0d908aca",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "かりん・アリナ(ハロウィンver)",
+    "image": "story-74b9f18f0bfe",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%8B%E3%82%8A%E3%82%93%E3%83%BB%E3%82%A2%E3%83%AA%E3%83%8A(%E3%83%8F%E3%83%AD%E3%82%A6%E3%82%A3%E3%83%B3ver).webp",
+    "sourceSha256": "1a35cd4a99517541d59e2fdd3564735054150c168a064bb5a6a51ec97a0fc74a",
+    "pngSha256": "9b380ff8bbb4c9d2f49da7de80fd56dab0cce640bac513d2f1b65a7dc8a21538",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "竜城明日香(新春龍神ver)",
+    "image": "story-e61cc6026cb9",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%AB%9C%E5%9F%8E%E6%98%8E%E6%97%A5%E9%A6%99(%E6%96%B0%E6%98%A5%E9%BE%8D%E7%A5%9Ever).webp",
+    "sourceSha256": "f612d6af260fa0945896807e3cf10ab1c015a1a0a98128ee1a09d5bbe2bb1fe9",
+    "pngSha256": "e295e99d35e136fa683ce6694c300221bcf10f482b0b418e79a4683e1dd58ea1",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "和泉十七夜(ヴァンパイアver)",
+    "image": "story-fa6307c28966",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%92%8C%E6%B3%89%E5%8D%81%E4%B8%83%E5%A4%9C(%E3%83%B4%E3%82%A1%E3%83%B3%E3%83%91%E3%82%A4%E3%82%A2ver).webp",
+    "sourceSha256": "849a9d0fd07bea19654cd76b05fc296263dfacf23cb463332c36847dbfa7c4dc",
+    "pngSha256": "c707a0c1ac4edbb0c6ba37b4fd5d12dbeea3186f5b9d5822dbe03dd5cfbba997",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "八雲みたま(晴着ver)",
+    "image": "story-25e73fab894c",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%85%AB%E9%9B%B2%E3%81%BF%E3%81%9F%E3%81%BE(%E6%99%B4%E7%9D%80ver).webp",
+    "sourceSha256": "fe8573e9b98c5cfc99f1622bf4231cf5352d6b153286f72dd79c1204284e5232",
+    "pngSha256": "35604024bf4a47a92146ed385c8b9b0e320c2e25ede1e64b9c0bddfc6436a5fd",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "天音姉妹(水着ver)",
+    "image": "story-7287fddf8475",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%A4%A9%E9%9F%B3%E5%A7%89%E5%A6%B9(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "446aab67e4080b37c835c02971ba5a740253e2e3577d832dc68b68086a748ca2",
+    "pngSha256": "7e4a61b32a59883b12ffbf1cc09d1e29c1933b5bf14e04b86ddcead52f6f5ded",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "佐鳥かごめ(百鬼夜行ver)",
+    "image": "story-124c96a2121e",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%BD%90%E9%B3%A5%E3%81%8B%E3%81%94%E3%82%81(%E7%99%BE%E9%AC%BC%E5%A4%9C%E8%A1%8Cver).webp",
+    "sourceSha256": "7538a91dabf484e25b2fb527e5a2654413d1cf66217d48660340af64384439f9",
+    "pngSha256": "8e6a99ae78f7cf8a4ffd2cb942b0fb13338ee29cc38b8adc9b32403236c5066b",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "結菜・樹里(ヴァンパイアver)",
+    "image": "story-7b2c68c745f0",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%B5%90%E8%8F%9C%E3%83%BB%E6%A8%B9%E9%87%8C(%E3%83%B4%E3%82%A1%E3%83%B3%E3%83%91%E3%82%A4%E3%82%A2ver).webp",
+    "sourceSha256": "2d9ae70fac9471d8515cd46e3f69633863457ee17becaf01f9769f9f98430e6a",
+    "pngSha256": "04378edf18c9a479fe8bdece1996e7f6b29769a2044d846e6a21eac3b5387b42",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      119
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "時女静香(初日の出ver)",
+    "image": "story-606b08390d58",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%99%82%E5%A5%B3%E9%9D%99%E9%A6%99(%E5%88%9D%E6%97%A5%E3%81%AE%E5%87%BAver).webp",
+    "sourceSha256": "a25074e6053df6d610c131383d08a99c769c4fc5a6ecb2bbf634d667251209c3",
+    "pngSha256": "99b8215540810fb850330ece07caaad9f2a6fa922ec3090b44087bc8cebcd2f9",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "氷室ラビ(キモチver)",
+    "image": "story-7f6b9a63532b",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%B0%B7%E5%AE%A4%E3%83%A9%E3%83%93(%E3%82%AD%E3%83%A2%E3%83%81ver).webp",
+    "sourceSha256": "33ba2334d3fadbd7453b2160b7deca4bc8050075c2cb39adf41260364e95289b",
+    "pngSha256": "9ed53ef7899df10165634250bce6dbadcfb7036919c64b05738b7b4f6f5c9bd9",
+    "decodedPixelsEqual": true,
+    "size": [
+      144,
+      145
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "那由他・みかげ(クリスマスver)",
+    "image": "story-7f4e6862f5f6",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%82%A3%E7%94%B1%E4%BB%96%E3%83%BB%E3%81%BF%E3%81%8B%E3%81%92(%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%9E%E3%82%B9ver).webp",
+    "sourceSha256": "23014ea9d81700336b234ee8dd19059abe4fd7b429687369f133bdc3c8812d56",
+    "pngSha256": "7e35ac698a0bd997847603eaeb4cf8a1cd56314549e5770d7442aedb2cc8ef19",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "佐和月出里(バレンタインver)",
+    "image": "story-48cab1184fd3",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%BD%90%E5%92%8C%E6%9C%88%E5%87%BA%E9%87%8C(%E3%83%90%E3%83%AC%E3%83%B3%E3%82%BF%E3%82%A4%E3%83%B3ver).webp",
+    "sourceSha256": "4de3393e15e4f862b5ec9223c7b910ec18146616170350313ea4cb77af7bdc08",
+    "pngSha256": "6ca2eb1852e427de0fb45b1ac2045bd59a90375e2a5ddeac8f5b828930f4f52a",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "黒江(水着ver)",
+    "image": "story-5ccba1133eb2",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%BB%92%E6%B1%9F(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "08fdf79376b0f7c698a456e4181f18e3c0729f624ba8cf2e7ca391a3acec8e03",
+    "pngSha256": "3d59df07c9eb3d180c0bcff7cd710aadf2ba7da67f74c28dcc3582bd9cedb8ed",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "ウワサのみこと",
+    "image": "story-084a077dd1ab",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A6%E3%83%AF%E3%82%B5%E3%81%AE%E3%81%BF%E3%81%93%E3%81%A8.webp",
+    "sourceSha256": "6c808a974d7d3cbf092eed4eed51cebcadfe60c4c1818e4bc057361406f22c57",
+    "pngSha256": "cd597925f554a30e5459d3d4bcd7c95bbbf159ddba7f7061c2ed53c92fade77e",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "ma-re-data-card-11445"
+  },
+  {
+    "jp": "いろはちゃん",
+    "image": "story-8eae1f4c9a25",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%84%E3%82%8D%E3%81%AF%E3%81%A1%E3%82%83%E3%82%93.webp",
+    "sourceSha256": "45a28296927a95a2ed30745f027256323515f99cde19af84394a15996767ea0b",
+    "pngSha256": "b40bb4ed6c6abfa75d959b56de22c754a066268ed89b54ca1255c72001fcfd5b",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "七海やちよ(七夕ver)",
+    "image": "story-0cf150d0af49",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%B8%83%E6%B5%B7%E3%82%84%E3%81%A1%E3%82%88(%E4%B8%83%E5%A4%95ver).webp",
+    "sourceSha256": "86720eb1d1c4e404b9521c604fbf10420109c21def027038651b290d1c1ac26f",
+    "pngSha256": "eeff5cf0e8023d2816b4b1e203c6275e673513198f659ade039c241a8643b479",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "鶴乃・フェリシア(宅配ver)",
+    "image": "story-cb1668c68b64",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%B6%B4%E4%B9%83%E3%83%BB%E3%83%95%E3%82%A7%E3%83%AA%E3%82%B7%E3%82%A2(%E5%AE%85%E9%85%8Dver).webp",
+    "sourceSha256": "eecc1ce480ba4cde4208527650677c6fc7d05fb20ffa417263a01c337412bb10",
+    "pngSha256": "e60083408c315fbec6dc968f1d4b012faa66988d8151e934169da2304ee8d187",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "レナ・かえで(水着ver)",
+    "image": "story-e5ac87a316de",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%AC%E3%83%8A%E3%83%BB%E3%81%8B%E3%81%88%E3%81%A7(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "385e8ee4a44e3668c03b6893a7f51355f7fca8613b4fb5a8840865d8c33ea833",
+    "pngSha256": "42fe5b3fc6ea2395ac3ed0b7839dbda4a21758a57b124960e7b21d2e143e9002",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ももこ・みたま(人魚ver)",
+    "image": "story-2e154d3c5582",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%82%E3%82%82%E3%81%93%E3%83%BB%E3%81%BF%E3%81%9F%E3%81%BE(%E4%BA%BA%E9%AD%9Aver).webp",
+    "sourceSha256": "b813d02632d8348ac85cdb74f7022618f8c59c2bebf7d70090b0243cfaea8be7",
+    "pngSha256": "06d8045bf1554929e34e9de5bf442f67ecc6d77b9205cf01f6fa1263eb12d774",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "和泉十七夜(常闇ver)",
+    "image": "story-fc92f41573ae",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%92%8C%E6%B3%89%E5%8D%81%E4%B8%83%E5%A4%9C(%E5%B8%B8%E9%97%87ver).webp",
+    "sourceSha256": "fb6d6ef107fa4f61994205692521aca0c8285087eb5cf2cd01d7e6ea09dd9886",
+    "pngSha256": "2b9b7860abb65b86efd37521bbe8c65da5cdc65e9a1453960b5fd671c268df28",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "八雲みたま(常闇ver)",
+    "image": "story-0d3a48086018",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%85%AB%E9%9B%B2%E3%81%BF%E3%81%9F%E3%81%BE(%E5%B8%B8%E9%97%87ver).webp",
+    "sourceSha256": "01a95687f37cb3a21e9d2bd4db8aed41ef1cc206c441dc6d4d3f910a728b483d",
+    "pngSha256": "5e2b83215fc5b74e637990fdca467c7dc3b6fbe63bb184ec38822eeaca406d75",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "いろは・やちよ(決戦ver)",
+    "image": "story-17b5c8727d83",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%84%E3%82%8D%E3%81%AF%E3%83%BB%E3%82%84%E3%81%A1%E3%82%88(%E6%B1%BA%E6%88%A6ver).webp",
+    "sourceSha256": "eec5df9f709d14b3e8bff4371b1c4b2f3250d5048ce1ce23bf1ccf480cf7eb41",
+    "pngSha256": "2b4b3bcac39083f280d88df7dda6a26f643d7fe7ae6823cea0537fdb4f9ade4f",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "七海やちよ(アニメver)",
+    "image": "story-75113cd3662b",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%B8%83%E6%B5%B7%E3%82%84%E3%81%A1%E3%82%88(%E3%82%A2%E3%83%8B%E3%83%A1ver).webp",
+    "sourceSha256": "62d40f6f46d6255b4d7ccb0d85a81e98bb66166e7a6f6e280e02c6adce42bebd",
+    "pngSha256": "cbb89100dfce980e963124b025106f22d3f38b2636da1f54c766c89a30f49542",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      119
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "ウワサの鶴乃(アニメver)",
+    "image": "story-a921a6bdea21",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A6%E3%83%AF%E3%82%B5%E3%81%AE%E9%B6%B4%E4%B9%83(%E3%82%A2%E3%83%8B%E3%83%A1ver).webp",
+    "sourceSha256": "bf598dcebf788c26a74f29d9093c736ec80bce1912a8d56664f8e2953b1bd967",
+    "pngSha256": "36f060315c806a726f5fccc348cb87294b7c2b34d553b732e443022dc06e2bef",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "水波レナ(アニメver)",
+    "image": "story-e9471b940b96",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%B0%B4%E6%B3%A2%E3%83%AC%E3%83%8A(%E3%82%A2%E3%83%8B%E3%83%A1ver).webp",
+    "sourceSha256": "fdb09471dde20b534784f6d2a857629b0206138a7aaa3007615db5de4a83663b",
+    "pngSha256": "0e43bd80f0e033f823b371e8e7c68e91ed89bd81defac5b8c513dd2db3b60e7f",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "いろは・うい(巫女ver)",
+    "image": "story-6ca7deaa9c33",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%84%E3%82%8D%E3%81%AF%E3%83%BB%E3%81%86%E3%81%84(%E5%B7%AB%E5%A5%B3ver).webp",
+    "sourceSha256": "226cb98b7b1e6095eeade3b08484262bea0cec8bd6554ab8e17012809343b84f",
+    "pngSha256": "fd6d12162c2791be13e248fa879c405a99b653dea43db7045f9e9e1f5386f1d3",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "七海やちよ(おとぎ話ver)",
+    "image": "story-bf22cfa14aab",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%B8%83%E6%B5%B7%E3%82%84%E3%81%A1%E3%82%88(%E3%81%8A%E3%81%A8%E3%81%8E%E8%A9%B1ver).webp",
+    "sourceSha256": "eeb480012467e84f03b9cd44784a3192009d598aa5a850256a0e69a78d616837",
+    "pngSha256": "082cd65297d92cffe8e07b0bb50d5bccd86cf79e1bb638b3f70dce413c06fcbc",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "環いろは(アニメver)",
+    "image": "story-d657100fbeac",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%92%B0%E3%81%84%E3%82%8D%E3%81%AF(%E3%82%A2%E3%83%8B%E3%83%A1ver).webp",
+    "sourceSha256": "764b9984cdb66180d6072c38703dbd67e7e3db30d715b8ab225d43f6ed7f3678",
+    "pngSha256": "a27c8bb94ba36375db349d94888a223f12e16c04eda8057c10b6c3a6fe8eab1c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "七海やちよ(ヒストリアver)",
+    "image": "story-efe0b5f0da86",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%B8%83%E6%B5%B7%E3%82%84%E3%81%A1%E3%82%88(%E3%83%92%E3%82%B9%E3%83%88%E3%83%AA%E3%82%A2ver).webp",
+    "sourceSha256": "c83599159d5a42da1d3ab19d9549d2e16090920ac79d9027b367c551cc10d5ed",
+    "pngSha256": "5c5035d010e7e651f06ddc2341490c705eb3c24f090ff613078795734d35ed43",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "∞いろは",
+    "image": "story-a8254beb7464",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E2%88%9E%E3%81%84%E3%82%8D%E3%81%AF.webp",
+    "sourceSha256": "97c33f04a72c3098713a8f22bc50d9c96fa34f7fcf4b49e7d12fb8f75991fd32",
+    "pngSha256": "1523c6a1f2d4d85038e40c923dd7f09552a0e4f1db48b1234dd9eec94ed5bcdd",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "無限大いろはちゃん",
+    "image": "story-ed6c67be8a7a",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%84%A1%E9%99%90%E5%A4%A7%E3%81%84%E3%82%8D%E3%81%AF%E3%81%A1%E3%82%83%E3%82%93.webp",
+    "sourceSha256": "d833c3f70cd1c914cd5be28ff27d7efe38abfb6a0f12fd5ebc3ca6bdb88f1bfa",
+    "pngSha256": "84db462543f5b8760418d9026e68b614af5fe1e47e6844fc2da1282ef7613b4b",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "いろは・黒江",
+    "image": "story-ac3f83979c96",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%84%E3%82%8D%E3%81%AF%E3%83%BB%E9%BB%92%E6%B1%9F.webp",
+    "sourceSha256": "1a6318d0553e9ca8c0511729dddd4ed5af18e6374b8e37c7a29b73d2b123817e",
+    "pngSha256": "8f5f4d2beef5ebec701e8ea042125d204b23b40c3b6d67fba3b715d68c2755b7",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "鹿目まどか(晴着ver)",
+    "image": "story-245381676c33",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%B9%BF%E7%9B%AE%E3%81%BE%E3%81%A9%E3%81%8B(%E6%99%B4%E7%9D%80ver).webp",
+    "sourceSha256": "6a47bf49d71229092ba0f9a93ed4b524ea9367447e45d6a224187e63af9bd783",
+    "pngSha256": "e9b0d458653dfce1f683d496cbd4a97a176abb7a9a2e2ef9fb8f15343ff1deab",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "アルティメットまどか",
+    "image": "story-30527880dd61",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A2%E3%83%AB%E3%83%86%E3%82%A3%E3%83%A1%E3%83%83%E3%83%88%E3%81%BE%E3%81%A9%E3%81%8B.webp",
+    "sourceSha256": "3aacc6bc5fcfb4a693e0a729bb11c15e5f9acf14c6e298e2761ed9512faebd7f",
+    "pngSha256": "fa623df45760448a411482a343ccc325ea44fa17828bb5dc0078da95c7a62cd6",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      118
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "まどか先輩",
+    "image": "story-7fe2ccb191cf",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%BE%E3%81%A9%E3%81%8B%E5%85%88%E8%BC%A9.webp",
+    "sourceSha256": "4eeb9afc06f07a53c249eb2aadbf3343b8eaeec800257bd0a06156f89d52f3c6",
+    "pngSha256": "4d3305fe86c05fed7c0a44e2236c0ec76f8ad7eca80af2a021042cecdd569a14",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      118
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "究極まどか先輩",
+    "image": "story-cab683c2882b",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%A9%B6%E6%A5%B5%E3%81%BE%E3%81%A9%E3%81%8B%E5%85%88%E8%BC%A9.webp",
+    "sourceSha256": "25eab1aa3342545559cf38c135a776247ffc396c36ebc5348a89de9bc9771b54",
+    "pngSha256": "720c0b60920c3de921322adfcee43faffc0f700b3c6e945b144f5fb0c41a66a2",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      118
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "まどか・いろは",
+    "image": "story-fb8e4382c244",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%BE%E3%81%A9%E3%81%8B%E3%83%BB%E3%81%84%E3%82%8D%E3%81%AF.webp",
+    "sourceSha256": "a87ffdbb3bc24a48eefde3e52bbff646ce5043ad131eb28c1aa8714381cb5ec1",
+    "pngSha256": "1bd10c698e0b7e4861e98fac9e39d09163f1c213d5a163c64ba4e8157eb9cff0",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "鹿目まどか(scene0ver)",
+    "image": "story-ecdf23e3a9b9",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%B9%BF%E7%9B%AE%E3%81%BE%E3%81%A9%E3%81%8B(scene0ver).webp",
+    "sourceSha256": "bce7f7cd5f071c3cb296cc1dd1abefe4aa81f6894c469a101e74a9e1a9b9817f",
+    "pngSha256": "fbc8734b5f9ef2960706ca80e20a114e810eafd079bedb2678ee7e59d01c5814",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "鹿目まどか(水着ver)",
+    "image": "story-663c4a090b02",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%B9%BF%E7%9B%AE%E3%81%BE%E3%81%A9%E3%81%8B(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "b1c73e9e92b780d8251d26bf117068f65c80f675ddbfca6191a1d9fe4b8848df",
+    "pngSha256": "5b5dec46c791eb82c278169f48602c0773489b9313b1a411a400ae86243d67fe",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "まどか先輩・いろはちゃん",
+    "image": "story-4a034f8808de",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%BE%E3%81%A9%E3%81%8B%E5%85%88%E8%BC%A9%E3%83%BB%E3%81%84%E3%82%8D%E3%81%AF%E3%81%A1%E3%82%83%E3%82%93.webp",
+    "sourceSha256": "03128a79b9a07ca033962b980b04bde9b599cbcf6bddc025f1d63eb32253d0d9",
+    "pngSha256": "85a117ab21cb04bba667099c383a388b0143c43bc22f6d62b28cbb49467750b2",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "悪魔ほむらちゃん",
+    "image": "story-65c606603457",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%82%AA%E9%AD%94%E3%81%BB%E3%82%80%E3%82%89%E3%81%A1%E3%82%83%E3%82%93.webp",
+    "sourceSha256": "fbbe51345aa2416f2281a026e28eff3263f95c915bfa289d14723d14a50c405b",
+    "pngSha256": "e6335336ebe91ad217a9207bfa4160b51bb531c7fd9e4da5e97ee66275094758",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "悪魔ほむら",
+    "image": "story-2a51a2a4ec8d",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%82%AA%E9%AD%94%E3%81%BB%E3%82%80%E3%82%89.webp",
+    "sourceSha256": "d723f6ec9d275b6cc86f06db94e60af34bd7707c28f566a314d6458d7db3c2eb",
+    "pngSha256": "6e7731731b2c8fcce4769db92b1e9fb324da5e3ace898c61a01161c02d73f6cd",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      119
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "暁美ほむら(晴着ver)",
+    "image": "story-d3efeefa6713",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%9A%81%E7%BE%8E%E3%81%BB%E3%82%80%E3%82%89(%E6%99%B4%E7%9D%80ver).webp",
+    "sourceSha256": "c3d0bb3b613a20097da3b9fe25733a4b9afda29b585952c00e92de3346830591",
+    "pngSha256": "a4e78fc31f0203bcc7fc1472f86c2be91d1ebe07fc415b23e40762ab0686ab33",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      119
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "暁美ほむら(水着ver)",
+    "image": "story-66d63174920f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%9A%81%E7%BE%8E%E3%81%BB%E3%82%80%E3%82%89(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "caddbb179c7b49ae47e141ee3d89156a888516e5f658cf9f46a37ade137f102b",
+    "pngSha256": "cac3ed338b23c05a85de2b9913df28d5dc7a5e7d6e5dac734b44259c1e2915f7",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "暁美ほむら(scene0ver)",
+    "image": "story-48da150f8b35",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%9A%81%E7%BE%8E%E3%81%BB%E3%82%80%E3%82%89(scene0ver).webp",
+    "sourceSha256": "27f7f3bc5607c8f9ba93ceb73199a44bfdfade3feff371cb3012bb4c00a11953",
+    "pngSha256": "d742b04d91355a8ce36c40c96820160e59951c07a7f4be217645dab6ce290596",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "美樹さやか(晴着ver)",
+    "image": "story-66e64976745d",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%BE%8E%E6%A8%B9%E3%81%95%E3%82%84%E3%81%8B(%E6%99%B4%E7%9D%80ver).webp",
+    "sourceSha256": "820729c2fc10e1840dd27500c765417f3b07bcc03408880012fa39b6a55e3ea6",
+    "pngSha256": "612ae13dfed1085573eda4cd3a5b1d9f57bb1ed42dc6f8d9527228a326fabadb",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "美樹さやか(波乗りver)",
+    "image": "story-86efe3d6e83f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%BE%8E%E6%A8%B9%E3%81%95%E3%82%84%E3%81%8B(%E6%B3%A2%E4%B9%97%E3%82%8Aver).webp",
+    "sourceSha256": "3a3ca49943747e9ce2e5af4a9673435c9a4a926696a5f43baabd435d5fd6095e",
+    "pngSha256": "298d69cc0092a97fad880bdfb5fe0a4e205abb42dc4071823dbb74f9e29bd73a",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "美樹さやか(scene0ver)",
+    "image": "story-02fc2eca7fd3",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%BE%8E%E6%A8%B9%E3%81%95%E3%82%84%E3%81%8B(scene0ver).webp",
+    "sourceSha256": "20266fe103b11e6c6a07abfc033f2ce79c3ab95b0b89a47ac4fdc1190d637ec8",
+    "pngSha256": "a801297b366dd6abb01068078a8e6f8b2434d91e6e81ac82e2539baf4b847a2f",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "ホーリーマミ",
+    "image": "story-5bf423bbb778",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%9B%E3%83%BC%E3%83%AA%E3%83%BC%E3%83%9E%E3%83%9F.webp",
+    "sourceSha256": "d77e609bc842db91a4951da2a8f264a5108041a004960dade77cf74ef876f7ef",
+    "pngSha256": "8ddaf393c71c76e9b712926cad886b71faee7604f1d564be163ab5502b838294",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "巴マミ(水着ver)",
+    "image": "story-e4062645387d",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%B7%B4%E3%83%9E%E3%83%9F(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "258ef23f1bc41b32f5817d59b132c5c32eb96937cb8f2085ad765e6a7eb79eeb",
+    "pngSha256": "5bef6f3f911c5c9277150c4289f307135caf4bd402bfc3609ee98eb8f40e8409",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "ホーリーマミ(アニメver)",
+    "image": "story-daf741b21daf",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%9B%E3%83%BC%E3%83%AA%E3%83%BC%E3%83%9E%E3%83%9F(%E3%82%A2%E3%83%8B%E3%83%A1ver).webp",
+    "sourceSha256": "9a833bcb9e6a0409be4ed5c42a2c7521ff1bbb5317c3b93233ef7f2c372d09db",
+    "pngSha256": "697ad83f38c54555b7b4828f23d31a6a530ff061afe0aa7af4ac9ad953d84d1b",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      119
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "巴マミ(scene0ver)",
+    "image": "story-6df37b9f15c8",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%B7%B4%E3%83%9E%E3%83%9F(scene0ver).webp",
+    "sourceSha256": "e815561f74d104aee38d2f0c3e8466f731ca69bd32fab46d032a9f4dbf228f47",
+    "pngSha256": "5dd64b40f85b9242cf156bfbe634bb90e5d318ec93143e0c93e6e62fd12140bf",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "佐倉杏子(水着ver)",
+    "image": "story-57272511f602",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%BD%90%E5%80%89%E6%9D%8F%E5%AD%90(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "c6d0b8f64d007481b9bdc201eed953759352afe8fb0082e4ef51b82ccd0f348d",
+    "pngSha256": "24a3884db78a5ae3be2209d8baa8f234650aa99e6ffe44049e8091b47441d03c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "佐倉杏子(scene0ver)",
+    "image": "story-865e412591b7",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%BD%90%E5%80%89%E6%9D%8F%E5%AD%90(scene0ver).webp",
+    "sourceSha256": "8d1282d95dab8d1acdc2fc597d5370e01b6bb20fddbe7f948d7e0d46e7e22e7e",
+    "pngSha256": "ac8c2ef04881bc5d92c4b0b94dd9e213b75fd7ddef585f6a17a109e91850378f",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "佐倉杏子(ドッペルver)",
+    "image": "story-9f57ae110c5c",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%BD%90%E5%80%89%E6%9D%8F%E5%AD%90(%E3%83%89%E3%83%83%E3%83%9A%E3%83%ABver).webp",
+    "sourceSha256": "32616bbea3b9d20390592bf57df5e16606c8fb916fa0c775fd1ee7cce67c780b",
+    "pngSha256": "f8ab3cdd7b3522843bb719b36cc9617387f268fb83530424cbfc977c88fdf6ef",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "百江なぎさ(バレンタインver)",
+    "image": "story-4cb3401b2511",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%99%BE%E6%B1%9F%E3%81%AA%E3%81%8E%E3%81%95(%E3%83%90%E3%83%AC%E3%83%B3%E3%82%BF%E3%82%A4%E3%83%B3ver).webp",
+    "sourceSha256": "e840aef2e84126b81c7e650852d8640b9567c1a6f974fe562339f3a157552975",
+    "pngSha256": "e695029638f4f81b90d012420fd6d1b475032c1e745e83b324268e0759140264",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "百江なぎさ(水着ver)",
+    "image": "story-8a8ea5d88cc3",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%99%BE%E6%B1%9F%E3%81%AA%E3%81%8E%E3%81%95(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "bba8d83bbf74d3c32e85e8c8a0bc7d8fcb02e83a0426b4a98944ebf0c4bd2fd4",
+    "pngSha256": "02b8e8d276f6dc71fe276c55eba7c211da26a29309acd302531f2996bfee224c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "梨花・れん(クリスマスver)",
+    "image": "story-3a6f7f7fc7dc",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%A2%A8%E8%8A%B1%E3%83%BB%E3%82%8C%E3%82%93(%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%9E%E3%82%B9ver).webp",
+    "sourceSha256": "bf7f193c71aed09c12a67a20df097b6ff02cebd6293fb9134333d30044d86c90",
+    "pngSha256": "92d47a94e678b1fd5d06922503715f5183c16a7c2cf49cecb2ff01e48e429d6d",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "万年桜のウワサ(水着ver)",
+    "image": "story-91f40a5b2d54",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%B8%87%E5%B9%B4%E6%A1%9C%E3%81%AE%E3%82%A6%E3%83%AF%E3%82%B5(%E6%B0%B4%E7%9D%80ver).webp",
+    "sourceSha256": "d600671a6b0af6d20801fdfc8dffd84989c05ebd346b8b88f676ff125e2c81fe",
+    "pngSha256": "d1b02fe256b489a33ac1808c9449dc3e0a6a5c51c05cf72a69404f7f58c779f1",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "このは・葉月",
+    "image": "story-31ede40186f9",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%93%E3%81%AE%E3%81%AF%E3%83%BB%E8%91%89%E6%9C%88.webp",
+    "sourceSha256": "8c7ee9af1a6cd79039bd5214bae354f666ff2fbe1ea9dc51390c2c098b72cc22",
+    "pngSha256": "a1a3d108f0cce1d138a73c0b864280043a0347eb0926146270c9f53d7832f28c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "まさら・こころ(花嫁ver)",
+    "image": "story-c6d2f23b0956",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%BE%E3%81%95%E3%82%89%E3%83%BB%E3%81%93%E3%81%93%E3%82%8D(%E8%8A%B1%E5%AB%81ver).webp",
+    "sourceSha256": "7ba36fc04fff846224acc29bfa92f403ba285f1a0f8645f892d8b3e9ca729eae",
+    "pngSha256": "03f618e0269008746c5e0e358d855128640aac020d7508f77dfcc7a83447d500",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      119
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "れいら・せいか",
+    "image": "story-e8b43c10200f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%8C%E3%81%84%E3%82%89%E3%83%BB%E3%81%9B%E3%81%84%E3%81%8B.webp",
+    "sourceSha256": "354d2d3b54f192c3c2f62e12130a757e7ba6c886abe9d3387a84eae0d17e8b5b",
+    "pngSha256": "f52bb290c865e221f8dec6b6fa01e8cdd22a92d8b252f4674840425bf476043c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "美国織莉子(ver.Final)",
+    "image": "story-03f827579956",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%BE%8E%E5%9B%BD%E7%B9%94%E8%8E%89%E5%AD%90(ver.Final).webp",
+    "sourceSha256": "273d69091d9a8ce78de1d3177d4ecd06763d1156ea4454b28d0cadbda1279cea",
+    "pngSha256": "d90dd4fa7d33889fee6cf873834f35c7c56f62db6610dad9953573fbf393eebd",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "昴かずみ",
+    "image": "story-bd50651931af",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%98%B4%E3%81%8B%E3%81%9A%E3%81%BF.webp",
+    "sourceSha256": "2d3bd266b0e22d610a17b132a3cdcf9a4ff682e14ec77285d1c083d56eb34754",
+    "pngSha256": "0cf770b8686a752d3e0238f52e03110c86205fa1352ec87b32049abca80162b7",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "タルト(ver.Final)",
+    "image": "story-8e567f26c8db",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%BF%E3%83%AB%E3%83%88(ver.Final).webp",
+    "sourceSha256": "1903491ea22efff9241d8459379774223dd4d4a9311c11455c5d3c1afa5d1d57",
+    "pngSha256": "1efca96fce5df043ec9c15a8c11314754dd215917d9237009f33628f62c5013e",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "magi-reader-character-folder"
+  },
+  {
+    "jp": "戦場ヶ原ひたぎ",
+    "image": "story-a1c24b61ef9f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%88%A6%E5%A0%B4%E3%83%B6%E5%8E%9F%E3%81%B2%E3%81%9F%E3%81%8E.webp",
+    "sourceSha256": "931ebec9d55c71d897a664bfa4b9304b44afbbd57bdfd5842436d325b277f58d",
+    "pngSha256": "b98b68abac5edb50dfd3f6fa6419b4cd1862cb914cdd9178f741e8080e1ca682",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      118
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "八九寺真宵",
+    "image": "story-84a4bd856950",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%85%AB%E4%B9%9D%E5%AF%BA%E7%9C%9F%E5%AE%B5.webp",
+    "sourceSha256": "775acf4272c260b666a6ef7ab040337cf49ecf9d7f264c43c06e2805db44b292",
+    "pngSha256": "a0e4e0fc07bafaeae8afb79c4c62fd51ecbd5cbc054e6d79836dc81a9726235c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      121
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "神原駿河",
+    "image": "story-93a1c87b9c30",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%A5%9E%E5%8E%9F%E9%A7%BF%E6%B2%B3.webp",
+    "sourceSha256": "8c0fa1620c03748eee1ffc6e65731b3178e80c7ebbc965c6e87018303cced31b",
+    "pngSha256": "0fb2358885a17798053a03b1fb6b5715982a059a5b93247d7c65979eede4dea1",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      118
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "千石撫子",
+    "image": "story-d9d19846018b",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%8D%83%E7%9F%B3%E6%92%AB%E5%AD%90.webp",
+    "sourceSha256": "2519096ae302bc677d0a34490617a767ce8f78de8750e0045712bcb220e210b7",
+    "pngSha256": "7a4d9c7e38e68312a1b6b88c365a149b8b907d69437898df63554243c3eb8097",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      118
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "羽川翼",
+    "image": "story-017ddd88c672",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E7%BE%BD%E5%B7%9D%E7%BF%BC.webp",
+    "sourceSha256": "f0f7fa55717f1625ec132496efa6c6af49284633200c19083dd073413d1f4741",
+    "pngSha256": "04cc76dbeada402ebde5bc44ef0060ab7bd158822a6935e4f49f2d137f308af6",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "忍野忍",
+    "image": "story-7e220f27b236",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%BF%8D%E9%87%8E%E5%BF%8D.webp",
+    "sourceSha256": "af8b55b21ff0b00cf28f0d4ac518365863116a02b063cce8c487225d44e064b3",
+    "pngSha256": "7cd4bbf3d90f665ce6b0eca0e62d0ea8a700c35482fc86970ecabef464a9a230",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "イザボー(魔女ver)",
+    "image": "story-1274b5e3d703",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A4%E3%82%B6%E3%83%9C%E3%83%BC(%E9%AD%94%E5%A5%B3ver).webp",
+    "sourceSha256": "b10d47b2c1c5a71ce85916403124c40874ddbec1c412cb303e72a5db7a5769f4",
+    "pngSha256": "da8a000e30839b088caeb3d051a4430f1b9aff0cc6dba228c5c7455c9067b0f8",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "base-character-variant"
+  },
+  {
+    "jp": "ピンクのキュゥべえ",
+    "image": "story-c702e67f2e61",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%94%E3%83%B3%E3%82%AF%E3%81%AE%E3%82%AD%E3%83%A5%E3%82%A5%E3%81%B9%E3%81%88.webp",
+    "sourceSha256": "1154a242b734569d606ebf85204e6603436e4ccf166920bbf8571b551bc8376c",
+    "pngSha256": "dd06a8281f6f28297982988c9db19e4e856bf4e830d597b3b3f4c178e0af210e",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ジュゥべえ",
+    "image": "story-7603e52c2a79",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%B8%E3%83%A5%E3%82%A5%E3%81%B9%E3%81%88.webp",
+    "sourceSha256": "2f5d3b26b06a58985c407002498c136bbc643a6e3f5e933828f1ebbd6eea4b1e",
+    "pngSha256": "f6374e01308a5e50f4fca10e922af26b04b4b6952e833c6f9a3ebce117391dc9",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ウワサさん",
+    "image": "story-4b1a38bbded5",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A6%E3%83%AF%E3%82%B5%E3%81%95%E3%82%93.webp",
+    "sourceSha256": "85590ee8191e70153907815de20d87767712b9dac70d594fdceac9d381b8f683",
+    "pngSha256": "20b225bfb0076395ca6ecc6e6b7a24c8d9673f57580239eab03b62afa99379a2",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "伊津見尹縫",
+    "image": "story-37d52ab39a2b",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E4%BC%8A%E6%B4%A5%E8%A6%8B%E5%B0%B9%E7%B8%AB.webp",
+    "sourceSha256": "9f0060c59251498eb57b694bd51ac31155c36fff84c87c75aa5fbfc4eaadaa0c",
+    "pngSha256": "873e9a6bdf97bc13fc0d7daa9ce8b6dcb10ff4d35547647873cc8db23a279613",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "アイ",
+    "image": "story-9a520e788af8",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%A2%E3%82%A4.webp",
+    "sourceSha256": "afbfde04e9d7bc3869a41d87c862839052a243eb5c5eb13a5d3276f7a0ab4364",
+    "pngSha256": "0edf4aaf4dec04302000440351554f62537cfb1e0c7dce8c2a8bf4a535e4720c",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "夏希の兄",
+    "image": "story-075478375e4f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%A4%8F%E5%B8%8C%E3%81%AE%E5%85%84.webp",
+    "sourceSha256": "871c1559e27f9c25f7d8369355db915eb123cc7975aa7c9306741d8b4d9fa4db",
+    "pngSha256": "de1da52f3f7314daa09de3f162dba2561730ccc4f2177313b0de84d84e42413d",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "タケさん",
+    "image": "story-b48c4dc5e90b",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%82%BF%E3%82%B1%E3%81%95%E3%82%93.webp",
+    "sourceSha256": "a7910384a8e6030990a6c69bf6b417927a837c9ed5e7bb058517d3c18fd35ad9",
+    "pngSha256": "20aeb7efb33e01977434b656f25168fda36592ffd66338a6a581ef8a39b3a6bf",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "おネェさま",
+    "image": "story-9cddcd37a003",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%8A%E3%83%8D%E3%82%A7%E3%81%95%E3%81%BE.webp",
+    "sourceSha256": "3b7b2f1f72743d2cfa0dadc6d5bc31ed790ac3674ab81e9b7e54ab9ae58ac66f",
+    "pngSha256": "26cb4def52242715bb68af360bd34eeb6f33737602552cc3171bfa3efccacb6e",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ちはるの母",
+    "image": "story-25818aefc3a0",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%81%A1%E3%81%AF%E3%82%8B%E3%81%AE%E6%AF%8D.webp",
+    "sourceSha256": "08c60e9baf71be84a5dbd89ea2055d64c079f0e1a9319da74192bf03cf6ff8db",
+    "pngSha256": "55233a5dc27f3c712e4869798732c65bbc80b02569c5769820a2e579808fe5b4",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "静香の母",
+    "image": "story-e234af6503f9",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E9%9D%99%E9%A6%99%E3%81%AE%E6%AF%8D.webp",
+    "sourceSha256": "6cb6005ad9983c26e1f7751c6a70e31cfdb9bfc535d4be48254c255ac596ad94",
+    "pngSha256": "56908568b39af0f797bb5f621fd94e83f2fb004b0eaeb7320d88435a51a5ffc5",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "水名の先輩",
+    "image": "story-590d02460615",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%B0%B4%E5%90%8D%E3%81%AE%E5%85%88%E8%BC%A9.webp",
+    "sourceSha256": "7dd4e17c180f612992d4cecabdff70db00b90da54608da933a025a7ebc2c75b9",
+    "pngSha256": "bf2cf21d204233f43ea8ea6b079ab28be04486b8cecfc5e10d99a7eeeb61ad54",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "トルテ",
+    "image": "story-635b323a71c9",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%88%E3%83%AB%E3%83%86.webp",
+    "sourceSha256": "0fa2b5775b03854165fbef2569ba357c138e8a6e44705ac674164e151cd2e55d",
+    "pngSha256": "7be20288710103e93e847ff9e7d78743b342cabb123da9b9df394e9186d5f316",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ニコラ",
+    "image": "story-32b6a13a803d",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%8B%E3%82%B3%E3%83%A9.webp",
+    "sourceSha256": "93de58584d3d53c71eba97ff5a5386e1945039c53fa9a4cdb2bdfb2478f518e0",
+    "pngSha256": "6ed362d29b179d117daf55de0c2ed00a6af8164db3ec4a432119907aaa717bbb",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "ラマ",
+    "image": "story-e334bbfb3d9f",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E3%83%A9%E3%83%9E.webp",
+    "sourceSha256": "7ccfbb6d8318083a1d302eb973f262735693c88834ac9cfd7ca82575ca55da10",
+    "pngSha256": "eed3cf7817d9d345856988057dbce54d489e91f5f7468f15aad48e537d5c6885",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "出涸嵐マナ",
+    "image": "story-aaf93a18f836",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E5%87%BA%E6%B6%B8%E5%B5%90%E3%83%9E%E3%83%8A.webp",
+    "sourceSha256": "fe06f15daaaa24c535b31c5d1cbaa50807b3f9c4d5fcfa3e2871a2f516c0d389",
+    "pngSha256": "d7589d5bc2ea67181a54f9c0bca6c36c7d5137dd604b1c5e23de0e36c573cea3",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  },
+  {
+    "jp": "未完成いろは",
+    "image": "story-bd74abbee6f1",
+    "sourceUrl": "https://magireco-chara-search.vercel.app/img/magirecoIcon/%E6%9C%AA%E5%AE%8C%E6%88%90%E3%81%84%E3%82%8D%E3%81%AF.webp",
+    "sourceSha256": "f0af4b9319c4637ccb263c647951fae53167a66c3453b782fcded5555da4137f",
+    "pngSha256": "96f9e4a4d52491ca8f92828e46cc9f2cdf6b3d4dbe4a0bcebff3e28bb66469a6",
+    "decodedPixelsEqual": true,
+    "size": [
+      120,
+      120
+    ],
+    "chineseSource": "audited-alias"
+  }
+]

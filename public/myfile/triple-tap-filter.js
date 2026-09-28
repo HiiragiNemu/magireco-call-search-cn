@@ -35,52 +35,35 @@
       toast.id = 'tripleTapFilterToast';
       toast.setAttribute('role', 'status');
       toast.setAttribute('aria-live', 'polite');
-      Object.assign(toast.style, {
-        position: 'fixed',
-        left: '50%',
-        bottom: '18px',
-        zIndex: '100000',
-        transform: 'translate(-50%, 14px)',
-        maxWidth: 'min(92vw, 520px)',
-        padding: '9px 13px',
-        border: '2px solid #f558ad',
-        borderRadius: '999px',
-        background: 'rgba(255,255,255,.97)',
-        color: '#6b1948',
-        boxShadow: '0 6px 22px rgba(76,20,50,.24)',
-        fontWeight: '700',
-        textAlign: 'center',
-        opacity: '0',
-        pointerEvents: 'none',
-        transition: 'opacity .14s ease, transform .14s ease'
-      });
-      document.body.appendChild(toast);
+      toast.className = 'call-status-toast';
     }
+    const host = document.querySelector('.call-display-root-v7') || document.body;
+    if (toast.parentElement !== host) host.appendChild(toast);
     return toast;
   }
 
   function showToast(message, duration = 950) {
     const toast = ensureToast();
     toast.textContent = message;
-    toast.style.opacity = '1';
-    toast.style.transform = 'translate(-50%, 0)';
+    toast.classList.add('is-visible');
     global.clearTimeout(toastTimer);
     toastTimer = global.setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translate(-50%, 14px)';
+      toast.classList.remove('is-visible');
     }, duration);
   }
 
   function pulse(label, count) {
     if (!label) return;
     label.dataset.tripleTapCount = String(count);
-    label.animate(
-      [
-        { boxShadow: '0 0 0 0 rgba(245,88,173,.65)' },
-        { boxShadow: '0 0 0 7px rgba(245,88,173,0)' }
-      ],
-      { duration: 270, easing: 'ease-out' }
-    );
+    if (!global.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      label.animate(
+        [
+          { boxShadow: '0 0 0 0 currentColor' },
+          { boxShadow: '0 0 0 7px transparent' }
+        ],
+        { duration: 270, easing: 'ease-out' }
+      );
+    }
     global.setTimeout(() => {
       if (label.dataset.tripleTapCount === String(count)) delete label.dataset.tripleTapCount;
     }, 500);

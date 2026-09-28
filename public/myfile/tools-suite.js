@@ -73,7 +73,11 @@
     }, { once: true });
   }
 
-  async function loadCatalog() {
+  const extraCatalogPromises = new Map();
+  const extraCharacters = new Map();
+
+  // Story editions and NPCs must not enlarge the call-table base roster.
+  async function loadCatalog(extrasUrl = null) {
     if (!catalogPromise) {
       catalogPromise = fetch(CATALOG_URL, { cache: 'no-cache' })
         .then((response) => {
@@ -95,7 +99,25 @@
           }));
         });
     }
-    return catalogPromise;
+    if (!extrasUrl) return catalogPromise;
+    if (!extraCatalogPromises.has(extrasUrl)) {
+      const promise = Promise.all([catalogPromise, fetchJson(extrasUrl, { cache: 'no-cache' }, 30000)])
+        .then(([base, additions]) => {
+          if (!Array.isArray(additions)) throw new Error('扩展角色目录格式错误。');
+          const names = new Set(base.map(entry => entry.jp));
+          const extra = additions.map((entry, index) => {
+            if (!entry.jp || !entry.zh || !entry.roman || !entry.image || names.has(entry.jp)) {
+              throw new Error('扩展角色目录存在重复或缺失字段。');
+            }
+            names.add(entry.jp);
+            return { ...entry, zh: canonicalDisplay(entry.zh), index: base.length + index };
+          });
+          for (const entry of extra) extraCharacters.set(entry.jp, entry);
+          return base.concat(extra);
+        }).catch(error => { extraCatalogPromises.delete(extrasUrl); throw error; });
+      extraCatalogPromises.set(extrasUrl, promise);
+    }
+    return extraCatalogPromises.get(extrasUrl);
   }
 
   async function catalogMaps() {
@@ -271,6 +293,7 @@
     imageUrl,
     attachImageFallback,
     loadCatalog,
+    extraCharacter: name => extraCharacters.get(String(name || '').trim()) || null,
     catalogMaps,
     resolveCharacter,
     displayName,

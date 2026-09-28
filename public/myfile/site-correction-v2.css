@@ -87,19 +87,25 @@ body {
   position: relative;
   width: 100%;
   max-width: 100%;
-  height: 70vh;
-  min-height: 280px;
-  max-height: 90vh;
+  height: var(--relation-viewport-limit, 70vh);
+  min-height: 0;
+  max-height: min(var(--relation-content-height, 70vh), var(--relation-viewport-limit, 70vh));
   overflow: auto;
   resize: vertical;
   box-sizing: border-box;
   border: 1px solid var(--magi-border);
   background: #fff;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x pan-y;
-  contain: strict;
+  contain: layout paint;
 }
+
+.relationship-table-viewport[data-scroll-y="true"] { overscroll-behavior-y: contain; }
+/* Clip the unscaled surface to the explicitly sized stage. Otherwise zooming
+   below 100% leaves phantom scrollable overflow outside the visible table. */
+.relationship-table-viewport > .relationship-table-stage { overflow: hidden; }
 
 .relationship-table-stage,
 .height-chart-stage-v2 {
@@ -409,3 +415,20 @@ body {
     height: 3rem;
   }
 }
+
+/* The filter hint is part of the existing CRT scene, below its material layers.
+   All six theme/phosphor appearances inherit the same control material tokens. */
+.call-status-toast {
+  position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 2480; width: max-content; max-width: min(520px, calc(100% - 36px));
+  box-sizing: border-box; padding: 9px 13px;
+  border: 1px solid var(--call-border-strong); border-radius: var(--control-radius, 3px);
+  background: var(--call-menu-face, var(--call-surface-raised)); color: var(--call-text);
+  box-shadow: var(--call-widget-shadow); text-shadow: var(--control-text-glow, none);
+  font: inherit; font-size: .92rem; font-weight: 600; line-height: 1.5;
+  text-align: center; overflow-wrap: anywhere; pointer-events: none;
+  opacity: 0; transform: translate(-50%, 10px);
+  transition: opacity .14s ease, transform .14s ease;
+}
+.call-status-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .call-status-toast { transition: none; } }

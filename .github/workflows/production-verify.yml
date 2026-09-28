@@ -164,3 +164,17 @@ jobs:
           name: call-finish-production-verification
           path: /tmp/call-finish-production-proof.json
           retention-days: 30
+
+      - name: Verify r22 release bytes and browser regressions
+        run: |
+          python scripts/verify-call-r22.py
+          python tests/call-r22-browser.py --base https://magireco-call-search-cn.pages.dev --output /tmp/call-r22-production-browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: call-r22-production-evidence
+          path: |
+            /tmp/call-r22-production-bytes.json
+            /tmp/call-r22-production-browser
+          if-no-files-found: ignore
+          retention-days: 30

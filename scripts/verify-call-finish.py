@@ -46,9 +46,12 @@ if a.check_upstream:
   src=Image.open(io.BytesIO(data)).convert('RGBA');dest=Image.open(root/item['outputPath']).convert('RGBA')
   assert src.size==dest.size and src.tobytes()==dest.tobytes(),item['jp']
   proof['upstreamPortraits'].append({'jp':item['jp'],'identicalPixels':True,'sourceSha256':hashlib.sha256(data).hexdigest()})
+story_catalog_count = len(json.loads((root/'public/data/character-catalog.json').read_text()))
+extras = root/'public/data/story-character-additions.json'
+if extras.exists(): story_catalog_count += len(json.loads(extras.read_text()))
 def prepare(page):
  page.goto(base+'/story.html?verify='+str(time.time_ns()),wait_until='domcontentloaded',timeout=120000)
- page.wait_for_function("document.querySelectorAll('#storyCharacterGrid .suite-character-card').length===193",timeout=120000)
+ page.wait_for_function("n=>document.querySelectorAll('#storyCharacterGrid .suite-character-card').length===n",arg=story_catalog_count,timeout=120000)
  page.locator('#storyKeyword').fill('の');page.locator('#storySelectAll').click()
 def search(page):
  page.evaluate('''() => {window.__callPerfStart=performance.now();window.__callLongTasks=[];
@@ -92,7 +95,7 @@ with sync_playwright() as pw:
   page.locator('[data-story-page-action="first"]').first.click();check_page(1)
   warm=[search(page) for _ in range(2)]
   page.wait_for_function("[...document.querySelectorAll('.story-result-list-v7')].every(x=>x.dataset.parentFoldV18)",timeout=30000)
-  item={'viewport':viewport,'cpuThrottle':throttle,'catalog':193,'totalMatches':total,'pages':math.ceil(total/100),'lastPageRows':last_rows,'initial':initial,'warm':warm,'verifiedPages':[1,19,math.ceil(total/100)],'pageErrors':errors}
+  item={'viewport':viewport,'cpuThrottle':throttle,'catalog':story_catalog_count,'totalMatches':total,'pages':math.ceil(total/100),'lastPageRows':last_rows,'initial':initial,'warm':warm,'verifiedPages':[1,19,math.ceil(total/100)],'pageErrors':errors}
   assert not errors,errors
   if a.baseline_script:
    old=ctx.new_page();old.route('**/myfile/story-app-v7.js*',lambda route:route.fulfill(path=a.baseline_script,content_type='application/javascript'))

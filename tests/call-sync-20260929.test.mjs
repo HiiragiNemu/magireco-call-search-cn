@@ -50,5 +50,5 @@ test('display cap is pagination only, never truncation of search matches',()=>{
  assert.ok(!source.includes('MAX_RENDERED_ROWS'));
  assert.match(source,/const RESULTS_PAGE_SIZE = 100;/);
  assert.match(source,/tagged\.rowIndex/);
- assert.match(read('public/story.html'),/story-app-v7\.js\?v=20260929-paged-results-v1/);
+ assert.match(read('public/story.html'),/story-app-v7\.js\?v=20260929-r22-catalog/);
 });
