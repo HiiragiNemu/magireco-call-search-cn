@@ -1,0 +1,70 @@
+diff --git a/tests/call-r22-browser.py b/tests/call-r22-browser.py
+index 398f2d1..9711a94 100644
+--- a/tests/call-r22-browser.py
++++ b/tests/call-r22-browser.py
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env python3
+ """Call r22 local/production UI regressions; never open Reader/AIO/ADV."""
+-import argparse, functools, http.server, json, shutil, threading, traceback
++import argparse, datetime, functools, http.server, json, shutil, threading, traceback
+ from pathlib import Path
+ from urllib.parse import urlparse
+ from playwright.sync_api import sync_playwright
+@@ -19,8 +19,9 @@ if not a.base:
+ base=a.base.rstrip('/') if a.base else f'http://127.0.0.1:{server.server_port}'
+ report={'base':base,'checks':[],'errors':[],'themes':[],'pass':False}
+ def ok(name,**kw):report['checks'].append(dict(name=name,**kw));print('PASS',name,flush=True)
+-def openpage(b,path='/'):
++def openpage(b,path='/',controlled_clock=False):
+  p=b.new_page(viewport={'width':1440,'height':900});p.on('pageerror',lambda e:report['errors'].append(str(e)))
++ if controlled_clock:p.clock.install(time=datetime.datetime(2026,9,29,tzinfo=datetime.timezone.utc))
+  p.add_init_script("localStorage.setItem('magireco-call-theme-v2','light');sessionStorage.setItem('magireco-call-magius-boot-v1','1');")
+  r=p.goto(base+path,wait_until='load',timeout=60000);assert r.ok,r.status
+  p.wait_for_function("window.__MAGIRECO_CALL_THEME__&&document.documentElement.dataset.callBootReleased==='true'",timeout=30000);return p
+@@ -56,30 +57,24 @@ try:
+    select(p,short);m=metrics(p);assert m['height']<=m['stage']+2 and m['scrollY']=='false',m
+    p.evaluate("""()=>{document.querySelector('.call-result-details-v8').open=false;drawNet_Table();}""");p.wait_for_timeout(200);reveal(p);m=metrics(p);assert m['height']<=m['stage']+2 and m['scrollY']=='false',m;ok('long-to-short and delayed folded-panel reveal remeasure')
+    changes=p.evaluate("""()=>new Promise(resolve=>{let n=0;const o=new MutationObserver(es=>n+=es.length);o.observe(document.querySelector('.relationship-table-viewport'),{attributes:true,subtree:true});setTimeout(()=>{o.disconnect();resolve(n)},600)})""");assert changes<=2,changes;ok('no idle sizing loop',mutations=changes)
++   # Short-lived overlays need a controlled clock for screenshots on GPU-less CI:
++   # the unchanged full CRT graph can take seconds per software-rendered frame.
++   p.close();p=openpage(b,controlled_clock=True);select(p,short)
++   p.clock.pause_at(datetime.datetime(2026,9,29,1,tzinfo=datetime.timezone.utc))
+    for theme,ph in [('light','green'),('paper','green'),('green','green'),('dark','green'),('dark','amber'),('frost','green')]:
+-    p.evaluate("""([t,c])=>{__MAGIRECO_CALL_THEME__.setTheme(t);if(t==='dark')__MAGIRECO_CALL_THEME__.setPhosphor(c);}""",[theme,ph]);p.wait_for_timeout(220)
+-    # Sample inside the browser while the short-lived hint is actually visible;
+-    # remote protocol delays must not make the test inspect an already expired hint.
+-    s=p.evaluate("""async()=>{
+-      await document.fonts.ready;
+-      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+-      const a=MagirecoTripleTapFilter,input=document.querySelector('input.MagicalChk');
+-      a.clearSequence();const started=performance.now();
+-      a.registerTap(input,new MouseEvent('click'));const first=performance.now();
+-      a.registerTap(input,new MouseEvent('click'));const second=performance.now();
+-      const n=document.querySelector('#tripleTapFilterToast');
+-      while(+getComputedStyle(n).opacity<.99 && performance.now()-second<750) {
+-        await new Promise(requestAnimationFrame);
+-      }
+-      const s=getComputedStyle(n),r=n.getBoundingClientRect();
+-      return{text:n.textContent,parent:n.parentElement.className,color:s.color,background:s.backgroundColor,border:s.borderColor,font:s.fontFamily,shadow:s.boxShadow,zIndex:+s.zIndex,pointerEvents:s.pointerEvents,opacity:+s.opacity,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight,firstTapMs:first-started,secondTapMs:second-first,sampleMs:performance.now()-second,visibleClass:n.classList.contains('is-visible')};
+-    }""")
+-    assert s['parent']=='call-display-root-v7' and s['pointerEvents']=='none' and s['zIndex']<5000 and s['opacity']>.9 and s['inside'],s
++    p.evaluate("""([t,c])=>{__MAGIRECO_CALL_THEME__.setTheme(t);if(t==='dark')__MAGIRECO_CALL_THEME__.setPhosphor(c);}""",[theme,ph]);p.clock.fast_forward(300)
++    p.evaluate("document.fonts.ready")
++    p.evaluate("""()=>{const a=MagirecoTripleTapFilter,n=document.querySelector('input.MagicalChk');a.clearSequence();a.registerTap(n,new MouseEvent('click'));a.registerTap(n,new MouseEvent('click'));}""")
++    p.clock.fast_forward(200);p.wait_for_timeout(180)
++    s=p.locator('#tripleTapFilterToast').evaluate("""n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return{text:n.textContent,parent:n.parentElement.className,color:s.color,background:s.backgroundColor,border:s.borderColor,font:s.fontFamily,shadow:s.boxShadow,zIndex:+s.zIndex,pointerEvents:s.pointerEvents,opacity:+s.opacity,inside:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight,visibleClass:n.classList.contains('is-visible')};}""")
++    assert s['parent']=='call-display-root-v7' and s['pointerEvents']=='none' and s['zIndex']<5000 and s['opacity']>.9 and s['inside'] and s['visibleClass'],s
+     assert '再点击同一角色一次' in s['text'] and s['color']!='rgb(107, 25, 72)' and s['border']!='rgb(245, 88, 173)',s
+-    report['themes'].append(dict(theme=theme,phosphor=ph,**s));p.screenshot(path=str(out/f'toast-{theme}-{ph}.png'))
+-   assert len({x['color'] for x in report['themes']})>=5;ok('toast inherits six theme/phosphor materials inside CRT scene')
+-   p.emulate_media(reduced_motion='reduce');assert p.locator('#tripleTapFilterToast').evaluate('n=>getComputedStyle(n).transitionDuration')=='0s';ok('reduced-motion toast is nonanimated')
+-   p.evaluate("__MAGIRECO_CALL_THEME__.setTheme('light')");p.set_viewport_size({'width':390,'height':844});select(p,short);m=metrics(p);assert m['scrollY']=='false' and m['overscroll']=='auto',m
++    report['themes'].append(dict(theme=theme,phosphor=ph,clockControlled=True,**s));p.screenshot(path=str(out/f'toast-{theme}-{ph}.png'))
++    p.clock.fast_forward(900);assert not p.locator('#tripleTapFilterToast').evaluate("n=>n.classList.contains('is-visible')")
++   assert len({x['color'] for x in report['themes']})>=5;ok('toast inherits six theme/phosphor materials; original expiry works',clockControlled=True)
++   p.emulate_media(reduced_motion='reduce');assert p.locator('#tripleTapFilterToast').evaluate('n=>getComputedStyle(n).transitionDuration')=='0s';ok('reduced-motion toast is nonanimated');p.close()
++   # Resume real-time, uninstrumented interaction tests in a fresh page.
++   p=openpage(b);p.set_viewport_size({'width':390,'height':844});select(p,short);m=metrics(p);assert m['scrollY']=='false' and m['overscroll']=='auto',m
+    x,z=wheel(p,-180);assert z['outer']<x['outer']-80,(x,z);ok('phone-width table preserves page scrolling');p.screenshot(path=str(out/'phone-table.png'));p.close()
+    q=openpage(b,'/story');q.wait_for_function("document.querySelectorAll('#storyCharacterGrid .suite-character-card').length===291")
+    names=q.locator('#storyCharacterGrid .suite-character-card').evaluate_all('ns=>ns.map(n=>n.dataset.jp)');src=json.loads((root/'tests/fixtures/story-selectors-r22.json').read_text())
