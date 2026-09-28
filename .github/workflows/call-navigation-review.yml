@@ -46,7 +46,7 @@ jobs:
           python scripts/validate-production.py
           python scripts/build-aio-edge-route-index.py --check
           python tests/story-pagination-browser.py --output /tmp/call-navigation-evidence/pagination.json
-          python tests/navigation-r23-browser.py --integration --output /tmp/call-navigation-evidence/candidate-browser
+          python tests/navigation-r23-browser.py --output /tmp/call-navigation-evidence/candidate-browser
       - name: Create reviewed commit object only, or verify published bytes
         env:
           GH_TOKEN: ${{ github.token }}
@@ -91,8 +91,10 @@ jobs:
       - name: Exercise the actual published site
         run: |
           if [ -f /tmp/call-navigation-evidence/production-bytes.json ]; then
-            python tests/navigation-r23-browser.py --base https://magireco-call-search-cn.pages.dev --integration --output /tmp/call-navigation-evidence/production-browser
+            python tests/navigation-r23-browser.py --base https://magireco-call-search-cn.pages.dev --output /tmp/call-navigation-evidence/production-browser
           fi
+      - name: Read-only production AIO, Reader and L2D handoff audit
+        run: python tests/navigation-r23-integration.py --output /tmp/call-navigation-evidence/integration
       - uses: actions/upload-artifact@v4
         if: always()
         with:
