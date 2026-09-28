@@ -60,7 +60,7 @@ try:
      p.set_viewport_size({'width':1440,'height':900});ok('distinct controls and collapsed/mobile layout',page=path,buttons=rows)
      if path=='/story':
       p.evaluate("window.searchClicks=0;document.querySelector('#storySearchButton').addEventListener('click',()=>searchClicks++);")
-      for action,target in [('filter','#story-options-title'),('characters','#story-character-title'),('results','#storyResults')]:destination(p,action,target)
+      for action,target in [('filter','.story-search-panel-v8'),('characters','.story-character-panel-v8'),('results','.story-results-panel-v8')]:destination(p,action,target)
       assert p.evaluate('searchClicks')==0;ok('filter, character and results shortcuts only navigate; folded targets reveal')
       hit(p,'characters');p.locator('#storyCharacterFilter').fill('Tamaki Iroha');p.locator('#storyCharacterGrid [data-jp="環いろは"]').click()
       search=p.locator(rail+' [data-action="search"]');search.focus();search.press('Enter')

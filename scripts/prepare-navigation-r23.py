@@ -28,7 +28,18 @@ for caption,action in actions.items():
 s=s[:a]+part+s[b:]
 s=s.replace('for (const [glyph, label, action] of definitions)', 'for (const [actionName, glyph, label, action] of definitions)')
 a=s.index("      const actionName = label.includes('顶部')");b=s.index("      button.addEventListener('click', action);",a)
-s=s[:a]+"      button.dataset.action = actionName;\n"+s[b:];write(p,s)
+s=s[:a]+"      button.dataset.action = actionName;\n"+s[b:]
+s=s.replace("    const element = typeof target === 'string' ? document.querySelector(target) : target;\n    if (!element) return;", """    const requested = typeof target === 'string' ? document.querySelector(target) : target;
+    if (!requested) return;
+    // Layout v8 hides duplicated h2 titles in favor of the details summary.
+    // Reveal all folds, then measure the visible panel instead of a zero rect.
+    for (let parent = requested; parent; parent = parent.parentElement) {
+      if (parent.tagName === 'DETAILS') parent.open = true;
+    }
+    const element = requested.matches('h1,h2,h3,h4,h5,h6')
+      ? requested.closest('.suite-panel-details-v8,.call-panel-v8') || requested
+      : requested;""")
+write(p,s)
 p='public/myfile/theme-mode-v1.js';s=(root/p).read_text()
 s=s.replace("  function railIcon(action){", """  function railIcon(action){
     // Only executing a search uses the magnifier. Navigation uses one readable
