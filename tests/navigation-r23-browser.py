@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Real-browser sidebar regression and read-only cross-site handoff observations."""
-import argparse, functools, http.server, json, shutil, threading, time, traceback
+"""Real-browser sidebar regression; downstream checks live in the integration test."""
+import argparse, functools, http.server, json, shutil, threading, traceback
 from pathlib import Path
-from urllib.parse import urlparse,parse_qs
+from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
-pa=argparse.ArgumentParser();pa.add_argument('--base');pa.add_argument('--baseline',action='store_true');pa.add_argument('--integration',action='store_true');pa.add_argument('--output',default='/tmp/call-navigation-evidence/browser');a=pa.parse_args()
+pa=argparse.ArgumentParser();pa.add_argument('--base');pa.add_argument('--baseline',action='store_true');pa.add_argument('--output',default='/tmp/call-navigation-evidence/browser');a=pa.parse_args()
 root=Path(__file__).resolve().parents[1];out=Path(a.output);out.mkdir(parents=True,exist_ok=True)
 class Handler(http.server.SimpleHTTPRequestHandler):
  def log_message(self,*args):pass
@@ -16,12 +16,12 @@ server=None
 if not a.base:
  server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Handler,directory=str(root/'public')));threading.Thread(target=server.serve_forever,daemon=True).start()
 base=a.base.rstrip('/') if a.base else f'http://127.0.0.1:{server.server_port}'
-r={'base':base,'baseline':a.baseline,'checks':[],'themes':[],'errors':[],'integration':[],'pass':False}
+r={'base':base,'baseline':a.baseline,'checks':[],'themes':[],'errors':[],'pass':False}
 def ok(name,**kw):r['checks'].append(dict(name=name,pass_=True,**kw));print('PASS',name,flush=True)
-def openpage(b,path,site=None):
+def openpage(b,path):
  p=b.new_page(viewport={'width':1440,'height':900});p.on('pageerror',lambda e:r['errors'].append(str(e)))
  p.add_init_script("localStorage.setItem('magireco-call-theme-v2','light');sessionStorage.setItem('magireco-call-magius-boot-v1','1');")
- p.goto((site or base)+path,wait_until='load',timeout=90000);p.wait_for_function("window.__MAGIRECO_CALL_THEME__&&document.documentElement.dataset.callBootReleased==='true'",timeout=45000)
+ p.goto(base+path,wait_until='load',timeout=90000);p.wait_for_function("window.__MAGIRECO_CALL_THEME__&&document.documentElement.dataset.callBootReleased==='true'",timeout=45000)
  collapse=p.locator('.call-jump-collapse-v7')
  if collapse.get_attribute('aria-expanded')=='false':collapse.click()
  return p
@@ -30,9 +30,15 @@ def buttons(p):return p.locator(rail+' button').evaluate_all("ns=>ns.map(n=>({ac
 def hit(p,action):p.locator(rail+f' button[data-action="{action}"]').click()
 def destination(p,action,target):
  p.evaluate("s=>{const n=document.querySelector(s);for(let e=n;e;e=e.parentElement)if(e.tagName==='DETAILS')e.open=false;}",target)
- hit(p,action);p.wait_for_timeout(700)
+ hit(p,action)
+ # Native smooth scrolling can exceed 700ms across a full character catalog.
+ # Wait for the observable destination, not a machine-dependent fixed delay.
+ try:
+  p.wait_for_function("s=>{const n=document.querySelector(s),r=n.getBoundingClientRect();return r.height>0&&r.top>=-10&&r.top<innerHeight}",arg=target,timeout=10000)
+ except Exception:
+  details=p.evaluate("s=>({target:s,top:document.querySelector(s).getBoundingClientRect().top,rootTop:__MAGIRECO_SCROLL__.top,rootHeight:__MAGIRECO_SCROLL__.height,clientHeight:__MAGIRECO_SCROLL__.clientHeight})",target)
+  raise AssertionError((action,details))
  assert p.locator(target).is_visible(),(action,target)
- y=p.locator(target).evaluate('n=>n.getBoundingClientRect().top');assert -10<=y<=p.viewport_size['height'],(action,y)
 try:
  with sync_playwright() as pw:
   exe=shutil.which('chromium');b=pw.chromium.launch(**({'executable_path':exe} if exe else {}),args=['--no-sandbox'])
@@ -79,59 +85,6 @@ try:
      p.close()
     assert not r['errors'],r['errors']
    r['pass']=True
-   if a.integration:
-    # The sidebar release never changes remote applications. Record every failed
-    # handoff distinctly from our own UI test status instead of hiding it.
-    local=json.loads((root/'public/aio/story-routes.json').read_text())
-    audit={'checkedAt':time.time(),'routes':[],'manifest':{},'browser':[]}
-    request=b.new_context().request
-    try:
-     resp=request.get('https://magireco-aio-router.pages.dev/story-routes.json',timeout=60000);remote=resp.json()
-     audit['manifest']={'status':resp.status,'exactlyMatchesCallFallback':remote==local,'routeCount':len(remote['routes']),'targets':remote['targets'],'catalogRevision':remote['catalogRevision']}
-     cases=[('main-1',29,None),('character',0,None),('scene0',0,None),('event',50,'initial'),('event',50,'rerun')]
-     for slug,index,edition in cases:
-      key=f"story-v6:{local['catalogRevision']}:{slug}:{index}"
-      from urllib.parse import urlencode
-      for target in ['reader','adv']:
-       params=dict(source=key,target=target)
-       if edition:params['edition']=edition
-       row={'source':key,'target':target,'edition':edition,'responses':[]}
-       for origin in ['https://magireco-aio-router.pages.dev/open','https://magireco-call-search-cn.pages.dev/aio/open']:
-        try:
-         res=request.get(origin+'?'+urlencode(params),max_redirects=0,timeout=60000)
-         row['responses'].append({'request':res.url,'status':res.status,'location':res.headers.get('location')})
-        except Exception as e:row['responses'].append({'request':origin,'error':str(e)})
-       row['sameDestination']=len({x.get('location') for x in row['responses']})==1 and all(x.get('status')==302 for x in row['responses']);audit['routes'].append(row)
-     # Real production Call controls -> popup navigation, not fabricated links.
-     q=openpage(b,'/story',site='https://magireco-call-search-cn.pages.dev');q.locator('#storyCharacterFilter').fill('Satomi Touka');q.locator('#storyCharacterGrid [data-jp="里見灯花"]').click()
-     q.evaluate("document.querySelectorAll('input[name=storyType]').forEach(n=>n.checked=n.value==='メイン【第1部】')")
-     q.locator('#storySearchButton').click();q.wait_for_function("document.querySelector('.story-row-v7[data-story-row-index=\"29\"]')",timeout=90000)
-     article=q.locator('.story-row-v7[data-story-row-index="29"]')
-     for target in ['reader','adv']:
-      link=article.locator('a.'+target).first;entry={'target':target,'clickedHref':link.get_attribute('href'),'events':[],'requests':[],'errors':[]}
-      context=q.context
-      def instrument(page):
-       page.add_init_script("window.__handoffs=[];addEventListener('adv-handoff-status',e=>__handoffs.push(e.detail));")
-       page.on('pageerror',lambda e:entry['errors'].append(str(e)))
-       page.on('response',lambda res:entry['requests'].append({'url':res.url,'status':res.status,'revision':res.headers.get('x-demo-reader-revision')}) if '/api/magi-reader/' in res.url else None)
-      context.on('page',instrument)
-      with q.expect_popup(timeout=60000) as popup:link.click()
-      child=popup.value
-      try:
-       child.wait_for_load_state('domcontentloaded',timeout=60000)
-       if target=='adv':
-        try:child.wait_for_function("['playing','failed','voice'].includes(document.documentElement.dataset.advHandoffState)",timeout=90000)
-        except Exception:pass
-       else:child.wait_for_timeout(5000)
-       entry.update(url=child.url,body=child.locator('body').inner_text()[:12000],state=child.evaluate("document.documentElement.dataset.advHandoffState||null"),events=child.evaluate('window.__handoffs||[]'),canvas=child.locator('canvas').count())
-       child.screenshot(path=str(out/f'integration-{target}.png'))
-      except Exception as e:entry['error']=str(e);entry['url']=child.url
-      finally:child.close();context.remove_listener('page',instrument)
-      audit['browser'].append(entry)
-     q.close()
-    except Exception as e:audit['error']=str(e)
-    r['integration']=audit
-    print('INTEGRATION',json.dumps(audit,ensure_ascii=False),flush=True)
   finally:b.close()
 except Exception:
  r['failure']=traceback.format_exc();print(r['failure'],flush=True);raise
