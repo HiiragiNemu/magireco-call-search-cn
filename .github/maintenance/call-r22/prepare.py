@@ -8,6 +8,8 @@ assert hashlib.sha256(payload).hexdigest()=='89cd6e82737182e6ef77d592fd3eb519d4b
 patch=gzip.decompress(payload);(out/'applied-text.patch').write_bytes(patch)
 subprocess.run(['git','apply','--check','-'],input=patch,check=True)
 subprocess.run(['git','apply','-'],input=patch,check=True)
+for correction in sorted(parts.glob('*.patch')):
+ data=correction.read_bytes();subprocess.run(['git','apply','--check','-'],input=data,check=True);subprocess.run(['git','apply','-'],input=data,check=True)
 source=Path('/tmp/call-r22-source/upstream')
 load=lambda p:json.loads(Path(p).read_text(encoding='utf-8'))
 def save(p,data):Path(p).write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
