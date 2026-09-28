@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/call-navigation-review.yml'
       - 'scripts/prepare-navigation-r23.py'
+      - 'scripts/validate-production.py'
       - 'tests/navigation-r23*'
       - 'public/myfile/suite-v7.js'
       - 'public/myfile/theme-mode-v1.*'
