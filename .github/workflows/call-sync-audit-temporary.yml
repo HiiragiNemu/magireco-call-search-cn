@@ -23,6 +23,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check Pillow==11.3.0
           python scripts/sync-call-data-20260928.py
+          rm .github/workflows/call-sync-audit-temporary.yml
       - name: Existing production checks and focused multilingual tests
         run: |
           python scripts/cn_terminology.py
@@ -49,6 +50,7 @@ jobs:
               if existed: raise SystemExit('Refusing to overwrite existing portrait '+p['outputPath'])
           actual=set(filter(None,subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')))
           actual.update(filter(None,subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')))
+          actual.discard('.github/workflows/call-sync-audit-temporary.yml')
           if actual!=set(paths): raise SystemExit('Unexpected output paths: '+repr(actual.symmetric_difference(paths)))
           subprocess.run(['git','add','--',*paths],check=True)
           subprocess.run(['git','rm','--','.github/workflows/call-sync-audit-temporary.yml'],check=True)
