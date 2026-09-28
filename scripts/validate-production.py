@@ -180,7 +180,7 @@ assert not list((ROOT / "public/data").glob("v25-title-delta.part-*.txt"))
 assert not (ROOT / "public/data/story-title-map.generated.json").exists()
 
 workflows = sorted(path.name for path in (ROOT / ".github/workflows").glob("*.yml"))
-assert workflows == ["ci.yml", "production-verify.yml", "update-authoritative-titles.yml"], workflows
+assert workflows == ["call-navigation-review.yml", "ci.yml", "production-verify.yml", "update-authoritative-titles.yml"], workflows
 
 required_ignore = {
     "node_modules/",
