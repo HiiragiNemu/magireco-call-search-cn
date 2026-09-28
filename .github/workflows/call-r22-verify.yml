@@ -1,0 +1,61 @@
+name: Call r22 verification
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/call-r22-verify.yml, scripts/call-r22-prepare.py, tests/call-r22-browser.py]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright pillow requests beautifulsoup4
+      - run: python -m playwright install chromium --with-deps
+      - name: Capture source and authoritative choices
+        run: |
+          mkdir -p /tmp/call-r22-evidence/upstream
+          git rev-parse HEAD > /tmp/call-r22-evidence/head.txt
+          git archive HEAD | gzip > /tmp/call-r22-evidence/repository.tar.gz
+          python - <<'PY'
+          import concurrent.futures, hashlib, json, re
+          from pathlib import Path
+          import requests
+          from playwright.sync_api import sync_playwright
+          out=Path('/tmp/call-r22-evidence/upstream')
+          with sync_playwright() as pw:
+              browser=pw.chromium.launch()
+              page=browser.new_page()
+              report={}
+              for name,leaf in [('story','index.html'),('attendance','cnt.html')]:
+                  response=page.goto('https://magireco-chara-search.vercel.app/'+leaf,wait_until='load',timeout=90000)
+                  assert response.ok, response.status
+                  rows=page.locator('input[name="chara"]').evaluate_all('ns=>ns.map(n=>({jp:n.id||n.value,classes:n.closest("label").className,kana:n.closest("label").dataset.kana||"",image:getComputedStyle(n).backgroundImage}))')
+                  report[name]=rows
+              browser.close()
+          (out/'selectors.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          base={x['jp'] for x in json.loads(Path('public/data/character-catalog.json').read_text())}
+          extras=[x for x in report['story'] if x['jp'] not in base and x['jp']!='早乙女先生']
+          def capture(item):
+              url=re.fullmatch(r'url\("(.*)"\)',item['image'])[1]
+              assert url.startswith('https://magireco-chara-search.vercel.app/img/')
+              r=requests.get(url,timeout=60); r.raise_for_status()
+              stem='story-'+hashlib.sha256(item['jp'].encode()).hexdigest()[:12]
+              (out/(stem+'.webp')).write_bytes(r.content)
+              return dict(item,sourceUrl=url,file=stem+'.webp',sha256=hashlib.sha256(r.content).hexdigest())
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+              captured=list(pool.map(capture,extras))
+          (out/'portraits.json').write_text(json.dumps(captured,ensure_ascii=False,indent=2))
+          print('Captured choices:',len(report['story']),len(report['attendance']),'portraits:',len(captured))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: call-r22-source-evidence
+          path: /tmp/call-r22-evidence
+          retention-days: 7
