@@ -1,0 +1,100 @@
+name: Call navigation review and handoff audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/call-navigation-review.yml'
+      - 'scripts/prepare-navigation-r23.py'
+      - 'tests/navigation-r23*'
+      - 'public/myfile/suite-v7.js'
+      - 'public/myfile/theme-mode-v1.*'
+      - 'public/*.html'
+      - 'public/call-r23-release.json'
+permissions:
+  contents: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          mkdir -p /tmp/call-navigation-evidence
+      - name: Reproduce old rail and prepare bounded patch
+        run: |
+          if [ ! -f public/call-r23-release.json ]; then
+            python tests/navigation-r23-browser.py --baseline --output /tmp/call-navigation-evidence/baseline
+          fi
+          python scripts/prepare-navigation-r23.py
+      - name: Validate candidate without publishing
+        run: |
+          set -o pipefail
+          node --test tests/*.test.mjs | tee /tmp/call-navigation-evidence/unit-tests.log
+          node scripts/validate-site.js
+          python scripts/validate-production.py
+          python scripts/build-aio-edge-route-index.py --check
+          python tests/story-pagination-browser.py --output /tmp/call-navigation-evidence/pagination.json
+          python tests/navigation-r23-browser.py --integration --output /tmp/call-navigation-evidence/candidate-browser
+      - name: Create reviewed commit object only, or verify published bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os,subprocess,time,urllib.request
+          from pathlib import Path
+          out=Path('/tmp/call-navigation-evidence')
+          def api(path,data=None):
+              req=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'+path,data=None if data is None else json.dumps(data).encode(),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
+              with urllib.request.urlopen(req,timeout=60) as response:return json.load(response)
+          paths=subprocess.check_output(['git','diff','--name-only','--','public'],text=True).splitlines()
+          paths+=subprocess.check_output(['git','ls-files','--others','--exclude-standard','public'],text=True).splitlines()
+          if paths:
+              assert all(p.startswith('public/') and not p.startswith(('public/data/','public/aio/','public/edge-functions/','public/img/')) for p in paths)
+              parent=os.environ['GITHUB_SHA'];base=api('git/commits/'+parent)['tree']['sha'];entries=[]
+              for p in paths:
+                  blob=api('git/blobs',{'content':Path(p).read_text(),'encoding':'utf-8'})
+                  entries.append({'path':p,'mode':'100644','type':'blob','sha':blob['sha']})
+              tree=api('git/trees',{'base_tree':base,'tree':entries})
+              commit=api('git/commits',{'message':'fix(call): disambiguate quick rail actions with single-character labels','tree':tree['sha'],'parents':[parent]})
+              proof={'parent':parent,'commit':commit['sha'],'tree':tree['sha'],'files':entries,'published':False}
+              (out/'candidate.json').write_text(json.dumps(proof,indent=2)+'\n')
+              print('REVIEWED_CANDIDATE_COMMIT='+commit['sha'])
+              print('No ref changed; publication requires an explicit fast-forward after review.')
+          else:
+              marker=Path('public/call-r23-release.json').read_bytes();manifest=json.loads(marker)
+              def get(p):
+                  req=urllib.request.Request('https://magireco-call-search-cn.pages.dev/'+p+'?verify='+str(time.time_ns()),headers={'User-Agent':'Mozilla/5.0 Call-r23','Cache-Control':'no-cache, no-store'})
+                  with urllib.request.urlopen(req,timeout=60) as response:return response.read()
+              for attempt in range(90):
+                  try:
+                      assert get('call-r23-release.json')==marker
+                      checks=[{'path':p,'match':hashlib.sha256(get(p)).hexdigest()==sha} for p,sha in manifest['sha256'].items()]
+                      assert all(c['match'] for c in checks)
+                      break
+                  except Exception:
+                      if attempt==89:raise
+                      time.sleep(5)
+              (out/'production-bytes.json').write_text(json.dumps({'commit':os.environ['GITHUB_SHA'],'release':manifest['release'],'checks':checks,'pass':True},indent=2)+'\n')
+          PY
+      - name: Exercise the actual published site
+        run: |
+          if [ -f /tmp/call-navigation-evidence/production-bytes.json ]; then
+            python tests/navigation-r23-browser.py --base https://magireco-call-search-cn.pages.dev --integration --output /tmp/call-navigation-evidence/production-browser
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: call-navigation-evidence
+          path: /tmp/call-navigation-evidence
+          retention-days: 14
