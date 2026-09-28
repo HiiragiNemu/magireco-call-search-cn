@@ -1,0 +1,210 @@
+{
+  "baseProductionCommit": "c8961403d542280a3008df616b56ed25fe4febb5",
+  "sourceSpreadsheet": "https://docs.google.com/spreadsheets/d/1V0QTP3YZsoc7h5wOC8oqg7NKJpA6ZPyck9yCYfbJGlk/edit",
+  "sourceModifiedTime": "2026-09-28T10:03:19.821Z",
+  "sourceRoster": "https://magireco-chara-search.vercel.app/call.html",
+  "scope": "seven character selectors, portraits, attributes and call records; two existing values; nine edges only",
+  "portraits": [
+    {
+      "jp": "夜明すみれ",
+      "zh": "夜明堇",
+      "roman": "Yoake Sumire",
+      "kana": "よあけ すみれ",
+      "sheetRow": 2,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E5%A4%9C%E6%98%8E%E3%81%99%E3%81%BF%E3%82%8C.webp",
+      "sourceSha256": "5fbaa820de2113fb3aa732535e7302ef022308ed5042a9abba3ee01483e31765",
+      "outputPath": "public/img/png/夜明堇.png",
+      "outputSha256": "fb765bf1b2ad205ff7784c78907579dd8e0c458576a7361b8382127c529c70d6",
+      "size": [
+        120,
+        119
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    },
+    {
+      "jp": "日暮ふうか",
+      "zh": "日暮风花",
+      "roman": "Higure Fuuka",
+      "kana": "ひぐれ ふうか",
+      "sheetRow": 3,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E6%97%A5%E6%9A%AE%E3%81%B5%E3%81%86%E3%81%8B.webp",
+      "sourceSha256": "77b2c44924e842a86aced8c86af8c8d9d379bf51f11aca511091dbce4ba5bcd8",
+      "outputPath": "public/img/png/日暮风花.png",
+      "outputSha256": "acadc684796ebcb7997a1a2e54f8891bdfbb0b1e16172ee9b4d83eeb2c83e23b",
+      "size": [
+        120,
+        120
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    },
+    {
+      "jp": "紫丁香",
+      "zh": "紫丁香",
+      "roman": "Shi Chouka",
+      "kana": "し ちょうか",
+      "sheetRow": 67,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E7%B4%AB%E4%B8%81%E9%A6%99.webp",
+      "sourceSha256": "582e71362ef4caa6754c5793fb94d0d49a7cacdb37701733180bbc0c16c20852",
+      "outputPath": "public/img/png/紫丁香.png",
+      "outputSha256": "afe1e3a76a6b14eccc8357109af8e7c478cbbf8e9b1439b1e19234e4adf003ce",
+      "size": [
+        120,
+        119
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    },
+    {
+      "jp": "セルマ・テレーゼ",
+      "zh": "瑟尔玛·特蕾泽",
+      "roman": "Selma Therese",
+      "kana": "せるま てれーぜ",
+      "sheetRow": 68,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E3%82%BB%E3%83%AB%E3%83%9E%E3%83%BB%E3%83%86%E3%83%AC%E3%83%BC%E3%82%BC.webp",
+      "sourceSha256": "646462fcd76c8d58f5b5005cdacfed7ba4e822404ebead02d5dbd5ffb9750bda",
+      "outputPath": "public/img/png/瑟尔玛·特蕾泽.png",
+      "outputSha256": "e3781dfd0a4da2b337f1ae42e409f9aa1da87359d8eed706dba484e52b582157",
+      "size": [
+        120,
+        120
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    },
+    {
+      "jp": "ワス",
+      "zh": "瓦斯",
+      "roman": "Wasu",
+      "kana": "わす",
+      "sheetRow": 69,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E3%83%AF%E3%82%B9.webp",
+      "sourceSha256": "8970fc5d36991e1c53069b087c6fd5aad82eaa0b9dea0b23ff03df200a3ac590",
+      "outputPath": "public/img/png/瓦斯.png",
+      "outputSha256": "d4f3be58728720be42772e818d8b33dde4d0111d87ee34031356c670107471ba",
+      "size": [
+        120,
+        120
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    },
+    {
+      "jp": "凪星そらな",
+      "zh": "凪星索拉娜",
+      "roman": "Nagiboshi Sorana",
+      "kana": "なぎぼし そらな",
+      "sheetRow": 194,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E5%87%AA%E6%98%9F%E3%81%9D%E3%82%89%E3%81%AA.webp",
+      "sourceSha256": "94787c41d104f197a82ea64f7bf8582a87a6cde830861e8446dea56c3b5b96ae",
+      "outputPath": "public/img/png/凪星索拉娜.png",
+      "outputSha256": "a2000ee69531094a00191645e1b41a8aa0046b6c07cdc063639f4f612be751a6",
+      "size": [
+        120,
+        120
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    },
+    {
+      "jp": "リリー・キャンディー",
+      "zh": "莉莉·坎迪",
+      "roman": "Lily Candy",
+      "kana": "りりー きゃんでぃー",
+      "sheetRow": 195,
+      "sourceUrl": "https://magireco-chara-search.vercel.app/img/webp/%E3%83%AA%E3%83%AA%E3%83%BC%E3%83%BB%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%87%E3%82%A3%E3%83%BC.webp",
+      "sourceSha256": "f97ea5d44d10481977543ac56659a9ff1a994436c0d38ad40024fbb66dd0c5da",
+      "outputPath": "public/img/png/莉莉·坎迪.png",
+      "outputSha256": "8f34b9b33661f58b218730ab61e6bb316585161f7a8b64b774abc15c4e2fa9d6",
+      "size": [
+        120,
+        120
+      ],
+      "pixelPolicy": "decoded-RGBA-identical; no crop, resize or redraw",
+      "translationStatus": "manual localization; not asserted to be official Chinese"
+    }
+  ],
+  "existingValueAdditions": [
+    {
+      "caller": "环彩羽 (環いろは / Tamaki Iroha)",
+      "target": "里见那由他",
+      "cell": "AK4",
+      "source": "里見さん→那由他ちゃん/(5周年:那由他さん)",
+      "old": "里見さん (Satomi-san / 里见小姐)→那由他ちゃん (Nayuta-chan / 小那由他)",
+      "new": "里見さん (Satomi-san / 里见小姐)→那由他ちゃん (Nayuta-chan / 小那由他) / 那由他さん（5周年） (Nayuta-san [5th anniversary] / 那由他小姐【五周年】)"
+    },
+    {
+      "caller": "七海八千代 (七海やちよ / Nanami Yachiyo)",
+      "target": "由比鹤乃",
+      "cell": "L5",
+      "source": "由比さん→鶴乃、うちの孔明さん",
+      "old": "由比さん (Yui-san / 由比小姐)→鶴乃 (Tsuruno / 鹤乃)",
+      "new": "由比さん (Yui-san / 由比小姐)→鶴乃 (Tsuruno / 鹤乃) / うちの孔明さん (Uchi no Koumei-san / 我家的孔明先生)"
+    }
+  ],
+  "newRelations": [
+    {
+      "cell": "I2",
+      "caller": "夜明堇",
+      "target": "日暮风花",
+      "sourceJapanese": "ふうか"
+    },
+    {
+      "cell": "Y2",
+      "caller": "夜明堇",
+      "target": "十咎桃子",
+      "sourceJapanese": "ももこさん"
+    },
+    {
+      "cell": "H3",
+      "caller": "日暮风花",
+      "target": "夜明堇",
+      "sourceJapanese": "すみれ"
+    },
+    {
+      "cell": "H19",
+      "caller": "十咎桃子",
+      "target": "夜明堇",
+      "sourceJapanese": "すみれちゃん"
+    },
+    {
+      "cell": "BN67",
+      "caller": "紫丁香",
+      "target": "晓美焰",
+      "sourceJapanese": "暁美ほむら"
+    },
+    {
+      "cell": "BS68",
+      "caller": "瑟尔玛·特蕾泽",
+      "target": "百江渚",
+      "sourceJapanese": "なぎさ"
+    },
+    {
+      "cell": "BM69",
+      "caller": "瓦斯",
+      "target": "鹿目圆",
+      "sourceJapanese": "マルグリート"
+    },
+    {
+      "cell": "BU69",
+      "caller": "瓦斯",
+      "target": "紫丁香",
+      "sourceJapanese": "紫丁香"
+    },
+    {
+      "cell": "BV69",
+      "caller": "瓦斯",
+      "target": "瑟尔玛·特蕾泽",
+      "sourceJapanese": "セルマ"
+    }
+  ],
+  "notes": [
+    "No existing portrait replaced.",
+    "Unknown values remain unknown, including Wasu age 15? and empty Sorana/Lily relations.",
+    "Source kana supplies Japanese reading. Nagiboshi uses ぼ, not ほ.",
+    "Chinese names are conservative manual localization, not a claim of official publication.",
+    "Source-sheet auxiliary placeholders absent from the upstream selectable roster are not introduced as new UI characters.",
+    "Source characters and relationships are public data; form submissions and personal data are not included."
+  ]
+}

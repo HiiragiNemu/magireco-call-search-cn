@@ -1986,3 +1986,47 @@ background-position: center;
 background-repeat: no-repeat;
 background-position: center;
 }
+
+/* Seven portraits added from the upstream call roster, 2026-09-28. */
+.magicalgirl input[value="夜明堇 (夜明すみれ / Yoake Sumire)"] {
+  background: url(../img/png/夜明堇.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.magicalgirl input[value="日暮风花 (日暮ふうか / Higure Fuuka)"] {
+  background: url(../img/png/日暮风花.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.magicalgirl input[value="紫丁香 (紫丁香 / Shi Chouka)"] {
+  background: url(../img/png/紫丁香.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.magicalgirl input[value="瑟尔玛·特蕾泽 (セルマ・テレーゼ / Selma Therese)"] {
+  background: url(../img/png/瑟尔玛·特蕾泽.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.magicalgirl input[value="瓦斯 (ワス / Wasu)"] {
+  background: url(../img/png/瓦斯.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.magicalgirl input[value="凪星索拉娜 (凪星そらな / Nagiboshi Sorana)"] {
+  background: url(../img/png/凪星索拉娜.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.magicalgirl input[value="莉莉·坎迪 (リリー・キャンディー / Lily Candy)"] {
+  background: url(../img/png/莉莉·坎迪.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

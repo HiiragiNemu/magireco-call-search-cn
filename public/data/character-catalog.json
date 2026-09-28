@@ -819,6 +819,45 @@
     "aliases": []
   },
   {
+    "zh": "紫丁香",
+    "jp": "紫丁香",
+    "roman": "Shi Chouka",
+    "kana": "し ちょうか",
+    "image": "紫丁香",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "瑟尔玛·特蕾泽",
+    "jp": "セルマ・テレーゼ",
+    "roman": "Selma Therese",
+    "kana": "せるま てれーぜ",
+    "image": "瑟尔玛·特蕾泽",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "瓦斯",
+    "jp": "ワス",
+    "roman": "Wasu",
+    "kana": "わす",
+    "image": "瓦斯",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "PMHQColor"
+    ],
+    "aliases": []
+  },
+  {
     "zh": "爱生咲笑",
     "jp": "愛生咲笑",
     "roman": "Aki Sakie",
@@ -1558,6 +1597,32 @@
     "aliases": []
   },
   {
+    "zh": "夜明堇",
+    "jp": "夜明すみれ",
+    "roman": "Yoake Sumire",
+    "kana": "よあけ すみれ",
+    "image": "夜明堇",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "unionColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "日暮风花",
+    "jp": "日暮ふうか",
+    "roman": "Higure Fuuka",
+    "kana": "ひぐれ ふうか",
+    "image": "日暮风花",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "unionColor"
+    ],
+    "aliases": []
+  },
+  {
     "zh": "黑",
     "jp": "黒",
     "roman": "Kuro",
@@ -2274,6 +2339,32 @@
     "classes": [
       "girlbox",
       "gaidenColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "凪星索拉娜",
+    "jp": "凪星そらな",
+    "roman": "Nagiboshi Sorana",
+    "kana": "なぎぼし そらな",
+    "image": "凪星索拉娜",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "negiusColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "莉莉·坎迪",
+    "jp": "リリー・キャンディー",
+    "roman": "Lily Candy",
+    "kana": "りりー きゃんでぃー",
+    "image": "莉莉·坎迪",
+    "star": true,
+    "classes": [
+      "girlbox",
+      "negiusColor"
     ],
     "aliases": []
   },

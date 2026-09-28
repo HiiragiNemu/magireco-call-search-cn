@@ -1,12 +1,13 @@
 {
   "release": "integrated-tools-v5-20260816",
-  "catalogCount": 186,
-  "uniqueJapaneseKeys": 186,
-  "uniqueChineseDisplayNames": 186,
-  "callTableCallerCount": 188,
-  "callTableLeafCount": 3643,
+  "catalogCount": 193,
+  "uniqueJapaneseKeys": 193,
+  "uniqueChineseDisplayNames": 193,
+  "callTableCallerCount": 195,
+  "callTableLeafCount": 3683,
   "hardErrors": [],
   "warnings": [
+    "属性数据中存在未作为可见筛选项展示的学校键：豊鶴学院",
     "称呼表中 3 个主键未直接映射到当前角色目录，通常是非可选配角或旧名。",
     "称呼目标中 8 个名称未直接映射到当前可选角色目录，已列入人工复核清单。",
     "发现 13 条候选‘仅日文、无明显中文释义’叶值；需逐条判断是否本来就是专名。"
@@ -280,9 +281,12 @@
     "虎屋町学園",
     "蛇の宮中学・高等学校",
     "見滝原中学校",
+    "豊鶴学院",
     "霧峰村立霧峰中学校"
   ],
-  "unmappedSchoolAttributeKeys": [],
+  "unmappedSchoolAttributeKeys": [
+    "豊鶴学院"
+  ],
   "unmappedCallers": [
     "水名前辈 (水名の先輩 / Mizuna no Senpai)",
     "朱比 (ジュゥべえ / Juubey)",
@@ -291,19 +295,19 @@
   "unmappedRelationTargets": [
     [
       "年龄",
-      188
+      195
     ],
     [
       "学年",
-      188
+      195
     ],
     [
       "身高",
-      188
+      195
     ],
     [
       "二人称",
-      109
+      112
     ],
     [
       "称呼倾向",
