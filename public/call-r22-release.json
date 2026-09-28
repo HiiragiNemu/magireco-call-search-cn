@@ -5,7 +5,7 @@
   "storyCharacters": 291,
   "attendanceCharacters": 194,
   "sha256": {
-    "attendance.html": "47996feb362d345bfb2f49870a7eef446dce42f0a0e8aa2e7b415f73bf8d0a09",
+    "attendance.html": "ffd93f0b83c55b68e675ff15a74da9097885bc296c5aa3bea4f265b20474aac0",
     "data/attendance-character-additions.json": "00729718c55f13c36d7a72cb66454517366ca92026854f3414b02c844e52dc70",
     "data/story-character-additions.json": "24a696e524fd90839d9e1e1d742a091cda6091187671a9e96879145ddb6898ba",
     "img/png/story-017ddd88c672.png": "04cc76dbeada402ebde5bc44ef0060ab7bd158822a6935e4f49f2d137f308af6",
@@ -106,14 +106,14 @@
     "img/png/story-fa6307c28966.png": "c707a0c1ac4edbb0c6ba37b4fd5d12dbeea3186f5b9d5822dbe03dd5cfbba997",
     "img/png/story-fb8e4382c244.png": "1bd10c698e0b7e4861e98fac9e39d09163f1c213d5a163c64ba4e8157eb9cff0",
     "img/png/story-fc92f41573ae.png": "2b9b7860abb65b86efd37521bbe8c65da5cdc65e9a1453960b5fd671c268df28",
-    "index.html": "78ac19c08523f5684b28eea722ece01e3b6c9a7ab9325ea09aed0d394e2d60df",
+    "index.html": "85270b30c53c6405476d84e25ea5ce44a6dc07532528fa8c40c6455fe437410a",
     "myfile/attendance-app-v7.js": "50737eac49895be4d2165d8c79a676e4f9766fc10deab694cfe045fee4abcc7a",
     "myfile/site-correction-v2.css": "475e331731c5e05cfa097bd25caa2ea1016308e0364f6010f1df449125a6b6d1",
     "myfile/site-correction-v2.js": "5eb9b134caac48071c787aa59e97dd7ece2dd34dd6b12e205da5974edf09cbbc",
     "myfile/story-app-v7.js": "9814913bbe32f2524ad764e6fca769cf8263838dd1d636f1118e47c1161b7fe9",
-    "myfile/suite-v7.js": "4ad9c387bad035d68f3189d5bce52b83912c008b6afe7f3c01cd2d8ea95f53d5",
+    "myfile/suite-v7.js": "19b2c47f2f40076543b17c747f5377eda54092f796b7a4f307399c1013f50af8",
     "myfile/tools-suite.js": "316457850dfa1376b1d22d7a66388bfd995b61ef59db01bd98deb698498ed16f",
     "myfile/triple-tap-filter.js": "b98b29fc11544c1ed950a555f222625d9427186320cfa28a6462a5d8551c953d",
-    "story.html": "8353c91916454da9aa478305b5d338e344cbe1ff500650a889572aa36dfc2d5d"
+    "story.html": "97a0b0620151288a26b7ab2d3ff039a6fc71138f02ee4d6029de1a805c1c0285"
   }
 }

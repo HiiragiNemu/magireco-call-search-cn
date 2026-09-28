@@ -272,8 +272,16 @@
   }
 
   function scrollToTarget(target) {
-    const element = typeof target === 'string' ? document.querySelector(target) : target;
-    if (!element) return;
+    const requested = typeof target === 'string' ? document.querySelector(target) : target;
+    if (!requested) return;
+    // Layout v8 hides duplicated h2 titles in favor of the details summary.
+    // Reveal all folds, then measure the visible panel instead of a zero rect.
+    for (let parent = requested; parent; parent = parent.parentElement) {
+      if (parent.tagName === 'DETAILS') parent.open = true;
+    }
+    const element = requested.matches('h1,h2,h3,h4,h5,h6')
+      ? requested.closest('.suite-panel-details-v8,.call-panel-v8') || requested
+      : requested;
     const optical = global.__MAGIRECO_SCROLL__;
     if (optical?.element) {
       optical.element(element, 'smooth');
@@ -291,20 +299,20 @@
     if (tool === 'call' && ['pagetop', 'pagemdl', 'pagebtm'].every((id) => document.getElementById(id))) return;
     const definitions = tool === 'story'
       ? [
-          ['↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
-          ['筛选','搜索条件',() => scrollToTarget('#story-options-title')],
-          ['角色','角色列表',() => scrollToTarget('#story-character-title')],
-          ['搜索','执行搜索',() => document.getElementById('storySearchButton')?.click()],
-          ['结果','搜索结果',() => scrollToTarget('#storyResults')],
-          ['取消','取消筛选与角色选择',() => document.getElementById('storyResetButton')?.click()],
-          ['↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
+          ['top','↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
+          ['filter','筛选','搜索条件',() => scrollToTarget('#story-options-title')],
+          ['characters','角色','角色列表',() => scrollToTarget('#story-character-title')],
+          ['search','搜索','执行搜索',() => document.getElementById('storySearchButton')?.click()],
+          ['results','结果','搜索结果',() => scrollToTarget('#storyResults')],
+          ['cancel','取消','取消筛选与角色选择',() => document.getElementById('storyResetButton')?.click()],
+          ['bottom','↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
         ]
       : tool === 'attendance'
         ? [
-            ['↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
-            ['筛选','筛选角色',() => scrollToTarget('#attendance-character-title')],
-            ['角色','角色列表',() => scrollToTarget('#attendanceGrid')],
-            ['取消','取消筛选与角色选择',() => {
+            ['top','↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
+            ['filter','筛选','筛选角色',() => scrollToTarget('#attendance-character-title')],
+            ['characters','角色','角色列表',() => scrollToTarget('#attendanceGrid')],
+            ['cancel','取消','取消筛选与角色选择',() => {
               document.querySelector('#attendanceAttributeFilterV7 [data-attribute-reset]')?.click();
               const filter = document.getElementById('attendanceFilter');
               if (filter) {
@@ -313,33 +321,25 @@
               }
               document.getElementById('attendanceClear')?.click();
             }],
-            ['↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
+            ['bottom','↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
           ]
         : [
-            ['↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
-            ['角色','角色列表',() => scrollToTarget('#girltop')],
-            ['搜索','称呼搜索',() => typeof global.drawAndJump === 'function' && global.drawAndJump()],
-            ['取消','取消角色选择',() => document.getElementById('mgreset')?.click()],
-            ['↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
+            ['top','↑','跳到页面顶部',() => global.__MAGIRECO_SCROLL__?.to?.({top:0,behavior:'smooth'}) || global.scrollTo({top:0,behavior:'smooth'})],
+            ['characters','角色','角色列表',() => scrollToTarget('#girltop')],
+            ['search','搜索','称呼搜索',() => typeof global.drawAndJump === 'function' && global.drawAndJump()],
+            ['cancel','取消','取消角色选择',() => document.getElementById('mgreset')?.click()],
+            ['bottom','↓','跳到页面底部',() => global.__MAGIRECO_SCROLL__?.to?.({top:global.__MAGIRECO_SCROLL__.height,behavior:'smooth'}) || global.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})]
           ];
     const rail = document.createElement('aside');
     rail.className = 'suite-quick-rail-v7';
     rail.setAttribute('aria-label', '页面快捷操作');
-    for (const [glyph, label, action] of definitions) {
+    for (const [actionName, glyph, label, action] of definitions) {
       const button = document.createElement('button');
       button.type = 'button';
       button.textContent = glyph;
       button.title = label;
       button.setAttribute('aria-label', label);
-      const actionName = label.includes('顶部') ? 'top'
-        : label.includes('底部') ? 'bottom'
-        : label.includes('取消') ? 'cancel'
-        : label.includes('筛选') ? 'filter'
-        : label.includes('角色') ? 'characters'
-        : label.includes('搜索') ? 'search'
-        : label.includes('结果') ? 'results'
-        : '';
-      if (actionName) button.dataset.action = actionName;
+      button.dataset.action = actionName;
       button.addEventListener('click', action);
       rail.appendChild(button);
     }

@@ -2490,7 +2490,7 @@ html[data-call-preboot="true"]::after{
   transform:none!important;
 }
 
-/* Reader-like compact symbolic rail. No text labels in the visible control. */
+/* Compact rail. Explicit one-character navigation labels accompany the search icon. */
 .call-jump-widget-v7{
   width:42px!important;
   min-width:42px!important;
@@ -3109,3 +3109,11 @@ html:root[data-call-theme] body #at_form label.at:has(input:focus-visible) { out
 html:root[data-call-theme] body #at_form input:is([type="checkbox"],[type="radio"]) { flex:none; margin:0; }
 
 html:root[data-call-theme] body .call-attribute-fieldset-v8 { background:transparent!important; border:0!important; }
+
+/* r23: restore readable semantic labels inside legacy font-size:0 buttons.
+   Inherit the current palette, typography and shared CRT treatment. */
+html:root[data-call-theme] body .call-jump-actions-v7 .call-rail-letter {
+  display:block; font-family:inherit; font-size:1rem!important;
+  font-weight:600; line-height:1; letter-spacing:0;
+  color:inherit; text-shadow:inherit; pointer-events:none;
+}

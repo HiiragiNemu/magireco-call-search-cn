@@ -1,0 +1,20 @@
+{
+  "release": "call-r23-semantic-rail-20260929",
+  "scope": "Call sidebar semantics; downstream routes and data unchanged",
+  "sha256": {
+    "attendance.html": "ffd93f0b83c55b68e675ff15a74da9097885bc296c5aa3bea4f265b20474aac0",
+    "index_png.html": "ea4a29712a08b2aa350ac1f6e9e882a3fdc91f925d63a7ebbef01951a6109816",
+    "story.html": "97a0b0620151288a26b7ab2d3ff039a6fc71138f02ee4d6029de1a805c1c0285",
+    "cnt.html": "a74ba290ff13236be7b7f8dc569d606443beec50cef31cf8c9298845cbec4e19",
+    "index.html": "85270b30c53c6405476d84e25ea5ce44a6dc07532528fa8c40c6455fe437410a",
+    "call_png.html": "e43ba9c89bf9dfb6111d89e03364732e4f9a58465ab3dab54dc8ce3f6e644d53",
+    "story-title-editor.html": "2350a8eaa1c92be9d89610d0c8c208ae582990a100690376aa42af6639c5763a",
+    "runes.html": "760fcd50949bbb185ae5bc4fe53e799cd55badd1f87d1f67e6c02fd3b743b0f2",
+    "gachasim.html": "1f4c77cd5a1749fed4818cdd4fee5f9265feb7d04b59fc4b1484b30c804f5438",
+    "call-r22-release.json": "c801d46923b649e7e5d34be204be6f3a6e35854e7ff58b648c554f40355f84b4",
+    "json_open.html": "388711b15e800edbce0a4e349354549f9bf12d83621f5ca0c69ca8b1aab2f002",
+    "myfile/theme-mode-v1.css": "d7b0a85ef06b67f876580409f2b2ce3424dd8c18377541f884a8b71ed17cc8fa",
+    "myfile/theme-mode-v1.js": "db14225b6eaeda6839efb14bde8768187c3a2389a7c3b52f393b3106d4466f24",
+    "myfile/suite-v7.js": "19b2c47f2f40076543b17c747f5377eda54092f796b7a4f307399c1013f50af8"
+  }
+}

@@ -512,6 +512,10 @@
   }
 
   function railIcon(action){
+    // Only executing a search uses the magnifier. Navigation uses one readable
+    // character; the button keeps its complete title and accessible name.
+    const letters={characters:'选',filter:'筛',attributes:'属',results:'果',cancel:'清',height:'高'};
+    if(letters[action]) return `<span class="call-rail-letter" aria-hidden="true">${letters[action]}</span>`;
     const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
     const icons={
       top:'<span class="call-rail-arrow" aria-hidden="true">↑</span>',
@@ -531,21 +535,22 @@
     for(const button of rail.querySelectorAll('button')){
       let action=button.dataset.action || '';
       const label=(button.getAttribute('aria-label') || button.title || button.textContent || '').trim();
-      if(!action){
-        if(/顶部|top/i.test(label)) action='top';
-        else if(/底部|bottom/i.test(label)) action='bottom';
-        else if(/角色|选人/.test(label)) action='characters';
-        else if(/筛选|条件/.test(label)) action='filter';
-        else if(/属性/.test(label)) action='attributes';
-        else if(/搜索/.test(label)) action='search';
-        else if(/取消|清空/.test(label)) action='cancel';
-        else if(/身高/.test(label)) action='height';
-        else if(/结果/.test(label)) action='results';
-      }
+      // Exact legacy labels also repair a mixed-cache load of the old suite.
+      // Never classify '搜索条件' or '搜索结果' by the substring '搜索'.
+      const legacyActions={
+        '跳到页面顶部':'top','跳到页面底部':'bottom',
+        '角色列表':'characters','选择角色':'characters',
+        '搜索条件':'filter','筛选角色':'filter','属性筛选':'attributes',
+        '执行搜索':'search','称呼搜索':'search','执行称呼搜索':'search',
+        '搜索结果':'results','取消筛选与角色选择':'cancel',
+        '取消角色选择':'cancel','取消已选角色并清空关系结果':'cancel','身高图':'height'
+      };
+      action=legacyActions[label] || action;
       if(action) button.dataset.action=action;
-      if(action && button.dataset.callIconized!=='true'){
+      if(action && button.dataset.callIconAction!==action){
         button.innerHTML=railIcon(action);
         button.dataset.callIconized='true';
+        button.dataset.callIconAction=action;
       }
     }
   }
