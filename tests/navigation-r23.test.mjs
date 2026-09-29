@@ -19,12 +19,12 @@ test('legacy mixed-cache search labels migrate without replacing handlers or acc
  const buttons=['搜索条件','执行搜索','搜索结果','取消筛选与角色选择'].map(label=>({dataset:{action:'search',callIconized:'true'},title:label,getAttribute:()=>label,writes:0,set innerHTML(v){this.markup=v;this.writes++}}));
  const ctx={buttons};vm.runInNewContext(icons+';normalizeRailButtons({querySelectorAll:()=>buttons});',ctx);
  assert.deepEqual(buttons.map(b=>b.dataset.action),['filter','search','results','cancel']);
- assert.match(buttons[0].markup,/>筛</);assert.match(buttons[1].markup,/<svg/);assert.match(buttons[2].markup,/>果</);assert.match(buttons[3].markup,/>清</);
+ assert.match(buttons[0].markup,/>筛</);assert.match(buttons[1].markup,/<svg/);assert.match(buttons[2].markup,/>果</);assert.match(buttons[3].markup,/<svg/);assert.match(buttons[3].markup,/M6 6l12 12M18 6 6 18/);
  vm.runInNewContext('normalizeRailButtons({querySelectorAll:()=>buttons})',ctx);assert.ok(buttons.every(b=>b.writes===1));
 });
 test('single Chinese glyphs inherit theme and only search uses magnifier geometry',()=>{
  const c={};vm.runInNewContext(icons+';globalThis.icon=railIcon;',c);
- for(const [a,ch] of Object.entries({characters:'选',filter:'筛',attributes:'属',results:'果',cancel:'清',height:'高'})){
+ for(const [a,ch] of Object.entries({characters:'选',filter:'筛',attributes:'属',results:'果',height:'高'})){
   const s=c.icon(a);assert.match(s,/aria-hidden="true"/);assert.equal(s.replace(/<[^>]+>/g,''),ch);assert.doesNotMatch(s,/<svg/);
  }
  assert.match(c.icon('search'),/circle cx="10.5"/);

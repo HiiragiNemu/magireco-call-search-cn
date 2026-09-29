@@ -514,7 +514,7 @@
   function railIcon(action){
     // Only executing a search uses the magnifier. Navigation uses one readable
     // character; the button keeps its complete title and accessible name.
-    const letters={characters:'选',filter:'筛',attributes:'属',results:'果',cancel:'清',height:'高'};
+    const letters={characters:'选',filter:'筛',attributes:'属',results:'果',height:'高'};
     if(letters[action]) return `<span class="call-rail-letter" aria-hidden="true">${letters[action]}</span>`;
     const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
     const icons={

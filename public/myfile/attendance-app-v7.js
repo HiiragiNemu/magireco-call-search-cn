@@ -9,6 +9,7 @@
   let catalog = [];
   let selected = null;
   let requestSerial = 0;
+  let requestController = null;
   let attributeController = null;
 
   function cacheNodes() {
@@ -102,16 +103,18 @@
     return img;
   }
 
-  async function renderRanking(source, output) {
+  async function renderRanking(source, output, serial) {
     const byName = new Map();
     for (const row of Array.isArray(output) ? output : []) {
       if (!Array.isArray(row) || row.length < 2) continue;
       const item = await resolveResult(row);
+      if (serial !== requestSerial) return;
       const key = item.zh;
       const previous = byName.get(key);
       if (!previous || item.value > previous.value) byName.set(key, item);
     }
     const resolved = [...byName.values()].sort((a, b) => b.value - a.value || a.zh.localeCompare(b.zh, 'zh-CN'));
+    if (serial !== requestSerial) return;
     nodes.attendanceResultsBody.replaceChildren();
     if (!resolved.length) {
       const empty = document.createElement('div');
@@ -151,14 +154,18 @@
 
   async function loadRanking(entry) {
     const serial = ++requestSerial;
+    requestController?.abort();
+    const controller = new AbortController();
+    requestController = controller;
     Tools.setStatus(nodes.attendanceStatus, Tools.loadingMarkup(`正在查询 ${entry.zh}…`));
     nodes.attendanceResultsBody.innerHTML = `<div class="suite-notice">${Tools.loadingMarkup('正在生成排行…')}</div>`;
     Tools.scrollToTargetV7(nodes.attendanceResults);
     try {
       const params = new URLSearchParams({ gname: entry.jp });
-      const data = await Tools.fetchJson(`${API_URL}?${params.toString()}`, { cache: 'no-store' }, 40000);
+      const data = await Tools.fetchJson(`${API_URL}?${params.toString()}`, { cache: 'no-store', signal: controller.signal }, 40000);
       if (serial !== requestSerial) return;
-      await renderRanking(entry, data);
+      await renderRanking(entry, data, serial);
+      if (serial !== requestSerial) return;
       Tools.setStatus(nodes.attendanceStatus, `${entry.zh} 的排行已生成。`, 'success');
       Tools.scrollToTargetV7(nodes.attendanceResults);
     } catch (error) {
@@ -166,11 +173,15 @@
       console.error(error);
       Tools.setStatus(nodes.attendanceStatus, `排行获取失败：${Tools.escapeHtml(error.message || error)}`, 'error');
       nodes.attendanceResultsBody.innerHTML = '<div class="suite-notice">排行服务暂时不可用，请稍后重试。</div>';
+    } finally {
+      if (requestController === controller) requestController = null;
     }
   }
 
   function clearAll() {
     ++requestSerial;
+    requestController?.abort();
+    requestController = null;
     selected = null;
     nodes.attendanceGrid.querySelectorAll('.suite-character-card').forEach((card) => card.setAttribute('aria-pressed', 'false'));
     updateSelection();

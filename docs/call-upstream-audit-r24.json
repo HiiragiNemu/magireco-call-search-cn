@@ -1,0 +1,300 @@
+{
+  "checkedAt": "2026-09-29T11:33:39.127404+00:00",
+  "captureRun": "36562492976",
+  "sources": [
+    {
+      "url": "https://magireco-chara-search.vercel.app/call.html",
+      "path": "upstream/call.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/call.html",
+      "sha256": "e1c1ce3916cd864df987e128f1d3e2f8ec854075476e6aaa5eb9c5afe227978d",
+      "bytes": 77716
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/index.html",
+      "path": "upstream/index.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/index.html",
+      "sha256": "963dc064687579ce394d274abd2cac0ef756bd7e715401e08f0388fcde19b3f9",
+      "bytes": 139445
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/cnt.html",
+      "path": "upstream/cnt.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/cnt.html",
+      "sha256": "bf3d92b7a3355df7b0c0ae4ae370e343ae6e424d8ae54b57ea28ebb05b5f90ea",
+      "bytes": 61275
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/json_open.html",
+      "path": "upstream/json_open.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/json_open.html",
+      "sha256": "3290d9b91f75de86f3139506cf4113a290b8d69e1f48b3c1112467fd48bdff35",
+      "bytes": 6776
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/mdkOCR/index.html",
+      "path": "upstream/mdkOCR/index.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/mdkOCR/index.html",
+      "sha256": "a71782be8f74dd0f7c8fe14cdad3e614e032dcf48fc843d9a2d3c061a2531341",
+      "bytes": 5285
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/callTable.js",
+      "path": "upstream/myfile/callTable.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/callTable.js",
+      "sha256": "5227e09760a4fc861409ee0415a7bee719b1570ede85bb2a5df5f6a3ce1dfff8",
+      "bytes": 196681
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/charaAt.js",
+      "path": "upstream/myfile/charaAt.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/charaAt.js",
+      "sha256": "44f3aed97565032ae44e8203e47dc845025c90fe2f26ea34fd0c84b748b219ff",
+      "bytes": 38488
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/mgirlAtSearch.js",
+      "path": "upstream/myfile/mgirlAtSearch.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/mgirlAtSearch.js",
+      "sha256": "65666272a2559cd19b967ab786d8973403f98ab6bcb92ace5e43b9882c093c39",
+      "bytes": 4527
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/mgirlCallNarrow.js",
+      "path": "upstream/myfile/mgirlCallNarrow.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/mgirlCallNarrow.js",
+      "sha256": "747897354a0a61069f5df83a250d62cd19edc6f00c7ccbaa940fe596207c2d05",
+      "bytes": 2786
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/mgirlNarrow.js",
+      "path": "upstream/myfile/mgirlNarrow.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/mgirlNarrow.js",
+      "sha256": "8a0e842b88d5b2b25b8072bdc1b67c57d00565a586ea69eaa7c1bab1eae04989",
+      "bytes": 2609
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/myCommon.js",
+      "path": "upstream/myfile/myCommon.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/myCommon.js",
+      "sha256": "51ea40256644957f05d9409878072de35f2e34e202681bd35a9a8dd750e1bc9d",
+      "bytes": 368
+    },
+    {
+      "url": "https://magireco-chara-search.vercel.app/myfile/ndownReset.js",
+      "path": "upstream/myfile/ndownReset.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/ndownReset.js",
+      "sha256": "df21a6fefdbcf2f2b9a1d3da7c625cdef3db8dd5f014dd189842e31fe4ca86d0",
+      "bytes": 1127
+    },
+    {
+      "url": "https://drive.google.com/uc?export=download&id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q",
+      "path": "upstream/story.json",
+      "status": 200,
+      "finalUrl": "https://drive.usercontent.google.com/download?id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q&export=download",
+      "sha256": "92cced9f176c583ab125b0a77b513116a27b4c376332de0c5f4c031f83ac51cc",
+      "bytes": 2749839
+    }
+  ],
+  "story": {
+    "rows": 14466,
+    "categories": [
+      {
+        "category": "ピュエラ・ヒストリア",
+        "rows": 283,
+        "differentRows": 0
+      },
+      {
+        "category": "イベント",
+        "rows": 5537,
+        "differentRows": 0
+      },
+      {
+        "category": "メイン【第2部】",
+        "rows": 1497,
+        "differentRows": 0
+      },
+      {
+        "category": "アナザー【第2部】",
+        "rows": 174,
+        "differentRows": 0
+      },
+      {
+        "category": "魔法少女",
+        "rows": 2809,
+        "differentRows": 0
+      },
+      {
+        "category": "スペシャル",
+        "rows": 411,
+        "differentRows": 0
+      },
+      {
+        "category": "衣装",
+        "rows": 447,
+        "differentRows": 0
+      },
+      {
+        "category": "ミラーズ",
+        "rows": 67,
+        "differentRows": 0
+      },
+      {
+        "category": "バトルミュージアム",
+        "rows": 44,
+        "differentRows": 0
+      },
+      {
+        "category": "scene0",
+        "rows": 475,
+        "differentRows": 0
+      },
+      {
+        "category": "メモリア",
+        "rows": 1038,
+        "differentRows": 0
+      },
+      {
+        "category": "シール図鑑",
+        "rows": 228,
+        "differentRows": 0
+      },
+      {
+        "category": "メイン【第1部】",
+        "rows": 731,
+        "differentRows": 0
+      },
+      {
+        "category": "アナザー【第1部】",
+        "rows": 126,
+        "differentRows": 0
+      },
+      {
+        "category": "第1部EDムービー",
+        "rows": 34,
+        "differentRows": 0
+      },
+      {
+        "category": "第2部EDムービー",
+        "rows": 90,
+        "differentRows": 0
+      },
+      {
+        "category": "アニメ【1st】",
+        "rows": 169,
+        "differentRows": 0
+      },
+      {
+        "category": "アニメ【2nd】",
+        "rows": 165,
+        "differentRows": 0
+      },
+      {
+        "category": "アニメ【Final】",
+        "rows": 141,
+        "differentRows": 0
+      }
+    ],
+    "rawSourceSha256": "92cced9f176c583ab125b0a77b513116a27b4c376332de0c5f4c031f83ac51cc",
+    "rawSourceMatchesPrevious": true,
+    "variantFamilies": 50,
+    "variantFamiliesEqual": true
+  },
+  "selectorCoverage": {
+    "call.html": {
+      "upstream": 193,
+      "local": 193,
+      "missingAfterKnownAliases": []
+    },
+    "index.html": {
+      "upstream": 274,
+      "local": 291,
+      "missingAfterKnownAliases": []
+    },
+    "cnt.html": {
+      "upstream": 139,
+      "local": 194,
+      "missingAfterKnownAliases": []
+    }
+  },
+  "relations": {
+    "upstream": 2805,
+    "production": 2804,
+    "missing": [
+      [
+        "阿見莉愛\t百江なぎさ",
+        "安名メル"
+      ]
+    ],
+    "extra": []
+  },
+  "attributes": {
+    "sourceRecords": 282,
+    "localRecords": 282,
+    "held": [
+      {
+        "jp": "瀬奈みこと",
+        "upstream": [
+          "限定",
+          "☆45",
+          "無",
+          "サポート",
+          "AAABC",
+          "マギレコ"
+        ],
+        "local": [
+          "☆45",
+          "無",
+          "大東学院",
+          "マギレコ"
+        ]
+      }
+    ]
+  },
+  "addedFacets": [
+    {
+      "jp": "梓みふゆ",
+      "tag": "まどドラ"
+    },
+    {
+      "jp": "アリナ・グレイ",
+      "tag": "まどドラ"
+    }
+  ],
+  "displayRepairs": 16,
+  "runeModels": [
+    {
+      "path": "mdkOCR/mdk.traineddata",
+      "source": "https://magireco-chara-search.vercel.app/mdkOCR/mdk.traineddata",
+      "bytes": 500590,
+      "upstreamSha256": "2cf6fae48b496fad4c0bb9db621ed63ab6a4b900e0fa6353a1858858e3ec8ee9",
+      "localSha256": "2cf6fae48b496fad4c0bb9db621ed63ab6a4b900e0fa6353a1858858e3ec8ee9",
+      "identical": true
+    },
+    {
+      "path": "mdkOCR/mdm.traineddata",
+      "source": "https://magireco-chara-search.vercel.app/mdkOCR/mdm.traineddata",
+      "bytes": 168198,
+      "upstreamSha256": "e78ac7223f6eace144be32eba4bc8bc16095f38859117be406b796d2472ac59c",
+      "localSha256": "e78ac7223f6eace144be32eba4bc8bc16095f38859117be406b796d2472ac59c",
+      "identical": true
+    }
+  ],
+  "heldPolicy": [
+    "阿見莉愛→百江なぎさ=安名メル: likely misaligned cell; not added.",
+    "瀬奈みこと: keep existing school; do not merge unverified Rumor-character battle tags.",
+    "Ashley→更紗帆奈=ひみか: existing suspect entry flagged; no guessed reassignment."
+  ],
+  "limits": "Edge/row coverage is not proof that every historic translation or upstream annotation is correct. L2D/AIO playback is audited separately; no source or binding changes here."
+}

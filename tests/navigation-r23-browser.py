@@ -52,10 +52,10 @@ try:
     for path,expected in ex.items():
      if path!='/story':p=openpage(b,path)
      rows=buttons(p);assert [x['action'] for x in rows]==expected,(path,rows)
-     letters={'filter':'筛','characters':'选','results':'果','attributes':'属','cancel':'清','height':'高','top':'↑','bottom':'↓'}
+     letters={'filter':'筛','characters':'选','results':'果','attributes':'属','height':'高','top':'↑','bottom':'↓'}
      for item in rows:
       assert item['label']==item['title'] and len(item['label'])>1,item
-      if item['action']=='search':assert item['svg']==1 and item['text']=='',item
+      if item['action'] in ['search','cancel']:assert item['svg']==1 and item['text']=='',item
       else:assert item['svg']==0 and item['text']==letters[item['action']],item
      for width,height in [(1440,900),(390,844)]:
       p.set_viewport_size({'width':width,'height':height});p.wait_for_timeout(150)

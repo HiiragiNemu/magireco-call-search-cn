@@ -39,8 +39,9 @@
   }
 
   function setStatus(message, kind = 'info') {
-    if (Tools.setStatus) Tools.setStatus(nodes.titleEditorStatus, message, kind);
-    else if (nodes.titleEditorStatus) {
+    // Import/parse errors can quote untrusted file contents. This status has
+    // no intended HTML; never send it through the shared rich-markup renderer.
+    if (nodes.titleEditorStatus) {
       nodes.titleEditorStatus.textContent = message;
       nodes.titleEditorStatus.dataset.kind = kind;
     }

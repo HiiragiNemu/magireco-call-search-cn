@@ -11,6 +11,9 @@ const searchManifest = JSON.parse(await readFile(new URL('public/data/story-v6/m
 function loadBridge(search = '', fetchImpl = null) {
   const context = {
     URL,
+    AbortController,
+    setTimeout,
+    clearTimeout,
     URLSearchParams,
     Math,
     Object,

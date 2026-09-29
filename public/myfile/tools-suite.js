@@ -187,6 +187,12 @@
 
   async function fetchJson(url, options = {}, timeout = 30000) {
     const controller = new AbortController();
+    const callerSignal = options.signal;
+    const cancel = () => controller.abort(callerSignal?.reason);
+    if (callerSignal?.aborted) {
+      throw callerSignal.reason || new Error('请求已取消');
+    }
+    callerSignal?.addEventListener('abort', cancel, { once: true });
     const timer = global.setTimeout(() => controller.abort(), timeout);
     try {
       const response = await fetch(url, { ...options, signal: controller.signal });
@@ -194,6 +200,7 @@
       return await response.json();
     } finally {
       global.clearTimeout(timer);
+      callerSignal?.removeEventListener('abort', cancel);
     }
   }
 

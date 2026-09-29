@@ -198,9 +198,11 @@
   }
 
   function textFromMarkup(value) {
-    const temp = document.createElement('div');
+    // Template contents are inert: extracting text must not load images or
+    // execute event attributes from a future upstream/imported text value.
+    const temp = document.createElement('template');
     temp.innerHTML = String(value ?? '').replace(/<BR\s*\/?>/gi, '\n');
-    return (temp.textContent || '').replace(/\n+/g, ' ').trim();
+    return (temp.content.textContent || '').replace(/\n+/g, ' ').trim();
   }
 
   function normalized(value) {
@@ -279,12 +281,15 @@
         Tools.fetchJson(`./data/story-v6/${meta.file}`, { cache: 'force-cache' }, 45000),
         key === 'メモリア' ? loadMemoriaWikiLinks() : Promise.resolve(null)
       ]).then(([data, memoriaLinks]) => {
-        if (!data || data.key !== key || !Array.isArray(data.rows)) throw new Error(`${key} 数据无效。`);
+        if (!data || data.key !== key || !Array.isArray(data.rows) || data.rows.length !== meta.count) throw new Error(`${key} 数据无效或不完整。`);
         return data.rows.map((row, rowIndex) => ({
           row,
           rowIndex,
           sourceHref: key === 'メモリア' ? memoriaLinks?.[String(rowIndex)]?.url || null : null
         }));
+      }).catch((error) => {
+        categoryCache.delete(key);
+        throw error;
       }));
     }
     return categoryCache.get(key);
@@ -625,7 +630,14 @@
     const logic = selectedLogic();
     try {
       const datasets = await Promise.all(types.map(async (key) => [key, await loadCategory(key)]));
-      await routeReady;
+      // Reuse a successful/in-flight initialization, but allow a later search
+      // to recover after an earlier network failure instead of caching failure.
+      if (RouteBridge) {
+        await RouteBridge.initialize(manifest).catch((error) => {
+          console.warn('Reader/ADV 路由暂不可用；保留搜索和原始来源。', error);
+          return null;
+        });
+      } else await routeReady;
       if (serial !== searchSerial) return;
       const grouped = new Map();
       let total = 0;

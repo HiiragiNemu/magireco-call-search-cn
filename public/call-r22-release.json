@@ -5,7 +5,7 @@
   "storyCharacters": 291,
   "attendanceCharacters": 194,
   "sha256": {
-    "attendance.html": "ffd93f0b83c55b68e675ff15a74da9097885bc296c5aa3bea4f265b20474aac0",
+    "attendance.html": "4ef26db433554778a5677730261b969a8b2501b35ec252a8124c36b0be66324a",
     "data/attendance-character-additions.json": "00729718c55f13c36d7a72cb66454517366ca92026854f3414b02c844e52dc70",
     "data/story-character-additions.json": "24a696e524fd90839d9e1e1d742a091cda6091187671a9e96879145ddb6898ba",
     "img/png/story-017ddd88c672.png": "04cc76dbeada402ebde5bc44ef0060ab7bd158822a6935e4f49f2d137f308af6",
@@ -106,14 +106,14 @@
     "img/png/story-fa6307c28966.png": "c707a0c1ac4edbb0c6ba37b4fd5d12dbeea3186f5b9d5822dbe03dd5cfbba997",
     "img/png/story-fb8e4382c244.png": "1bd10c698e0b7e4861e98fac9e39d09163f1c213d5a163c64ba4e8157eb9cff0",
     "img/png/story-fc92f41573ae.png": "2b9b7860abb65b86efd37521bbe8c65da5cdc65e9a1453960b5fd671c268df28",
-    "index.html": "85270b30c53c6405476d84e25ea5ce44a6dc07532528fa8c40c6455fe437410a",
-    "myfile/attendance-app-v7.js": "50737eac49895be4d2165d8c79a676e4f9766fc10deab694cfe045fee4abcc7a",
+    "index.html": "a368397a10d1c5cbc11af6b262fb0b7be2414c0cc511ebc3e4609e363a2d6535",
+    "myfile/attendance-app-v7.js": "6a55196ac7a4d4b1a73b595ac158d09e157ca7b0bd425a040eca2639065328b1",
     "myfile/site-correction-v2.css": "475e331731c5e05cfa097bd25caa2ea1016308e0364f6010f1df449125a6b6d1",
     "myfile/site-correction-v2.js": "5eb9b134caac48071c787aa59e97dd7ece2dd34dd6b12e205da5974edf09cbbc",
-    "myfile/story-app-v7.js": "9814913bbe32f2524ad764e6fca769cf8263838dd1d636f1118e47c1161b7fe9",
+    "myfile/story-app-v7.js": "1a5e3db5252ed06a23f45c578e609dc7ec473e6495a69b1d474a67e2bd9a9652",
     "myfile/suite-v7.js": "19b2c47f2f40076543b17c747f5377eda54092f796b7a4f307399c1013f50af8",
-    "myfile/tools-suite.js": "316457850dfa1376b1d22d7a66388bfd995b61ef59db01bd98deb698498ed16f",
+    "myfile/tools-suite.js": "ddf162fb0f1adb36d8a43afbe487980d633dc7d2fd60136c9fc3553676de244d",
     "myfile/triple-tap-filter.js": "b98b29fc11544c1ed950a555f222625d9427186320cfa28a6462a5d8551c953d",
-    "story.html": "97a0b0620151288a26b7ab2d3ff039a6fc71138f02ee4d6029de1a805c1c0285"
+    "story.html": "4c08bb9a100ec1f92998b4d0b2705fdfb6b57a5579eebd57a37307af210c684d"
   }
 }

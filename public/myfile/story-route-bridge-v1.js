@@ -5,6 +5,8 @@
   const LOCAL_MANIFEST_URL = './data/story-router-v1.json';
   let state = null;
   let statePromise = null;
+  let activeRouterBase = null;
+  const MANIFEST_TIMEOUT_MS = 8000;
 
   function text(value) {
     return String(value == null ? '' : value).normalize('NFC').trim();
@@ -34,17 +36,25 @@
 
   function absoluteBase(value) {
     const base = new URL(value, global.document?.baseURI || global.location?.href || 'http://localhost/');
-    if (base.protocol !== 'http:' && base.protocol !== 'https:') throw new Error('路由地址必须使用 HTTP(S)');
+    if ((base.protocol !== 'http:' && base.protocol !== 'https:') || base.username || base.password) {
+      throw new Error('路由地址必须使用无凭据的 HTTP(S) 地址');
+    }
     return base;
   }
 
   function manifestUrl() {
     const base = aioBase();
-    return base ? new URL('story-routes.json', base.endsWith('/') ? base : `${base}/`).toString() : LOCAL_MANIFEST_URL;
+    if (!base) return localManifestUrl();
+    const url = absoluteBase(base);
+    url.pathname = url.pathname.replace(/\/open\/?$/u, '/');
+    if (!url.pathname.endsWith('/')) url.pathname += '/';
+    url.search = '';
+    url.hash = '';
+    return new URL('story-routes.json', url).toString();
   }
 
   function routerUrl(sourceKey, target, edition) {
-    const base = aioBase();
+    const base = activeRouterBase ?? aioBase();
     if (!base) return '';
     const url = absoluteBase(base);
     if (!/\/open\/?$/u.test(url.pathname)) {
@@ -101,9 +111,16 @@
     if (payload.sourceCatalog !== 'story-v6' || payload.catalogGeneratedAt !== searchManifest.generatedAt) {
       throw new Error('搜索目录与 Story Router 不是同一版本');
     }
+    if (!/^[a-z0-9-]{1,64}$/u.test(payload.catalogRevision || '') || !Array.isArray(payload.routes) || !payload.routes.length) {
+      throw new Error('Story Router 清单结构无效');
+    }
+    const prefix = `story-v6:${payload.catalogRevision}:`;
     const routes = new Map();
-    for (const route of payload.routes || []) {
-      if (route?.sourceKey && route?.reader?.storyId) routes.set(route.sourceKey, route);
+    for (const route of payload.routes) {
+      if (typeof route?.sourceKey !== 'string' || !route.sourceKey.startsWith(prefix) || !route?.reader?.storyId || routes.has(route.sourceKey)) {
+        throw new Error('Story Router 清单存在无效或重复的来源标识');
+      }
+      routes.set(route.sourceKey, route);
     }
     return Object.freeze({ payload, routes });
   }
@@ -112,14 +129,46 @@
     return new URL(LOCAL_MANIFEST_URL, global.document?.baseURI || global.location?.href || 'http://localhost/').toString();
   }
 
+  async function fetchManifest(url) {
+    const controller = new AbortController();
+    let timer;
+    try {
+      return await Promise.race([
+        (async () => {
+          const response = await fetch(url, { cache: 'no-cache', signal: controller.signal });
+          // A parseable partial response is still an incomplete route catalog.
+          if (response.status !== 200 || response.headers?.get('content-range')) {
+            throw new Error(`Story Router 非完整响应：HTTP ${response.status}`);
+          }
+          return await response.json();
+        })(),
+        new Promise((_, reject) => {
+          timer = global.setTimeout(() => {
+            controller.abort();
+            reject(new Error('Story Router 清单读取超时'));
+          }, MANIFEST_TIMEOUT_MS);
+        })
+      ]);
+    } finally {
+      global.clearTimeout(timer);
+    }
+  }
+
   async function loadManifest(searchManifest) {
-    const candidates = [...new Set([manifestUrl(), localManifestUrl()])];
+    const local = localManifestUrl();
+    let remote = '';
     let lastError = null;
+    try { remote = manifestUrl(); } catch (error) { lastError = error; }
+    const candidates = [...new Set([remote, local].filter(Boolean))];
     for (const url of candidates) {
       try {
-        const response = await fetch(url, { cache: 'no-cache' });
-        if (!response.ok) throw new Error(`Story Router HTTP ${response.status}`);
-        state = parseManifest(await response.json(), searchManifest);
+        const loaded = parseManifest(await fetchManifest(url), searchManifest);
+        // The fallback catalog belongs to the co-deployed handler, not to the
+        // remote service that just failed. Keep source/edition/revision intact.
+        activeRouterBase = url === local && aioBase()
+          ? new URL('../aio/', local).toString()
+          : aioBase();
+        state = loaded;
         return state;
       } catch (error) {
         lastError = error;
@@ -129,7 +178,12 @@
   }
 
   function initialize(searchManifest) {
-    if (!statePromise) statePromise = loadManifest(searchManifest);
+    if (!statePromise) {
+      statePromise = loadManifest(searchManifest).catch((error) => {
+        statePromise = null;
+        throw error;
+      });
+    }
     return statePromise;
   }
 

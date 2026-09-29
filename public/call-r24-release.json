@@ -1,8 +1,9 @@
 {
-  "release": "call-r23-semantic-rail-20260929",
-  "scope": "Call sidebar semantics; downstream routes and data unchanged",
+  "release": "call-r24-x-and-reliability-20260929",
+  "scope": "Restore X; bounded same-version Call fallback; safe text; cancellation and recoverable search; 16 existing display cells and 2 additive work facets. No changes to AIO/Reader/L2D or story/source identities.",
   "sha256": {
     "attendance.html": "4ef26db433554778a5677730261b969a8b2501b35ec252a8124c36b0be66324a",
+    "call-r23-release.json": "4c5060e5df0a5fa6d4fd2238a6c7cdacd1f94c85f9d5ad05ec9b3152819816e0",
     "index_png.html": "cfac6669da991962ce817ebd0a434ea7707b10db31edc16cd156d1973053ddb1",
     "story.html": "4c08bb9a100ec1f92998b4d0b2705fdfb6b57a5579eebd57a37307af210c684d",
     "cnt.html": "78b715815cf93de0e06615f3db1bf0f023e124f0b7f830c33f543fdcdb9cd210",
@@ -13,8 +14,13 @@
     "gachasim.html": "580c9fc1647a763226c6d41b3d1b82da76f59894bf139216673319dc2cd47a07",
     "call-r22-release.json": "ae3851b2ff968d0c484dc94a3fdd2e75a304d2401342778aff289ceeda1892a7",
     "json_open.html": "d30b195f837f1a4cb6b77f3d5d56ceb1e34b4cdc639bd6bf192991079373c6ec",
-    "myfile/theme-mode-v1.css": "d7b0a85ef06b67f876580409f2b2ce3424dd8c18377541f884a8b71ed17cc8fa",
+    "myfile/story-app-v7.js": "1a5e3db5252ed06a23f45c578e609dc7ec473e6495a69b1d474a67e2bd9a9652",
+    "myfile/story-route-bridge-v1.js": "adfb00126847eea5910d17c7ff46119b4464afb0c8cd2610c7f0d7248dffa3cb",
+    "myfile/story-title-editor-v2.js": "a6a93b7e8f082be93c725e8bc36b9ce684f81e32647d21b530480c1fd6ff9e3d",
+    "myfile/tools-suite.js": "ddf162fb0f1adb36d8a43afbe487980d633dc7d2fd60136c9fc3553676de244d",
     "myfile/theme-mode-v1.js": "0f5d4877f03bca82ee37cba6725fc1a692acb1ac763395a9d42b737c50f4cba8",
-    "myfile/suite-v7.js": "19b2c47f2f40076543b17c747f5377eda54092f796b7a4f307399c1013f50af8"
+    "myfile/attendance-app-v7.js": "6a55196ac7a4d4b1a73b595ac158d09e157ca7b0bd425a040eca2639065328b1",
+    "myfile/callTable.js": "ab41be3e711b212dd220a5eada49a4a319227ad86c4fff39682c1d126e202323",
+    "myfile/charaAt.js": "2c0a9ae0e2f9d9811dc040c26965cf6a26c0b17fea86ae4d379ff237c58b304c"
   }
 }

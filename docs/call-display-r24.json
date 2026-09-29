@@ -1,0 +1,103 @@
+{
+  "scope": "Existing cell display normalization only; no new directed relations or upstream spelling replacements",
+  "count": 16,
+  "changes": [
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "和泉十七夜",
+      "before": "十七夜 (Kanagi)",
+      "after": "十七夜 (Kanagi / 十七夜)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "八云御魂",
+      "before": "みたま (Mitama)",
+      "after": "みたま (Mitama / 御魂)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "木崎衣美里",
+      "before": "エミリー (Emily)",
+      "after": "エミリー (Emily / 艾米丽)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "美凪纱纱罗",
+      "before": "ささら (Sasara)",
+      "after": "ささら (Sasara / 纱纱罗)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "龙城明日香",
+      "before": "明日香 (Asuka)",
+      "after": "明日香 (Asuka / 明日香)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "鹿目圆",
+      "before": "まどか (Madoka)",
+      "after": "まどか (Madoka / 圆)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "晓美焰(眼镜ver)",
+      "before": "ほむら (Homura)",
+      "after": "ほむら (Homura / 焰)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "美树沙耶香",
+      "before": "さやか (Sayaka)",
+      "after": "さやか (Sayaka / 沙耶香)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "佐仓杏子",
+      "before": "杏子 (Kyoko)",
+      "after": "杏子 (Kyoko / 杏子)"
+    },
+    {
+      "caller": "アシュリー・テイラー",
+      "target": "三穗野星罗",
+      "before": "せいら (Seira)",
+      "after": "せいら (Seira / 星罗)"
+    },
+    {
+      "caller": "優木沙々",
+      "target": "美国织莉子",
+      "before": "織莉子さん (Oriko-san / 织莉子小姐) / (織莉子) ((Oriko))",
+      "after": "織莉子さん (Oriko-san / 织莉子小姐) / (織莉子) ((Oriko) / (织莉子))"
+    },
+    {
+      "caller": "優木沙々",
+      "target": "吴纪里香",
+      "before": "キリカさん (Kirika-san / 纪里香小姐) / (キリカ) ((Kirika))",
+      "after": "キリカさん (Kirika-san / 纪里香小姐) / (キリカ) ((Kirika) / (纪里香))"
+    },
+    {
+      "caller": "優木沙々",
+      "target": "佐木京",
+      "before": "(京) ((Miyako))",
+      "after": "(京) ((Miyako) / (京))"
+    },
+    {
+      "caller": "優木沙々",
+      "target": "人见里奈",
+      "before": "リナさん (Lina-san / 里奈小姐) / (リナ) ((Lina))",
+      "after": "リナさん (Lina-san / 里奈小姐) / (リナ) ((Lina) / (里奈))"
+    },
+    {
+      "caller": "優木沙々",
+      "target": "朱音麻衣",
+      "before": "麻衣さん (Mai-san / 麻衣小姐) / (麻衣) ((Mai))",
+      "after": "麻衣さん (Mai-san / 麻衣小姐) / (麻衣) ((Mai) / (麻衣))"
+    },
+    {
+      "caller": "深月フェリシア",
+      "target": "七海八千代",
+      "before": "やちよ (Yachiyo / 八千代) (偏屈ババア / 乖僻老太婆, ケチババア / 吝啬老太婆)",
+      "after": "やちよ (Yachiyo / 八千代) / 偏屈ババア (henkutsu babaa / 乖僻老太婆) / ケチババア (kechi babaa / 吝啬老太婆)"
+    }
+  ],
+  "translationNote": "Emily is transcribed as 艾米丽, not claimed as official CN dialogue; all other Chinese names use the existing catalog. Existing suspect Ashley→更纱帆奈/ひみか remains unchanged and flagged for source review."
+}
