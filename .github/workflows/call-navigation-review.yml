@@ -6,13 +6,16 @@ on:
     paths:
       - '.github/workflows/call-navigation-review.yml'
       - 'scripts/prepare-navigation-r23.py'
+      - 'scripts/prepare-call-r24.py'
+      - 'scripts/call-r24-reviewed.patch.xz'
       - 'scripts/validate-production.py'
       - 'scripts/audit-call-upstream-r24.py'
       - 'tests/navigation-r23*'
-      - 'public/myfile/suite-v7.js'
+      - 'tests/*r24*'
+      - 'public/myfile/*.js'
       - 'public/myfile/theme-mode-v1.*'
       - 'public/*.html'
-      - 'public/call-r23-release.json'
+      - 'public/call-r24-release.json'
 permissions:
   contents: write
 jobs:
@@ -45,12 +48,8 @@ jobs:
           pip install playwright
           python -m playwright install --with-deps chromium
           mkdir -p /tmp/call-navigation-evidence
-      - name: Reproduce old rail and prepare bounded patch
-        run: |
-          if [ ! -f public/call-r23-release.json ]; then
-            python tests/navigation-r23-browser.py --baseline --output /tmp/call-navigation-evidence/baseline
-          fi
-          python scripts/prepare-navigation-r23.py
+      - name: Prepare bounded reviewed patch
+        run: python scripts/prepare-call-r24.py
       - name: Validate candidate without publishing
         run: |
           set -o pipefail
@@ -59,7 +58,10 @@ jobs:
           python scripts/validate-production.py
           python scripts/build-aio-edge-route-index.py --check
           python tests/story-pagination-browser.py --output /tmp/call-navigation-evidence/pagination.json
+          python tests/story-safety-r24-browser.py --output /tmp/call-navigation-evidence/inert-text.json
           python tests/navigation-r23-browser.py --output /tmp/call-navigation-evidence/candidate-browser
+          python tests/call-reliability-r24-browser.py --output /tmp/call-navigation-evidence/candidate-reliability
+          cp docs/call-*r24.json /tmp/call-navigation-evidence/
       - name: Create reviewed commit object only, or verify published bytes
         env:
           GH_TOKEN: ${{ github.token }}
@@ -71,28 +73,28 @@ jobs:
           def api(path,data=None):
               req=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'+path,data=None if data is None else json.dumps(data).encode(),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
               with urllib.request.urlopen(req,timeout=60) as response:return json.load(response)
-          paths=subprocess.check_output(['git','diff','--name-only','--','public'],text=True).splitlines()
-          paths+=subprocess.check_output(['git','ls-files','--others','--exclude-standard','public'],text=True).splitlines()
+          paths=subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
+          paths+=subprocess.check_output(['git','ls-files','--others','--exclude-standard'],text=True).splitlines()
+          paths=sorted(set(paths))
           if paths:
-              assert all(p.startswith('public/') and not p.startswith(('public/data/','public/aio/','public/edge-functions/','public/img/')) for p in paths)
+              assert all((p.startswith('public/') and not p.startswith(('public/data/','public/aio/','public/edge-functions/','public/img/'))) or p.startswith(('tests/','docs/call-')) for p in paths),paths
               parent=os.environ['GITHUB_SHA'];base=api('git/commits/'+parent)['tree']['sha'];entries=[]
               for p in paths:
                   blob=api('git/blobs',{'content':Path(p).read_text(),'encoding':'utf-8'})
                   entries.append({'path':p,'mode':'100644','type':'blob','sha':blob['sha']})
               tree=api('git/trees',{'base_tree':base,'tree':entries})
-              commit=api('git/commits',{'message':'fix(call): disambiguate quick rail actions with single-character labels','tree':tree['sha'],'parents':[parent]})
-              proof={'parent':parent,'commit':commit['sha'],'tree':tree['sha'],'files':entries,'published':False}
-              (out/'candidate.json').write_text(json.dumps(proof,indent=2)+'\n')
+              commit=api('git/commits',{'message':'fix(call): restore X and harden fallbacks, text rendering and data displays','tree':tree['sha'],'parents':[parent]})
+              (out/'candidate.json').write_text(json.dumps({'parent':parent,'commit':commit['sha'],'tree':tree['sha'],'files':entries,'published':False},indent=2)+'\n')
               print('REVIEWED_CANDIDATE_COMMIT='+commit['sha'])
               print('No ref changed; publication requires an explicit fast-forward after review.')
           else:
-              marker=Path('public/call-r23-release.json').read_bytes();manifest=json.loads(marker)
+              marker=Path('public/call-r24-release.json').read_bytes();manifest=json.loads(marker)
               def get(p):
-                  req=urllib.request.Request('https://magireco-call-search-cn.pages.dev/'+p+'?verify='+str(time.time_ns()),headers={'User-Agent':'Mozilla/5.0 Call-r23','Cache-Control':'no-cache, no-store'})
+                  req=urllib.request.Request('https://magireco-call-search-cn.pages.dev/'+p+'?verify='+str(time.time_ns()),headers={'User-Agent':'Mozilla/5.0 Call-r24','Cache-Control':'no-cache, no-store'})
                   with urllib.request.urlopen(req,timeout=60) as response:return response.read()
               for attempt in range(90):
                   try:
-                      assert get('call-r23-release.json')==marker
+                      assert get('call-r24-release.json')==marker
                       checks=[{'path':p,'match':hashlib.sha256(get(p)).hexdigest()==sha} for p,sha in manifest['sha256'].items()]
                       assert all(c['match'] for c in checks)
                       break
@@ -105,6 +107,7 @@ jobs:
         run: |
           if [ -f /tmp/call-navigation-evidence/production-bytes.json ]; then
             python tests/navigation-r23-browser.py --base https://magireco-call-search-cn.pages.dev --output /tmp/call-navigation-evidence/production-browser
+            python tests/call-reliability-r24-browser.py --base https://magireco-call-search-cn.pages.dev --output /tmp/call-navigation-evidence/production-reliability
           fi
       - name: Read-only production AIO, Reader and L2D handoff audit
         run: python tests/navigation-r23-integration.py --output /tmp/call-navigation-evidence/integration
