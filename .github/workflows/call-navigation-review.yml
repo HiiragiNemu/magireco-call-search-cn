@@ -7,6 +7,7 @@ on:
       - '.github/workflows/call-navigation-review.yml'
       - 'scripts/prepare-navigation-r23.py'
       - 'scripts/validate-production.py'
+      - 'scripts/audit-call-upstream-r24.py'
       - 'tests/navigation-r23*'
       - 'public/myfile/suite-v7.js'
       - 'public/myfile/theme-mode-v1.*'
@@ -28,6 +29,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Capture fresh upstream without altering production
+        run: |
+          if [ ! -f public/call-r24-release.json ]; then
+            python scripts/audit-call-upstream-r24.py --output /tmp/call-r24-sources
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: call-r24-sources
+          path: /tmp/call-r24-sources
+          if-no-files-found: ignore
+          retention-days: 14
       - run: |
           pip install playwright
           python -m playwright install --with-deps chromium
