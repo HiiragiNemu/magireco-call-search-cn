@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Apply a hash-verified, reviewed patch to a disposable checkout; never publish."""
-import hashlib,importlib.util,json,lzma,os,re,subprocess,tempfile,urllib.request
+import ast,hashlib,importlib.util,json,lzma,os,re,subprocess,tempfile,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
@@ -16,6 +16,14 @@ original={p:p.read_bytes() for p in (ROOT/'public').rglob('*') if p.is_file()}
 fd=Path(tempfile.gettempdir())/'call-r24-reviewed.patch';fd.write_bytes(patch)
 subprocess.run(['git','apply','--check','--unidiff-zero',str(fd)],check=True)
 subprocess.run(['git','apply','--unidiff-zero',str(fd)],check=True)
+# Repair only the test fixture's missing descriptor brace; do not alter its assertions.
+fixture=ROOT/'tests/call-reliability-r24-browser.py';text=fixture.read_text()
+old='.then(resolve)})}})})();';new='.then(resolve)})}}})})();'
+assert text.count(old)==1
+text=text.replace(old,new);fixture.write_text(text,encoding='utf-8')
+for node in ast.walk(ast.parse(text)):
+    if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute) and node.func.attr=='add_init_script' and node.args and isinstance(node.args[0],ast.Constant):
+        subprocess.run(['node','--check'],input=node.args[0].value,text=True,check=True)
 # Invalidate only changed runtime consumers; preserve every earlier query prefix.
 names=['theme-mode-v1.js','story-route-bridge-v1.js','tools-suite.js','attendance-app-v7.js','story-title-editor-v2.js','story-app-v7.js','callTable.js','charaAt.js']
 pattern=re.compile(r'((?:'+'|'.join(re.escape(n) for n in names)+r')(?:\?[^"<>]*)?)(?=")')
