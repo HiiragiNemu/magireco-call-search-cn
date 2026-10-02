@@ -419,7 +419,7 @@ body {
 /* The filter hint is part of the existing CRT scene, below its material layers.
    All six theme/phosphor appearances inherit the same control material tokens. */
 .call-status-toast {
-  position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom));
+  position: absolute; left: 50%; bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   z-index: 2480; width: max-content; max-width: min(520px, calc(100% - 36px));
   box-sizing: border-box; padding: 9px 13px;
   border: 1px solid var(--call-border-strong); border-radius: var(--control-radius, 3px);
