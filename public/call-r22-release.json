@@ -6,8 +6,8 @@
   "attendanceCharacters": 194,
   "sha256": {
     "attendance.html": "6f952a861b4c4fba25a8673f942cb7c1521972410037c7db7fd4895b590d1b9c",
-    "data/attendance-character-additions.json": "dc8afb79ae1b52b27e40995c38a09e1af2bff8bb23600cf51547aeb9e072d45e",
-    "data/story-character-additions.json": "de6fe8295747523df4ab4710ed01b73826141f63ec025acaf9221944c0688f94",
+    "data/attendance-character-additions.json": "00729718c55f13c36d7a72cb66454517366ca92026854f3414b02c844e52dc70",
+    "data/story-character-additions.json": "24a696e524fd90839d9e1e1d742a091cda6091187671a9e96879145ddb6898ba",
     "img/png/story-017ddd88c672.png": "04cc76dbeada402ebde5bc44ef0060ab7bd158822a6935e4f49f2d137f308af6",
     "img/png/story-02fc2eca7fd3.png": "a801297b366dd6abb01068078a8e6f8b2434d91e6e81ac82e2539baf4b847a2f",
     "img/png/story-033e32a60695.png": "705623205fec2ec6e24837277876a2fc80f2c33cbdf00da13a721a684fd45f2e",
@@ -107,12 +107,12 @@
     "img/png/story-fb8e4382c244.png": "1bd10c698e0b7e4861e98fac9e39d09163f1c213d5a163c64ba4e8157eb9cff0",
     "img/png/story-fc92f41573ae.png": "2b9b7860abb65b86efd37521bbe8c65da5cdc65e9a1453960b5fd671c268df28",
     "index.html": "63c77241beb201f61b535c11a7a9804d2b86057c3de93e2eecb0764ce9743089",
-    "myfile/attendance-app-v7.js": "a8b49f0f5b46c6d45ca18c71e2e3b6ae831dc0e1f7147dbd1c50b933cc4bf759",
+    "myfile/attendance-app-v7.js": "6a55196ac7a4d4b1a73b595ac158d09e157ca7b0bd425a040eca2639065328b1",
     "myfile/site-correction-v2.css": "ed2f06e66fe25a725cdef5c3c03c725b8d2d0252cf006471467830527c71ac0d",
-    "myfile/site-correction-v2.js": "6cd824861f643df8660945cbe323d14bb5464961b29c72c42b98db1b8f967fab",
-    "myfile/story-app-v7.js": "76d99d6ec8b01d7a45a43a03aada9f02aa44e2954e6d4bfcb5d215fc4150830b",
-    "myfile/suite-v7.js": "869a8fdf7798c13a3db4d2dd50d91e6469666a265ae9b9d9cae4d2ee8616bcb7",
-    "myfile/tools-suite.js": "90f840e829456195191a7d461e97e7c14cace0a863f173d1ef6a4a9cde3a06dc",
+    "myfile/site-correction-v2.js": "5eb9b134caac48071c787aa59e97dd7ece2dd34dd6b12e205da5974edf09cbbc",
+    "myfile/story-app-v7.js": "1a5e3db5252ed06a23f45c578e609dc7ec473e6495a69b1d474a67e2bd9a9652",
+    "myfile/suite-v7.js": "19b2c47f2f40076543b17c747f5377eda54092f796b7a4f307399c1013f50af8",
+    "myfile/tools-suite.js": "ddf162fb0f1adb36d8a43afbe487980d633dc7d2fd60136c9fc3553676de244d",
     "myfile/triple-tap-filter.js": "98b0e405b3865dfb918cadbd3b7ada665b99670ba0cafb9b4fc70e16efacfc33",
     "story.html": "9a4d2f3aa3a7ee308d9fc65e067c290ca6ac0b4d7ff5ad7c67e8ae671c5a11a2"
   }
