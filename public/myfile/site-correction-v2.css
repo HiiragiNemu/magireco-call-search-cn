@@ -432,3 +432,19 @@ body {
 }
 .call-status-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { .call-status-toast { transition: none; } }
+
+/* The Japanese reading belongs above the cards, not inside their clipped face.
+   The same-scene tooltip retains both kana and the existing triple-click hint. */
+html:root[data-call-theme] body .call-display-root-v7 label.girlbox[data-call-reading-ready="true"]::after {
+  content: none !important; display: none !important;
+}
+html:root[data-call-theme] body .call-display-root-v7 .call-character-reading-tip {
+  position: absolute; z-index: 2470; box-sizing: border-box;
+  width: max-content; max-width: calc(100% - 20px); padding: 7px 10px;
+  border: 1px solid var(--call-border-strong); border-radius: var(--control-radius, 3px);
+  background: var(--call-menu-face, var(--call-surface-raised)); color: var(--call-text);
+  box-shadow: var(--call-widget-shadow); -webkit-text-fill-color: currentColor;
+  font: inherit; font-size: 12px; line-height: 1.5; white-space: pre-line;
+  overflow-wrap: anywhere; pointer-events: none; transform: none; transition: none;
+}
+.call-character-reading-tip[hidden] { display: none !important; }

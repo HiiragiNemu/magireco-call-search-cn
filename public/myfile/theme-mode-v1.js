@@ -236,7 +236,7 @@
     if(!opticalRefs) installOpticalFilter();
     setBrowserChrome();
     updateOpticalFilter();
-    window.CallGlass?.sync();
+    if(pendingTheme!=='frost')window.CallGlass?.sync();
   }
   function syncThemeButtons(){
     for(const b of document.querySelectorAll('[data-call-theme-option]')) b.setAttribute('aria-pressed',String(b.dataset.callThemeOption === activeTheme));
@@ -281,13 +281,28 @@
   }
   function applyAll(){applyDatasets();placeThemeBar();syncThemeButtons();syncSettings();syncJump();updateScrollbar();}
 
+  let themeRequest=0,pendingTheme=null;
   function setTheme(theme,persistTheme=true){
     if(!VALID_THEMES.has(theme)) return activeTheme;
-    activeTheme=theme;normalizeThemeState(theme);
-    if(persistTheme) storageSet(THEME_KEY,theme);
-    applyAll();
-    scheduleTrackingSweep();
-    try{dispatchEvent(new CustomEvent('magireco-call-theme-change',{detail:{theme}}));}catch(_){}
+    const request=++themeRequest;
+    pendingTheme=null;
+    const commit=()=>{
+      if(request!==themeRequest)return;
+      pendingTheme=null;
+      activeTheme=theme;normalizeThemeState(theme);
+      if(persistTheme) storageSet(THEME_KEY,theme);
+      applyAll();
+      scheduleTrackingSweep();
+      try{dispatchEvent(new CustomEvent('magireco-call-theme-change',{detail:{theme}}));}catch(_){}
+    };
+    // Keep the previous complete theme visible while cold glass is decoded.
+    // sync() activates the prepared mask in the same turn as the theme commit.
+    if(theme==='frost'&&activeTheme!=='frost'&&state.effects.frost.glassDamage&&window.CallGlass?.prepare&&root.dataset.callBootReleased==='true'){
+      pendingTheme='frost';
+      window.CallGlass.prepare().then(commit).catch(error=>{
+        if(request===themeRequest){pendingTheme=null;console.warn('[theme-mode] cold glass preparation failed; previous theme retained',error);}
+      });
+    }else commit();
     return theme;
   }
   function setPhosphor(value){state.phosphor=value==='amber'?'amber':'green';state.effects.dark.pixelFont=state.nightPixelFonts[state.phosphor];persist();applyAll();}

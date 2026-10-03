@@ -2,19 +2,19 @@
   "release": "call-r23-semantic-rail-20260929",
   "scope": "Call sidebar semantics; downstream routes and data unchanged",
   "sha256": {
-    "attendance.html": "4ef26db433554778a5677730261b969a8b2501b35ec252a8124c36b0be66324a",
-    "index_png.html": "cfac6669da991962ce817ebd0a434ea7707b10db31edc16cd156d1973053ddb1",
-    "story.html": "4c08bb9a100ec1f92998b4d0b2705fdfb6b57a5579eebd57a37307af210c684d",
-    "cnt.html": "78b715815cf93de0e06615f3db1bf0f023e124f0b7f830c33f543fdcdb9cd210",
-    "index.html": "b5ff8a8a83c5cd23c2e74989ae1ac563486c39fe714d4309b2773243b3a69e62",
-    "call_png.html": "238a5433d0bf8529114695517af82e3a2c693ec967bdeeb2456990d0e6c6be31",
-    "story-title-editor.html": "67aaa98e56bd1a7f514f256e7bb1e8be7cf3982ab7c7b1d56ca961cb34c4228f",
-    "runes.html": "06dd0f1294553d42382bc20c941d6a55cc6071d3aea49fac9fb2ef199c093f02",
-    "gachasim.html": "580c9fc1647a763226c6d41b3d1b82da76f59894bf139216673319dc2cd47a07",
-    "call-r22-release.json": "0b01dc53e64162d78dfecdda92fd963b1afd157e20705fbbc00e32d532d66cd9",
-    "json_open.html": "d30b195f837f1a4cb6b77f3d5d56ceb1e34b4cdc639bd6bf192991079373c6ec",
-    "myfile/theme-mode-v1.css": "d7b0a85ef06b67f876580409f2b2ce3424dd8c18377541f884a8b71ed17cc8fa",
-    "myfile/theme-mode-v1.js": "0f5d4877f03bca82ee37cba6725fc1a692acb1ac763395a9d42b737c50f4cba8",
-    "myfile/suite-v7.js": "19b2c47f2f40076543b17c747f5377eda54092f796b7a4f307399c1013f50af8"
+    "attendance.html": "6f952a861b4c4fba25a8673f942cb7c1521972410037c7db7fd4895b590d1b9c",
+    "index_png.html": "11544ed151a53a09c61fce886563b3b5d03687b2e85eb04cf9a3a13a3b203a58",
+    "story.html": "9a4d2f3aa3a7ee308d9fc65e067c290ca6ac0b4d7ff5ad7c67e8ae671c5a11a2",
+    "cnt.html": "3bc38ae4496522f6ba1dbbd9993f3eee7a2e158f1847bbc9050fb1a96cac703b",
+    "index.html": "63c77241beb201f61b535c11a7a9804d2b86057c3de93e2eecb0764ce9743089",
+    "call_png.html": "57f4c86cea99a4765243035ac4715cdf26509004bebdd1ee315d2f1869aa075d",
+    "story-title-editor.html": "508aeab51112e9e225f4e08cb8c4451cb01f559b0604ed371a7b0e8dd1c444c0",
+    "runes.html": "2781a8b50f607850ed0536f11e0c5168fea1396d58e3e8b6ceb0c71d1698f779",
+    "gachasim.html": "cf1887bd872e58e1203868f92c60e16708e07388be8d20d210d0ad3679d20dcd",
+    "call-r22-release.json": "65dba1422ac5f6d086d6bc115f9f091146715a009cefeeb903ce021b91820ffe",
+    "json_open.html": "7d5721c57c1af1f092325726bc6e1abdd43234050a5c5fcdfc343e5a5716054b",
+    "myfile/theme-mode-v1.css": "4acaa87d24e71ec123b69e3395550d4f0585f8bc1577633cffbef53b9eb73937",
+    "myfile/theme-mode-v1.js": "3ce4d8b68a678d0aba196f41a02053eaa73a886e1a6f17be10d44cd5c3954646",
+    "myfile/suite-v7.js": "869a8fdf7798c13a3db4d2dd50d91e6469666a265ae9b9d9cae4d2ee8616bcb7"
   }
 }
