@@ -53,9 +53,9 @@ class Element {
   getBoundingClientRect(){return this.rect||{top:0,left:0,right:320,bottom:240,width:320,height:240};}
   dispatchEvent(){}
 }
-function tooltipHarness(){
+function tooltipHarness(options={}){
   const docEvents={},winEvents={},host=new Element('div'),label=new Element('label'),input=new Element('input');
-  label.dataset.kana='あずさ みふゆ';label.rect={left:2,top:1,right:70,bottom:82,width:68,height:81};label.appendChild(input);
+  label.dataset.kana=options.kana||'あずさ みふゆ';input.value=options.value||'';label.title=options.title||'';label.rect={left:2,top:1,right:70,bottom:82,width:68,height:81};label.appendChild(input);
   const doc={readyState:'complete',querySelector:()=>host,querySelectorAll:()=>[input],
     createElement:t=>new Element(t),addEventListener:(n,f)=>{(docEvents[n]||=[]).push(f);}};
   const win={addEventListener:(n,f)=>{winEvents[n]=f;},setTimeout(){},clearTimeout(){},matchMedia:()=>({matches:true})};
@@ -100,4 +100,42 @@ test('prepared glass stays invisible until explicit theme activation, with no se
   assert.equal(root.dataset.callGlassActive,'false');assert.equal(scene.dataset.filmReady,'true');
   root.dataset.callTheme='frost';root.dataset.callFxGlassDamage='true';win.CallGlass.sync();
   assert.equal(root.dataset.callGlassActive,'true');assert.equal(decodes,1);
+});
+
+// Use real legacy card data: data-kana could already contain a romanized line.
+test('romanization stays one line across 200 hover and preparation cycles',()=>{
+  const h=tooltipHarness({kana:'ふたば さな\nFutaba Sana',value:'二叶莎奈 (二葉さな / Futaba Sana)',title:'日文读音：ふたば さな\nFutaba Sana\nFutaba Sana\nFutaba Sana'});
+  for(let i=0;i<200;i++){
+    h.win.MagirecoTripleTapFilter.prepareLabels();h.fire('pointerover');
+    assert.deepEqual(h.tip().textContent.split('\n'),['日文读音：ふたば さな','Futaba Sana','三击此角色：按上方“称呼/被称呼”方向筛选']);
+    h.fire('pointerout',{relatedTarget:null});
+  }
+  assert.equal(h.label.dataset.kana,'ふたば さな\nFutaba Sana');
+});
+
+test('nested parentheses and punctuation do not drop romanized names',()=>{
+  for(const roman of ['Akemi Homura (Glasses ver)','Melissa de Vignolles','Kazari Jun (Vampire ver.)',"D’Arc / Tart"]){
+    const h=tooltipHarness({kana:'あけみ ほむら めがね',value:`晓美焰-眼镜ver (暁美ほむら(眼鏡ver) / ${roman})`});
+    h.fire('pointerover');assert.equal(h.tip().textContent.split('\n')[1],roman);
+  }
+});
+
+test('refresh while hovered updates current source and keeps native duplicate hidden',()=>{
+  const h=tooltipHarness({kana:'ゆい つるの',value:'由比鹤乃 (由比鶴乃 / Yui Tsuruno)'});
+  h.fire('pointerover');h.win.MagirecoTripleTapFilter.prepareLabels();assert.equal(h.label.title,'');
+  h.input.value='由比鹤乃 (由比鶴乃 / Yui Tsuruno (Rumor ver))';h.win.MagirecoTripleTapFilter.prepareLabels();
+  assert.equal(h.tip().textContent.split('\n')[1],'Yui Tsuruno (Rumor ver)');
+  h.fire('pointerout',{relatedTarget:null});assert.equal(h.label.title.split('\n')[1],'Yui Tsuruno (Rumor ver)');
+});
+
+test('all actual root card values render kana and romanization without title feedback',()=>{
+  const html=read('public/index.html');
+  const cards=[...html.matchAll(/<label[^>]*data-kana="([^"]+)"[^>]*>\s*<input[^>]*value="([^"]+)"/g)];
+  assert.ok(cards.length>=186);
+  for(const card of cards){
+    const value=card[2],roman=value.slice(value.indexOf(' / ')+3).replace(/\)\s*$/u,'').trim();
+    assert.ok(value.includes(' / '));
+    const h=tooltipHarness({kana:card[1],value,title:'obsolete romanization'});h.fire('pointerover');
+    assert.deepEqual(h.tip().textContent.split('\n'),[`日文读音：${card[1]}`,roman,'三击此角色：按上方“称呼/被称呼”方向筛选']);
+  }
 });

@@ -162,9 +162,18 @@
   let savedTitle = '';
 
   function readingDescription(label) {
-    const kana = (label.dataset.kana || '').trim();
-    const extra = (label.title || '').split('\n').filter(s => s && s !== TAP_HINT && !s.startsWith('日文读音：'));
-    return [kana ? `日文读音：${kana}` : '', ...extra, TAP_HINT].filter(Boolean).join('\n');
+    // Legacy data-kana may contain a second romanized line. Never read the
+    // rendered title back as source: that duplicates the line on every hover.
+    const lines = (label.dataset.kana || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    const kana = lines[0] || '';
+    const value = (label.querySelector('input.MagicalChk[name="chara"]')?.value || '').trim();
+    const separator = value.indexOf(' / ');
+    // Strip only the outer value delimiter, preserving (Glasses ver), accents,
+    // apostrophes and slashes inside the romanized name.
+    const roman = separator >= 0
+      ? value.slice(separator + 3).replace(/\)\s*$/u, '').trim()
+      : (label.dataset.roman || lines[1] || '').trim();
+    return [kana ? `日文读音：${kana}` : '', roman, TAP_HINT].filter(Boolean).join('\n');
   }
 
   function hideReading() {
@@ -237,7 +246,12 @@
       label.style.touchAction = 'manipulation';
       label.style.userSelect = 'none';
       label.dataset.callReadingReady = 'true';
-      label.title = readingDescription(label);
+      const description = readingDescription(label);
+      if (readingLabel === label) {
+        savedTitle = description;
+        readingTip.textContent = description;
+        label.removeAttribute('title');
+      } else label.title = description;
     }
   }
 
