@@ -11,7 +11,7 @@ test('all shared menu entrypoints load the current group label and preserve the 
   assert.equal(release.communityUpdate.group, '858083286');
   for (const file of ['attendance.html','call_png.html','cnt.html','gachasim.html','index.html','index_png.html','json_open.html','runes.html','story-title-editor.html','story.html']) {
     const content = read(file);
-    assert.equal(content.split('hamburger-menu-v23.js?v=ui-r15-community-858083286').length, 2, file);
+    assert.equal(content.split('hamburger-menu-v23.js?v=ui-r16-universal-adv-20261019').length, 2, file);
     assert.equal(createHash('sha256').update(content).digest('hex'), release.sha256[file], file + ' release checksum');
   }
   assert.equal(createHash('sha256').update(menu).digest('hex'), release.sha256['myfile/hamburger-menu-v23.js']);

@@ -1,0 +1,298 @@
+{
+  "checkedAt": "2026-10-19T11:25:22.807789+00:00",
+  "baseline": "1b95776aea08bd927bfdc7dfd7b1c4f6058f1aab",
+  "resources": {
+    "call.html": {
+      "url": "https://magireco-chara-search.vercel.app/call.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/call.html",
+      "bytes": 78617,
+      "sha256": "4551a5685b3e45868266853de042a1712e317a7f152ba7871b76e460c41ab9e6",
+      "changedSince20260929": true
+    },
+    "index.html": {
+      "url": "https://magireco-chara-search.vercel.app/index.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/index.html",
+      "bytes": 139445,
+      "sha256": "963dc064687579ce394d274abd2cac0ef756bd7e715401e08f0388fcde19b3f9",
+      "changedSince20260929": false
+    },
+    "cnt.html": {
+      "url": "https://magireco-chara-search.vercel.app/cnt.html",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/cnt.html",
+      "bytes": 61275,
+      "sha256": "bf3d92b7a3355df7b0c0ae4ae370e343ae6e424d8ae54b57ea28ebb05b5f90ea",
+      "changedSince20260929": false
+    },
+    "myfile/callTable.js": {
+      "url": "https://magireco-chara-search.vercel.app/myfile/callTable.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/callTable.js",
+      "bytes": 197645,
+      "sha256": "5814a28bad627024fd4868a22e3b28177f4d926a3d3e4a50772db894af2ac4c2",
+      "changedSince20260929": true
+    },
+    "myfile/charaAt.js": {
+      "url": "https://magireco-chara-search.vercel.app/myfile/charaAt.js",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/charaAt.js",
+      "bytes": 38713,
+      "sha256": "22e46dc93abe74158b3fee9e31919d4d8f681d1d092cb776fd305b7113488152",
+      "changedSince20260929": true
+    },
+    "myfile/charaBox_webp.css": {
+      "url": "https://magireco-chara-search.vercel.app/myfile/charaBox_webp.css",
+      "status": 200,
+      "finalUrl": "https://magireco-chara-search.vercel.app/myfile/charaBox_webp.css",
+      "bytes": 41648,
+      "sha256": "25a886c2d112ac09f8c968f8747b58c5991e165b9cba5e7e3630034496514bd6"
+    },
+    "story": {
+      "url": "https://drive.google.com/uc?export=download&id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q",
+      "status": 200,
+      "finalUrl": "https://drive.usercontent.google.com/download?id=1kFoEYZ6nJrYQAxGQVwN-SyLg-aPKkH6q&export=download",
+      "bytes": 2750235,
+      "sha256": "952553bf0f1649c3885a7759b2117eff141a7b47b0c5fa2db88af786633a2197",
+      "changedSince20260929": true
+    },
+    "productionMenu": {
+      "url": "https://magireco-call-search-cn.pages.dev/myfile/hamburger-menu-v23.js",
+      "status": 200,
+      "finalUrl": "https://magireco-call-search-cn.pages.dev/myfile/hamburger-menu-v23.js",
+      "bytes": 6821,
+      "sha256": "76bfac7ff9e9bec1ed0318ac224970cc3ad15081cae1e8abb0500c42312d2a59"
+    },
+    "productionIndex": {
+      "url": "https://magireco-call-search-cn.pages.dev/index.html",
+      "status": 200,
+      "finalUrl": "https://magireco-call-search-cn.pages.dev/",
+      "bytes": 125620,
+      "sha256": "5ef870622e55016b0ce772d51cc66c208c6983c382b44c2639a65cf94058b52e"
+    },
+    "target": {
+      "url": "https://universal-adv-reader.pages.dev/apps/web",
+      "status": 200,
+      "finalUrl": "https://universal-adv-reader.pages.dev/apps/web",
+      "bytes": 315603,
+      "sha256": "46081fca6fbcf79ee06e5ff982660b15eb2c7fa2884055a4b8165b8762f50dd5"
+    }
+  },
+  "selectors": {
+    "call.html": {
+      "upstream": 195,
+      "local": 193,
+      "missingAfterAliases": [
+        "そらなの母",
+        "リナ"
+      ]
+    },
+    "index.html": {
+      "upstream": 274,
+      "local": 291,
+      "missingAfterAliases": []
+    },
+    "cnt.html": {
+      "upstream": 139,
+      "local": 194,
+      "missingAfterAliases": []
+    }
+  },
+  "story": {
+    "upstreamTotal": 14480,
+    "localTotal": 14466,
+    "categories": [
+      {
+        "key": "イベント",
+        "local": 5537,
+        "upstream": 5551,
+        "changes": [
+          {
+            "change": "replace",
+            "localRange": [
+              10,
+              12
+            ],
+            "upstreamRange": [
+              10,
+              26
+            ],
+            "upstreamTitles": [
+              "Last Bird's Hope 序",
+              "Last Bird's Hope 序",
+              "Last Bird's Hope 1",
+              "未命名记录 14",
+              "未命名记录 15",
+              "未命名记录 16",
+              "未命名记录 17",
+              "未命名记录 18"
+            ]
+          },
+          {
+            "change": "replace",
+            "localRange": [
+              22,
+              26
+            ],
+            "upstreamRange": [
+              36,
+              40
+            ],
+            "upstreamTitles": [
+              "未命名记录 37",
+              "未命名记录 38",
+              "未命名记录 39",
+              "未命名记录 40"
+            ]
+          },
+          {
+            "change": "replace",
+            "localRange": [
+              34,
+              43
+            ],
+            "upstreamRange": [
+              48,
+              57
+            ],
+            "upstreamTitles": [
+              "未命名记录 49",
+              "未命名记录 50",
+              "未命名记录 51",
+              "未命名记录 52",
+              "未命名记录 53",
+              "未命名记录 54",
+              "未命名记录 55",
+              "未命名记录 56"
+            ]
+          },
+          {
+            "change": "replace",
+            "localRange": [
+              327,
+              342
+            ],
+            "upstreamRange": [
+              341,
+              342
+            ],
+            "upstreamTitles": [
+              "未命名记录 342"
+            ]
+          },
+          {
+            "change": "replace",
+            "localRange": [
+              351,
+              356
+            ],
+            "upstreamRange": [
+              351,
+              356
+            ],
+            "upstreamTitles": [
+              "灰色の革命 26話",
+              "灰色の革命 27話",
+              "灰色の革命 28話",
+              "灰色の革命 29話",
+              "灰色の革命 30話"
+            ]
+          },
+          {
+            "change": "insert",
+            "localRange": [
+              402,
+              402
+            ],
+            "upstreamRange": [
+              402,
+              416
+            ],
+            "upstreamTitles": [
+              "未命名记录 403",
+              "未命名记录 404",
+              "未命名记录 405",
+              "未命名记录 406",
+              "未命名记录 407",
+              "未命名记录 408",
+              "未命名记录 409",
+              "未命名记录 410"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "productionMatchesCheckout": {
+    "productionMenu": true,
+    "productionIndex": true
+  },
+  "decision": "Upstream contains new identities and changed story rows. Preserve current production data and source/row mappings; this release adds the requested Universal ADV link only. New data requires a separately reviewed localization and mapping update.",
+  "localBrowserChecks": [
+    {
+      "viewport": 1440,
+      "route": "index.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 1440,
+      "route": "story.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 1440,
+      "route": "attendance.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 1440,
+      "route": "runes.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 412,
+      "route": "index.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 412,
+      "route": "story.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 412,
+      "route": "attendance.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    },
+    {
+      "viewport": 412,
+      "route": "runes.html",
+      "linkVisible": true,
+      "menuClose": true,
+      "sceneStable": true,
+      "pageErrors": 0
+    }
+  ]
+}

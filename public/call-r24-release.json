@@ -2,15 +2,15 @@
   "release": "call-r24-x-and-reliability-20260929",
   "scope": "Restore X; bounded same-version Call fallback; safe text; cancellation and recoverable search; 16 existing display cells and 2 additive work facets. No changes to AIO/Reader/L2D or story/source identities.",
   "sha256": {
-    "attendance.html": "e106fd2b813d5dc5d56eeb0f29ec31c214ff75da5c6f0bdd0339d670eda21bf5",
+    "attendance.html": "8d1dc671bffffa8ee5686dfe260e6a6da6aa82158a89d29b01cbb8b25dc7807e",
     "call-r22-release.json": "e6f290681a512d7249196baf99ed5f496c5223707d5c37d0602472f42eb99a4b",
     "call-r23-release.json": "5ce1d2aac7b2c8fbb4bea41842a356343b0062473d4a6cc5bd70da2e77ee79e4",
-    "call_png.html": "907897a5b2e56fc9c667804af3a4dc23993a0960713b2f16f0df462ca79662b1",
-    "cnt.html": "5afe6cc032e6f2685591d10d979f7193d0b655780c20c7b4cca545eeab42b38e",
-    "gachasim.html": "2cd31365949061ce1db02ce37ca037ea9f1bddd68c9d43fa88bb456a1938cf55",
-    "index.html": "5ef870622e55016b0ce772d51cc66c208c6983c382b44c2639a65cf94058b52e",
-    "index_png.html": "3a8219d970464794d45fa975fab4fd8463753d30ce28b85abe2f3ae602380d35",
-    "json_open.html": "01a72259c705eb00b365b604f2320b207f1c55c9914897a8fa4a3b4fe8cc24e4",
+    "call_png.html": "4d78021d7aeb6911ed8479ca6025e59754cccfa97c15121f01bb7e623fc2b7b4",
+    "cnt.html": "40c1393dcc8832bc96dfd1d5d0da5e5d65e9a2feb41333c2e8b8d35f994e9090",
+    "gachasim.html": "c15882c2d0d613e582eef02f4b4fb03c3247ec7fec549b4b8687c4642c89d762",
+    "index.html": "1059dca0c15161cb1100e90c2179de159e9d4705e6b19d05e85551d4d330222b",
+    "index_png.html": "e107c23690bace36641c9216a6420c8165761408985d608e0f0e4ca470f4b2a1",
+    "json_open.html": "dd350f4780a0347b4b8b9f640ec3d6919357204a7cbaa8c840c9d38d326f7f35",
     "myfile/attendance-app-v7.js": "6a55196ac7a4d4b1a73b595ac158d09e157ca7b0bd425a040eca2639065328b1",
     "myfile/callTable.js": "ab41be3e711b212dd220a5eada49a4a319227ad86c4fff39682c1d126e202323",
     "myfile/charaAt.js": "2c0a9ae0e2f9d9811dc040c26965cf6a26c0b17fea86ae4d379ff237c58b304c",
@@ -19,15 +19,21 @@
     "myfile/story-title-editor-v2.js": "a6a93b7e8f082be93c725e8bc36b9ce684f81e32647d21b530480c1fd6ff9e3d",
     "myfile/theme-mode-v1.js": "3ce4d8b68a678d0aba196f41a02053eaa73a886e1a6f17be10d44cd5c3954646",
     "myfile/tools-suite.js": "ddf162fb0f1adb36d8a43afbe487980d633dc7d2fd60136c9fc3553676de244d",
-    "runes.html": "dc0878b9e1f45afb3956f6c7cc2352abedaca1db1a3d57fd9856bcf9e2d7305b",
-    "story-title-editor.html": "ed8d9325d99229425f6261527d5b67192532cd3f5c7778c2b9a15461ad7512e4",
-    "story.html": "bc40e0afa31b8ecb7cb44795a9e02c38bbb3940c5679641041f6efcb0a457259",
+    "runes.html": "7b83134e8e752b563f2402203107c83093e030655b37fa0e13db74b90a92317b",
+    "story-title-editor.html": "858553e5eb825a70a699b0ed6c48c01f75d49239ef6a4e4dfc0e09271e966b9b",
+    "story.html": "851368e89ff3775f1009604cc1b53736c7bbab9f46a56a77d44301fc35a75f9a",
     "data/translation-audit-v5.json": "5e281ad5fd8ba9a6f1a5f1de488ccb5e91222fbd5e2ea0fddc25378034f33886",
-    "myfile/hamburger-menu-v23.js": "76bfac7ff9e9bec1ed0318ac224970cc3ad15081cae1e8abb0500c42312d2a59"
+    "myfile/hamburger-menu-v23.js": "4b050d48ac0a2ee3e60e2ecbc4448972ef7515bdae68a15970ae4f1714725e57"
   },
   "communityUpdate": {
     "group": "858083286",
-    "menuVersion": "ui-r15-community-858083286",
+    "menuVersion": "ui-r16-universal-adv-20261019",
     "scope": "Display/contact and cache version only; source data, AIO routing and playback unchanged."
+  },
+  "externalSiteUpdate": {
+    "date": "2026-10-19",
+    "label": "通用 ADV 剧情阅读网站",
+    "url": "https://universal-adv-reader.pages.dev/apps/web",
+    "scope": "Add one link to existing home/shared menus and refresh menu cache versions; preserve data, theme, layout and existing destinations."
   }
 }
