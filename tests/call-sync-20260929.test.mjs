@@ -41,9 +41,9 @@ test('complete edge count excludes metadata, self edges, and placeholders',()=>{
   if(metadata.has(target)||target===caller.split(' (')[0]||!value||['-','—','?'].includes(value))continue;
   count++;
  }
- assert.equal(count,2804);
- assert.equal(context.calls.size,195);
- assert.equal(JSON.parse(read('public/data/character-catalog.json')).length,193);
+ assert.equal(count,2812);
+ assert.equal(context.calls.size,197);
+ assert.equal(JSON.parse(read('public/data/character-catalog.json')).length,195);
 });
 test('display cap is pagination only, never truncation of search matches',()=>{
  const source=read('public/myfile/story-app-v7.js');

@@ -18,7 +18,7 @@ html:not([data-call-boot-released="true"]) .call-display-scroll-v7 {
 	
 <!-- CSS文件读取 -->
 	<link rel="stylesheet" href="./myfile/mycss.css">
-	<link rel="stylesheet" href="./myfile/charaBox_png.css">
+	<link rel="stylesheet" href="./myfile/charaBox_png.css?data=20261020">
 	<link rel="stylesheet" href="./myfile/hamburgerMenu.css">
 	<link rel="stylesheet" href="./myfile/site-overhaul.css">
 	<link rel="stylesheet" href="./myfile/site-correction-v2.css?v=20261003-toast-gap76&amp;fix=20261003-kana-glass">
@@ -460,6 +460,8 @@ html:not([data-call-boot-released="true"]) .call-display-scroll-v7 {
 				<label class="girlbox gaidenColor" data-kana="ひなた かがり"><input type="checkbox" class="MagicalChk" name="chara" id="日向華々莉" value="日向华华莉 (日向華々莉 / Hinata Kagari)"><br>日向华华莉</label>
 				<label class="girlbox negiusColor" data-kana="なぎぼし そらな"><input type="checkbox" class="MagicalChk" name="chara" id="凪星そらな" value="凪星索拉娜 (凪星そらな / Nagiboshi Sorana)"><br>凪星索拉娜★</label>
 				<label class="girlbox negiusColor" data-kana="りりー きゃんでぃー"><input type="checkbox" class="MagicalChk" name="chara" id="リリー・キャンディー" value="莉莉·坎迪 (リリー・キャンディー / Lily Candy)"><br>莉莉·坎迪★</label>
+				<label class="girlbox negiusColor" data-kana="そらなのはは"><input type="checkbox" class="MagicalChk" name="chara" id="そらなの母" value="索拉娜的母亲 (そらなの母 / Sorana no Haha)"><br>索拉娜的母亲</label>
+				<label class="girlbox negiusColor" data-kana="りな"><input type="checkbox" class="MagicalChk" name="chara" id="リナ" value="莉娜 (リナ / Rina)"><br>莉娜</label>
 
 				<!-- ここからコラボキャラ -->
 				<label class="girlbox collaboColor leftm" data-kana="たかまち なのは"><input type="checkbox" class="MagicalChk" name="chara" id="高町なのは" value="高町奈叶 (高町なのは / Takamachi Nanoha)"><br>高町奈叶★</label>
@@ -666,6 +668,15 @@ html:not([data-call-boot-released="true"]) .call-display-scroll-v7 {
 					<input type="checkbox" class="at_attribute" name="at_attribute"
 						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }" value="聖乙女学園">圣乙女学园
 				</label>
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }" value="宝崎市立第一中学校">宝崎市立第一中学
+				</label>
+				<label class="at">
+					<input type="checkbox" class="at_attribute" name="at_attribute"
+						   onchange="magicalGirlAttributeSearch('call'); if (document.querySelector('input[name=xAxisMode]:checked')?.value === 'attribute') { displayHeightChart(document.querySelector('.MagicalChk:checked') ? 'selected' : 'global'); }" value="シー・ホライズン国際高等学校">海平线国际高等学校
+				</label>
+
 
 				<label class="at">
 					<input type="checkbox" class="at_attribute" name="at_attribute"
@@ -760,7 +771,7 @@ html:not([data-call-boot-released="true"]) .call-display-scroll-v7 {
 
 			<!-- 显示部分结束。以下为处理用javascript等 ============================================== -->
 			<!-- 读取用电子表格创建的称呼哈希文件。 -->
-			<script src="./myfile/callTable.js?audit=r24"></script>
+			<script src="./myfile/callTable.js?audit=r24&amp;data=20261020"></script>
 			<!-- 读取通用处理文件 -->
 			<script src="./myfile/myCommon.js"></script>
 			<!-- 读取魔法少女筛选的javascript方法 -->
@@ -770,7 +781,7 @@ html:not([data-call-boot-released="true"]) .call-display-scroll-v7 {
 			<!-- 读取筛选重置的javascript方法 -->
 			<script src="./myfile/ndownReset.js"></script>
 			<!-- 读取角色属性配置文件(javascript对象) -->
-			<script src="./myfile/charaAt.js?audit=r24"></script>
+			<script src="./myfile/charaAt.js?audit=r24&amp;data=20261020"></script>
 			<script src="./myfile/gradeOverrides.js"></script>
 			<script src="./myfile/grade-classification.js"></script>
 			<!-- 读取属性筛选的javascript方法 -->
@@ -1411,14 +1422,14 @@ function drawNet_Table() {
 <script>window.isHeightView = false;</script>
 <script src="./myfile/html2canvas.min.js"></script>
 <script src="./myfile/site-overhaul.js"></script>
-<script src="./myfile/site-correction-v2.js?v=20260929-r22-layout"></script>
+<script src="./myfile/site-correction-v2.js?v=20260929-r22-layout&amp;data=20261020"></script>
 <script src="./myfile/site-correction-v3-network.js?v=20260920-ui-r12-reader-controls"></script>
 <script src="./myfile/site-correction-v3-height.js"></script>
 <script src="./myfile/site-correction-v4.js?v=ui-r13-suite-navigation"></script>
 
 <script src="./myfile/tools-suite.js?audit=r24"></script>
 <script src="./myfile/layout-v6.js"></script>
-<script src="./myfile/suite-v7.js?v=20260919-crt-rail-v7-5&amp;rail=r23"></script>
+<script src="./myfile/suite-v7.js?v=20260919-crt-rail-v7-5&amp;rail=r23&amp;data=20261020"></script>
 <script>
   if (window.MagiTools) window.MagiTools.renderNav('calls');
 </script>

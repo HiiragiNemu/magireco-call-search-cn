@@ -10,7 +10,7 @@ const story=json('public/data/story-character-additions.json');
 const attendance=json('public/data/attendance-character-additions.json');
 const selectors=json('tests/fixtures/story-selectors-r22.json');
 test('page-specific rosters cover every source choice without changing base characters',()=>{
- assert.equal(base.length,193);assert.equal(story.length,98);assert.equal(attendance.length,1);
+ assert.equal(base.length,195);assert.equal(story.length,98);assert.equal(attendance.length,1);
  for(const [kind,extra] of [['story',story],['attendance',attendance]]){
   const names=[...base,...extra].map(x=>x.jp);assert.equal(names.length,new Set(names).size);
   for(const n of selectors[kind])assert.ok(names.includes(n==='早乙女先生'?'早乙女和子':n),n);
@@ -35,10 +35,10 @@ test('base catalog stays isolated and failed extension loads can retry',async()=
   return {ok:true,json:async()=>story};
  }});
  vm.runInContext(read('public/myfile/tools-suite.js'),c);const api=c.window.MagiTools;
- assert.equal((await api.loadCatalog()).length,193);
+ assert.equal((await api.loadCatalog()).length,195);
  await assert.rejects(api.loadCatalog('./data/story-character-additions.json'));
- assert.equal((await api.loadCatalog('./data/story-character-additions.json')).length,291);
- assert.equal((await api.loadCatalog()).length,193);
+ assert.equal((await api.loadCatalog('./data/story-character-additions.json')).length,293);
+ assert.equal((await api.loadCatalog()).length,195);
  assert.equal(api.extraCharacter('アルティメットまどか').roman,'Ultimate Madoka');
  assert.equal(calls.filter(x=>x.includes('character-catalog')).length,1);
 });

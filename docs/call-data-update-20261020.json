@@ -1,0 +1,182 @@
+{
+  "preservedCallRecordsSha256": "16750e23c7d97a577a4766700e3837c994478fa799aace28518ee9842d99e5b3",
+  "preservedAttributesSha256": "4d17505589c46f355e9f09108eceea493a27cfd95be09abc393c062e57af9f60",
+  "baselineCommit": "707b718a25f36d949c4a5acc4d7aa5d6d5d4f73d",
+  "sourceSpreadsheet": "https://docs.google.com/spreadsheets/d/1V0QTP3YZsoc7h5wOC8oqg7NKJpA6ZPyck9yCYfbJGlk/edit",
+  "sources": {
+    "time": "2026-10-20T07:48:56.217683+00:00",
+    "resources": [
+      {
+        "path": "call.html",
+        "url": "https://magireco-chara-search.vercel.app/call.html",
+        "status": 200,
+        "bytes": 78617,
+        "sha256": "4551a5685b3e45868266853de042a1712e317a7f152ba7871b76e460c41ab9e6"
+      },
+      {
+        "path": "myfile/callTable.js",
+        "url": "https://magireco-chara-search.vercel.app/myfile/callTable.js",
+        "status": 200,
+        "bytes": 197645,
+        "sha256": "5814a28bad627024fd4868a22e3b28177f4d926a3d3e4a50772db894af2ac4c2"
+      },
+      {
+        "path": "myfile/charaAt.js",
+        "url": "https://magireco-chara-search.vercel.app/myfile/charaAt.js",
+        "status": 200,
+        "bytes": 38713,
+        "sha256": "22e46dc93abe74158b3fee9e31919d4d8f681d1d092cb776fd305b7113488152"
+      },
+      {
+        "path": "myfile/charaBox_webp.css",
+        "url": "https://magireco-chara-search.vercel.app/myfile/charaBox_webp.css",
+        "status": 200,
+        "bytes": 41648,
+        "sha256": "25a886c2d112ac09f8c968f8747b58c5991e165b9cba5e7e3630034496514bd6"
+      }
+    ]
+  },
+  "characters": [
+    {
+      "jp": "そらなの母",
+      "zh": "索拉娜的母亲",
+      "roman": "Sorana no Haha",
+      "kana": "そらなのはは",
+      "row": 196
+    },
+    {
+      "jp": "リナ",
+      "zh": "莉娜",
+      "roman": "Rina",
+      "kana": "りな",
+      "row": 197
+    }
+  ],
+  "edges": [
+    {
+      "cell": "FM194",
+      "caller": "凪星そらな",
+      "target": "丘比",
+      "japanese": "キュゥべえ",
+      "roman": "Kyuubee",
+      "chinese": "丘比"
+    },
+    {
+      "cell": "GS194",
+      "caller": "凪星そらな",
+      "target": "莉莉·坎迪",
+      "japanese": "リリーちゃん",
+      "roman": "Lily-chan",
+      "chinese": "小莉莉"
+    },
+    {
+      "cell": "GT194",
+      "caller": "凪星そらな",
+      "target": "索拉娜的母亲",
+      "japanese": "ママ",
+      "roman": "Mama",
+      "chinese": "妈妈"
+    },
+    {
+      "cell": "GU194",
+      "caller": "凪星そらな",
+      "target": "莉娜",
+      "japanese": "リナ母さん",
+      "roman": "Rina-kaasan",
+      "chinese": "莉娜妈妈"
+    },
+    {
+      "cell": "FM195",
+      "caller": "リリー・キャンディー",
+      "target": "丘比",
+      "japanese": "キュゥべえちゃん",
+      "roman": "Kyuubee-chan",
+      "chinese": "小丘比"
+    },
+    {
+      "cell": "GR195",
+      "caller": "リリー・キャンディー",
+      "target": "凪星索拉娜",
+      "japanese": "そらなちゃん",
+      "roman": "Sorana-chan",
+      "chinese": "小索拉娜"
+    },
+    {
+      "cell": "GR196",
+      "caller": "そらなの母",
+      "target": "凪星索拉娜",
+      "japanese": "そらなちゃん",
+      "roman": "Sorana-chan",
+      "chinese": "小索拉娜"
+    },
+    {
+      "cell": "GU196",
+      "caller": "そらなの母",
+      "target": "莉娜",
+      "japanese": "リナちゃん",
+      "roman": "Rina-chan",
+      "chinese": "小莉娜"
+    }
+  ],
+  "schoolAdditions": [
+    {
+      "jp": "凪星そらな",
+      "school": "シー・ホライズン国際高等学校"
+    },
+    {
+      "jp": "環いろは",
+      "school": "宝崎市立第一中学校"
+    },
+    {
+      "jp": "くろ",
+      "school": "宝崎市立第一中学校"
+    }
+  ],
+  "officialAge": {
+    "jp": "凪星そらな",
+    "age": 17,
+    "url": "https://madoka-exedra.com/sorana/character/",
+    "grade": "unknown"
+  },
+  "held": [
+    {
+      "item": "阿見莉愛→百江なぎさ=安名メル",
+      "reason": "Misaligned character name; no edge added."
+    },
+    {
+      "item": "瀬奈みこと",
+      "reason": "Do not remove 大東学院 or merge version-mixed combat/limited tags."
+    },
+    {
+      "item": "アシュリー・テイラー→更紗帆奈=ひみか",
+      "reason": "Existing ambiguity retained, not guessed or duplicated."
+    }
+  ],
+  "translationPolicy": "Conservative manual Chinese localization, not asserted official. Rina is kana romanization; do not merge with 人見リナ.",
+  "storyRowsUnchanged": true,
+  "routeBindingsUnchanged": true,
+  "portraits": [
+    {
+      "jp": "そらなの母",
+      "source": "https://magireco-chara-search.vercel.app/img/webp/%E3%81%9D%E3%82%89%E3%81%AA%E3%81%AE%E6%AF%8D.webp",
+      "sourceSha256": "dd6e7a1d2b96452b0f6417c36631920c27a07a25250733fd4387bcf0e023d44f",
+      "pngSha256": "2823cd5af2042abff2e4f563ac657f3e99b05d98e02a40261f5c1cd4a879359f",
+      "size": [
+        120,
+        120
+      ],
+      "pixelsIdentical": true
+    },
+    {
+      "jp": "リナ",
+      "source": "https://magireco-chara-search.vercel.app/img/webp/%E3%83%AA%E3%83%8A.webp",
+      "sourceSha256": "519db75ec1dd027177ae99540d19f0ea0540d6d5e6c8a78c11d77203c8dfe41e",
+      "pngSha256": "fc5ebb98478ae1dc6eda05a6dc3c9c880019805517df7e336974c3e28319c764",
+      "size": [
+        120,
+        120
+      ],
+      "pixelsIdentical": true
+    }
+  ]
+}

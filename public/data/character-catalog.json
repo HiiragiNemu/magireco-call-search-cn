@@ -2369,6 +2369,32 @@
     "aliases": []
   },
   {
+    "zh": "索拉娜的母亲",
+    "jp": "そらなの母",
+    "roman": "Sorana no Haha",
+    "kana": "そらなのはは",
+    "image": "索拉娜的母亲",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "negiusColor"
+    ],
+    "aliases": []
+  },
+  {
+    "zh": "莉娜",
+    "jp": "リナ",
+    "roman": "Rina",
+    "kana": "りな",
+    "image": "莉娜",
+    "star": false,
+    "classes": [
+      "girlbox",
+      "negiusColor"
+    ],
+    "aliases": []
+  },
+  {
     "zh": "高町奈叶",
     "jp": "高町なのは",
     "roman": "Takamachi Nanoha",

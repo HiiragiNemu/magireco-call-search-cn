@@ -43,7 +43,7 @@ try:
  with sync_playwright() as pw:
   exe=shutil.which('chromium');b=pw.chromium.launch(**({'executable_path':exe} if exe else {}),args=['--no-sandbox'])
   try:
-   p=openpage(b);short=['静海このは','遊佐葉月'];assert p.locator('input.MagicalChk').count()==193
+   p=openpage(b);short=['静海このは','遊佐葉月'];assert p.locator('input.MagicalChk').count()==195
    select(p,short);m=metrics(p);assert m['height']<=m['stage']+2 and m['height']<350,m;assert m['scrollY']=='false' and m['overscroll']=='auto',m
    x,z=wheel(p,-220);assert z['outer']<x['outer']-100,(x,z);ok('short table fits content; wheel scrolls page',before=x,after=z)
    reveal(p);p.screenshot(path=str(out/'short-table.png'))

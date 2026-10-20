@@ -2,28 +2,34 @@
   "release": "call-r24-x-and-reliability-20260929",
   "scope": "Restore X; bounded same-version Call fallback; safe text; cancellation and recoverable search; 16 existing display cells and 2 additive work facets. No changes to AIO/Reader/L2D or story/source identities.",
   "sha256": {
-    "attendance.html": "8d1dc671bffffa8ee5686dfe260e6a6da6aa82158a89d29b01cbb8b25dc7807e",
+    "attendance.html": "aa313f00e3de8c0aef8c83b0563f8560d06ab274bf79bafb216ed3b2c671b09d",
     "call-r22-release.json": "e6f290681a512d7249196baf99ed5f496c5223707d5c37d0602472f42eb99a4b",
     "call-r23-release.json": "5ce1d2aac7b2c8fbb4bea41842a356343b0062473d4a6cc5bd70da2e77ee79e4",
-    "call_png.html": "4d78021d7aeb6911ed8479ca6025e59754cccfa97c15121f01bb7e623fc2b7b4",
+    "call_png.html": "196790fb30b295f3214fa111298a885e3b6ad21edbeb53c3fdb4aa633e0fad82",
     "cnt.html": "40c1393dcc8832bc96dfd1d5d0da5e5d65e9a2feb41333c2e8b8d35f994e9090",
     "gachasim.html": "c15882c2d0d613e582eef02f4b4fb03c3247ec7fec549b4b8687c4642c89d762",
-    "index.html": "1059dca0c15161cb1100e90c2179de159e9d4705e6b19d05e85551d4d330222b",
+    "index.html": "0936276ec13bbd19d2ab76e992c2d80d976d87709e0c7feff1576433cd778f71",
     "index_png.html": "e107c23690bace36641c9216a6420c8165761408985d608e0f0e4ca470f4b2a1",
     "json_open.html": "dd350f4780a0347b4b8b9f640ec3d6919357204a7cbaa8c840c9d38d326f7f35",
     "myfile/attendance-app-v7.js": "6a55196ac7a4d4b1a73b595ac158d09e157ca7b0bd425a040eca2639065328b1",
-    "myfile/callTable.js": "ab41be3e711b212dd220a5eada49a4a319227ad86c4fff39682c1d126e202323",
-    "myfile/charaAt.js": "2c0a9ae0e2f9d9811dc040c26965cf6a26c0b17fea86ae4d379ff237c58b304c",
+    "myfile/callTable.js": "aa98531854c680066ae3e8683a9feb022b371dc415ae494a6146bfb78dc06f24",
+    "myfile/charaAt.js": "c5221f32575138e5ff3efa4a2e17796f23e5d6992031dc121a941191745a1c0e",
     "myfile/story-app-v7.js": "1a5e3db5252ed06a23f45c578e609dc7ec473e6495a69b1d474a67e2bd9a9652",
     "myfile/story-route-bridge-v1.js": "adfb00126847eea5910d17c7ff46119b4464afb0c8cd2610c7f0d7248dffa3cb",
     "myfile/story-title-editor-v2.js": "a6a93b7e8f082be93c725e8bc36b9ce684f81e32647d21b530480c1fd6ff9e3d",
     "myfile/theme-mode-v1.js": "3ce4d8b68a678d0aba196f41a02053eaa73a886e1a6f17be10d44cd5c3954646",
     "myfile/tools-suite.js": "ddf162fb0f1adb36d8a43afbe487980d633dc7d2fd60136c9fc3553676de244d",
     "runes.html": "7b83134e8e752b563f2402203107c83093e030655b37fa0e13db74b90a92317b",
-    "story-title-editor.html": "858553e5eb825a70a699b0ed6c48c01f75d49239ef6a4e4dfc0e09271e966b9b",
-    "story.html": "851368e89ff3775f1009604cc1b53736c7bbab9f46a56a77d44301fc35a75f9a",
-    "data/translation-audit-v5.json": "5e281ad5fd8ba9a6f1a5f1de488ccb5e91222fbd5e2ea0fddc25378034f33886",
-    "myfile/hamburger-menu-v23.js": "4b050d48ac0a2ee3e60e2ecbc4448972ef7515bdae68a15970ae4f1714725e57"
+    "story-title-editor.html": "bf19cbea1c1a7e3741fb404c66cf881aeef55d4c2a46c2a85cd6a6a1257233a6",
+    "story.html": "a3cc14dc05f154b9895f56ff0387030f03290481a00e27e429767cd263af556e",
+    "data/translation-audit-v5.json": "9d64dba9e489b81f314a7490551d88a5ef1e776ebbe7795801af24e37d668d2f",
+    "myfile/hamburger-menu-v23.js": "4b050d48ac0a2ee3e60e2ecbc4448972ef7515bdae68a15970ae4f1714725e57",
+    "data/character-catalog.json": "d016a89412d8538432e59a42dce1c8b8ca649021ebe37e8b3ce7c037464601b7",
+    "myfile/suite-v7.js": "36f87b44866ea3baa83b50b884b48e92eaa61e3ac1d0f12febb62345b790bb0c",
+    "myfile/site-correction-v2.js": "2b8f0884383a4b3456f26c446f9d0fddf080f18621f314e73587dede6101e534",
+    "myfile/charaBox_png.css": "4c22589764586bb58d35660c416458807d02fa0951250d8bafca7d0d1be7ca68",
+    "img/png/索拉娜的母亲.png": "2823cd5af2042abff2e4f563ac657f3e99b05d98e02a40261f5c1cd4a879359f",
+    "img/png/莉娜.png": "fc5ebb98478ae1dc6eda05a6dc3c9c880019805517df7e336974c3e28319c764"
   },
   "communityUpdate": {
     "group": "858083286",
@@ -35,5 +41,20 @@
     "label": "通用 ADV 剧情阅读网站",
     "url": "https://universal-adv-reader.pages.dev/apps/web",
     "scope": "Add one link to existing home/shared menus and refresh menu cache versions; preserve data, theme, layout and existing destinations."
+  },
+  "dataUpdate": {
+    "date": "2026-10-20",
+    "characters": 2,
+    "directedCalls": 8,
+    "pronouns": 2,
+    "schoolTags": 3,
+    "catalogCount": 195,
+    "soranaAge": 17,
+    "held": [
+      "阿見莉愛→百江なぎさ=安名メル",
+      "瀬奈みこと mixed-version attributes",
+      "Ashley→更紗帆奈=ひみか"
+    ],
+    "audit": "docs/call-data-update-20261020.json"
   }
 }

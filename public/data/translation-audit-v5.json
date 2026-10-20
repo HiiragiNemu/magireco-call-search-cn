@@ -1,10 +1,10 @@
 {
   "release": "integrated-tools-v5-20260816",
-  "catalogCount": 193,
-  "uniqueJapaneseKeys": 193,
-  "uniqueChineseDisplayNames": 193,
-  "callTableCallerCount": 195,
-  "callTableLeafCount": 3699,
+  "catalogCount": 195,
+  "uniqueJapaneseKeys": 195,
+  "uniqueChineseDisplayNames": 195,
+  "callTableCallerCount": 197,
+  "callTableLeafCount": 3715,
   "hardErrors": [],
   "warnings": [
     "属性数据中存在未作为可见筛选项展示的学校键：豊鶴学院",
@@ -224,6 +224,22 @@
       "status": "ok"
     },
     {
+      "key": "宝崎市立第一中学校",
+      "expected": "宝崎市立第一中学",
+      "actual": [
+        "宝崎市立第一中学"
+      ],
+      "status": "ok"
+    },
+    {
+      "key": "シー・ホライズン国際高等学校",
+      "expected": "海平线国际高等学校",
+      "actual": [
+        "海平线国际高等学校"
+      ],
+      "status": "ok"
+    },
+    {
       "key": "春方此花学園",
       "expected": "春方此花学园",
       "actual": [
@@ -258,11 +274,13 @@
   ],
   "schoolAttributeKeys": [
     "あすなろ市立南部中学校",
+    "シー・ホライズン国際高等学校",
     "中央学園",
     "南凪自由学園",
     "参京院教育学園",
     "大東学院",
     "宝崎市立光塚中等教育学校",
+    "宝崎市立第一中学校",
     "宝崎順心学園",
     "工匠学舎",
     "春方此花学園",
@@ -295,15 +313,15 @@
   "unmappedRelationTargets": [
     [
       "年龄",
-      195
+      197
     ],
     [
       "学年",
-      195
+      197
     ],
     [
       "身高",
-      195
+      197
     ],
     [
       "二人称",

@@ -2030,3 +2030,17 @@ background-position: center;
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.magicalgirl input[value="索拉娜的母亲 (そらなの母 / Sorana no Haha)"] {
+  background: url(../img/png/索拉娜的母亲.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.magicalgirl input[value="莉娜 (リナ / Rina)"] {
+  background: url(../img/png/莉娜.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

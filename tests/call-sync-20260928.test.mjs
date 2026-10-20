@@ -19,8 +19,8 @@ const opts = key => ({japanese:key==='japanese',romaji:key==='romaji',chinese:ke
 const callKey = name => [...ctx.calls.keys()].find(k=> k.split(' (')[0]===name);
 
 test('all seven upstream roster additions are selectable, localized and pictured',()=>{
-  assert.equal(catalog.length,193);
-  assert.equal(ctx.calls.size,195);
+  assert.equal(catalog.length,195);
+  assert.equal(ctx.calls.size,197);
   for (const p of report.portraits) {
     const matches=catalog.filter(c=>c.jp===p.jp);
     assert.equal(matches.length,1,p.jp);
@@ -74,9 +74,13 @@ test('existing calls are only extended; anniversary context survives in all lang
 test('unknowns and existing independent grade corrections are not overwritten',()=>{
   const w=ctx.calls.get(callKey('瓦斯'));
   assert.equal(w.get('年龄'),'15岁?'); assert.equal(w.get('学年'),'初三'); assert.equal(w.get('身高'),'?');
+  // Their pronouns and directed calls were confirmed by the 2026-10-20 source review.
   for(const name of ['凪星索拉娜','莉莉·坎迪']){
     const row=ctx.calls.get(callKey(name));
-    assert.equal(row.size,4); for(const val of row.values())assert.equal(val,'?');
+    assert.equal(row.size,name==='凪星索拉娜'?8:6);
+    assert.equal(row.get('学年'),'?'); assert.equal(row.get('身高'),'?');
+    assert.equal(row.get('年龄'),name==='凪星索拉娜'?'17岁':'?');
+    assert.equal(row.get('第一人称'),'わたし (watashi / 我)');
   }
   vm.runInContext(read('public/myfile/gradeOverrides.js'),ctx);
   const g=ctx.window.EXPLICIT_GRADE_ATTRIBUTES;
